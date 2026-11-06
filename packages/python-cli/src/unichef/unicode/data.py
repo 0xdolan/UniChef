@@ -15,7 +15,8 @@ from functools import cache
 from importlib.resources import files
 from typing import Any, Literal
 
-UCD_VERSION = "18.0.0"
+from unichef.unicode.version import UCD_VERSION as UCD_VERSION  # noqa: PLC0414 - re-export
+
 MAX_CODE_POINT = 0x10FFFF
 
 type Artefact = Literal["core", "names", "security"]
