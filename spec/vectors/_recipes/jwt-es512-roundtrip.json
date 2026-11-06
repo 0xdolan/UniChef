@@ -1,0 +1,63 @@
+{
+  "recipe": {
+    "version": 1,
+    "name": "JWT ES512 round trip",
+    "description": "ES512 signatures are randomised, so sign then verify with the public key.",
+    "steps": [
+      {
+        "op": "jwt-sign",
+        "args": {
+          "algorithm": "ES512",
+          "key": {
+            "encoding": "utf8",
+            "value": "-----BEGIN PRIVATE KEY-----\nMIHuAgEAMBAGByqGSM49AgEGBSuBBAAjBIHWMIHTAgEBBEIBzfJRtzN4ZGft1lUn\n+MRvi+BhtkLA/NWfy0C7xUrmC7y8BlCBc6RF2pClKvIEu+2URpis/g55xXCagUGM\n6o2cbOKhgYkDgYYABADhGZ637EOHwxE5Wj+BckSmsiOTIPDiZ6QP84CX4Dyi+qII\n9sX3Aiq2Z/4CYdze2JEX3iHldwcaKOZR22zrOdnUiwEbZfW6KU5kjRjqShcnAzgr\nmqOgU/nF1XCstUqu3ExpwrysEjRCnKCzt8TDF71ak7a8u1+INsIDx6goucWKAwq7\n0g==\n-----END PRIVATE KEY-----\n"
+          }
+        }
+      },
+      {
+        "op": "jwt-verify",
+        "args": {
+          "algorithm": "ES512",
+          "key": {
+            "encoding": "utf8",
+            "value": "-----BEGIN PUBLIC KEY-----\nMIGbMBAGByqGSM49AgEGBSuBBAAjA4GGAAQA4Rmet+xDh8MROVo/gXJEprIjkyDw\n4mekD/OAl+A8ovqiCPbF9wIqtmf+AmHc3tiRF94h5XcHGijmUdts6znZ1IsBG2X1\nuilOZI0Y6koXJwM4K5qjoFP5xdVwrLVKrtxMacK8rBI0Qpygs7fEwxe9WpO2vLtf\niDbCA8eoKLnFigMKu9I=\n-----END PUBLIC KEY-----\n"
+          }
+        }
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "claims",
+      "input": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      }
+    },
+    {
+      "name": "empty object",
+      "input": {
+        "type": "json",
+        "value": {}
+      },
+      "expected": {
+        "type": "json",
+        "value": {}
+      }
+    }
+  ]
+}

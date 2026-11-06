@@ -365,6 +365,48 @@ Nothing is random: the IV is always an argument, so the output is deterministic.
 
 In GCM, the 16-byte tag is appended to the ciphertext, and decryption takes it from the last 16 bytes. A tag mismatch or bad PKCS#7 padding raises `E_CRYPTO`.
 
+### JSON Web Tokens: `jwt-decode`, `jwt-sign`, `jwt-verify`
+
+These ops handle JWS compact tokens (RFC 7515/7519). Algorithms: `HS256/384/512`, `RS256/384/512`, `PS256/384/512`, `ES256/384/512` (P-256, P-384 and P-521; the signature is raw `r‖s`) and `EdDSA` (Ed25519 or Ed448). Encrypted tokens (JWE) are not supported.
+
+**Parsing (`jwt-decode` and `jwt-verify`)**
+- Leading and trailing ASCII whitespace is removed.
+- The token must have exactly three segments. Five segments (JWE) or any other count raises `E_DECODE`.
+- Each segment is strict unpadded base64url: no `=`, no `+` or `/`, and zero trailing bits.
+- The header and payload must be UTF-8 JSON objects. Breaking any of these rules raises `E_DECODE`.
+- Duplicate keys follow the usual JSON rule (`W_DUPLICATE_KEY`).
+
+**Ops**
+
+| Op | Types | Args | Result |
+|---|---|---|---|
+| `jwt-decode` | string → json | none | `{"header", "payload", "signature"}`. The signature stays as base64url text. Nothing is checked. |
+| `jwt-sign` | json → string | `algorithm` (default `HS256`; `none` is also allowed), `key`, `header` | A token. The header is `{"alg", "typ":"JWT"}` followed by the fields in `header`, which must be a JSON object. `header` may replace `typ`. Setting a different `alg` there raises `E_ARG_INVALID`. Header and payload are serialised compactly, as `JSON.stringify` does. |
+| `jwt-verify` | string → json | `algorithm` (default `HS256`), `key` | The payload. |
+
+**Inputs and keys**
+- The `jwt-sign` input must be a JSON object, otherwise `E_INPUT_TYPE`.
+- `key` is a bytes argument, with `utf8` as its first encoding.
+  - For `HS*` it is the secret. An empty secret raises `E_ARG_INVALID`.
+  - For the others, give an unencrypted PEM or DER key. `jwt-verify` also accepts a public key, an X.509 certificate, or a private key (its public half is used).
+
+**Signatures**
+- `none` signing produces an empty signature and warns `W_INSECURE`.
+- `PS*` and `ES*` signatures are randomised, so `jwt-sign` is parity class R and those algorithms are tested by sign → verify recipes. The other algorithms are deterministic and tested exactly.
+
+**Warnings**
+- An `HS*` secret shorter than the hash output (for example under 256 bits for `HS256`) warns `W_INSECURE`.
+- An RSA key under 2048 bits also warns `W_INSECURE`.
+
+**`jwt-verify` checks.** Each of the following raises `E_CRYPTO`:
+- The header `alg` is not exactly `algorithm`. This refuses `none` and algorithm-confusion tokens.
+- The header has a `crit` field.
+- The key type or curve does not fit the algorithm.
+- An `ES*` signature has the wrong length.
+- The signature does not verify.
+
+Time claims (`exp`, `nbf`, `iat`) are never checked, because ops do not read the clock.
+
 ## Regex profile
 
 Patterns use a portable subset of ECMAScript syntax, with the `v` flag's class rules. Both cores parse a pattern with their own parser and expand every class to explicit code-point ranges from the pinned UCD data. Neither core consults its host's Unicode tables or case-folding.

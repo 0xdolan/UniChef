@@ -1,0 +1,63 @@
+{
+  "recipe": {
+    "version": 1,
+    "name": "JWT PS384 round trip",
+    "description": "PS384 signatures are randomised, so sign then verify with the public key.",
+    "steps": [
+      {
+        "op": "jwt-sign",
+        "args": {
+          "algorithm": "PS384",
+          "key": {
+            "encoding": "utf8",
+            "value": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDF1gMRNMLtyKBX\nROsqM+ohmKy5mWMg7FKRvEeBJx6I7bs3FjSbuyRs9YiKQzRh4A5onhjl7g4n1nA8\nl4WPpMH2aS7ShAGwbmzVZA+fOvQG9aFw8QjrH0tYr7qHxRyQSIQyGwc1HqqEj1b4\njpdowKJ5PU1k5dN4fDZjA6jg92gOXbiTmJqASAMv4hYxo85guS4W9FaZcOUjC/oc\n2a69xtFZ9/yd0tdCOZTxPmKpV6gvxZbkpRrVy/JUpu2EcDsPRUoHg2HY28KZVQg4\nOzl3/PQnidzg01NbRjvR9gnkfFN6L1+KO2fxT4nY7i/kqDHZT/cTMGtbt6UjL7Wn\nYdN9aZcVAgMBAAECggEAGfIWVuRXiD3eoXNdcBx84UkXpgOy13eG4KwTqKGLxKOB\nARl9bssdXNjavl9P+GIdIaVSWJ1e5+SctaWdk5glA/8Jb/x2CECDL30++0ANDviZ\n4qkJ5WQmSoxJZ1L3iwinpbabvGC4NkhiPJjezJMu+72Jb+kgUdXggB3TwSVRVUjD\n7DA7wdueOXs9vh1Rm4+na3h3QLNQBIkrxrvLqHstMabYYe48+X8as2a+y+58N+jb\njE3zpJZHf7oq3R3Y63ftrwp+wGKRqkgfVO76YZ0VI2TZ8t0i/CmKN9SWDJG1fMJ1\nuuyP3XRwjard/DZhXBMeShwlfM+7ZNBkbhQPdLdnwQKBgQD70EXzyCFD8H+mdHmU\nmlY+OQ/PVghSNJ6iJPSwKKzDYRVYDLdGEcAWdGm6iEyOr2wPqJgED+1Y6t3d/MiC\nQTkFswFxP4L4+eTiTo6YcF4g8u0rd6W9+5OQrkNACwF8gVR55lXtp+YKnCBaboA/\nBRI4W1GLKW/vFHwrWdv5GzWnhQKBgQDJIAIlCKX8Lyrw2GLqExMOCPcAz1mpAaH2\nyJRLvxpr8r+dbNdVRTPSWLBA/nwRmL29hwEllvX6TYeTf2nT/SwDT5Z3vGx5TDnN\na6zygNSfqeefCsmhXkCrwP9eYam4IYNJFID9fPXfUeiuJK8QoUuGRPKx0qJ9Lptv\n5kY3hvYeUQKBgQDfx7IyuBqf5t16Dq5xWkrkVw9uwVT5wRtsmwz8c9k8dE1kh0Bk\nO6gKDIBdLX1jnA+bRsd5bLIPwAFVoqyJ3O6Q2wigHMIHAwTd/NQKMmnkPB5674RS\ndn0oKUVIZ791ZvWssv6QChKMQT0bQHImDxqnDLhFxJhdzkWevOeY1A51hQKBgCZL\nH91pPiE74dMlf//NTe14K39N+2ZAV1QjcIjTg/ZVq8IPfRhRKsK7/CMD0R+Qk1/I\nmqFLkt3rcQrWUZH5PC4NMzrs90JJDyBbhfxOJy2XLfCMH0PILEwHXRfdRHE4gESj\n0MNyzWWNtN2jQmnKLBUOf5732dQ30YSGtYvQ+H9hAoGBAN5sFWoipcNX3sVsJV+1\nSRuMCuabwQZUFiRy3ISakAARkrpW3bVc+lAAh8Q5GBS/anvkGb9bfoNVzAXPK5CH\nVtUrAv3OFYeN3s/BehkdyXPOlVPqLY7a3R/gbOx9KrSILi4rSuEaDV4JmpH9FLmb\nG7c1aXiG0jhtdIUbP260qHpP\n-----END PRIVATE KEY-----\n"
+          }
+        }
+      },
+      {
+        "op": "jwt-verify",
+        "args": {
+          "algorithm": "PS384",
+          "key": {
+            "encoding": "utf8",
+            "value": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxdYDETTC7cigV0TrKjPq\nIZisuZljIOxSkbxHgSceiO27NxY0m7skbPWIikM0YeAOaJ4Y5e4OJ9ZwPJeFj6TB\n9mku0oQBsG5s1WQPnzr0BvWhcPEI6x9LWK+6h8UckEiEMhsHNR6qhI9W+I6XaMCi\neT1NZOXTeHw2YwOo4PdoDl24k5iagEgDL+IWMaPOYLkuFvRWmXDlIwv6HNmuvcbR\nWff8ndLXQjmU8T5iqVeoL8WW5KUa1cvyVKbthHA7D0VKB4Nh2NvCmVUIODs5d/z0\nJ4nc4NNTW0Y70fYJ5HxTei9fijtn8U+J2O4v5Kgx2U/3EzBrW7elIy+1p2HTfWmX\nFQIDAQAB\n-----END PUBLIC KEY-----\n"
+          }
+        }
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "claims",
+      "input": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      }
+    },
+    {
+      "name": "empty object",
+      "input": {
+        "type": "json",
+        "value": {}
+      },
+      "expected": {
+        "type": "json",
+        "value": {}
+      }
+    }
+  ]
+}
