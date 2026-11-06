@@ -1,0 +1,11 @@
+# Generated, vendored or data files
+pnpm-lock.yaml
+**/dist/
+**/coverage/
+packages/npm-core/data/
+packages/python-cli/
+spec/vectors/
+data/
+assets/
+.claude/
+*.md
