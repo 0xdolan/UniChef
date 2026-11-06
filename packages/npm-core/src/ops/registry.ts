@@ -4,8 +4,10 @@
 import { UniChefError } from '../errors.js';
 import { pyRepr, type Operation } from './types.js';
 import { FLOW_OPS } from './flow.js';
+import { SECURITY_OPS } from './security.js';
+import { UNICODE_OPS } from './unicode.js';
 
-const MODULES: readonly (readonly Operation[])[] = [FLOW_OPS];
+const MODULES: readonly (readonly Operation[])[] = [FLOW_OPS, UNICODE_OPS, SECURITY_OPS];
 
 const REGISTRY = new Map<string, Operation>();
 for (const ops of MODULES) {
