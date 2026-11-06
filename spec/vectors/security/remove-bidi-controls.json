@@ -1,0 +1,114 @@
+{
+  "op": "remove-bidi-controls",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "plain text unchanged",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "hello"
+      },
+      "expected": {
+        "type": "string",
+        "text": "hello"
+      }
+    },
+    {
+      "name": "override removed",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a‮b‬"
+      },
+      "expected": {
+        "type": "string",
+        "text": "ab"
+      }
+    },
+    {
+      "name": "isolates removed",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "⁦x⁧y⁨z⁩"
+      },
+      "expected": {
+        "type": "string",
+        "text": "xyz"
+      }
+    },
+    {
+      "name": "marks removed",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "‎a‏؜"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a"
+      }
+    },
+    {
+      "name": "embeddings removed",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "‪1‫2‭3"
+      },
+      "expected": {
+        "type": "string",
+        "text": "123"
+      }
+    },
+    {
+      "name": "zero-width space kept",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a​b"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a​b"
+      }
+    },
+    {
+      "name": "Arabic text kept",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "مرحبا‮"
+      },
+      "expected": {
+        "type": "string",
+        "text": "مرحبا"
+      }
+    },
+    {
+      "name": "unknown argument",
+      "args": {
+        "keep": true
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

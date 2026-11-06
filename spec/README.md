@@ -258,3 +258,39 @@ In `grapheme` mode, each row is one cluster:
 - `cp`, `utf8` and `utf16` are joined with spaces.
 - The other per-code-point columns are joined with ` + `. A column that is empty for every code point stays empty.
 - The flags of the cluster are merged.
+
+## Operation arguments (security category)
+
+### `detect-invisible` (string → table)
+
+Columns are `index`, `cp`, `name`, `kind`, `line` and `column`. There is one row per invisible code point.
+
+- `index` is the 0-based code-point offset.
+- `line` and `column` are 1-based. Lines are LF-separated, and columns count code points.
+- `kind` is the first of these that matches:
+  1. `bidi-control` (Bidi_Control).
+  2. `tag` (U+E0000..U+E007F).
+  3. `variation-selector` (Variation_Selector).
+  4. `zero-width` (the `zero-width` set above).
+  5. `hangul-filler` (U+115F, U+1160, U+3164, U+FFA0).
+  6. `default-ignorable` (Default_Ignorable_Code_Point, U+00AD, U+034F).
+
+### `remove-bidi-controls` (string → string)
+
+Deletes every Bidi_Control character.
+
+### `detect-confusables` (string → table)
+
+The skeleton is UTS #39 §4: NFD, then `confusables.txt`, then NFD.
+
+- **Without `reference`:** columns `index`, `cp`, `name` and `prototype`. There is one row per code point with a mapping, and `prototype` lists `U+XXXX` values separated by spaces.
+- **With a non-empty `reference`:** a single row with columns `input-skeleton`, `reference-skeleton` and `confusable`. The skeletons are upper-case hex code points separated by spaces. `confusable` is `true` or `false`.
+
+### `script-mix-check` (string → string)
+
+Returns the UTS #39 §5.2 restriction level of the whole input: `ASCII-Only`, `Single Script`, `Highly Restrictive`, `Moderately Restrictive`, `Minimally Restrictive` or `Unrestricted`.
+
+- **`profile` (default `true`):** applies step 1. Any character whose Identifier_Status is not Allowed makes the input `Unrestricted`. This includes spaces, punctuation and newlines, so turn it off for running text.
+- **Highly Restrictive:** the resolved script set of the non-Latin characters contains Hanb, Jpan or Kore.
+- **Moderately Restrictive:** that set is non-empty and contains neither Cyrl nor Grek.
+- **Empty input:** `ASCII-Only`.
