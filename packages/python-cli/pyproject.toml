@@ -69,7 +69,7 @@ select = ["E", "W", "F", "I", "N", "UP", "B", "A", "C4", "SIM", "PTH", "RET", "A
 ignore = ["PLR0913", "S101"]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**" = ["ANN", "PLR2004", "S"]
+"tests/**" = ["ANN", "PLR2004", "RUF001", "S"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["unichef"]
