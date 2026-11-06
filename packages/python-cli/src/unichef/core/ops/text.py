@@ -234,7 +234,7 @@ def _take(text: str, args: Args, ctx: OpContext, *, last: bool) -> str:
         kept = lines[len(lines) - count :] if last else lines[:count]
         return "\n".join(kept) + end if kept else ""
     parts = _units(text, unit, ctx)
-    return "".join(parts[len(parts) - count :] if last else parts[:count]) if count else ""
+    return "".join(parts[max(len(parts) - count, 0) :] if last else parts[:count]) if count else ""
 
 
 _TAKE_ARGS = (

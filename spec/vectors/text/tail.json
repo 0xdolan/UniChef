@@ -124,6 +124,21 @@
       "expected": {
         "error": "E_ARG_INVALID"
       }
+    },
+    {
+      "name": "count beyond the code points keeps all",
+      "args": {
+        "count": 4,
+        "unit": "code-points"
+      },
+      "input": {
+        "type": "string",
+        "text": "abc"
+      },
+      "expected": {
+        "type": "string",
+        "text": "abc"
+      }
     }
   ]
 }
