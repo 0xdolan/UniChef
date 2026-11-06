@@ -1,0 +1,35 @@
+{
+  "recipe": {
+    "version": 1,
+    "name": "Conditional jump errors",
+    "description": "The pattern is checked when the jump runs.",
+    "steps": [
+      {
+        "op": "label",
+        "args": {
+          "name": "top"
+        }
+      },
+      {
+        "op": "conditional-jump",
+        "args": {
+          "pattern": "a",
+          "flags": "z",
+          "to": "top"
+        }
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "unknown flag",
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

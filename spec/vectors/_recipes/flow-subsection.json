@@ -1,0 +1,79 @@
+{
+  "recipe": {
+    "version": 1,
+    "name": "Subsection",
+    "description": "Reverse the text inside each pair of brackets; the rest passes through. Empty brackets are skipped.",
+    "steps": [
+      {
+        "op": "subsection",
+        "args": {
+          "pattern": "\\[([^\\]]*)\\]",
+          "group": 1,
+          "steps": [
+            {
+              "op": "reverse",
+              "args": {}
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "empty",
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "no match",
+      "input": {
+        "type": "string",
+        "text": "abc"
+      },
+      "expected": {
+        "type": "string",
+        "text": "abc"
+      }
+    },
+    {
+      "name": "two matches",
+      "input": {
+        "type": "string",
+        "text": "a [abc] b [xy]"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a [cba] b [yx]"
+      }
+    },
+    {
+      "name": "empty group is skipped",
+      "input": {
+        "type": "string",
+        "text": "[] [ab]"
+      },
+      "expected": {
+        "type": "string",
+        "text": "[] [ba]"
+      }
+    },
+    {
+      "name": "graphemes inside",
+      "input": {
+        "type": "string",
+        "text": "[é😀]"
+      },
+      "expected": {
+        "type": "string",
+        "text": "[😀é]"
+      }
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "recipe": {
+    "version": 1,
+    "name": "Subsection, first match only",
+    "description": "With global off only the first match runs the steps; nested ops see the match as a string.",
+    "steps": [
+      {
+        "op": "subsection",
+        "args": {
+          "pattern": "\\d+",
+          "global": false,
+          "steps": [
+            {
+              "op": "find-replace",
+              "args": {
+                "pattern": "\\d",
+                "replacement": "#"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "first number only",
+      "input": {
+        "type": "string",
+        "text": "a12 b34"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a## b34"
+      }
+    },
+    {
+      "name": "no digits",
+      "input": {
+        "type": "string",
+        "text": "ab"
+      },
+      "expected": {
+        "type": "string",
+        "text": "ab"
+      }
+    },
+    {
+      "name": "bytes input is coerced",
+      "input": {
+        "type": "bytes",
+        "hex": "3778"
+      },
+      "expected": {
+        "type": "string",
+        "text": "#x"
+      }
+    }
+  ]
+}

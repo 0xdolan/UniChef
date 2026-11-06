@@ -1,7 +1,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Character names, aliases and labels (PRD §4.3, Unicode Standard §4.8)."""
 
-from bisect import bisect_right
+from bisect import bisect_left, bisect_right
+from collections.abc import Iterator
 from dataclasses import dataclass
 from functools import cache
 
@@ -78,6 +79,33 @@ def _aliases() -> dict[int, tuple[Alias, ...]]:
 
 def aliases(cp: int) -> tuple[Alias, ...]:
     return _aliases().get(cp, ())
+
+
+@cache
+def _all_names() -> tuple[list[int], list[str]]:
+    """Every named code point (explicit and algorithmic), ascending, with its name."""
+    cps, names, ranges, _ = _tables()
+    pairs = list(zip(cps, names, strict=True))
+    pairs += [(cp, name(cp)) for r in ranges for cp in range(r.start, r.end + 1)]
+    pairs.sort()
+    return [cp for cp, _ in pairs], [text for _, text in pairs]
+
+
+def iter_names(within: data.Ranges) -> Iterator[tuple[int, str]]:
+    """Every ``(cp, name)`` with a non-empty Name inside ``within``, ascending."""
+    cps, names = _all_names()
+    for start, end in within:
+        lo = bisect_left(cps, start)
+        hi = bisect_right(cps, end)
+        yield from zip(cps[lo:hi], names[lo:hi], strict=True)
+
+
+def iter_aliases(within: data.Ranges) -> Iterator[tuple[int, Alias]]:
+    """Every ``(cp, alias)`` inside ``within``."""
+    for cp, found in _aliases().items():
+        if data.contains(within, cp):
+            for alias in found:
+                yield cp, alias
 
 
 def label(cp: int) -> str:

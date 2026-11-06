@@ -1,0 +1,146 @@
+{
+  "op": "reverse",
+  "cases": [
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": ""
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": ""
+      }
+    },
+    {
+      "name": "ascii",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "abc"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "636261"
+      }
+    },
+    {
+      "name": "combining mark stays with its base",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "éx"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "7865cc81"
+      }
+    },
+    {
+      "name": "regional indicator pair stays together",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "🇺🇸a"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "61f09f87baf09f87b8"
+      }
+    },
+    {
+      "name": "ZWJ sequence stays together",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "👨‍👩‍👧x"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "78f09f91a8e2808df09f91a9e2808df09f91a7"
+      }
+    },
+    {
+      "name": "code points split combining marks",
+      "args": {
+        "unit": "code-points"
+      },
+      "input": {
+        "type": "string",
+        "text": "éx"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "78cc8165"
+      }
+    },
+    {
+      "name": "code points keep astral characters whole",
+      "args": {
+        "unit": "code-points"
+      },
+      "input": {
+        "type": "string",
+        "text": "ab😀"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "f09f98806261"
+      }
+    },
+    {
+      "name": "bytes",
+      "args": {
+        "unit": "bytes"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "6162"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "6261"
+      }
+    },
+    {
+      "name": "bytes split multi-byte sequences",
+      "args": {
+        "unit": "bytes"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "c3a9"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "a9c3"
+      }
+    },
+    {
+      "name": "ill-formed UTF-8 becomes U+FFFD",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "ff61"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "61efbfbd"
+      }
+    },
+    {
+      "name": "unknown unit",
+      "args": {
+        "unit": "words"
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

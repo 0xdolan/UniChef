@@ -101,7 +101,12 @@ def block(cp: int) -> str:
 
 @cache
 def _prop_index() -> dict[str, str]:
-    return {loose(alias): short for alias, short in data.load("core")["aliases"]["prop"].items()}
+    """Loose alias -> stored key: the short name, or the table key for binary properties."""
+    index = {loose(alias): short for alias, short in data.load("core")["aliases"]["prop"].items()}
+    stored = {index.get(loose(key), key): key for key in binary_names()}
+    return {alias: stored.get(short, short) for alias, short in index.items()} | {
+        loose(key): key for key in binary_names()
+    }
 
 
 @cache
@@ -111,7 +116,10 @@ def _value_index(prop: str) -> dict[str, str]:
 
 
 def resolve_property(name: str) -> str:
-    """Return the short property name for any alias, or raise ``E_ARG_INVALID``."""
+    """Return the stored property key for any alias, or raise ``E_ARG_INVALID``.
+
+    Enumerated properties resolve to their short name (``gc``), binary ones to the key of
+    their table (``White_Space``, ``ExtPict``)."""
     short = _prop_index().get(loose(name))
     if short is None:
         raise UniChefError("E_ARG_INVALID", f"Unknown Unicode property {name!r}.")

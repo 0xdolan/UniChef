@@ -160,3 +160,16 @@ def fold(text: str, *, simple: bool = False, locale: Locale = "none") -> str:
     return "".join(
         chr(m) for ch in text for m in fold_code_point(ord(ch), simple=simple, turkic=turkic)
     )
+
+
+@cache
+def simple_fold_orbits() -> dict[int, tuple[int, ...]]:
+    """Every code point that simple case folding touches, mapped to all code points
+    sharing its simple fold (itself included). Drives case-insensitive regex classes."""
+    maps = _maps()
+    members = set(maps["foldSimple"]) | {cp for cp, f in maps["fold"].items() if len(f) == 1}
+    groups: dict[int, set[int]] = {}
+    for cp in members:
+        target = fold_code_point(cp, simple=True)[0]
+        groups.setdefault(target, {target}).add(cp)
+    return {cp: tuple(sorted(group)) for group in groups.values() for cp in group}

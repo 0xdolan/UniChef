@@ -1,0 +1,132 @@
+{
+  "op": "trim",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "both ends",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "  a  "
+      },
+      "expected": {
+        "type": "string",
+        "text": "a"
+      }
+    },
+    {
+      "name": "start",
+      "args": {
+        "side": "start"
+      },
+      "input": {
+        "type": "string",
+        "text": "\t x \t"
+      },
+      "expected": {
+        "type": "string",
+        "text": "x \t"
+      }
+    },
+    {
+      "name": "end",
+      "args": {
+        "side": "end"
+      },
+      "input": {
+        "type": "string",
+        "text": "\t x \t"
+      },
+      "expected": {
+        "type": "string",
+        "text": "\t x"
+      }
+    },
+    {
+      "name": "Unicode White_Space",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "　 a "
+      },
+      "expected": {
+        "type": "string",
+        "text": "a"
+      }
+    },
+    {
+      "name": "ZWSP is not White_Space",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "​a​"
+      },
+      "expected": {
+        "type": "string",
+        "text": "​a​"
+      }
+    },
+    {
+      "name": "U+001C is not White_Space",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "\u001ca"
+      },
+      "expected": {
+        "type": "string",
+        "text": "\u001ca"
+      }
+    },
+    {
+      "name": "each line",
+      "args": {
+        "lines": true
+      },
+      "input": {
+        "type": "string",
+        "text": " a \n\tb \n"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a\nb\n"
+      }
+    },
+    {
+      "name": "only whitespace",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "  \n "
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "unknown side",
+      "args": {
+        "side": "middle"
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

@@ -1,0 +1,129 @@
+{
+  "op": "tail",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "default 10 lines",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "1\n2\n3"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1\n2\n3"
+      }
+    },
+    {
+      "name": "keeps the final LF",
+      "args": {
+        "count": 2
+      },
+      "input": {
+        "type": "string",
+        "text": "1\n2\n3\n"
+      },
+      "expected": {
+        "type": "string",
+        "text": "2\n3\n"
+      }
+    },
+    {
+      "name": "no final LF",
+      "args": {
+        "count": 1
+      },
+      "input": {
+        "type": "string",
+        "text": "1\n2\n3"
+      },
+      "expected": {
+        "type": "string",
+        "text": "3"
+      }
+    },
+    {
+      "name": "count 0",
+      "args": {
+        "count": 0
+      },
+      "input": {
+        "type": "string",
+        "text": "1\n2"
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "graphemes",
+      "args": {
+        "count": 1,
+        "unit": "graphemes"
+      },
+      "input": {
+        "type": "string",
+        "text": "abé"
+      },
+      "expected": {
+        "type": "string",
+        "text": "é"
+      }
+    },
+    {
+      "name": "code points",
+      "args": {
+        "count": 1,
+        "unit": "code-points"
+      },
+      "input": {
+        "type": "string",
+        "text": "abé"
+      },
+      "expected": {
+        "type": "string",
+        "text": "́"
+      }
+    },
+    {
+      "name": "astral code point",
+      "args": {
+        "count": 1,
+        "unit": "code-points"
+      },
+      "input": {
+        "type": "string",
+        "text": "a😀"
+      },
+      "expected": {
+        "type": "string",
+        "text": "😀"
+      }
+    },
+    {
+      "name": "unknown unit",
+      "args": {
+        "unit": "bytes"
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}
