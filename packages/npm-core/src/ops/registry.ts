@@ -9,6 +9,8 @@ import { FLOW_OPS } from './flow.js';
 import { HASHING_OPS } from './hashing.js';
 import { HTML_OPS } from './html.js';
 import { JWT_OPS } from './jwt.js';
+import { SECURITY_OPS } from './security.js';
+import { UNICODE_OPS } from './unicode.js';
 
 const MODULES: readonly (readonly Operation[])[] = [
   FLOW_OPS,
@@ -17,6 +19,8 @@ const MODULES: readonly (readonly Operation[])[] = [
   HASHING_OPS,
   CRYPTO_OPS,
   JWT_OPS,
+  UNICODE_OPS,
+  SECURITY_OPS,
 ];
 
 const REGISTRY = new Map<string, Operation>();
