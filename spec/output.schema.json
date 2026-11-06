@@ -30,41 +30,60 @@
     "dish": {
       "oneOf": [
         {
-          "type": "object", "required": ["type", "base64"], "additionalProperties": false,
+          "type": "object",
+          "required": ["type", "base64"],
+          "additionalProperties": false,
           "properties": {
             "type": { "const": "bytes" },
             "base64": { "type": "string", "pattern": "^[A-Za-z0-9+/]*={0,2}$" }
           }
         },
         {
-          "type": "object", "required": ["type", "value"], "additionalProperties": false,
+          "type": "object",
+          "required": ["type", "value"],
+          "additionalProperties": false,
           "properties": { "type": { "const": "string" }, "value": { "type": "string" } }
         },
         {
-          "type": "object", "required": ["type", "value"], "additionalProperties": false,
+          "type": "object",
+          "required": ["type", "value"],
+          "additionalProperties": false,
           "properties": { "type": { "const": "integer" }, "value": { "$ref": "#/$defs/bigint" } }
         },
         {
-          "type": "object", "required": ["type", "value"], "additionalProperties": false,
+          "type": "object",
+          "required": ["type", "value"],
+          "additionalProperties": false,
           "properties": { "type": { "const": "float" }, "value": { "type": ["number", "string"] } }
         },
         {
-          "type": "object", "required": ["type", "value"], "additionalProperties": false,
+          "type": "object",
+          "required": ["type", "value"],
+          "additionalProperties": false,
           "properties": { "type": { "const": "json" }, "value": true }
         },
         {
-          "type": "object", "required": ["type", "value"], "additionalProperties": false,
+          "type": "object",
+          "required": ["type", "value"],
+          "additionalProperties": false,
           "properties": {
             "type": { "const": "codepoints" },
-            "value": { "type": "array", "items": { "type": "integer", "minimum": 0, "maximum": 1114111 } }
+            "value": {
+              "type": "array",
+              "items": { "type": "integer", "minimum": 0, "maximum": 1114111 }
+            }
           }
         },
         {
-          "type": "object", "required": ["type", "value"], "additionalProperties": false,
+          "type": "object",
+          "required": ["type", "value"],
+          "additionalProperties": false,
           "properties": {
             "type": { "const": "table" },
             "value": {
-              "type": "object", "required": ["columns", "rows"], "additionalProperties": false,
+              "type": "object",
+              "required": ["columns", "rows"],
+              "additionalProperties": false,
               "properties": {
                 "columns": { "type": "array", "items": { "type": "string" } },
                 "rows": { "type": "array", "items": { "type": "array" } }
@@ -75,7 +94,9 @@
       ]
     },
     "warning": {
-      "type": "object", "required": ["code", "message"], "additionalProperties": false,
+      "type": "object",
+      "required": ["code", "message"],
+      "additionalProperties": false,
       "properties": {
         "code": { "type": "string", "pattern": "^W_[A-Z][A-Z0-9_]*$" },
         "message": { "type": "string" },
@@ -83,7 +104,9 @@
       }
     },
     "error": {
-      "type": "object", "required": ["code", "message"], "additionalProperties": false,
+      "type": "object",
+      "required": ["code", "message"],
+      "additionalProperties": false,
       "properties": {
         "code": { "type": "string", "pattern": "^E_[A-Z][A-Z0-9_]*$" },
         "message": { "type": "string", "minLength": 1 },
