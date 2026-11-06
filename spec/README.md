@@ -42,6 +42,28 @@ Every operation needs at least 8 cases: empty input, ASCII, non-BMP, malformed o
 - A string input is converted to bytes as UTF-8, and a lone surrogate becomes U+FFFD (EF BF BD) (PRD §3.2).
 - Bytes are decoded to a string with UTF-8 using maximal-subpart U+FFFD substitution, and a BOM is kept.
 
+### Bytes arguments
+
+A bytes argument (a key, IV, AAD and so on) is written in a recipe as `{"encoding": "<enc>", "value": "<string>"}`, with exactly those two members.
+
+| `encoding` | Meaning of `value` |
+|---|---|
+| `hex` | Hex digit pairs, either case. Whitespace between pairs is allowed. |
+| `utf8` | Text, encoded as UTF-8. |
+| `base64` | Strict RFC 4648 base64: padding is required, and any non-alphabet character is an error. |
+| `latin1` | Text in which every character is U+0000..U+00FF, and each becomes one byte. |
+
+Anything else raises `E_ARG_INVALID` when the recipe is loaded. This covers a wrong shape, an encoding the argument does not allow, or a value that does not decode. The default is the empty byte string, given in the first allowed encoding.
+
+### Table to string
+
+A table becomes a string as TSV:
+
+- The first line is the header row, and lines are joined with LF. There is no final LF.
+- In every cell, `\` becomes `\\`, TAB becomes `\t`, LF becomes `\n` and CR becomes `\r`.
+- `null` is written as an empty cell, and booleans as `true` or `false`.
+- Integers are written in decimal. Floats use the ECMAScript `Number.prototype.toString()` form.
+
 ## Operation arguments (encoding category)
 
 These tables are normative until `ops.json` is generated from the op registry.
@@ -342,3 +364,109 @@ These ops change only ASCII characters.
 Nothing is random: the IV is always an argument, so the output is deterministic.
 
 In GCM, the 16-byte tag is appended to the ciphertext, and decryption takes it from the last 16 bytes. A tag mismatch or bad PKCS#7 padding raises `E_CRYPTO`.
+
+## Regex profile
+
+Patterns use a portable subset of ECMAScript syntax, with the `v` flag's class rules. Both cores parse a pattern with their own parser and expand every class to explicit code-point ranges from the pinned UCD data. Neither core consults its host's Unicode tables or case-folding.
+
+- Flags are distinct letters from `imsx`. An unknown letter or a repeated letter is `E_ARG_INVALID`.
+- `i`: every class is closed under simple case folding at parse time. Backreferences under `i` are `E_REGEX_UNSUPPORTED`.
+- `m`: `^` and `$` match at line boundaries. Without `m` they match only at the start and end of input.
+- `s`: `.` also matches a line terminator. Without `s`, `.` matches any code point except a line terminator.
+- `x`: outside a class, ASCII whitespace (space, tab, LF, CR, FF, VT) is ignored, and `#` starts a comment that runs to the end of the line.
+- Line terminators are U+000A, U+000D, U+2028 and U+2029.
+- All offsets, spans and lengths are code-point indices, never UTF-16 units or bytes.
+
+### Classes and escapes
+
+- `\d`, `\w` and `\s` (and their negations) are the sets `digit()`, `word()` and `space()` in `profile.py`. `\s` is White_Space.
+- `\b` and `\B` are word-boundary anchors outside a class.
+- Class set operations are `E_REGEX_UNSUPPORTED`.
+- Metacharacters (`\ ^ $ . | ? * + ( ) [ ] { }`) match literally only when escaped.
+
+### Properties `\p{…}` and `\P{…}`
+
+- `\p{Name}`: a General_Category value (`Lu`, `Letter`) or a binary property name (`White_Space`, `Alphabetic`).
+- `\p{Key=Value}`: accepted only for keys `gc`, `sc`, `scx` and `blk`. Binary properties take `Yes` or `No`.
+- Names and values use UAX44-LM3 loose matching: ASCII case, whitespace, `_` and `-` are ignored, and a leading `is` is dropped.
+- An unknown name or value is `E_ARG_INVALID`. A bare body that is neither a General_Category value nor a binary property (`\p{Script}`) is `E_ARG_INVALID`.
+
+### Quantifiers
+
+- `*`, `+`, `?`, `{n}`, `{n,}` and `{n,m}`. A following `?` makes the quantifier lazy.
+- Counts are at most 65535 (`MAX_REPEAT`). A larger count is `E_ARG_INVALID`.
+- Anchors and lookarounds cannot be repeated (`E_ARG_INVALID`). A quantifier with nothing before it is `E_ARG_INVALID`.
+
+### Groups, backreferences and anchors
+
+- Supported: `(…)`, `(?:…)`, `(?=…)`, `(?!…)`, `(?<=…)`, `(?<!…)` and `(?<name>…)`.
+- Unsupported (`E_REGEX_UNSUPPORTED`): atomic groups `(?>…)`, conditionals, `(?P…)`, branch reset `(?|…)`, comments `(?#…)`, recursion, and inline flags `(?i)` and `(?i:…)`.
+- `\N` and `\k<name>` must name an existing group. The check runs after the whole pattern is parsed; a missing group is `E_ARG_INVALID`.
+
+### Matching
+
+- Alternation and quantifiers are leftmost-first, as in ECMAScript. Quantifiers are greedy unless lazy.
+- A group that did not participate has no span (null).
+- `finditer` follows JavaScript's `g` flag: matches do not overlap, and after an empty match the search resumes one code point later.
+- Replacement templates (`expand`): `$$` is `$`, `$&` is the match, `$n` is group n, and `$nn` is a two-digit group when it exists (1–99). `$<name>` is a named group when the pattern has named groups. `$n` for a group that does not exist is literal. A group that did not participate expands to "".
+
+### Errors and timeouts
+
+- `E_ARG_INVALID` (exit 1): malformed pattern or flags.
+- `E_REGEX_UNSUPPORTED` (exit 1): well-formed but outside this profile.
+- `E_REGEX_TIMEOUT` (exit 5): the bound is `regex_timeout_ms` (default 2000). For `search` and the predicate it applies to one search. For `finditer` it bounds the whole iteration.
+- A recipe load only checks that a `regex` argument is a JSON string. The pattern is translated and compiled when its step runs.
+
+## Flow operations
+
+Flow operations are interpreted by the runner. Every enabled step counts toward the step limit, including `label` and `comment`. A disabled step is skipped before it is counted.
+
+### Labels, jumps and counters
+
+- A label name must be unique within its step list. A duplicate is `E_RECIPE_SCHEMA` ("Duplicate label").
+- A `to` that names no label in the same list is `E_RECIPE_SCHEMA` at load. Jumps do not cross step lists.
+- Each run of a step list has its own jump counters. Fork branches, subsection matches and sub-recipes each run as a new list, so they start with fresh counters.
+- A taken jump whose counter is below `max` moves to the label and increments the counter.
+- When a taken jump's counter equals `max`, the runner emits one `W_JUMP_LIMIT` warning, sets the counter to `max + 1` and falls through. Later hits fall through silently. With `max` 0 the first hit warns.
+- `max` is an integer from 0 to 1000 (default 10).
+- Each jump evaluation, taken or not, counts toward the step limit.
+
+### `fork` (string → string)
+
+Arguments: `split` (default LF), `merge` (default LF), `steps`. An empty `split` splits into code points. Each part is coerced to a string and runs `steps`. The results are joined with `merge`. An error in any branch fails the fork, and its path names the branch.
+
+### `sub-recipe` (any → any)
+
+Argument: `steps`. Runs the steps as a scope. The dish keeps its type, so no coercion is applied at the boundary.
+
+### `label` (any → any)
+
+Argument: `name`. A jump target. Passes the dish through unchanged.
+
+### `comment` (any → any)
+
+Argument: `text`. Passes the dish through unchanged.
+
+### `jump` (string → string)
+
+Arguments: `to` (label), `max` (default 10). Always taken, subject to the counter rules above.
+
+### `conditional-jump` (string → string)
+
+Arguments: `pattern` (regex), `flags`, `invert` (default false), `to`, `max` (default 10). The dish is coerced to a string. The jump is taken when the pattern is found, or when it is not found if `invert` is true. Counter rules apply.
+
+### `subsection` (string → string)
+
+Arguments: `pattern` (regex), `flags`, `group` (0–99, default 0), `global` (default true), `steps`.
+
+- All matches are found before any steps run. With `global` off, only the first match is used.
+- For each match whose `group` span is present and non-empty, `steps` run on that span as a string. The results replace the span, and the rest of the dish passes through.
+- Empty matches and groups that did not participate are left alone.
+- A `group` greater than the pattern's group count is `E_ARG_INVALID`, raised when the step runs.
+
+### Nesting and limits
+
+- Nesting depth above 8 is `E_LIMIT` at load.
+- `max_steps` (default 100000) is checked for the whole bake. Exceeding it is `E_LIMIT`.
+- Each step's output may be at most `max(4 × input size, 64 MiB)`. Larger output is `E_LIMIT`.
+- A Python `RecursionError` or `MemoryError` becomes `E_LIMIT`. Any other unexpected exception becomes `E_INTERNAL`.
