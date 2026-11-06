@@ -1,3 +1,4 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
 """Generate the UniChef branding masters in assets/branding/source/.
 
 The mark is pure geometry, defined below. The wordmark is converted to outlines from
