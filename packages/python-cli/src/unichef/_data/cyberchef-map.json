@@ -5,13 +5,29 @@
     "To Base64": {
       "op": "to-base64",
       "args": [
-        { "to": "alphabet", "map": { "A-Za-z0-9+/=": "standard", "A-Za-z0-9-_": "url", "A-Za-z0-9-_=": "url", "*": { "value": "custom", "set": { "custom": "$" } } } }
+        {
+          "to": "alphabet",
+          "map": {
+            "A-Za-z0-9+/=": "standard",
+            "A-Za-z0-9-_": "url",
+            "A-Za-z0-9-_=": "url",
+            "*": { "value": "custom", "set": { "custom": "$" } }
+          }
+        }
       ]
     },
     "From Base64": {
       "op": "from-base64",
       "args": [
-        { "to": "alphabet", "map": { "A-Za-z0-9+/=": "standard", "A-Za-z0-9-_": "url", "A-Za-z0-9-_=": "url", "*": { "value": "custom", "set": { "custom": "$" } } } },
+        {
+          "to": "alphabet",
+          "map": {
+            "A-Za-z0-9+/=": "standard",
+            "A-Za-z0-9-_": "url",
+            "A-Za-z0-9-_=": "url",
+            "*": { "value": "custom", "set": { "custom": "$" } }
+          }
+        },
         { "ignore": true },
         { "to": "strict" }
       ]
@@ -19,61 +35,147 @@
     "To Hex": {
       "op": "to-hex",
       "args": [
-        { "to": "delimiter", "map": { "None": "none", "Space": "space", "Comma": "comma", "Colon": "colon", "Line feed": "newline", "CRLF": "newline", "0x": "0x", "0x with comma": "0x", "\\x": "\\x" } },
+        {
+          "to": "delimiter",
+          "map": {
+            "None": "none",
+            "Space": "space",
+            "Comma": "comma",
+            "Colon": "colon",
+            "Line feed": "newline",
+            "CRLF": "newline",
+            "0x": "0x",
+            "0x with comma": "0x",
+            "\\x": "\\x"
+          }
+        },
         { "expect": 0 }
       ]
     },
     "From Hex": {
       "op": "from-hex",
       "args": [
-        { "to": "delimiter", "map": { "Auto": "auto", "None": "none", "Space": "space", "Comma": "comma", "Colon": "colon", "Line feed": "newline", "CRLF": "newline", "0x": "0x", "0x with comma": "0x", "\\x": "\\x" } }
+        {
+          "to": "delimiter",
+          "map": {
+            "Auto": "auto",
+            "None": "none",
+            "Space": "space",
+            "Comma": "comma",
+            "Colon": "colon",
+            "Line feed": "newline",
+            "CRLF": "newline",
+            "0x": "0x",
+            "0x with comma": "0x",
+            "\\x": "\\x"
+          }
+        }
       ]
     },
     "To Decimal": {
       "op": "to-decimal",
       "args": [
-        { "to": "delimiter", "map": { "Space": "space", "Comma": "comma", "Colon": "colon", "Line feed": "newline", "CRLF": "newline" } },
+        {
+          "to": "delimiter",
+          "map": {
+            "Space": "space",
+            "Comma": "comma",
+            "Colon": "colon",
+            "Line feed": "newline",
+            "CRLF": "newline"
+          }
+        },
         { "expect": false }
       ]
     },
     "From Decimal": {
       "op": "from-decimal",
       "args": [
-        { "to": "delimiter", "map": { "Auto": "auto", "Space": "space", "Comma": "comma", "Colon": "colon", "Line feed": "newline", "CRLF": "newline" } },
+        {
+          "to": "delimiter",
+          "map": {
+            "Auto": "auto",
+            "Space": "space",
+            "Comma": "comma",
+            "Colon": "colon",
+            "Line feed": "newline",
+            "CRLF": "newline"
+          }
+        },
         { "expect": false }
       ]
     },
     "To Binary": {
       "op": "to-binary",
       "args": [
-        { "to": "delimiter", "map": { "None": "none", "Space": "space", "Comma": "comma", "Colon": "colon", "Line feed": "newline", "CRLF": "newline" } },
+        {
+          "to": "delimiter",
+          "map": {
+            "None": "none",
+            "Space": "space",
+            "Comma": "comma",
+            "Colon": "colon",
+            "Line feed": "newline",
+            "CRLF": "newline"
+          }
+        },
         { "expect": 8 }
       ]
     },
     "From Binary": {
       "op": "from-binary",
       "args": [
-        { "to": "delimiter", "map": { "Auto": "auto", "None": "none", "Space": "space", "Comma": "comma", "Colon": "colon", "Line feed": "newline", "CRLF": "newline" } },
+        {
+          "to": "delimiter",
+          "map": {
+            "Auto": "auto",
+            "None": "none",
+            "Space": "space",
+            "Comma": "comma",
+            "Colon": "colon",
+            "Line feed": "newline",
+            "CRLF": "newline"
+          }
+        },
         { "expect": 8 }
       ]
     },
     "To Octal": {
       "op": "to-octal",
       "args": [
-        { "to": "delimiter", "map": { "None": "none", "Space": "space", "Comma": "comma", "Colon": "colon", "Line feed": "newline", "CRLF": "newline" } }
+        {
+          "to": "delimiter",
+          "map": {
+            "None": "none",
+            "Space": "space",
+            "Comma": "comma",
+            "Colon": "colon",
+            "Line feed": "newline",
+            "CRLF": "newline"
+          }
+        }
       ]
     },
     "From Octal": {
       "op": "from-octal",
       "args": [
-        { "to": "delimiter", "map": { "Auto": "auto", "None": "none", "Space": "space", "Comma": "comma", "Colon": "colon", "Line feed": "newline", "CRLF": "newline" } }
+        {
+          "to": "delimiter",
+          "map": {
+            "Auto": "auto",
+            "None": "none",
+            "Space": "space",
+            "Comma": "comma",
+            "Colon": "colon",
+            "Line feed": "newline",
+            "CRLF": "newline"
+          }
+        }
       ]
     },
     "To Base32": {
       "op": "to-base32",
-      "args": [
-        { "to": "alphabet", "map": { "A-Z2-7=": "rfc4648", "0-9A-V=": "hex" } }
-      ]
+      "args": [{ "to": "alphabet", "map": { "A-Z2-7=": "rfc4648", "0-9A-V=": "hex" } }]
     },
     "From Base32": {
       "op": "from-base32",
@@ -84,15 +186,11 @@
     },
     "URL Encode": {
       "op": "url-encode",
-      "args": [
-        { "to": "mode", "map": { "true": "all", "false": "component" } }
-      ]
+      "args": [{ "to": "mode", "map": { "true": "all", "false": "component" } }]
     },
     "URL Decode": {
       "op": "url-decode",
-      "args": [
-        { "to": "plus-as-space" }
-      ]
+      "args": [{ "to": "plus-as-space" }]
     },
     "ROT13": {
       "op": "rot13",
@@ -105,9 +203,7 @@
     },
     "ROT47": {
       "op": "rot47",
-      "args": [
-        { "to": "amount", "integer": true }
-      ]
+      "args": [{ "to": "amount", "integer": true }]
     },
     "XOR": {
       "op": "xor",
@@ -123,15 +219,23 @@
     "SHA2": {
       "op": "sha2",
       "args": [
-        { "to": "size", "map": { "224": "224", "256": "256", "384": "384", "512": "512", "512/224": "512-224", "512/256": "512-256" } },
+        {
+          "to": "size",
+          "map": {
+            "224": "224",
+            "256": "256",
+            "384": "384",
+            "512": "512",
+            "512/224": "512-224",
+            "512/256": "512-256"
+          }
+        },
         { "ignore": true }
       ]
     },
     "SHA3": {
       "op": "sha3",
-      "args": [
-        { "to": "size", "map": { "224": "224", "256": "256", "384": "384", "512": "512" } }
-      ]
+      "args": [{ "to": "size", "map": { "224": "224", "256": "256", "384": "384", "512": "512" } }]
     },
     "Shake": {
       "op": "shake",
@@ -160,7 +264,17 @@
       "op": "hmac",
       "args": [
         { "to": "key", "bytes": true },
-        { "to": "hash", "map": { "MD5": "md5", "SHA1": "sha1", "SHA224": "sha224", "SHA256": "sha256", "SHA384": "sha384", "SHA512": "sha512" } }
+        {
+          "to": "hash",
+          "map": {
+            "MD5": "md5",
+            "SHA1": "sha1",
+            "SHA224": "sha224",
+            "SHA256": "sha256",
+            "SHA384": "sha384",
+            "SHA512": "sha512"
+          }
+        }
       ]
     },
     "Adler-32 Checksum": { "op": "adler32", "args": [] },
@@ -170,9 +284,29 @@
       "args": [
         { "to": "key", "bytes": true },
         { "to": "iv", "bytes": true },
-        { "to": "mode", "map": { "CBC": "cbc", "CTR": "ctr", "GCM": "gcm", "ECB": "ecb", "CBC/NoPadding": { "value": "cbc", "set": { "padding": "none" } }, "ECB/NoPadding": { "value": "ecb", "set": { "padding": "none" } } } },
-        { "map": { "Raw": {}, "Hex": { "before": [{ "op": "from-hex", "args": { "delimiter": "auto" } }] } } },
-        { "map": { "Raw": {}, "Hex": { "after": [{ "op": "to-hex", "args": { "delimiter": "none" } }] } } },
+        {
+          "to": "mode",
+          "map": {
+            "CBC": "cbc",
+            "CTR": "ctr",
+            "GCM": "gcm",
+            "ECB": "ecb",
+            "CBC/NoPadding": { "value": "cbc", "set": { "padding": "none" } },
+            "ECB/NoPadding": { "value": "ecb", "set": { "padding": "none" } }
+          }
+        },
+        {
+          "map": {
+            "Raw": {},
+            "Hex": { "before": [{ "op": "from-hex", "args": { "delimiter": "auto" } }] }
+          }
+        },
+        {
+          "map": {
+            "Raw": {},
+            "Hex": { "after": [{ "op": "to-hex", "args": { "delimiter": "none" } }] }
+          }
+        },
         { "to": "aad", "bytes": true }
       ]
     },
@@ -181,9 +315,29 @@
       "args": [
         { "to": "key", "bytes": true },
         { "to": "iv", "bytes": true },
-        { "to": "mode", "map": { "CBC": "cbc", "CTR": "ctr", "GCM": "gcm", "ECB": "ecb", "CBC/NoPadding": { "value": "cbc", "set": { "padding": "none" } }, "ECB/NoPadding": { "value": "ecb", "set": { "padding": "none" } } } },
-        { "map": { "Raw": {}, "Hex": { "before": [{ "op": "from-hex", "args": { "delimiter": "auto" } }] } } },
-        { "map": { "Raw": {}, "Hex": { "after": [{ "op": "to-hex", "args": { "delimiter": "none" } }] } } },
+        {
+          "to": "mode",
+          "map": {
+            "CBC": "cbc",
+            "CTR": "ctr",
+            "GCM": "gcm",
+            "ECB": "ecb",
+            "CBC/NoPadding": { "value": "cbc", "set": { "padding": "none" } },
+            "ECB/NoPadding": { "value": "ecb", "set": { "padding": "none" } }
+          }
+        },
+        {
+          "map": {
+            "Raw": {},
+            "Hex": { "before": [{ "op": "from-hex", "args": { "delimiter": "auto" } }] }
+          }
+        },
+        {
+          "map": {
+            "Raw": {},
+            "Hex": { "after": [{ "op": "to-hex", "args": { "delimiter": "none" } }] }
+          }
+        },
         { "expect": { "option": "Hex", "string": "" } },
         { "to": "aad", "bytes": true }
       ]
@@ -191,13 +345,39 @@
     "Encode text": {
       "op": "encode-text",
       "args": [
-        { "to": "encoding", "extract": "\\((\\d+)\\)\\s*$", "map": { "65001": "utf-8", "1200": "utf-16le", "1201": "utf-16be", "12000": "utf-32le", "12001": "utf-32be", "28591": "iso-8859-1", "1252": "windows-1252", "20127": "ascii" } }
+        {
+          "to": "encoding",
+          "extract": "\\((\\d+)\\)\\s*$",
+          "map": {
+            "65001": "utf-8",
+            "1200": "utf-16le",
+            "1201": "utf-16be",
+            "12000": "utf-32le",
+            "12001": "utf-32be",
+            "28591": "iso-8859-1",
+            "1252": "windows-1252",
+            "20127": "ascii"
+          }
+        }
       ]
     },
     "Decode text": {
       "op": "decode-text",
       "args": [
-        { "to": "encoding", "extract": "\\((\\d+)\\)\\s*$", "map": { "65001": "utf-8", "1200": "utf-16le", "1201": "utf-16be", "12000": "utf-32le", "12001": "utf-32be", "28591": "iso-8859-1", "1252": "windows-1252", "20127": "ascii" } }
+        {
+          "to": "encoding",
+          "extract": "\\((\\d+)\\)\\s*$",
+          "map": {
+            "65001": "utf-8",
+            "1200": "utf-16le",
+            "1201": "utf-16be",
+            "12000": "utf-32le",
+            "12001": "utf-32be",
+            "28591": "iso-8859-1",
+            "1252": "windows-1252",
+            "20127": "ascii"
+          }
+        }
       ]
     },
     "Normalise Unicode": {
@@ -225,33 +405,43 @@
       "op": "html-entity-encode",
       "args": [
         { "to": "scope", "map": { "true": "all", "false": "special" } },
-        { "to": "format", "map": { "Named entities": "named", "Numeric entities": "decimal", "Hex entities": "hex" } }
+        {
+          "to": "format",
+          "map": { "Named entities": "named", "Numeric entities": "decimal", "Hex entities": "hex" }
+        }
       ]
     },
     "From HTML Entity": { "op": "html-entity-decode", "args": [] },
-    "To Upper case": { "op": "unicode-case", "set": { "mode": "upper" }, "args": [{ "expect": "All" }] },
+    "To Upper case": {
+      "op": "unicode-case",
+      "set": { "mode": "upper" },
+      "args": [{ "expect": "All" }]
+    },
     "To Lower case": { "op": "unicode-case", "set": { "mode": "lower" }, "args": [] },
     "Remove Diacritics": { "op": "strip-diacritics", "args": [] },
     "Reverse": {
       "op": "reverse",
-      "args": [
-        { "to": "unit", "map": { "Character": "code-points", "Byte": "bytes" } }
-      ]
+      "args": [{ "to": "unit", "map": { "Character": "code-points", "Byte": "bytes" } }]
     },
     "Sort": {
       "op": "sort-lines",
       "args": [
         { "expect": "Line feed" },
         { "to": "order", "map": { "false": "ascending", "true": "descending" } },
-        { "to": "key", "map": { "Alphabetical (case sensitive)": "code-point", "Alphabetical (case insensitive)": "case-insensitive", "Numeric": "numeric", "Length": "length" } }
+        {
+          "to": "key",
+          "map": {
+            "Alphabetical (case sensitive)": "code-point",
+            "Alphabetical (case insensitive)": "case-insensitive",
+            "Numeric": "numeric",
+            "Length": "length"
+          }
+        }
       ]
     },
     "Unique": {
       "op": "unique-lines",
-      "args": [
-        { "expect": "Line feed" },
-        { "to": "count" }
-      ]
+      "args": [{ "expect": "Line feed" }, { "to": "count" }]
     },
     "Split": {
       "op": "split",
@@ -262,17 +452,11 @@
     },
     "Head": {
       "op": "head",
-      "args": [
-        { "expect": "Line feed" },
-        { "to": "count", "integer": true }
-      ]
+      "args": [{ "expect": "Line feed" }, { "to": "count", "integer": true }]
     },
     "Tail": {
       "op": "tail",
-      "args": [
-        { "expect": "Line feed" },
-        { "to": "count", "integer": true }
-      ]
+      "args": [{ "expect": "Line feed" }, { "to": "count", "integer": true }]
     },
     "Find / Replace": {
       "op": "find-replace",
@@ -302,10 +486,7 @@
     "Label": { "op": "label", "args": [{ "to": "name" }] },
     "Jump": {
       "op": "jump",
-      "args": [
-        { "to": "to" },
-        { "to": "max", "integer": true }
-      ]
+      "args": [{ "to": "to" }, { "to": "max", "integer": true }]
     },
     "Conditional Jump": {
       "op": "conditional-jump",
