@@ -25,6 +25,14 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
   - Hashing: MD5, SHA-1, SHA-2, SHA-3, SHAKE, BLAKE2b, BLAKE2s, CRC-32, Adler-32 and HMAC.
   - Crypto: XOR, ROT13, ROT47, Atbash and AES (CBC, CTR, GCM, ECB).
   - JWT: `jwt-decode`, `jwt-sign` and `jwt-verify` with the HS, RS, PS, ES and EdDSA algorithms.
+- **TypeScript core** (`packages/npm-core`, `@unichef/core`):
+  - A port of the Python core with the same dish types, Unicode engine, regex profile and every operation.
+  - It passes every shared vector.
+  - The gzipped data files load lazily in Node and browsers, and hosts can supply their own source with `setDataSource()`.
+- **CI** (`.github/`):
+  - Lint, typecheck, Python and TypeScript test matrices.
+  - A parity job that checks both cores ran every vector case (`scripts/parity-report.py`).
+  - UCD and HTML data drift checks, package builds, CodeQL, Dependabot and CODEOWNERS.
 - **Spec:** shared vectors for every operation, with published known answers for hashing and AES.
 - **Build:** the WHATWG HTML entity table pipeline (`scripts/html/build.py`), with SHA-256 lock verification.
 - **Developer tooling:** the `ui-ux-pro-max` and `shadcn` agent skills, vendored for the responsive web UI work. They are not shipped.

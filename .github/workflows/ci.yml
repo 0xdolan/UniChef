@@ -1,0 +1,194 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Continuous integration (PRD §11.2). Jobs for parts that do not exist yet (web build and
+# e2e, extensions, Debian packaging, Docker, Safari) are added as those parts land.
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [develop, main, 'release/**', 'hotfix/**']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  PY_DIR: packages/python-cli
+
+jobs:
+  source-branch:
+    name: source-branch
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check the branch name and source branch (GOV-001)
+        env:
+          HEAD: ${{ github.head_ref }}
+          BASE: ${{ github.base_ref }}
+        run: |
+          re='^(feature|bugfix|docs|chore)/[a-z0-9][a-z0-9._-]{1,60}$|^(release|hotfix)/[0-9]+\.[0-9]+\.[0-9]+(-(alpha|beta|rc)\.[0-9]+)?$'
+          if ! [[ "$HEAD" =~ $re ]]; then
+            echo "::error::Branch '$HEAD' does not match the branch-name rule (PRD §10.1)."
+            exit 1
+          fi
+          if [[ "$BASE" == main && ! "$HEAD" =~ ^(release|hotfix)/ ]]; then
+            echo "::error::Only release/* and hotfix/* branches may target main."
+            exit 1
+          fi
+
+  lint:
+    name: lint
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          enable-cache: true
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: ruff check
+        working-directory: ${{ env.PY_DIR }}
+        run: uv run --locked ruff check .
+      - name: ruff format --check
+        working-directory: ${{ env.PY_DIR }}
+        run: uv run --locked ruff format --check .
+      - name: ESLint
+        run: pnpm -r lint
+      - name: Prettier
+        run: pnpm fmt:check
+      - name: actionlint
+        run: uvx --from actionlint-py==1.7.12.25 actionlint
+      - name: shellcheck
+        run: |
+          shopt -s globstar nullglob
+          files=(scripts/**/*.sh)
+          if (( ${#files[@]} )); then shellcheck "${files[@]}"; fi
+
+  typecheck:
+    name: typecheck
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          enable-cache: true
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: mypy --strict
+        working-directory: ${{ env.PY_DIR }}
+        run: uv run --locked mypy
+      - name: tsc --noEmit
+        run: pnpm -r typecheck
+
+  test-py:
+    name: test-py (${{ matrix.os }}, ${{ matrix.py }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, ubuntu-24.04-arm, macos-latest, windows-latest]
+        py: ['3.12', '3.13', '3.14']
+    defaults:
+      run:
+        working-directory: ${{ env.PY_DIR }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          enable-cache: true
+      - run: uv sync --locked --all-groups --python ${{ matrix.py }}
+      - run: uv run --locked pytest
+
+  test-ts:
+    name: test-ts (node ${{ matrix.node }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [22, 24]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ matrix.node }}
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm -r test
+
+  parity:
+    name: parity
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          enable-cache: true
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Python vectors
+        working-directory: ${{ env.PY_DIR }}
+        run: uv run --locked pytest tests/parity --no-cov --junitxml=../../reports/py-parity.xml
+      - name: TypeScript vectors
+        working-directory: packages/npm-core
+        run: pnpm exec vitest run test/parity --reporter=default --reporter=junit --outputFile.junit=../../reports/ts-parity.xml
+      - name: Cross-check executed cases (FR-010)
+        run: uv run scripts/parity-report.py reports/py-parity.xml reports/ts-parity.xml
+      - if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: parity-reports
+          path: reports/
+
+  data-drift:
+    name: data-drift
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          enable-cache: true
+      - name: UCD artefacts match data/ucd
+        run: |
+          uv run scripts/ucd/fetch.py --offline
+          uv run scripts/ucd/build.py --check
+      - name: HTML entity artefact matches data/html
+        run: uv run scripts/html/build.py --check
+      - run: git diff --exit-code
+
+  build:
+    name: build
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          enable-cache: true
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Python sdist and wheel
+        working-directory: ${{ env.PY_DIR }}
+        run: |
+          uv build --out-dir ../../dist/python
+          uvx twine check --strict ../../dist/python/*
+      - name: '@unichef/core'
+        run: pnpm --filter @unichef/core build
