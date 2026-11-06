@@ -1,0 +1,136 @@
+{
+  "op": "normalize",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "NFC composes",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "é"
+      },
+      "expected": {
+        "type": "string",
+        "text": "é"
+      }
+    },
+    {
+      "name": "NFD decomposes",
+      "args": {
+        "form": "NFD"
+      },
+      "input": {
+        "type": "string",
+        "text": "é"
+      },
+      "expected": {
+        "type": "string",
+        "text": "é"
+      }
+    },
+    {
+      "name": "NFKC folds compatibility characters",
+      "args": {
+        "form": "NFKC"
+      },
+      "input": {
+        "type": "string",
+        "text": "ﬁ① é"
+      },
+      "expected": {
+        "type": "string",
+        "text": "fi1 é"
+      }
+    },
+    {
+      "name": "NFKD",
+      "args": {
+        "form": "NFKD"
+      },
+      "input": {
+        "type": "string",
+        "text": "ﬁé"
+      },
+      "expected": {
+        "type": "string",
+        "text": "fié"
+      }
+    },
+    {
+      "name": "canonical ordering",
+      "args": {
+        "form": "NFD"
+      },
+      "input": {
+        "type": "string",
+        "text": "ạ́"
+      },
+      "expected": {
+        "type": "string",
+        "text": "ạ́"
+      }
+    },
+    {
+      "name": "Hangul composition",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "한"
+      },
+      "expected": {
+        "type": "string",
+        "text": "한"
+      }
+    },
+    {
+      "name": "Hangul decomposition",
+      "args": {
+        "form": "NFD"
+      },
+      "input": {
+        "type": "string",
+        "text": "한"
+      },
+      "expected": {
+        "type": "string",
+        "text": "한"
+      }
+    },
+    {
+      "name": "composition exclusion",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "क़"
+      },
+      "expected": {
+        "type": "string",
+        "text": "क़"
+      }
+    },
+    {
+      "name": "unknown form",
+      "args": {
+        "form": "NFX"
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

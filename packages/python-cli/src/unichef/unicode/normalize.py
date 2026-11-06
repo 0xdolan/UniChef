@@ -63,6 +63,24 @@ def _full(cp: int, compat: bool) -> tuple[int, ...]:
 
 
 @cache
+def _tagged() -> dict[int, tuple[str, tuple[int, ...]]]:
+    return {int(k): (tag, tuple(cps)) for k, (tag, cps) in data.load("core")["decomp"].items()}
+
+
+def decomposition(cp: int) -> tuple[str, tuple[int, ...]] | None:
+    """The single-level Decomposition_Mapping with its tag (``""`` for canonical, else
+    e.g. ``"<compat>"``), Hangul syllables included; None when the code point has none."""
+    if S_BASE <= cp < S_BASE + S_COUNT:
+        index = cp - S_BASE
+        trail = index % T_COUNT
+        if trail:
+            return "", (cp - trail, T_BASE + trail)
+        lead, rest = divmod(index, N_COUNT)
+        return "", (L_BASE + lead, V_BASE + rest // T_COUNT)
+    return _tagged().get(cp)
+
+
+@cache
 def _exclusions() -> data.RangeSet:
     return data.RangeSet(data.load("core")["compExcl"])
 

@@ -1,0 +1,114 @@
+{
+  "op": "strip-diacritics",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "French",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Crème brûlée"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Creme brulee"
+      }
+    },
+    {
+      "name": "combining sequence",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "ạ́"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a"
+      }
+    },
+    {
+      "name": "letters without a decomposition are kept",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "øłß"
+      },
+      "expected": {
+        "type": "string",
+        "text": "øłß"
+      }
+    },
+    {
+      "name": "script-specific marks are kept",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "न्न"
+      },
+      "expected": {
+        "type": "string",
+        "text": "न्न"
+      }
+    },
+    {
+      "name": "kana voicing mark",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "が"
+      },
+      "expected": {
+        "type": "string",
+        "text": "か"
+      }
+    },
+    {
+      "name": "Vietnamese",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Tiếng Việt"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Tieng Viet"
+      }
+    },
+    {
+      "name": "ASCII unchanged",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "plain"
+      },
+      "expected": {
+        "type": "string",
+        "text": "plain"
+      }
+    },
+    {
+      "name": "unknown argument",
+      "args": {
+        "mode": "x"
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

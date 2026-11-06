@@ -3,7 +3,7 @@
 
 import importlib
 
-MODULES = ("flow", "encoding", "text", "html")
+MODULES = ("flow", "encoding", "text", "html", "unicode")
 
 
 def load() -> None:

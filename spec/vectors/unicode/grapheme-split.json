@@ -1,0 +1,126 @@
+{
+  "op": "grapheme-split",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "ASCII, LF by default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "abc"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a\nb\nc"
+      }
+    },
+    {
+      "name": "combining mark",
+      "args": {
+        "delimiter": "|"
+      },
+      "input": {
+        "type": "string",
+        "text": "éx"
+      },
+      "expected": {
+        "type": "string",
+        "text": "é|x"
+      }
+    },
+    {
+      "name": "emoji ZWJ sequence",
+      "args": {
+        "delimiter": "|"
+      },
+      "input": {
+        "type": "string",
+        "text": "👨‍👩a"
+      },
+      "expected": {
+        "type": "string",
+        "text": "👨‍👩|a"
+      }
+    },
+    {
+      "name": "regional indicators pair up",
+      "args": {
+        "delimiter": "|"
+      },
+      "input": {
+        "type": "string",
+        "text": "🇺🇸🇫"
+      },
+      "expected": {
+        "type": "string",
+        "text": "🇺🇸|🇫"
+      }
+    },
+    {
+      "name": "CRLF stays together",
+      "args": {
+        "delimiter": "|"
+      },
+      "input": {
+        "type": "string",
+        "text": "a\r\nb"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a|\r\n|b"
+      }
+    },
+    {
+      "name": "Hangul jamo",
+      "args": {
+        "delimiter": "|"
+      },
+      "input": {
+        "type": "string",
+        "text": "한x"
+      },
+      "expected": {
+        "type": "string",
+        "text": "한|x"
+      }
+    },
+    {
+      "name": "empty delimiter",
+      "args": {
+        "delimiter": ""
+      },
+      "input": {
+        "type": "string",
+        "text": "éx"
+      },
+      "expected": {
+        "type": "string",
+        "text": "éx"
+      }
+    },
+    {
+      "name": "delimiter must be a string",
+      "args": {
+        "delimiter": 5
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}
