@@ -1,0 +1,138 @@
+{
+  "op": "md5",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      "warnings": [
+        "W_INSECURE"
+      ]
+    },
+    {
+      "name": "abc",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "616263"
+      },
+      "expected": {
+        "type": "string",
+        "text": "900150983cd24fb0d6963f7d28e17f72"
+      },
+      "warnings": [
+        "W_INSECURE"
+      ]
+    },
+    {
+      "name": "pangram",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "54686520717569636b2062726f776e20666f78206a756d7073206f76657220746865206c617a7920646f67"
+      },
+      "expected": {
+        "type": "string",
+        "text": "9e107d9d372bb6826bd81d3542a419d6"
+      },
+      "warnings": [
+        "W_INSECURE"
+      ]
+    },
+    {
+      "name": "string input is UTF-8",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "é"
+      },
+      "expected": {
+        "type": "string",
+        "text": "66ddcd97cfdeabb2f6fb8a999b4bc76f"
+      },
+      "warnings": [
+        "W_INSECURE"
+      ]
+    },
+    {
+      "name": "single zero byte",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "00"
+      },
+      "expected": {
+        "type": "string",
+        "text": "93b885adfe0da089cdf634904fd59f71"
+      },
+      "warnings": [
+        "W_INSECURE"
+      ]
+    },
+    {
+      "name": "one block exactly",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161"
+      },
+      "expected": {
+        "type": "string",
+        "text": "014842d480b571495a4a0363793f7367"
+      },
+      "warnings": [
+        "W_INSECURE"
+      ]
+    },
+    {
+      "name": "padding boundary",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161"
+      },
+      "expected": {
+        "type": "string",
+        "text": "ef1772b6dff9a122358552954ad0df65"
+      },
+      "warnings": [
+        "W_INSECURE"
+      ]
+    },
+    {
+      "name": "binary",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9fa0a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4b5b6b7b8b9babbbcbdbebfc0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedfe0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfeff"
+      },
+      "expected": {
+        "type": "string",
+        "text": "e2c865db4162bed963bfaa9ef6ac18f0"
+      },
+      "warnings": [
+        "W_INSECURE"
+      ]
+    },
+    {
+      "name": "unknown argument",
+      "args": {
+        "size": "128"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "616263"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

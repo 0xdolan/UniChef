@@ -294,3 +294,17 @@ Returns the UTS #39 §5.2 restriction level of the whole input: `ASCII-Only`, `S
 - **Highly Restrictive:** the resolved script set of the non-Latin characters contains Hanb, Jpan or Kore.
 - **Moderately Restrictive:** that set is non-empty and contains neither Cyrl nor Grek.
 - **Empty input:** `ASCII-Only`.
+
+## Operation arguments (hashing category)
+
+All hashing ops take bytes, so string input is hashed as UTF-8. Output is a lower-case hex string.
+
+| Op | Arguments | Notes |
+|---|---|---|
+| `md5`, `sha1` | none | They warn `W_INSECURE` (PRD SEC-006). |
+| `sha2` | `size`: `256` (default), `224`, `384`, `512`, `512-224`, `512-256` | FIPS 180-4. |
+| `sha3` | `size`: `256` (default), `224`, `384`, `512` | FIPS 202. |
+| `shake` | `size`: `128` (default) or `256`; `length`: output bytes, 1-65536, default 32 | FIPS 202 XOF. |
+| `blake2b`, `blake2s` | `size`: digest bytes (1-64, default 64 / 1-32, default 32); `key`: bytes, up to 64 / 32 | RFC 7693. A longer key raises `E_ARG_INVALID`. |
+| `crc32`, `adler32` | none | Always 8 hex digits. CRC-32 is ISO-HDLC (zlib, PNG); Adler-32 is RFC 1950. |
+| `hmac` | `hash`: `sha256` (default), `sha1`, `md5`, `sha224`, `sha384`, `sha512`, `sha3-256`, `sha3-512`; `key`: bytes | RFC 2104. No warning, because HMAC-MD5 and HMAC-SHA-1 are not broken as MACs. |
