@@ -1,0 +1,14 @@
+{
+  "recipe": {
+    "version": 1,
+    "name": "Fork with a failing branch",
+    "description": "Each line is decoded from hex with the default delimiters; one bad branch fails the whole fork.",
+    "steps": [
+      { "op": "fork", "args": { "steps": [ { "op": "from-hex", "args": { "delimiter": "none" } } ] } }
+    ]
+  },
+  "cases": [
+    { "name": "every branch decodes", "input": { "type": "string", "text": "41\n4243" }, "expected": { "type": "string", "text": "A\nBC" } },
+    { "name": "error: the second branch has an odd digit count", "input": { "type": "string", "text": "41\n424" }, "expected": { "error": "E_DECODE" } }
+  ]
+}
