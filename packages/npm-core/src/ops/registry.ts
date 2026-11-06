@@ -3,11 +3,21 @@
 
 import { UniChefError } from '../errors.js';
 import { pyRepr, type Operation } from './types.js';
+import { CRYPTO_OPS } from './crypto.js';
 import { ENCODING_OPS } from './encoding.js';
 import { FLOW_OPS } from './flow.js';
+import { HASHING_OPS } from './hashing.js';
 import { HTML_OPS } from './html.js';
+import { JWT_OPS } from './jwt.js';
 
-const MODULES: readonly (readonly Operation[])[] = [FLOW_OPS, ENCODING_OPS, HTML_OPS];
+const MODULES: readonly (readonly Operation[])[] = [
+  FLOW_OPS,
+  ENCODING_OPS,
+  HTML_OPS,
+  HASHING_OPS,
+  CRYPTO_OPS,
+  JWT_OPS,
+];
 
 const REGISTRY = new Map<string, Operation>();
 for (const ops of MODULES) {
