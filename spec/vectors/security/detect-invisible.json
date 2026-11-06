@@ -1,0 +1,390 @@
+{
+  "op": "detect-invisible",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "index",
+            "cp",
+            "name",
+            "kind",
+            "line",
+            "column"
+          ],
+          "rows": []
+        }
+      }
+    },
+    {
+      "name": "plain text has no findings",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "hello\nworld"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "index",
+            "cp",
+            "name",
+            "kind",
+            "line",
+            "column"
+          ],
+          "rows": []
+        }
+      }
+    },
+    {
+      "name": "Trojan Source override",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a‮b"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "index",
+            "cp",
+            "name",
+            "kind",
+            "line",
+            "column"
+          ],
+          "rows": [
+            [
+              1,
+              "U+202E",
+              "RIGHT-TO-LEFT OVERRIDE",
+              "bidi-control",
+              1,
+              2
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "isolates and ALM",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "⁦x⁩؜"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "index",
+            "cp",
+            "name",
+            "kind",
+            "line",
+            "column"
+          ],
+          "rows": [
+            [
+              0,
+              "U+2066",
+              "LEFT-TO-RIGHT ISOLATE",
+              "bidi-control",
+              1,
+              1
+            ],
+            [
+              2,
+              "U+2069",
+              "POP DIRECTIONAL ISOLATE",
+              "bidi-control",
+              1,
+              3
+            ],
+            [
+              3,
+              "U+061C",
+              "ARABIC LETTER MARK",
+              "bidi-control",
+              1,
+              4
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "zero-width on line two",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "ab\nc​d‍"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "index",
+            "cp",
+            "name",
+            "kind",
+            "line",
+            "column"
+          ],
+          "rows": [
+            [
+              4,
+              "U+200B",
+              "ZERO WIDTH SPACE",
+              "zero-width",
+              2,
+              2
+            ],
+            [
+              6,
+              "U+200D",
+              "ZERO WIDTH JOINER",
+              "zero-width",
+              2,
+              4
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "tag characters",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "🏴󠁧󠁿"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "index",
+            "cp",
+            "name",
+            "kind",
+            "line",
+            "column"
+          ],
+          "rows": [
+            [
+              1,
+              "U+E0067",
+              "TAG LATIN SMALL LETTER G",
+              "tag",
+              1,
+              2
+            ],
+            [
+              2,
+              "U+E007F",
+              "CANCEL TAG",
+              "tag",
+              1,
+              3
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "variation selectors",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "❤️葛󠄀"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "index",
+            "cp",
+            "name",
+            "kind",
+            "line",
+            "column"
+          ],
+          "rows": [
+            [
+              1,
+              "U+FE0F",
+              "VARIATION SELECTOR-16",
+              "variation-selector",
+              1,
+              2
+            ],
+            [
+              3,
+              "U+E0100",
+              "VARIATION SELECTOR-17",
+              "variation-selector",
+              1,
+              4
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "Hangul fillers",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "ᅟᅠㅤﾠ"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "index",
+            "cp",
+            "name",
+            "kind",
+            "line",
+            "column"
+          ],
+          "rows": [
+            [
+              0,
+              "U+115F",
+              "HANGUL CHOSEONG FILLER",
+              "hangul-filler",
+              1,
+              1
+            ],
+            [
+              1,
+              "U+1160",
+              "HANGUL JUNGSEONG FILLER",
+              "hangul-filler",
+              1,
+              2
+            ],
+            [
+              2,
+              "U+3164",
+              "HANGUL FILLER",
+              "hangul-filler",
+              1,
+              3
+            ],
+            [
+              3,
+              "U+FFA0",
+              "HALFWIDTH HANGUL FILLER",
+              "hangul-filler",
+              1,
+              4
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "soft hyphen, CGJ and BOM",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a­b͏﻿"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "index",
+            "cp",
+            "name",
+            "kind",
+            "line",
+            "column"
+          ],
+          "rows": [
+            [
+              1,
+              "U+00AD",
+              "SOFT HYPHEN",
+              "default-ignorable",
+              1,
+              2
+            ],
+            [
+              3,
+              "U+034F",
+              "COMBINING GRAPHEME JOINER",
+              "default-ignorable",
+              1,
+              4
+            ],
+            [
+              4,
+              "U+FEFF",
+              "ZERO WIDTH NO-BREAK SPACE",
+              "zero-width",
+              1,
+              5
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "columns count code points",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "😀​"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "index",
+            "cp",
+            "name",
+            "kind",
+            "line",
+            "column"
+          ],
+          "rows": [
+            [
+              1,
+              "U+200B",
+              "ZERO WIDTH SPACE",
+              "zero-width",
+              1,
+              2
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "unknown argument",
+      "args": {
+        "strict": true
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}
