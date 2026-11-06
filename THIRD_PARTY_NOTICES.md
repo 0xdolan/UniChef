@@ -23,6 +23,13 @@ UniChef is licensed under GPL-3.0-or-later (see `LICENSE`). This file lists thir
 - **Copyright:** Copyright © WHATWG (Apple, Google, Mozilla, Microsoft).
 - **Licence:** Creative Commons Attribution 4.0 International, https://creativecommons.org/licenses/by/4.0/.
 
+## Development-only agent skills (not shipped)
+
+These guide AI-assisted UI work. They are not part of any package or build output.
+
+- **ui-ux-pro-max:** in `.claude/skills/ui-ux-pro-max/`. The source is https://github.com/nextlevelbuilder/ui-ux-pro-max-skill at commit `b7d5353e0130feb8c5574ef1251f8a1db1873ccb`; its upstream tests were left out, and the script paths in `SKILL.md` were changed to project-relative ones. Copyright (c) 2024 Next Level Builder. MIT License (copy in that directory).
+- **shadcn:** in `.claude/skills/shadcn/`. The source is https://github.com/shadcn-ui/ui `skills/shadcn/` at commit `42f3bb63b46a69e52a24bd005cdc9ec15ba7a7b9`; `evals/` and `agents/` were left out. Copyright (c) 2023 shadcn. MIT License (copy in that directory).
+
 ## Planned entries
 
 These are not in the repository yet. Each entry must be added here in the same change that brings in the material.
