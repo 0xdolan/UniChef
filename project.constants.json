@@ -9,7 +9,7 @@
   "DEB_SOURCE": "unichef",
   "DEB_BINARY": "unichef",
   "PPA": "ppa:0xdolan/unichef",
-  "UCD_VERSION": "16.0.0",
+  "UCD_VERSION": "18.0.0",
   "PYTHON_MIN": "3.12",
   "NODE_LTS": "24",
   "NODE_ENGINES": ">=22",
