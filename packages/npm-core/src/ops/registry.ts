@@ -3,9 +3,11 @@
 
 import { UniChefError } from '../errors.js';
 import { pyRepr, type Operation } from './types.js';
+import { ENCODING_OPS } from './encoding.js';
 import { FLOW_OPS } from './flow.js';
+import { HTML_OPS } from './html.js';
 
-const MODULES: readonly (readonly Operation[])[] = [FLOW_OPS];
+const MODULES: readonly (readonly Operation[])[] = [FLOW_OPS, ENCODING_OPS, HTML_OPS];
 
 const REGISTRY = new Map<string, Operation>();
 for (const ops of MODULES) {
