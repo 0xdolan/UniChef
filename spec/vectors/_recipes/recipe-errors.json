@@ -1,0 +1,10 @@
+{
+  "recipe": {
+    "version": 1,
+    "name": "Unknown operation",
+    "steps": [ { "op": "to-base64", "args": {} }, { "op": "no-such-op", "args": {} } ]
+  },
+  "cases": [
+    { "name": "error: an unknown op id fails validation", "input": { "type": "string", "text": "a" }, "expected": { "error": "E_OP_UNKNOWN" } }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "recipe": {
+    "version": 1,
+    "name": "Missing jump target",
+    "steps": [ { "op": "jump", "args": { "to": "nowhere" } } ]
+  },
+  "cases": [
+    { "name": "error: the jump target does not exist", "input": { "type": "string", "text": "a" }, "expected": { "error": "E_RECIPE_SCHEMA" } }
+  ]
+}

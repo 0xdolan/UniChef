@@ -1,0 +1,16 @@
+{
+  "recipe": {
+    "version": 1,
+    "name": "Fork",
+    "description": "Split on commas, Base64-encode each part, join with semicolons.",
+    "steps": [
+      { "op": "fork", "args": { "split": ",", "merge": ";", "steps": [ { "op": "to-base64", "args": {} } ] } }
+    ]
+  },
+  "cases": [
+    { "name": "empty input is one empty part", "input": { "type": "string", "text": "" }, "expected": { "type": "string", "text": "" } },
+    { "name": "ascii parts", "input": { "type": "string", "text": "a,bc,def" }, "expected": { "type": "string", "text": "YQ==;YmM=;ZGVm" } },
+    { "name": "non-BMP part", "input": { "type": "string", "text": "😀,x" }, "expected": { "type": "string", "text": "8J+YgA==;eA==" } },
+    { "name": "bytes input is decoded first", "input": { "type": "bytes", "hex": "612c62" }, "expected": { "type": "string", "text": "YQ==;Yg==" } }
+  ]
+}

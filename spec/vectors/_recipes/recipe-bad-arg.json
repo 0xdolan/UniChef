@@ -1,0 +1,10 @@
+{
+  "recipe": {
+    "version": 1,
+    "name": "Bad argument",
+    "steps": [ { "op": "to-hex", "args": { "delimiter": "tab" } } ]
+  },
+  "cases": [
+    { "name": "error: an enum argument outside its options", "input": { "type": "string", "text": "a" }, "expected": { "error": "E_ARG_INVALID" } }
+  ]
+}
