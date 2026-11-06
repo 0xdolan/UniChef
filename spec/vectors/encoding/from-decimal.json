@@ -1,0 +1,127 @@
+{
+  "op": "from-decimal",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": ""
+      }
+    },
+    {
+      "name": "auto, space",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "72 105"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "4869"
+      }
+    },
+    {
+      "name": "auto, leading zeros",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "007 010 255"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "070aff"
+      }
+    },
+    {
+      "name": "auto, separators",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "1,2;3:4\t5"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "0102030405"
+      }
+    },
+    {
+      "name": "comma",
+      "args": {
+        "delimiter": "comma"
+      },
+      "input": {
+        "type": "string",
+        "text": "1,2"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "0102"
+      }
+    },
+    {
+      "name": "newline",
+      "args": {
+        "delimiter": "newline"
+      },
+      "input": {
+        "type": "string",
+        "text": "13\n10"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "0d0a"
+      }
+    },
+    {
+      "name": "above 255",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "256"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "four digits",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "0001"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "sign",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "-1"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "explicit delimiter, wrong separator",
+      "args": {
+        "delimiter": "comma"
+      },
+      "input": {
+        "type": "string",
+        "text": "1 2"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    }
+  ]
+}

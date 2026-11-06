@@ -16,6 +16,13 @@ UniChef is licensed under GPL-3.0-or-later (see `LICENSE`). This file lists thir
 - **Copyright:** Copyright © 1991-2026 Unicode, Inc.
 - **Licence:** Unicode License v3, https://www.unicode.org/license.txt (copy in `data/ucd/18.0.0/license.txt`).
 
+## WHATWG HTML named character references
+
+- **Used in:** `data/html/entities.json` (unmodified) and the generated `html-entities.json.gz` files in `packages/python-cli/src/unichef/_data/` and `packages/npm-core/data/`.
+- **Source:** https://html.spec.whatwg.org/entities.json. The SHA-256 is pinned in `data/html/entities.lock.json`.
+- **Copyright:** Copyright © WHATWG (Apple, Google, Mozilla, Microsoft).
+- **Licence:** Creative Commons Attribution 4.0 International, https://creativecommons.org/licenses/by/4.0/.
+
 ## Planned entries
 
 These are not in the repository yet. Each entry must be added here in the same change that brings in the material.

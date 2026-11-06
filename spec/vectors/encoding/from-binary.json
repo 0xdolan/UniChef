@@ -1,0 +1,129 @@
+{
+  "op": "from-binary",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": ""
+      }
+    },
+    {
+      "name": "auto, space",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "01001000 01101001"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "4869"
+      }
+    },
+    {
+      "name": "auto, short tokens",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "1 10 11111111"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "0102ff"
+      }
+    },
+    {
+      "name": "auto, mixed separators and runs",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": " 1,\t10;;11:\n100 "
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "01020304"
+      }
+    },
+    {
+      "name": "comma",
+      "args": {
+        "delimiter": "comma"
+      },
+      "input": {
+        "type": "string",
+        "text": "00000000,11111111"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "00ff"
+      }
+    },
+    {
+      "name": "none, groups of eight",
+      "args": {
+        "delimiter": "none"
+      },
+      "input": {
+        "type": "string",
+        "text": "1111111100000001"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "ff01"
+      }
+    },
+    {
+      "name": "none, ragged length",
+      "args": {
+        "delimiter": "none"
+      },
+      "input": {
+        "type": "string",
+        "text": "111111110"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "nine digits",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "111111111"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "non-binary digit",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "00000002"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "explicit delimiter, empty token",
+      "args": {
+        "delimiter": "space"
+      },
+      "input": {
+        "type": "string",
+        "text": "1  1"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    }
+  ]
+}
