@@ -45,5 +45,12 @@ export {
   type Step,
 } from './ops/types.js';
 export { parseRecipe, resolveArgs, type Recipe } from './recipe/validate.js';
-export { bake, dishSize, runOperation, type BakeOptions, type BakeResult } from './recipe/run.js';
+export {
+  bake,
+  dishSize,
+  runOperation,
+  type BakeOptions,
+  type BakeResult,
+  type StepEvent,
+} from './recipe/run.js';
 export { loadData, setDataSource, type DataSource } from './data/load.js';

@@ -21,8 +21,19 @@ export interface BakeResult {
   readonly stoppedAt: number | null;
 }
 
+/** One executed step, reported through `BakeOptions.onStep`. */
+export interface StepEvent {
+  /** The step path, e.g. `[2]` or `[2, 0]` inside a sub-recipe. */
+  readonly path: readonly PathItem[];
+  readonly dish: Dish;
+  /** Wall time of the step in milliseconds, nested steps included. */
+  readonly ms: number;
+}
+
 export interface BakeOptions {
   readonly limits?: Limits;
+  /** Called after every executed step, at any depth, with the dish it produced. */
+  readonly onStep?: (event: StepEvent) => void;
   readonly signal?: AbortSignal;
   readonly ctx?: OpContext;
   readonly until?: number;
@@ -51,7 +62,10 @@ function isStackOverflow(exc: unknown): boolean {
 class Runner {
   executed = 0;
 
-  constructor(readonly ctx: OpContext) {
+  constructor(
+    readonly ctx: OpContext,
+    private readonly onStep?: (event: StepEvent) => void,
+  ) {
     ctx.nested = (steps, dish, path) => this.runSteps(steps, dish, path);
   }
 
@@ -144,12 +158,15 @@ class Runner {
       }
       this.count(here);
       if (PASSTHROUGH_OPS.has(step.op)) {
+        this.onStep?.({ path: here, dish: current, ms: 0 });
         i += 1;
         continue;
       }
       if (step.op === 'sub-recipe') {
         // A scope keeps the dish type, so it bypasses input coercion.
+        const start = performance.now();
         current = await this.runSteps(step.args.get('steps') as readonly Step[], current, here);
+        this.onStep?.({ path: here, dish: current, ms: performance.now() - start });
         i += 1;
         continue;
       }
@@ -172,7 +189,9 @@ class Runner {
         i += 1;
         continue;
       }
+      const start = performance.now();
       current = await this.runStep(step, current, here);
+      this.onStep?.({ path: here, dish: current, ms: performance.now() - start });
       i += 1;
     }
     return { dish: current, stoppedAt: null };
@@ -195,7 +214,7 @@ export async function bake(
   if (dishSize(dish) > ctx.limits.maxInputSize) {
     throw new UniChefError('E_LIMIT', `The input is larger than ${ctx.limits.maxInputSize} bytes.`);
   }
-  const runner = new Runner(ctx);
+  const runner = new Runner(ctx, options.onStep);
   const { dish: out, stoppedAt } = await runner.runList(
     recipe.steps,
     dish,
