@@ -446,14 +446,10 @@ describe('confusables', () => {
 });
 
 describe('query', () => {
-  const matcher: q.NameMatcher = (pattern, flags) => {
-    const re = new RegExp(pattern, flags.includes('i') ? 'iu' : 'u');
-    return (name) => re.test(name);
-  };
   const range = (lo: number, hi: number): number[] =>
     Array.from({ length: hi - lo }, (_, i) => lo + i);
   const cps = (text: string, limit = 10_000): readonly number[] =>
-    q.query(text, { limit, matcher }).codePoints;
+    q.query(text, { limit }).codePoints;
 
   it.each<[string, number[] | null]>([
     ['gc=Lu & blk=Basic_Latin', range(0x41, 0x5b)],
@@ -525,12 +521,20 @@ describe('query', () => {
     'ccc=x',
     '|',
   ])('rejects %j', (text) => {
-    expect(code(() => q.query(text, { matcher }))).toBe('E_ARG_INVALID');
+    expect(code(() => q.query(text))).toBe('E_ARG_INVALID');
   });
 
-  it('handles escapes and a missing matcher', () => {
+  it('handles escapes', () => {
     expect(cps('name~/^SOLIDUS\\/?$/')).toEqual([0x2f]);
     expect(cps('blk="Basic\\ Latin" & gc=Lu', 1)).toEqual([0x41]);
-    expect(code(() => q.query('name~/A/'))).toBe('E_INTERNAL');
+  });
+
+  it('uses the UniChef regex engine by default', () => {
+    expect(q.query('blk=ASCII & name~/^digit (?:zero|one)$/i').codePoints).toEqual([0x30, 0x31]);
+    expect(code(() => q.query('name~/a++/'))).toBe('E_REGEX_UNSUPPORTED');
+    // JavaScript cannot stop a search early, so the pattern is only moderately catastrophic:
+    // about 2^20 steps per Basic Latin name, far above the 1 ms bound.
+    const slow = 'blk=Basic_Latin & name~/^(?:[A-Z ]|[A-Z ])*!/';
+    expect(code(() => q.query(slow, { timeoutMs: 1 }))).toBe('E_REGEX_TIMEOUT');
   });
 });

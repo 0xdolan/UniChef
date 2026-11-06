@@ -13,12 +13,13 @@
  * Evaluation narrows a candidate set from left to right, so `gc=Lu & name~/LATIN/` runs
  * the regex over uppercase letters only. Results are code points in ascending order.
  *
- * `name~/…/` needs the UniChef regex engine, which lives outside this module: callers
- * pass it as `matcher` (Python: `regex.run.predicate(regex.run.compile_regex(…))`).
+ * `name~/…/` runs the UniChef regex engine with a per-search bound of `timeoutMs`
+ * (default 2000, as in Python). Tests may inject another `matcher`.
  */
 
 import { UniChefError } from '../errors.js';
 import { pyRepr } from '../ops/types.js';
+import { compileRegex, predicate } from '../regex/run.js';
 import {
   complement,
   intersect,
@@ -32,6 +33,7 @@ import * as names from './names.js';
 import * as props from './props.js';
 
 export const DEFAULT_LIMIT = 10_000;
+export const DEFAULT_TIMEOUT_MS = 2000;
 export const ENUMERATED_PROPS = new Set(['gc', 'sc', 'scx', 'blk', 'age', 'bc', 'ea', 'ccc']);
 export const ORDERED_PROPS = new Set(['age', 'ccc']);
 const OPERATORS = ['<=', '>=', '!=', '=', '<', '>'] as const;
@@ -184,7 +186,7 @@ class Evaluator {
 
   constructor(
     text: string,
-    private readonly matcher: NameMatcher | undefined,
+    private readonly matcher: NameMatcher,
   ) {
     this.tokens = tokenize(text);
   }
@@ -277,12 +279,6 @@ class Evaluator {
   }
 
   private name(t: Token, within: Ranges): Ranges {
-    if (this.matcher === undefined) {
-      throw new UniChefError(
-        'E_INTERNAL',
-        'name~ queries need the regex engine; please report this.',
-      );
-    }
     const test = this.matcher(t.text, t.flags);
     const hits = new Set<number>();
     for (const [cp, text] of names.iterNames(within)) {
@@ -362,13 +358,16 @@ class Evaluator {
 /** Run a character query; at most `limit` code points, ascending. */
 export function query(
   text: string,
-  options: { limit?: number; matcher?: NameMatcher } = {},
+  options: { limit?: number; timeoutMs?: number; matcher?: NameMatcher } = {},
 ): QueryResult {
   const limit = options.limit ?? DEFAULT_LIMIT;
+  const timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
+  const matcher: NameMatcher =
+    options.matcher ?? ((pattern, flags) => predicate(compileRegex(pattern, flags), timeoutMs));
   if (text.trim() === '') {
     fail('The query is empty.');
   }
-  const ranges = new Evaluator(text, options.matcher).run();
+  const ranges = new Evaluator(text, matcher).run();
   const total = ranges.reduce((sum, [start, end]) => sum + end - start + 1, 0);
   const out: number[] = [];
   for (const [start, end] of ranges) {
