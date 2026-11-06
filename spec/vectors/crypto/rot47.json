@@ -1,0 +1,118 @@
+{
+  "op": "rot47",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "classic",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Hello, World!"
+      },
+      "expected": {
+        "type": "string",
+        "text": "w6==@[ (@C=5P"
+      }
+    },
+    {
+      "name": "self-inverse",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "w6==@[ (@C=5P"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Hello, World!"
+      }
+    },
+    {
+      "name": "range ends",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "!~"
+      },
+      "expected": {
+        "type": "string",
+        "text": "PO"
+      }
+    },
+    {
+      "name": "space unchanged",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": " \t\n"
+      },
+      "expected": {
+        "type": "string",
+        "text": " \t\n"
+      }
+    },
+    {
+      "name": "amount 1",
+      "args": {
+        "amount": 1
+      },
+      "input": {
+        "type": "string",
+        "text": "~a"
+      },
+      "expected": {
+        "type": "string",
+        "text": "!b"
+      }
+    },
+    {
+      "name": "negative amount",
+      "args": {
+        "amount": -1
+      },
+      "input": {
+        "type": "string",
+        "text": "!"
+      },
+      "expected": {
+        "type": "string",
+        "text": "~"
+      }
+    },
+    {
+      "name": "non-ASCII unchanged",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "é"
+      },
+      "expected": {
+        "type": "string",
+        "text": "é"
+      }
+    },
+    {
+      "name": "amount out of range",
+      "args": {
+        "amount": 10000000
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}
