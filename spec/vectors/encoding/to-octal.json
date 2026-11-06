@@ -1,0 +1,122 @@
+{
+  "op": "to-octal",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "one byte, padded",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "08"
+      },
+      "expected": {
+        "type": "string",
+        "text": "010"
+      }
+    },
+    {
+      "name": "space by default",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "4869"
+      },
+      "expected": {
+        "type": "string",
+        "text": "110 151"
+      }
+    },
+    {
+      "name": "largest byte",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "ff"
+      },
+      "expected": {
+        "type": "string",
+        "text": "377"
+      }
+    },
+    {
+      "name": "comma",
+      "args": {
+        "delimiter": "comma"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "0001"
+      },
+      "expected": {
+        "type": "string",
+        "text": "000,001"
+      }
+    },
+    {
+      "name": "colon",
+      "args": {
+        "delimiter": "colon"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "4142"
+      },
+      "expected": {
+        "type": "string",
+        "text": "101:102"
+      }
+    },
+    {
+      "name": "newline",
+      "args": {
+        "delimiter": "newline"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "0a0d"
+      },
+      "expected": {
+        "type": "string",
+        "text": "012\n015"
+      }
+    },
+    {
+      "name": "none",
+      "args": {
+        "delimiter": "none"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "ff07"
+      },
+      "expected": {
+        "type": "string",
+        "text": "377007"
+      }
+    },
+    {
+      "name": "unknown delimiter",
+      "args": {
+        "delimiter": "semicolon"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "00"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

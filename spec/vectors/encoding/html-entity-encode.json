@@ -1,0 +1,140 @@
+{
+  "op": "html-entity-encode",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "special characters",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "<a href=\"x\">'&'</a>"
+      },
+      "expected": {
+        "type": "string",
+        "text": "&lt;a href=&quot;x&quot;&gt;&apos;&amp;&apos;&lt;/a&gt;"
+      }
+    },
+    {
+      "name": "special leaves non-ASCII alone",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "café  "
+      },
+      "expected": {
+        "type": "string",
+        "text": "café  "
+      }
+    },
+    {
+      "name": "non-ascii, named",
+      "args": {
+        "scope": "non-ascii"
+      },
+      "input": {
+        "type": "string",
+        "text": "café €5 − <"
+      },
+      "expected": {
+        "type": "string",
+        "text": "caf&eacute; &euro;5 &minus; &lt;"
+      }
+    },
+    {
+      "name": "non-ascii, hex fallback",
+      "args": {
+        "scope": "non-ascii"
+      },
+      "input": {
+        "type": "string",
+        "text": "中😀"
+      },
+      "expected": {
+        "type": "string",
+        "text": "&#x4E2D;&#x1F600;"
+      }
+    },
+    {
+      "name": "astral with a name",
+      "args": {
+        "scope": "non-ascii"
+      },
+      "input": {
+        "type": "string",
+        "text": "𝔸"
+      },
+      "expected": {
+        "type": "string",
+        "text": "&Aopf;"
+      }
+    },
+    {
+      "name": "non-ascii, decimal",
+      "args": {
+        "scope": "non-ascii",
+        "format": "decimal"
+      },
+      "input": {
+        "type": "string",
+        "text": "é&😀"
+      },
+      "expected": {
+        "type": "string",
+        "text": "&#233;&#38;&#128512;"
+      }
+    },
+    {
+      "name": "all, hex",
+      "args": {
+        "scope": "all",
+        "format": "hex"
+      },
+      "input": {
+        "type": "string",
+        "text": "a é"
+      },
+      "expected": {
+        "type": "string",
+        "text": "&#x61;&#x20;&#xE9;"
+      }
+    },
+    {
+      "name": "all, named",
+      "args": {
+        "scope": "all"
+      },
+      "input": {
+        "type": "string",
+        "text": "a\t\n"
+      },
+      "expected": {
+        "type": "string",
+        "text": "&#x61;&Tab;&NewLine;"
+      }
+    },
+    {
+      "name": "unknown format",
+      "args": {
+        "format": "octal"
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

@@ -15,7 +15,7 @@ define not_yet
 @echo "make $@: not available yet; it arrives with $(1) (PRD §16.1)." >&2; exit 2
 endef
 
-.PHONY: help bootstrap fmt lint typecheck test-py test-ts test parity e2e ucd ucd-check \
+.PHONY: help bootstrap fmt lint typecheck test-py test-ts test parity e2e ucd ucd-check entities entities-check \
 	assets screenshots build-py build-npm build-web build-ext build deb-check version \
 	ci docker-ci clean
 
@@ -57,6 +57,12 @@ ucd-check: ## Rebuild the UCD artefacts and fail if they drift from the committe
 	uv run scripts/ucd/fetch.py --offline
 	uv run scripts/ucd/build.py --check
 
+entities: ## Verify the pinned WHATWG entity list and write html-entities.json.gz to both packages
+	uv run scripts/html/build.py
+
+entities-check: ## Rebuild the HTML entity artefact and fail if it drifts from the committed one
+	uv run scripts/html/build.py --check
+
 assets: ## Build favicons, icons and store images from the branding masters
 	$(call not_yet,the assets step)
 
@@ -84,7 +90,7 @@ version: ## Set the project version everywhere: make version V=x.y.z
 	@test -n "$(V)" || { echo "Usage: make version V=x.y.z" >&2; exit 2; }
 	$(call not_yet,the release tooling)
 
-ci: lint typecheck test parity ucd-check build deb-check ## Run the full CI pipeline locally
+ci: lint typecheck test parity ucd-check entities-check build deb-check ## Run the full CI pipeline locally
 
 docker-ci: ## Run CI and E2E inside the dev container
 	$(COMPOSE) run --rm ci

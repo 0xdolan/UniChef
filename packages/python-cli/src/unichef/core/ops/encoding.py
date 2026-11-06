@@ -252,6 +252,140 @@ def from_hex(text: str, args: Args, ctx: OpContext) -> bytes:
 
 
 # ---------------------------------------------------------------------------
+# Binary, octal and decimal bytes
+
+RADIX_DELIMITERS = {"space": " ", "comma": ",", "colon": ":", "newline": "\n", "none": ""}
+_RADIX_AUTO_SEPARATORS = re.compile(r"[\t\n\v\f\r ,:;]+")
+MAX_BYTE = 0xFF
+
+
+def _radix_spec(name: str, base: int, width: int) -> tuple[str, re.Pattern[str]]:
+    digits = "01" if base == 2 else "01234567" if base == 8 else "0123456789"  # noqa: PLR2004
+    return name, re.compile(f"[{digits}]{{1,{width}}}")
+
+
+_RADIXES = {
+    2: (*_radix_spec("binary", 2, 8), 8),
+    8: (*_radix_spec("octal", 8, 3), 3),
+    10: (*_radix_spec("decimal", 10, 3), 0),
+}
+
+
+def _to_radix(data: bytes, base: int, delimiter: str, ctx: OpContext) -> str:
+    ctx.check()
+    width = _RADIXES[base][2]
+    fmt = {2: "b", 8: "o", 10: "d"}[base]
+    spec = f"0{width}{fmt}" if width else fmt
+    return RADIX_DELIMITERS[delimiter].join(format(b, spec) for b in data)
+
+
+def _from_radix(text: str, base: int, delimiter: str, ctx: OpContext) -> bytes:
+    ctx.check()
+    name, token, width = _RADIXES[base]
+    if delimiter == "auto":
+        tokens = [t for t in _RADIX_AUTO_SEPARATORS.split(text) if t]
+    elif text == "":
+        return b""
+    elif delimiter == "none":
+        if len(text) % width:
+            raise _decode_error(f"The input length is not a multiple of {width} {name} digits.")
+        tokens = [text[i : i + width] for i in range(0, len(text), width)]
+    else:
+        tokens = text.split(RADIX_DELIMITERS[delimiter])
+    out = bytearray()
+    for t in tokens:
+        if not token.fullmatch(t) or int(t, base) > MAX_BYTE:
+            raise _decode_error(f"{t!r} is not a {name} byte value (0-255).")
+        out.append(int(t, base))
+    return bytes(out)
+
+
+_FIXED = tuple(RADIX_DELIMITERS)
+_VARIABLE = tuple(d for d in RADIX_DELIMITERS if d != "none")
+
+
+@operation(
+    "to-binary",
+    "To Binary",
+    "Encoding",
+    "bytes",
+    "string",
+    (enum_arg("delimiter", _FIXED),),
+)
+def to_binary(data: bytes, args: Args, ctx: OpContext) -> str:
+    """Write each byte as eight binary digits, separated by `delimiter`."""
+    return _to_radix(data, 2, args.text("delimiter"), ctx)
+
+
+@operation(
+    "from-binary",
+    "From Binary",
+    "Encoding",
+    "string",
+    "bytes",
+    (enum_arg("delimiter", ("auto", *_FIXED)),),
+)
+def from_binary(text: str, args: Args, ctx: OpContext) -> bytes:
+    """Read bytes of 1-8 binary digits. `auto` splits on runs of whitespace and ,:;
+    and `none` reads groups of exactly eight digits."""
+    return _from_radix(text, 2, args.text("delimiter"), ctx)
+
+
+@operation(
+    "to-octal",
+    "To Octal",
+    "Encoding",
+    "bytes",
+    "string",
+    (enum_arg("delimiter", _FIXED),),
+)
+def to_octal(data: bytes, args: Args, ctx: OpContext) -> str:
+    """Write each byte as three octal digits, separated by `delimiter`."""
+    return _to_radix(data, 8, args.text("delimiter"), ctx)
+
+
+@operation(
+    "from-octal",
+    "From Octal",
+    "Encoding",
+    "string",
+    "bytes",
+    (enum_arg("delimiter", ("auto", *_FIXED)),),
+)
+def from_octal(text: str, args: Args, ctx: OpContext) -> bytes:
+    """Read bytes of 1-3 octal digits (at most 377). `auto` splits on runs of whitespace
+    and ,:; and `none` reads groups of exactly three digits."""
+    return _from_radix(text, 8, args.text("delimiter"), ctx)
+
+
+@operation(
+    "to-decimal",
+    "To Decimal",
+    "Encoding",
+    "bytes",
+    "string",
+    (enum_arg("delimiter", _VARIABLE),),
+)
+def to_decimal(data: bytes, args: Args, ctx: OpContext) -> str:
+    """Write each byte as a decimal number without padding, separated by `delimiter`."""
+    return _to_radix(data, 10, args.text("delimiter"), ctx)
+
+
+@operation(
+    "from-decimal",
+    "From Decimal",
+    "Encoding",
+    "string",
+    "bytes",
+    (enum_arg("delimiter", ("auto", *_VARIABLE)),),
+)
+def from_decimal(text: str, args: Args, ctx: OpContext) -> bytes:
+    """Read bytes of 1-3 decimal digits (at most 255). `auto` splits on runs of
+    whitespace and ,:;"""
+    return _from_radix(text, 10, args.text("delimiter"), ctx)
+
+
+# ---------------------------------------------------------------------------
 # URL encoding
 
 _UNRESERVED = frozenset(b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~")

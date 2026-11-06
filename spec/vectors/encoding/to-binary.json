@@ -1,0 +1,122 @@
+{
+  "op": "to-binary",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "one byte, padded",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "05"
+      },
+      "expected": {
+        "type": "string",
+        "text": "00000101"
+      }
+    },
+    {
+      "name": "space by default",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "4869"
+      },
+      "expected": {
+        "type": "string",
+        "text": "01001000 01101001"
+      }
+    },
+    {
+      "name": "comma",
+      "args": {
+        "delimiter": "comma"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "00ff"
+      },
+      "expected": {
+        "type": "string",
+        "text": "00000000,11111111"
+      }
+    },
+    {
+      "name": "colon",
+      "args": {
+        "delimiter": "colon"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "0180"
+      },
+      "expected": {
+        "type": "string",
+        "text": "00000001:10000000"
+      }
+    },
+    {
+      "name": "newline",
+      "args": {
+        "delimiter": "newline"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "0a0d"
+      },
+      "expected": {
+        "type": "string",
+        "text": "00001010\n00001101"
+      }
+    },
+    {
+      "name": "none",
+      "args": {
+        "delimiter": "none"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "ff00"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1111111100000000"
+      }
+    },
+    {
+      "name": "UTF-8 bytes of e-acute",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "c3a9"
+      },
+      "expected": {
+        "type": "string",
+        "text": "11000011 10101001"
+      }
+    },
+    {
+      "name": "unknown delimiter",
+      "args": {
+        "delimiter": "tab"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "00"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}
