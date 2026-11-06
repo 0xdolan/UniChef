@@ -25,6 +25,12 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
   - Hashing: MD5, SHA-1, SHA-2, SHA-3, SHAKE, BLAKE2b, BLAKE2s, CRC-32, Adler-32 and HMAC.
   - Crypto: XOR, ROT13, ROT47, Atbash and AES (CBC, CTR, GCM, ECB).
   - JWT: `jwt-decode`, `jwt-sign` and `jwt-verify` with the HS, RS, PS, ES and EdDSA algorithms.
+- **Python CLI** (`unichef`, `python -m unichef`):
+  - The full command tree, help tree and themed output with the exact palette.
+  - JSON output that follows the output envelope schema.
+  - The documented exit codes.
+  - CyberChef recipe import for about 60 operations (`spec/cyberchef-map.json`).
+  - Shell completion and a man page.
 - **TypeScript core** (`packages/npm-core`, `@unichef/core`):
   - A port of the Python core with the same dish types, Unicode engine, regex profile and every operation.
   - It passes every shared vector.
