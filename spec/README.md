@@ -308,3 +308,37 @@ All hashing ops take bytes, so string input is hashed as UTF-8. Output is a lowe
 | `blake2b`, `blake2s` | `size`: digest bytes (1-64, default 64 / 1-32, default 32); `key`: bytes, up to 64 / 32 | RFC 7693. A longer key raises `E_ARG_INVALID`. |
 | `crc32`, `adler32` | none | Always 8 hex digits. CRC-32 is ISO-HDLC (zlib, PNG); Adler-32 is RFC 1950. |
 | `hmac` | `hash`: `sha256` (default), `sha1`, `md5`, `sha224`, `sha384`, `sha512`, `sha3-256`, `sha3-512`; `key`: bytes | RFC 2104. No warning, because HMAC-MD5 and HMAC-SHA-1 are not broken as MACs. |
+
+## Operation arguments (crypto category)
+
+### `xor` (bytes → bytes)
+
+`key` is required and must not be empty. It repeats over the input.
+
+`scheme`:
+- `standard` (default) uses the key as given.
+- `rolling` adds the number of completed passes over the key to each key byte, mod 256. Byte `i` is XORed with `(key[i mod n] + floor(i / n)) mod 256`.
+
+Both schemes are their own inverse.
+
+### `rot13`, `rot47`, `atbash` (string → string)
+
+These ops change only ASCII characters.
+
+- **`rot13`** rotates letters by `amount` (default 13; any value in ±1 000 000 is reduced mod 26) and keeps their case. With `digits`, it also rotates `0`-`9` by `amount` mod 10.
+- **`rot47`** rotates U+0021..U+007E by `amount` (default 47) mod 94.
+- **`atbash`** maps A↔Z and a↔z.
+
+### `aes-encrypt`, `aes-decrypt` (bytes → bytes)
+
+| Arg | Values |
+|---|---|
+| `key` | 16, 24 or 32 bytes. Anything else raises `E_CRYPTO`. |
+| `mode` | `cbc` (default), `ctr`, `gcm`, `ecb`. ECB warns `W_INSECURE`. |
+| `iv` | CBC: 16 bytes. CTR: the 16-byte initial counter block (big-endian increment). GCM: an 8-128 byte nonce. Ignored for ECB. A wrong length raises `E_CRYPTO`. |
+| `padding` | `pkcs7` (default) or `none`. Applies only to CBC and ECB. With `none`, the data must be a whole number of 16-byte blocks, or `E_CRYPTO` is raised. |
+| `aad` | GCM only. In any other mode a non-empty value raises `E_ARG_INVALID`. |
+
+Nothing is random: the IV is always an argument, so the output is deterministic.
+
+In GCM, the 16-byte tag is appended to the ciphertext, and decryption takes it from the last 16 bytes. A tag mismatch or bad PKCS#7 padding raises `E_CRYPTO`.
