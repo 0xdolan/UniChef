@@ -49,11 +49,13 @@ parity: ## Run the shared test vectors in both languages and cross-check results
 e2e: ## Run the Playwright end-to-end tests
 	$(call not_yet,the web app)
 
-ucd: ## Fetch and verify the UCD, compile it and copy it to both packages
-	$(call not_yet,the UCD pipeline)
+ucd: ## Fetch and verify the UCD, compile it and write it to both packages
+	uv run scripts/ucd/fetch.py
+	uv run scripts/ucd/build.py
 
 ucd-check: ## Rebuild the UCD artefacts and fail if they drift from the committed ones
-	$(call not_yet,the UCD pipeline)
+	uv run scripts/ucd/fetch.py --offline
+	uv run scripts/ucd/build.py --check
 
 assets: ## Build favicons, icons and store images from the branding masters
 	$(call not_yet,the assets step)
