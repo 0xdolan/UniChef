@@ -11,9 +11,11 @@ import { HTML_OPS } from './html.js';
 import { JWT_OPS } from './jwt.js';
 import { SECURITY_OPS } from './security.js';
 import { UNICODE_OPS } from './unicode.js';
+import { FLOW_REGEX_OPS } from './flow-regex.js';
 
 const MODULES: readonly (readonly Operation[])[] = [
   FLOW_OPS,
+  FLOW_REGEX_OPS,
   ENCODING_OPS,
   HTML_OPS,
   HASHING_OPS,

@@ -379,7 +379,7 @@ export function defineOp<I extends DishType, O extends DishType>(def: {
     input: DishValues[I],
     args: Args,
     ctx: OpContext,
-  ) => DishValues[O] | boolean | Promise<DishValues[O]>;
+  ) => DishValues[O] | boolean | Promise<DishValues[O] | boolean>;
 }): Operation {
   return {
     args: [],

@@ -85,5 +85,5 @@ export const jump = defineOp({
   run: () => true,
 });
 
-/** Ops that need no regex engine. `conditional-jump` and `subsection` live in flow-regex.ts. */
+/** Ops that need no regex engine; `conditional-jump` and `subsection` are in flow-regex.ts. */
 export const FLOW_OPS: readonly Operation[] = [fork, subRecipe, label, comment, jump];
