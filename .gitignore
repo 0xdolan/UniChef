@@ -1,0 +1,33 @@
+# Planning documents: kept local, never committed
+/PRD.md
+/PROMPT.md
+/UniChef-PRD.md
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Node / TypeScript
+node_modules/
+.pnpm-store/
+*.tsbuildinfo
+coverage/
+
+# Generated assets (rebuilt by scripts/assets/build.py)
+assets/branding/dist/
+
+# Editors, OS, local tool state
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+.claude/settings.local.json

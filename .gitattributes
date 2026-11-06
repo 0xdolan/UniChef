@@ -1,0 +1,9 @@
+* text=auto eol=lf
+*.svg text eol=lf
+*.png binary
+*.ico binary
+
+# Git LFS (PRD §9.1)
+*.ai filter=lfs diff=lfs merge=lfs -text
+assets/docs/**/*.png filter=lfs diff=lfs merge=lfs -text
+*.pdf filter=lfs diff=lfs merge=lfs -text
