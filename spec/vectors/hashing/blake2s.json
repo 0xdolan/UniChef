@@ -1,0 +1,144 @@
+{
+  "op": "blake2s",
+  "cases": [
+    {
+      "name": "default 32 bytes",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "616263"
+      },
+      "expected": {
+        "type": "string",
+        "text": "508c5e8c327c14e2e1a72ba34eeb452f37458b209ed63a294d999b4c86675982"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": "69217a3079908094e11121d042354a7c1f55b6482ca1a51e1b250dfd1ed0eef9"
+      }
+    },
+    {
+      "name": "16 bytes",
+      "args": {
+        "size": 16
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "616263"
+      },
+      "expected": {
+        "type": "string",
+        "text": "aa4938119b1dc7b87cbad0ffd200d0ae"
+      }
+    },
+    {
+      "name": "one byte",
+      "args": {
+        "size": 1
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "616263"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0d"
+      }
+    },
+    {
+      "name": "keyed, 32-byte key",
+      "args": {
+        "key": {
+          "encoding": "hex",
+          "value": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f"
+        }
+      },
+      "input": {
+        "type": "bytes",
+        "hex": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": "48a8997da407876b3d79c0d92325ad3b89cbb754d86ab71aee047ad345fd2c49"
+      }
+    },
+    {
+      "name": "keyed",
+      "args": {
+        "key": {
+          "encoding": "hex",
+          "value": "01"
+        }
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "616263"
+      },
+      "expected": {
+        "type": "string",
+        "text": "cf4ef70bd09e3929fbe666696b3db1827a4f13370ac1c4ffc128e17aeaf23843"
+      }
+    },
+    {
+      "name": "one block exactly",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161"
+      },
+      "expected": {
+        "type": "string",
+        "text": "651d2f5f20952eacaea2fba2f2af2bcd633e511ea2d2e4c9ae2ac0d9ffb7b252"
+      }
+    },
+    {
+      "name": "string input is UTF-8",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "é"
+      },
+      "expected": {
+        "type": "string",
+        "text": "decfc42429fe128d9a6f44de25028f4376eae60ddd57a140739f5239dbdf0a8a"
+      }
+    },
+    {
+      "name": "size too large",
+      "args": {
+        "size": 33
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "616263"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "key too long",
+      "args": {
+        "key": {
+          "encoding": "hex",
+          "value": "000000000000000000000000000000000000000000000000000000000000000000"
+        }
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "616263"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

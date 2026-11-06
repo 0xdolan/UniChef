@@ -1,0 +1,125 @@
+{
+  "op": "shake",
+  "cases": [
+    {
+      "name": "default 128, 32 bytes, empty",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": "7f9c2ba4e88f827d616045507605853ed73b8093f6efbc88eb1a6eacfa66ef26"
+      }
+    },
+    {
+      "name": "256, 64 bytes, empty",
+      "args": {
+        "size": "256",
+        "length": 64
+      },
+      "input": {
+        "type": "bytes",
+        "hex": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": "46b9dd2b0ba88d13233b3feb743eeb243fcd52ea62b81b82b50c27646ed5762fd75dc4ddd8c0f200cb05019d67b592f6fc821c49479ab48640292eacb3b7c4be"
+      }
+    },
+    {
+      "name": "one byte",
+      "args": {
+        "length": 1
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "616263"
+      },
+      "expected": {
+        "type": "string",
+        "text": "58"
+      }
+    },
+    {
+      "name": "128 abc",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "616263"
+      },
+      "expected": {
+        "type": "string",
+        "text": "5881092dd818bf5cf8a3ddb793fbcba74097d5c526a6d35f97b83351940f2cc8"
+      }
+    },
+    {
+      "name": "256 abc",
+      "args": {
+        "size": "256"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "616263"
+      },
+      "expected": {
+        "type": "string",
+        "text": "483366601360a8771c6863080cc4114d8db44530f8f1e1ee4f94ea37e78b5739"
+      }
+    },
+    {
+      "name": "long output",
+      "args": {
+        "length": 200
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "616263"
+      },
+      "expected": {
+        "type": "string",
+        "text": "5881092dd818bf5cf8a3ddb793fbcba74097d5c526a6d35f97b83351940f2cc844c50af32acd3f2cdd066568706f509bc1bdde58295dae3f891a9a0fca5783789a41f8611214ce612394df286a62d1a2252aa94db9c538956c717dc2bed4f232a0294c857c730aa16067ac1062f1201fb0d377cfb9cde4c63599b27f3462bba4a0ed296c801f9ff7f57302bb3076ee145f97a32ae68e76ab66c48d51675bd49acc29082f5647584e6aa01b3f5af057805f973ff8ecb8b226ac32ada6f01c1fcd4818cb006aa5b4cd"
+      }
+    },
+    {
+      "name": "prefix property",
+      "args": {
+        "length": 16
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "616263"
+      },
+      "expected": {
+        "type": "string",
+        "text": "5881092dd818bf5cf8a3ddb793fbcba7"
+      }
+    },
+    {
+      "name": "string input is UTF-8",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "é"
+      },
+      "expected": {
+        "type": "string",
+        "text": "bf5fdca7a41d690eab112d583933da648775a11a4b4b39e811b53e3efd594525"
+      }
+    },
+    {
+      "name": "length zero",
+      "args": {
+        "length": 0
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "616263"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

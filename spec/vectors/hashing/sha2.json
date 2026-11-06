@@ -1,0 +1,138 @@
+{
+  "op": "sha2",
+  "cases": [
+    {
+      "name": "default is 256",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "616263"
+      },
+      "expected": {
+        "type": "string",
+        "text": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+      }
+    },
+    {
+      "name": "empty 256",
+      "args": {
+        "size": "256"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "224",
+      "args": {
+        "size": "224"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "616263"
+      },
+      "expected": {
+        "type": "string",
+        "text": "23097d223405d8228642a477bda255b32aadbce4bda0b3f7e36c9da7"
+      }
+    },
+    {
+      "name": "384",
+      "args": {
+        "size": "384"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "616263"
+      },
+      "expected": {
+        "type": "string",
+        "text": "cb00753f45a35e8bb5a03d699ac65007272c32ab0eded1631a8b605a43ff5bed8086072ba1e7cc2358baeca134c825a7"
+      }
+    },
+    {
+      "name": "512",
+      "args": {
+        "size": "512"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "616263"
+      },
+      "expected": {
+        "type": "string",
+        "text": "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f"
+      }
+    },
+    {
+      "name": "512-224",
+      "args": {
+        "size": "512-224"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "616263"
+      },
+      "expected": {
+        "type": "string",
+        "text": "4634270f707b6a54daae7530460842e20e37ed265ceee9a43e8924aa"
+      }
+    },
+    {
+      "name": "512-256",
+      "args": {
+        "size": "512-256"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "616263"
+      },
+      "expected": {
+        "type": "string",
+        "text": "53048e2681941ef99b2e29b76b4c7dabe4c2d0c634fc6d46e0e2f13107e7af23"
+      }
+    },
+    {
+      "name": "two-block message",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "6161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161"
+      },
+      "expected": {
+        "type": "string",
+        "text": "b35439a4ac6f0948b6d6f9e3c6af0f5f590ce20f1bde7090ef7970686ec6738a"
+      }
+    },
+    {
+      "name": "string input is UTF-8",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "日本"
+      },
+      "expected": {
+        "type": "string",
+        "text": "cf2abf0c5be326cb922a70f8163f91079c4d9aa8655c60ead89ad545c9de2e92"
+      }
+    },
+    {
+      "name": "unknown size",
+      "args": {
+        "size": "128"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "616263"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}
