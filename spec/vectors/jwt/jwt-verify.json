@@ -1,0 +1,496 @@
+{
+  "op": "jwt-verify",
+  "cases": [
+    {
+      "name": "RFC 7515 A.1",
+      "args": {
+        "key": {
+          "encoding": "hex",
+          "value": "0323354b2b0fa5bc837e0665777ba68f5ab328e6f054c928a90f84b2d2502ebfd3fb5a92d20647ef968ab4c377623d223d2e2172052e4f08c0cd9af567d080a3"
+        }
+      },
+      "input": {
+        "type": "string",
+        "text": "eyJ0eXAiOiJKV1QiLA0KICJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ.dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk"
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "iss": "joe",
+          "exp": 1300819380,
+          "http://example.com/is_root": true
+        }
+      }
+    },
+    {
+      "name": "HS256",
+      "args": {
+        "key": {
+          "encoding": "utf8",
+          "value": "a-string-secret-at-least-256-bits-long"
+        }
+      },
+      "input": {
+        "type": "string",
+        "text": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30"
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      }
+    },
+    {
+      "name": "RS256 public key",
+      "args": {
+        "algorithm": "RS256",
+        "key": {
+          "encoding": "utf8",
+          "value": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxdYDETTC7cigV0TrKjPq\nIZisuZljIOxSkbxHgSceiO27NxY0m7skbPWIikM0YeAOaJ4Y5e4OJ9ZwPJeFj6TB\n9mku0oQBsG5s1WQPnzr0BvWhcPEI6x9LWK+6h8UckEiEMhsHNR6qhI9W+I6XaMCi\neT1NZOXTeHw2YwOo4PdoDl24k5iagEgDL+IWMaPOYLkuFvRWmXDlIwv6HNmuvcbR\nWff8ndLXQjmU8T5iqVeoL8WW5KUa1cvyVKbthHA7D0VKB4Nh2NvCmVUIODs5d/z0\nJ4nc4NNTW0Y70fYJ5HxTei9fijtn8U+J2O4v5Kgx2U/3EzBrW7elIy+1p2HTfWmX\nFQIDAQAB\n-----END PUBLIC KEY-----\n"
+        }
+      },
+      "input": {
+        "type": "string",
+        "text": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.G-GCRZX-ztFH3C5drRwHxIy1u0xmpR30S99L5dVZMJyfKOm6ggErRMgXGGQwItdUro2Wgq4VoltOublIUoQiVgz58l0kn7K3_p06cp6JiIObahQWj6b-8zx9Azly_kb985RubpSEJy6t0Kj32XmZuVvWhxCaCPntK6Fpt9_jgI90eypnJaeQ14H9uQo1iklLKOQuB6aesBLsqKhQ5rOlqCo7Du2ryLgzkENT5L7bghgN8RhZtvdEoMV_vuFUq3TvQsauLRr_hSIoOItlALDNob51R71fO7z5S-BftpKrZOA_G_gR6WSvzjda2Kn12-faWwTOaUfkninGi-CKJemA6g"
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      }
+    },
+    {
+      "name": "RS384 public key",
+      "args": {
+        "algorithm": "RS384",
+        "key": {
+          "encoding": "utf8",
+          "value": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxdYDETTC7cigV0TrKjPq\nIZisuZljIOxSkbxHgSceiO27NxY0m7skbPWIikM0YeAOaJ4Y5e4OJ9ZwPJeFj6TB\n9mku0oQBsG5s1WQPnzr0BvWhcPEI6x9LWK+6h8UckEiEMhsHNR6qhI9W+I6XaMCi\neT1NZOXTeHw2YwOo4PdoDl24k5iagEgDL+IWMaPOYLkuFvRWmXDlIwv6HNmuvcbR\nWff8ndLXQjmU8T5iqVeoL8WW5KUa1cvyVKbthHA7D0VKB4Nh2NvCmVUIODs5d/z0\nJ4nc4NNTW0Y70fYJ5HxTei9fijtn8U+J2O4v5Kgx2U/3EzBrW7elIy+1p2HTfWmX\nFQIDAQAB\n-----END PUBLIC KEY-----\n"
+        }
+      },
+      "input": {
+        "type": "string",
+        "text": "eyJhbGciOiJSUzM4NCIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.TYNM5sqL2y1HJpTSFDdJF7-fQz8qJzW5k3vk9PsENSPmJ7OjOeKSRfVj-vu37-5Pz4QYKwTiwoqyXCVpM1gyesdwO0afEh73ukFuvH2OYyx1mgv9VIOxXiWUTP5P-XWDQS6PSYOusYjs0SYREuh4LEph8Wyyc7t0rEMBARkUt9vGy8vwAIGWzLRTKscC0UmjjMW-b3SZcmjUhW6rwrgnJioWNSR3NC9cfvJ0EvP9_FFtsbeaMzQNeATMMnlOZTkHpbo6fUp1OJK0eLbkCuebWhQp6TKcaKWjVj_8U21N1v1YjGKGRMQGZgiYNuFtQqD6iX6QVnhkT-smI-v9cFce8A"
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      }
+    },
+    {
+      "name": "PS256 public key",
+      "args": {
+        "algorithm": "PS256",
+        "key": {
+          "encoding": "utf8",
+          "value": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxdYDETTC7cigV0TrKjPq\nIZisuZljIOxSkbxHgSceiO27NxY0m7skbPWIikM0YeAOaJ4Y5e4OJ9ZwPJeFj6TB\n9mku0oQBsG5s1WQPnzr0BvWhcPEI6x9LWK+6h8UckEiEMhsHNR6qhI9W+I6XaMCi\neT1NZOXTeHw2YwOo4PdoDl24k5iagEgDL+IWMaPOYLkuFvRWmXDlIwv6HNmuvcbR\nWff8ndLXQjmU8T5iqVeoL8WW5KUa1cvyVKbthHA7D0VKB4Nh2NvCmVUIODs5d/z0\nJ4nc4NNTW0Y70fYJ5HxTei9fijtn8U+J2O4v5Kgx2U/3EzBrW7elIy+1p2HTfWmX\nFQIDAQAB\n-----END PUBLIC KEY-----\n"
+        }
+      },
+      "input": {
+        "type": "string",
+        "text": "eyJhbGciOiJQUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.u_njkJNkf4Dq8yigH-KJiBt29c8pBuSKsz8N3ORwAv4jFV-B40sgNGMvfW7b1STA3cVzCvpUsBD_xPiDKb3j_2JdTxNMM5Kq-qsjxN4EMCzhoLBi5aNob2n8vvG7bYoN1fuOYV5hDOfl3PpVOiMM1TFVqXgTPw0ZJr0Ubnrn3QZcpae4lJmRkHkTQOWnNd-CCoq9t3KEEWUr414I7bV2uIJ4REaNPqLMRPUi8tf99DEDqLDqEgI0v2v4csivlx-ZCMZik1jh7DNChgAGznZPyLAKapLd3Uxr9GdJKuf3pvqMCl5F9Kd5DC0jHUzP2t8HA9dVBTh1DvQtzZY6SktxJw"
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      }
+    },
+    {
+      "name": "PS512 public key",
+      "args": {
+        "algorithm": "PS512",
+        "key": {
+          "encoding": "utf8",
+          "value": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxdYDETTC7cigV0TrKjPq\nIZisuZljIOxSkbxHgSceiO27NxY0m7skbPWIikM0YeAOaJ4Y5e4OJ9ZwPJeFj6TB\n9mku0oQBsG5s1WQPnzr0BvWhcPEI6x9LWK+6h8UckEiEMhsHNR6qhI9W+I6XaMCi\neT1NZOXTeHw2YwOo4PdoDl24k5iagEgDL+IWMaPOYLkuFvRWmXDlIwv6HNmuvcbR\nWff8ndLXQjmU8T5iqVeoL8WW5KUa1cvyVKbthHA7D0VKB4Nh2NvCmVUIODs5d/z0\nJ4nc4NNTW0Y70fYJ5HxTei9fijtn8U+J2O4v5Kgx2U/3EzBrW7elIy+1p2HTfWmX\nFQIDAQAB\n-----END PUBLIC KEY-----\n"
+        }
+      },
+      "input": {
+        "type": "string",
+        "text": "eyJhbGciOiJQUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.PBEmMab-cR9TqnU3qp6Cb5y22L4XPlSVtgSXDQazuYm36_wE0i3jy6M7729YHqoL9p6fegMGNDf6jsRM4hz73FnUC_wQZxlAnsGqkH-O2vb6k8OW51mARfUHzKFyZ0hGKNmYmQ0jUaPqXbWUpTJliAfYBYUImEHJTfPcHNMgCwfLgGSrMZQ8fmIUmYOX53gKOfk3q0-_uQJ36rTXF4rHRAp2Q8ik378D4VYlPaV2WkoGs4z2UZ3K-VIlmCwduMFF8SgoOc2e_q4Z8rdx9RDBOl0cTNIMbDKLPpkUlByzx8QE2X2DJUkBhAWWQgqqVm3Lga6vCm5y7GB_oU_M4tgphQ"
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      }
+    },
+    {
+      "name": "ES256 public key",
+      "args": {
+        "algorithm": "ES256",
+        "key": {
+          "encoding": "utf8",
+          "value": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEk8Ns6rY09LV73ty7xHjl3p0tmnkL\nI+sEU6sARfQAUfPCmMWWl051i+M1T1tuKvHxJXuCL6SNjA1tzmh4x0z/jw==\n-----END PUBLIC KEY-----\n"
+        }
+      },
+      "input": {
+        "type": "string",
+        "text": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.faDxK8ON4t3MjHJbdtQKGNhCaIhVnWFWmSmEHAbycfSfABbXQDbz4W4pWN4a0pdz0izxepSD1xpQ8vbbyjtBPg"
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      }
+    },
+    {
+      "name": "ES384 public key",
+      "args": {
+        "algorithm": "ES384",
+        "key": {
+          "encoding": "utf8",
+          "value": "-----BEGIN PUBLIC KEY-----\nMHYwEAYHKoZIzj0CAQYFK4EEACIDYgAEoAxDKPb5jZz5ZRCbUS4pFA7IFLmspWv8\nE53hd/mKq62UaBXB2NGPCY/c3Eyxj3AaNx05jEIDWEMe++dqh3yZqYDW7+Rfsi6O\n/kaLFdAhGWb8jYQ6SxqCWxz8sIjA3cAx\n-----END PUBLIC KEY-----\n"
+        }
+      },
+      "input": {
+        "type": "string",
+        "text": "eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.kJfJ3H58q0lvhFD2-XZXwtEbS5BIqJZ8ZXtTQMSBHQUGume8clAoq98TG7NetXP6zjKyL2Eut8TGAy63jwxXckq6-xMTeif4Qw5U8F7dOTHqYVORiSNuv56gZrOv08ZX"
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      }
+    },
+    {
+      "name": "ES512 public key",
+      "args": {
+        "algorithm": "ES512",
+        "key": {
+          "encoding": "utf8",
+          "value": "-----BEGIN PUBLIC KEY-----\nMIGbMBAGByqGSM49AgEGBSuBBAAjA4GGAAQA4Rmet+xDh8MROVo/gXJEprIjkyDw\n4mekD/OAl+A8ovqiCPbF9wIqtmf+AmHc3tiRF94h5XcHGijmUdts6znZ1IsBG2X1\nuilOZI0Y6koXJwM4K5qjoFP5xdVwrLVKrtxMacK8rBI0Qpygs7fEwxe9WpO2vLtf\niDbCA8eoKLnFigMKu9I=\n-----END PUBLIC KEY-----\n"
+        }
+      },
+      "input": {
+        "type": "string",
+        "text": "eyJhbGciOiJFUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.ANDyx-fnp38Vl1sHaTAMYdu02P1hxuYWv68Uih9hyUAJw3wohxXZaUwP67Rur3K4K9xP4Nv6iuVfMWtfouVtiuP5AQTV5Ls-WILx0lchTxzxqzaWNWXqrYKogx_sr7SWm1gGxEweekPsM851Nm-2yaoY8feyEVQdUUwMjdAKTUZwAIaJ"
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      }
+    },
+    {
+      "name": "EdDSA public key",
+      "args": {
+        "algorithm": "EdDSA",
+        "key": {
+          "encoding": "utf8",
+          "value": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAXGHecJVYRylq6RaOWnZaucLKqcs2HnaS2EeQFwZa2vE=\n-----END PUBLIC KEY-----\n"
+        }
+      },
+      "input": {
+        "type": "string",
+        "text": "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.TUQGNwsWJkK7iiSUbViqHtV1I2pK1vin7UMJMp3QZeCFTiJsMUvsrLOzFYzS4bISk9OyqMoMKuj3GID-aCvIAQ"
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      }
+    },
+    {
+      "name": "private key is accepted",
+      "args": {
+        "algorithm": "ES256",
+        "key": {
+          "encoding": "utf8",
+          "value": "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQggUNfKi8M2huSO5pz\n8/pHnEIKkh8LkOaqQ6AEZRi/KrGhRANCAASTw2zqtjT0tXve3LvEeOXenS2aeQsj\n6wRTqwBF9ABR88KYxZaXTnWL4zVPW24q8fEle4IvpI2MDW3OaHjHTP+P\n-----END PRIVATE KEY-----\n"
+        }
+      },
+      "input": {
+        "type": "string",
+        "text": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.TdRC3uFNCZVbtpTR29WR_gk9kK_hEOtVVp-yfWDO0ade5ocOCDFBKdKO35TNzz4d3MewJM034Nwvky-5iS2TZA"
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      }
+    },
+    {
+      "name": "wrong secret",
+      "args": {
+        "key": {
+          "encoding": "utf8",
+          "value": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        }
+      },
+      "input": {
+        "type": "string",
+        "text": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30"
+      },
+      "expected": {
+        "error": "E_CRYPTO"
+      }
+    },
+    {
+      "name": "tampered payload",
+      "args": {
+        "key": {
+          "encoding": "utf8",
+          "value": "a-string-secret-at-least-256-bits-long"
+        }
+      },
+      "input": {
+        "type": "string",
+        "text": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOmZhbHNlLCJpYXQiOjE1MTYyMzkwMjJ9.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30"
+      },
+      "expected": {
+        "error": "E_CRYPTO"
+      }
+    },
+    {
+      "name": "algorithm mismatch",
+      "args": {
+        "algorithm": "HS512",
+        "key": {
+          "encoding": "utf8",
+          "value": "a-string-secret-at-least-256-bits-long"
+        }
+      },
+      "input": {
+        "type": "string",
+        "text": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30"
+      },
+      "expected": {
+        "error": "E_CRYPTO"
+      }
+    },
+    {
+      "name": "alg none refused",
+      "args": {
+        "key": {
+          "encoding": "utf8",
+          "value": "a-string-secret-at-least-256-bits-long"
+        }
+      },
+      "input": {
+        "type": "string",
+        "text": "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0."
+      },
+      "expected": {
+        "error": "E_CRYPTO"
+      }
+    },
+    {
+      "name": "RS256 token checked as HS256 with the public key",
+      "args": {
+        "key": {
+          "encoding": "utf8",
+          "value": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxdYDETTC7cigV0TrKjPq\nIZisuZljIOxSkbxHgSceiO27NxY0m7skbPWIikM0YeAOaJ4Y5e4OJ9ZwPJeFj6TB\n9mku0oQBsG5s1WQPnzr0BvWhcPEI6x9LWK+6h8UckEiEMhsHNR6qhI9W+I6XaMCi\neT1NZOXTeHw2YwOo4PdoDl24k5iagEgDL+IWMaPOYLkuFvRWmXDlIwv6HNmuvcbR\nWff8ndLXQjmU8T5iqVeoL8WW5KUa1cvyVKbthHA7D0VKB4Nh2NvCmVUIODs5d/z0\nJ4nc4NNTW0Y70fYJ5HxTei9fijtn8U+J2O4v5Kgx2U/3EzBrW7elIy+1p2HTfWmX\nFQIDAQAB\n-----END PUBLIC KEY-----\n"
+        }
+      },
+      "input": {
+        "type": "string",
+        "text": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.G-GCRZX-ztFH3C5drRwHxIy1u0xmpR30S99L5dVZMJyfKOm6ggErRMgXGGQwItdUro2Wgq4VoltOublIUoQiVgz58l0kn7K3_p06cp6JiIObahQWj6b-8zx9Azly_kb985RubpSEJy6t0Kj32XmZuVvWhxCaCPntK6Fpt9_jgI90eypnJaeQ14H9uQo1iklLKOQuB6aesBLsqKhQ5rOlqCo7Du2ryLgzkENT5L7bghgN8RhZtvdEoMV_vuFUq3TvQsauLRr_hSIoOItlALDNob51R71fO7z5S-BftpKrZOA_G_gR6WSvzjda2Kn12-faWwTOaUfkninGi-CKJemA6g"
+      },
+      "expected": {
+        "error": "E_CRYPTO"
+      }
+    },
+    {
+      "name": "crit header refused",
+      "args": {
+        "key": {
+          "encoding": "utf8",
+          "value": "a-string-secret-at-least-256-bits-long"
+        }
+      },
+      "input": {
+        "type": "string",
+        "text": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImNyaXQiOlsiZXhwIl19.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.7erP7weJl3KDjZ5S-exVWG_EQgYi3Ywp821ik_4slSs"
+      },
+      "expected": {
+        "error": "E_CRYPTO"
+      }
+    },
+    {
+      "name": "ES256 wrong signature length",
+      "args": {
+        "algorithm": "ES256",
+        "key": {
+          "encoding": "utf8",
+          "value": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEk8Ns6rY09LV73ty7xHjl3p0tmnkL\nI+sEU6sARfQAUfPCmMWWl051i+M1T1tuKvHxJXuCL6SNjA1tzmh4x0z/jw==\n-----END PUBLIC KEY-----\n"
+        }
+      },
+      "input": {
+        "type": "string",
+        "text": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.HLsT-zSc-Bz5oyNwIpIaC6y8q-3Oa1iGad6yXuGwpNdsNJMEC0PfRs1Q24_MJ7D6dMg9oVD9pxz9g0ttVu29"
+      },
+      "expected": {
+        "error": "E_CRYPTO"
+      }
+    },
+    {
+      "name": "RS256 wrong key",
+      "args": {
+        "algorithm": "RS256",
+        "key": {
+          "encoding": "utf8",
+          "value": "-----BEGIN PUBLIC KEY-----\nMIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCqkYCfTFWxUkwC4rYdP01r2i7Z\n6p7DJ4qyG+U6Qi7b04683m7jzkFhHnuU+JkJQAWkYlxvu6JEem+w+2N9g1gWBgfk\nFGRrfNt5CdX/rfl8OCzpLHEeFzH6wpKLUwEoo7xZKB29hYpQ35T0MekuytwUk684\n6D961O6OF12UTleDEwIDAQAB\n-----END PUBLIC KEY-----\n"
+        }
+      },
+      "input": {
+        "type": "string",
+        "text": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.G-GCRZX-ztFH3C5drRwHxIy1u0xmpR30S99L5dVZMJyfKOm6ggErRMgXGGQwItdUro2Wgq4VoltOublIUoQiVgz58l0kn7K3_p06cp6JiIObahQWj6b-8zx9Azly_kb985RubpSEJy6t0Kj32XmZuVvWhxCaCPntK6Fpt9_jgI90eypnJaeQ14H9uQo1iklLKOQuB6aesBLsqKhQ5rOlqCo7Du2ryLgzkENT5L7bghgN8RhZtvdEoMV_vuFUq3TvQsauLRr_hSIoOItlALDNob51R71fO7z5S-BftpKrZOA_G_gR6WSvzjda2Kn12-faWwTOaUfkninGi-CKJemA6g"
+      },
+      "expected": {
+        "error": "E_CRYPTO"
+      },
+      "warnings": [
+        "W_INSECURE"
+      ]
+    },
+    {
+      "name": "EdDSA tampered",
+      "args": {
+        "algorithm": "EdDSA",
+        "key": {
+          "encoding": "utf8",
+          "value": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAXGHecJVYRylq6RaOWnZaucLKqcs2HnaS2EeQFwZa2vE=\n-----END PUBLIC KEY-----\n"
+        }
+      },
+      "input": {
+        "type": "string",
+        "text": "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.TUQGNwsWJkK7iiSUbViqHtV1I2pK1vin7UMJMp3QZeCFTiJsMUvsrLOzFYzS4bISk9OyqMoMKuj3GID-aCvIAA"
+      },
+      "expected": {
+        "error": "E_CRYPTO"
+      }
+    },
+    {
+      "name": "key is not a key",
+      "args": {
+        "algorithm": "RS256",
+        "key": {
+          "encoding": "utf8",
+          "value": "-----BEGIN PUBLIC KEY-----\nAAAA\n-----END PUBLIC KEY-----\n"
+        }
+      },
+      "input": {
+        "type": "string",
+        "text": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.G-GCRZX-ztFH3C5drRwHxIy1u0xmpR30S99L5dVZMJyfKOm6ggErRMgXGGQwItdUro2Wgq4VoltOublIUoQiVgz58l0kn7K3_p06cp6JiIObahQWj6b-8zx9Azly_kb985RubpSEJy6t0Kj32XmZuVvWhxCaCPntK6Fpt9_jgI90eypnJaeQ14H9uQo1iklLKOQuB6aesBLsqKhQ5rOlqCo7Du2ryLgzkENT5L7bghgN8RhZtvdEoMV_vuFUq3TvQsauLRr_hSIoOItlALDNob51R71fO7z5S-BftpKrZOA_G_gR6WSvzjda2Kn12-faWwTOaUfkninGi-CKJemA6g"
+      },
+      "expected": {
+        "error": "E_CRYPTO"
+      }
+    },
+    {
+      "name": "X.509 certificate",
+      "args": {
+        "algorithm": "RS256",
+        "key": {
+          "encoding": "utf8",
+          "value": "-----BEGIN CERTIFICATE-----\nMIICpzCCAY+gAwIBAgIBATANBgkqhkiG9w0BAQsFADAXMRUwEwYDVQQDDAxVbmlD\naGVmIHRlc3QwHhcNMjYwMTAxMDAwMDAwWhcNMzUxMjMwMDAwMDAwWjAXMRUwEwYD\nVQQDDAxVbmlDaGVmIHRlc3QwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIB\nAQDF1gMRNMLtyKBXROsqM+ohmKy5mWMg7FKRvEeBJx6I7bs3FjSbuyRs9YiKQzRh\n4A5onhjl7g4n1nA8l4WPpMH2aS7ShAGwbmzVZA+fOvQG9aFw8QjrH0tYr7qHxRyQ\nSIQyGwc1HqqEj1b4jpdowKJ5PU1k5dN4fDZjA6jg92gOXbiTmJqASAMv4hYxo85g\nuS4W9FaZcOUjC/oc2a69xtFZ9/yd0tdCOZTxPmKpV6gvxZbkpRrVy/JUpu2EcDsP\nRUoHg2HY28KZVQg4Ozl3/PQnidzg01NbRjvR9gnkfFN6L1+KO2fxT4nY7i/kqDHZ\nT/cTMGtbt6UjL7WnYdN9aZcVAgMBAAEwDQYJKoZIhvcNAQELBQADggEBAB8B+twv\nMNpJfh1kjpgP1o7M+C4Fltz8alxS0j1a2iApj8Wsg9YKxW3+GVFuD47XSL61TOOG\naZ5l5c4psSG9gd4+ccDsbdr6QbP+HH7T+IaHvBJO7ifhCHaEwebV3DP5F1nxahFf\nVzk4684pda+D+SZOdUkDGZzWp57+JV18pc0K9XJwrps8fXAsl1NPbGcM7Irekmr/\nBaQGTd4Gss5h7xFi8NT/qlreOIi84mRggMhYWui2W8CfgqeEAAI3Rh+k78VHSzXz\nMGvc/ahOCAUIweWdcaKf4Cso3nxo6DU8Ki+v/eyX8iul9ZLoaH9Wf6O5ie1vMrqI\nqJU1liddQq3YFUM=\n-----END CERTIFICATE-----\n"
+        }
+      },
+      "input": {
+        "type": "string",
+        "text": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.G-GCRZX-ztFH3C5drRwHxIy1u0xmpR30S99L5dVZMJyfKOm6ggErRMgXGGQwItdUro2Wgq4VoltOublIUoQiVgz58l0kn7K3_p06cp6JiIObahQWj6b-8zx9Azly_kb985RubpSEJy6t0Kj32XmZuVvWhxCaCPntK6Fpt9_jgI90eypnJaeQ14H9uQo1iklLKOQuB6aesBLsqKhQ5rOlqCo7Du2ryLgzkENT5L7bghgN8RhZtvdEoMV_vuFUq3TvQsauLRr_hSIoOItlALDNob51R71fO7z5S-BftpKrZOA_G_gR6WSvzjda2Kn12-faWwTOaUfkninGi-CKJemA6g"
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      }
+    },
+    {
+      "name": "bad certificate",
+      "args": {
+        "algorithm": "RS256",
+        "key": {
+          "encoding": "utf8",
+          "value": "-----BEGIN CERTIFICATE-----\nAAAA\n-----END CERTIFICATE-----\n"
+        }
+      },
+      "input": {
+        "type": "string",
+        "text": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.G-GCRZX-ztFH3C5drRwHxIy1u0xmpR30S99L5dVZMJyfKOm6ggErRMgXGGQwItdUro2Wgq4VoltOublIUoQiVgz58l0kn7K3_p06cp6JiIObahQWj6b-8zx9Azly_kb985RubpSEJy6t0Kj32XmZuVvWhxCaCPntK6Fpt9_jgI90eypnJaeQ14H9uQo1iklLKOQuB6aesBLsqKhQ5rOlqCo7Du2ryLgzkENT5L7bghgN8RhZtvdEoMV_vuFUq3TvQsauLRr_hSIoOItlALDNob51R71fO7z5S-BftpKrZOA_G_gR6WSvzjda2Kn12-faWwTOaUfkninGi-CKJemA6g"
+      },
+      "expected": {
+        "error": "E_CRYPTO"
+      }
+    },
+    {
+      "name": "DSA public key refused",
+      "args": {
+        "algorithm": "RS256",
+        "key": {
+          "encoding": "utf8",
+          "value": "-----BEGIN PUBLIC KEY-----\nMIIDRjCCAjkGByqGSM44BAEwggIsAoIBAQCavao4HzMQdAyrVKh7rsCvCHRyaCYa\noMfhRgfJEwCa8QGcv/hOfl6f066ZY6oGngwZTyz8KZ2dxAK3ciXFxyrd0nH/fxPb\ne7eqYGGjjarV8gcdVjaO9WVtxcCrO4PoomZFaoUOpjoXZwxbvCGBQhdA+FwBCsQs\n8nrzd8O7mZPyY3BgeF/mJJIF98zR8cCHze89Z/j2rFrArCIlDHCdb4mecv6wC04u\ng+4dLe9kJtc+j8tLemXRr6PKZ3gHh/nzRWEajcsgkUul0IcKDONNS5E/EjaZZ8Uk\nPYzyp6NA4PFSF7kW42oZgqUhR0SHqLXWrmrdPycFAlDGsqqkeOixi6U9AiEAhus3\nJI7eV+JWha0qR5Y4s7zfXOJna7sMTsolSU/0PcUCggEAalgmF/pB8Dphm+1N/Yyd\npo5booyKpGLnybDCkIrHvsInYKWwc1cwtoqS1GpvODftY5VNXNf+m+h8dv+oTX4W\nKuAsgZ2oZ0YG6efP7qqDf1z8+OaztQ7GzknsI3QGu3eyhD/KswuCLTJ2uHYBg/Lm\n8bJbjcZ8xhtCa861PQT6qo3gG25cd+NTl/80Uv64b88XpCgpWMtQqr8b0YiRMTd2\nU4wlV4GtLObyt5Ii5gvtOWOfE/X1+YYj81gnlzhlivILbgru3E+t88dVV/G8xeeA\nbdYOVVMPXSVM2qKDTFXg8hpCtZFyjp+vmcmIvy6sre5djhKhFeqfZUNCnE5ped4R\nNwOCAQUAAoIBAFaXmyLSglFZcL4pO+no3p2O6iQaE1FInKC47iaTOZD2cBlwgkF5\nVnobQH1a3EgK2VBGB9sCLq73XnfLWbg/z5y/uhTw367+gXjvn3qDMMT36Q8e7J6V\nWixVN04z+DCOPajvE7qD303bqMK+luBeZOVVtGN4fgycvsiSgovQTTG9M/yRCsTB\nFQbEkwWreyw+qaAjHY5m+XhJF8e3LG2IJ0E6tBZwPLbgN200AsBaybXCBYuN3gxD\n5Z2Y+24x4LubUgg+nJFzovD5rhd2rVpuNHKL+MsnRIil6G3U/9ZnaN0l8spY90/u\nnuBh8arRjjhwx4JQ9qce4FhiGC44Ve+J2rg=\n-----END PUBLIC KEY-----\n"
+        }
+      },
+      "input": {
+        "type": "string",
+        "text": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.G-GCRZX-ztFH3C5drRwHxIy1u0xmpR30S99L5dVZMJyfKOm6ggErRMgXGGQwItdUro2Wgq4VoltOublIUoQiVgz58l0kn7K3_p06cp6JiIObahQWj6b-8zx9Azly_kb985RubpSEJy6t0Kj32XmZuVvWhxCaCPntK6Fpt9_jgI90eypnJaeQ14H9uQo1iklLKOQuB6aesBLsqKhQ5rOlqCo7Du2ryLgzkENT5L7bghgN8RhZtvdEoMV_vuFUq3TvQsauLRr_hSIoOItlALDNob51R71fO7z5S-BftpKrZOA_G_gR6WSvzjda2Kn12-faWwTOaUfkninGi-CKJemA6g"
+      },
+      "expected": {
+        "error": "E_CRYPTO"
+      }
+    },
+    {
+      "name": "malformed token",
+      "args": {
+        "key": {
+          "encoding": "utf8",
+          "value": "a-string-secret-at-least-256-bits-long"
+        }
+      },
+      "input": {
+        "type": "string",
+        "text": "abc"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    }
+  ]
+}

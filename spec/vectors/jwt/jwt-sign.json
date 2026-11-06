@@ -1,0 +1,543 @@
+{
+  "op": "jwt-sign",
+  "cases": [
+    {
+      "name": "HS256 default",
+      "args": {
+        "key": {
+          "encoding": "utf8",
+          "value": "a-string-secret-at-least-256-bits-long"
+        }
+      },
+      "input": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      },
+      "expected": {
+        "type": "string",
+        "text": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30"
+      }
+    },
+    {
+      "name": "HS384",
+      "args": {
+        "algorithm": "HS384",
+        "key": {
+          "encoding": "utf8",
+          "value": "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"
+        }
+      },
+      "input": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      },
+      "expected": {
+        "type": "string",
+        "text": "eyJhbGciOiJIUzM4NCIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.ThKOlEc4SkzzOp31BtE4J9S7A_DXmQk-5o1BPibHXN5LK70ZvwVTxPA8_du2ehbv"
+      }
+    },
+    {
+      "name": "HS512",
+      "args": {
+        "algorithm": "HS512",
+        "key": {
+          "encoding": "utf8",
+          "value": "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"
+        }
+      },
+      "input": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      },
+      "expected": {
+        "type": "string",
+        "text": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.J2DVn0owmlqazHP9o1LVzba52RsMLg0vYe9KtsIwb9QOzPBC-KvYcrdyGPdXHV7LsDZ6gEYcF7jHoqcGCmkneg"
+      }
+    },
+    {
+      "name": "HS256 hex key",
+      "args": {
+        "key": {
+          "encoding": "hex",
+          "value": "0323354b2b0fa5bc837e0665777ba68f5ab328e6f054c928a90f84b2d2502ebfd3fb5a92d20647ef968ab4c377623d223d2e2172052e4f08c0cd9af567d080a3"
+        }
+      },
+      "input": {
+        "type": "json",
+        "value": {
+          "iss": "joe",
+          "exp": 1300819380,
+          "http://example.com/is_root": true
+        }
+      },
+      "expected": {
+        "type": "string",
+        "text": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJqb2UiLCJleHAiOjEzMDA4MTkzODAsImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ.d6nMDXnJZfNNj-1o1e75s6d0six0lkLp5hSrGaz4o9A"
+      }
+    },
+    {
+      "name": "string input is parsed as JSON",
+      "args": {
+        "key": {
+          "encoding": "utf8",
+          "value": "a-string-secret-at-least-256-bits-long"
+        }
+      },
+      "input": {
+        "type": "string",
+        "text": "{\"sub\":\"1234567890\",\"name\":\"John Doe\",\"admin\":true,\"iat\":1516239022}"
+      },
+      "expected": {
+        "type": "string",
+        "text": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30"
+      }
+    },
+    {
+      "name": "extra header fields",
+      "args": {
+        "key": {
+          "encoding": "utf8",
+          "value": "a-string-secret-at-least-256-bits-long"
+        },
+        "header": "{\"kid\":\"k1\"}"
+      },
+      "input": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      },
+      "expected": {
+        "type": "string",
+        "text": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImsxIn0.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.ipht6xWQzkDn3_CzRq8060DuHBGtnAiZgzQ8q9cYpMg"
+      }
+    },
+    {
+      "name": "header may replace typ",
+      "args": {
+        "key": {
+          "encoding": "utf8",
+          "value": "a-string-secret-at-least-256-bits-long"
+        },
+        "header": "{\"typ\":\"at+jwt\"}"
+      },
+      "input": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      },
+      "expected": {
+        "type": "string",
+        "text": "eyJhbGciOiJIUzI1NiIsInR5cCI6ImF0K2p3dCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.S9QVKeqooCU7nRahQsPhnV7xOrkqsKB7YKQEReyaWT8"
+      }
+    },
+    {
+      "name": "non-ASCII claim",
+      "args": {
+        "key": {
+          "encoding": "utf8",
+          "value": "a-string-secret-at-least-256-bits-long"
+        }
+      },
+      "input": {
+        "type": "json",
+        "value": {
+          "name": "Zoë"
+        }
+      },
+      "expected": {
+        "type": "string",
+        "text": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiWm_DqyJ9.B94y13dkeUfeHzK8qD-LuRNGwpRgPL-n7OBbaGl3obQ"
+      }
+    },
+    {
+      "name": "short HMAC secret warns",
+      "args": {
+        "key": {
+          "encoding": "utf8",
+          "value": "secret"
+        }
+      },
+      "input": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      },
+      "expected": {
+        "type": "string",
+        "text": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.39jkN-bckg4fbZQEb0xHIxzYL9qI_g4c4WyzEYNHZok"
+      },
+      "warnings": [
+        "W_INSECURE"
+      ]
+    },
+    {
+      "name": "RS256",
+      "args": {
+        "algorithm": "RS256",
+        "key": {
+          "encoding": "utf8",
+          "value": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDF1gMRNMLtyKBX\nROsqM+ohmKy5mWMg7FKRvEeBJx6I7bs3FjSbuyRs9YiKQzRh4A5onhjl7g4n1nA8\nl4WPpMH2aS7ShAGwbmzVZA+fOvQG9aFw8QjrH0tYr7qHxRyQSIQyGwc1HqqEj1b4\njpdowKJ5PU1k5dN4fDZjA6jg92gOXbiTmJqASAMv4hYxo85guS4W9FaZcOUjC/oc\n2a69xtFZ9/yd0tdCOZTxPmKpV6gvxZbkpRrVy/JUpu2EcDsPRUoHg2HY28KZVQg4\nOzl3/PQnidzg01NbRjvR9gnkfFN6L1+KO2fxT4nY7i/kqDHZT/cTMGtbt6UjL7Wn\nYdN9aZcVAgMBAAECggEAGfIWVuRXiD3eoXNdcBx84UkXpgOy13eG4KwTqKGLxKOB\nARl9bssdXNjavl9P+GIdIaVSWJ1e5+SctaWdk5glA/8Jb/x2CECDL30++0ANDviZ\n4qkJ5WQmSoxJZ1L3iwinpbabvGC4NkhiPJjezJMu+72Jb+kgUdXggB3TwSVRVUjD\n7DA7wdueOXs9vh1Rm4+na3h3QLNQBIkrxrvLqHstMabYYe48+X8as2a+y+58N+jb\njE3zpJZHf7oq3R3Y63ftrwp+wGKRqkgfVO76YZ0VI2TZ8t0i/CmKN9SWDJG1fMJ1\nuuyP3XRwjard/DZhXBMeShwlfM+7ZNBkbhQPdLdnwQKBgQD70EXzyCFD8H+mdHmU\nmlY+OQ/PVghSNJ6iJPSwKKzDYRVYDLdGEcAWdGm6iEyOr2wPqJgED+1Y6t3d/MiC\nQTkFswFxP4L4+eTiTo6YcF4g8u0rd6W9+5OQrkNACwF8gVR55lXtp+YKnCBaboA/\nBRI4W1GLKW/vFHwrWdv5GzWnhQKBgQDJIAIlCKX8Lyrw2GLqExMOCPcAz1mpAaH2\nyJRLvxpr8r+dbNdVRTPSWLBA/nwRmL29hwEllvX6TYeTf2nT/SwDT5Z3vGx5TDnN\na6zygNSfqeefCsmhXkCrwP9eYam4IYNJFID9fPXfUeiuJK8QoUuGRPKx0qJ9Lptv\n5kY3hvYeUQKBgQDfx7IyuBqf5t16Dq5xWkrkVw9uwVT5wRtsmwz8c9k8dE1kh0Bk\nO6gKDIBdLX1jnA+bRsd5bLIPwAFVoqyJ3O6Q2wigHMIHAwTd/NQKMmnkPB5674RS\ndn0oKUVIZ791ZvWssv6QChKMQT0bQHImDxqnDLhFxJhdzkWevOeY1A51hQKBgCZL\nH91pPiE74dMlf//NTe14K39N+2ZAV1QjcIjTg/ZVq8IPfRhRKsK7/CMD0R+Qk1/I\nmqFLkt3rcQrWUZH5PC4NMzrs90JJDyBbhfxOJy2XLfCMH0PILEwHXRfdRHE4gESj\n0MNyzWWNtN2jQmnKLBUOf5732dQ30YSGtYvQ+H9hAoGBAN5sFWoipcNX3sVsJV+1\nSRuMCuabwQZUFiRy3ISakAARkrpW3bVc+lAAh8Q5GBS/anvkGb9bfoNVzAXPK5CH\nVtUrAv3OFYeN3s/BehkdyXPOlVPqLY7a3R/gbOx9KrSILi4rSuEaDV4JmpH9FLmb\nG7c1aXiG0jhtdIUbP260qHpP\n-----END PRIVATE KEY-----\n"
+        }
+      },
+      "input": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      },
+      "expected": {
+        "type": "string",
+        "text": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.G-GCRZX-ztFH3C5drRwHxIy1u0xmpR30S99L5dVZMJyfKOm6ggErRMgXGGQwItdUro2Wgq4VoltOublIUoQiVgz58l0kn7K3_p06cp6JiIObahQWj6b-8zx9Azly_kb985RubpSEJy6t0Kj32XmZuVvWhxCaCPntK6Fpt9_jgI90eypnJaeQ14H9uQo1iklLKOQuB6aesBLsqKhQ5rOlqCo7Du2ryLgzkENT5L7bghgN8RhZtvdEoMV_vuFUq3TvQsauLRr_hSIoOItlALDNob51R71fO7z5S-BftpKrZOA_G_gR6WSvzjda2Kn12-faWwTOaUfkninGi-CKJemA6g"
+      }
+    },
+    {
+      "name": "RS512",
+      "args": {
+        "algorithm": "RS512",
+        "key": {
+          "encoding": "utf8",
+          "value": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDF1gMRNMLtyKBX\nROsqM+ohmKy5mWMg7FKRvEeBJx6I7bs3FjSbuyRs9YiKQzRh4A5onhjl7g4n1nA8\nl4WPpMH2aS7ShAGwbmzVZA+fOvQG9aFw8QjrH0tYr7qHxRyQSIQyGwc1HqqEj1b4\njpdowKJ5PU1k5dN4fDZjA6jg92gOXbiTmJqASAMv4hYxo85guS4W9FaZcOUjC/oc\n2a69xtFZ9/yd0tdCOZTxPmKpV6gvxZbkpRrVy/JUpu2EcDsPRUoHg2HY28KZVQg4\nOzl3/PQnidzg01NbRjvR9gnkfFN6L1+KO2fxT4nY7i/kqDHZT/cTMGtbt6UjL7Wn\nYdN9aZcVAgMBAAECggEAGfIWVuRXiD3eoXNdcBx84UkXpgOy13eG4KwTqKGLxKOB\nARl9bssdXNjavl9P+GIdIaVSWJ1e5+SctaWdk5glA/8Jb/x2CECDL30++0ANDviZ\n4qkJ5WQmSoxJZ1L3iwinpbabvGC4NkhiPJjezJMu+72Jb+kgUdXggB3TwSVRVUjD\n7DA7wdueOXs9vh1Rm4+na3h3QLNQBIkrxrvLqHstMabYYe48+X8as2a+y+58N+jb\njE3zpJZHf7oq3R3Y63ftrwp+wGKRqkgfVO76YZ0VI2TZ8t0i/CmKN9SWDJG1fMJ1\nuuyP3XRwjard/DZhXBMeShwlfM+7ZNBkbhQPdLdnwQKBgQD70EXzyCFD8H+mdHmU\nmlY+OQ/PVghSNJ6iJPSwKKzDYRVYDLdGEcAWdGm6iEyOr2wPqJgED+1Y6t3d/MiC\nQTkFswFxP4L4+eTiTo6YcF4g8u0rd6W9+5OQrkNACwF8gVR55lXtp+YKnCBaboA/\nBRI4W1GLKW/vFHwrWdv5GzWnhQKBgQDJIAIlCKX8Lyrw2GLqExMOCPcAz1mpAaH2\nyJRLvxpr8r+dbNdVRTPSWLBA/nwRmL29hwEllvX6TYeTf2nT/SwDT5Z3vGx5TDnN\na6zygNSfqeefCsmhXkCrwP9eYam4IYNJFID9fPXfUeiuJK8QoUuGRPKx0qJ9Lptv\n5kY3hvYeUQKBgQDfx7IyuBqf5t16Dq5xWkrkVw9uwVT5wRtsmwz8c9k8dE1kh0Bk\nO6gKDIBdLX1jnA+bRsd5bLIPwAFVoqyJ3O6Q2wigHMIHAwTd/NQKMmnkPB5674RS\ndn0oKUVIZ791ZvWssv6QChKMQT0bQHImDxqnDLhFxJhdzkWevOeY1A51hQKBgCZL\nH91pPiE74dMlf//NTe14K39N+2ZAV1QjcIjTg/ZVq8IPfRhRKsK7/CMD0R+Qk1/I\nmqFLkt3rcQrWUZH5PC4NMzrs90JJDyBbhfxOJy2XLfCMH0PILEwHXRfdRHE4gESj\n0MNyzWWNtN2jQmnKLBUOf5732dQ30YSGtYvQ+H9hAoGBAN5sFWoipcNX3sVsJV+1\nSRuMCuabwQZUFiRy3ISakAARkrpW3bVc+lAAh8Q5GBS/anvkGb9bfoNVzAXPK5CH\nVtUrAv3OFYeN3s/BehkdyXPOlVPqLY7a3R/gbOx9KrSILi4rSuEaDV4JmpH9FLmb\nG7c1aXiG0jhtdIUbP260qHpP\n-----END PRIVATE KEY-----\n"
+        }
+      },
+      "input": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      },
+      "expected": {
+        "type": "string",
+        "text": "eyJhbGciOiJSUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.Fsf8_C-fng6jxcHkeucGJRCHR9URTo9CYDAOWs0Q5TJKd7nwuJKy01DtmkWCvWp9bRm6BBewvBwvDIgBdkOw6ZrFllMde00oR6BbfhdEBaAPcCIPPbq8X8Ergtm9wUKYRqxof9dMVURERzJCNscxIZyjDCVu3aGOgtbskhrnSYcBPGbyEz8-G5KG1eTCocZpkLtmd7jboBSqTN6FhPOWa8aJgXNupgcNcc7RgYn3hgmDosro_UaoaEoxXr0PWDqi64bYxnr2_UkQYmzFezQ-iSoI7g-y1UNIw9GPubhSPHKelUr5nNWJHWDGzTMIvDP4yE7Q2o4-vA4zQ8v_kcY9-g"
+      }
+    },
+    {
+      "name": "RSA key under 2048 bits warns",
+      "args": {
+        "algorithm": "RS256",
+        "key": {
+          "encoding": "utf8",
+          "value": "-----BEGIN PRIVATE KEY-----\nMIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAKqRgJ9MVbFSTALi\nth0/TWvaLtnqnsMnirIb5TpCLtvTjrzebuPOQWEee5T4mQlABaRiXG+7okR6b7D7\nY32DWBYGB+QUZGt823kJ1f+t+Xw4LOkscR4XMfrCkotTASijvFkoHb2FilDflPQx\n6S7K3BSTrzjoP3rU7o4XXZROV4MTAgMBAAECgYEAiwRH1o16kilG9lscnr3HNg3/\nfXBxsRD7Q6rkqxTh6ByHC3wm2Nh0BNm5U3NCF33sm0vnltFQsYswmQhq0BNKqGO2\nB2r2UbuDKo/Kus0hdRjMRptnt/NNno/RcPXw/1/jJrKzbsqJcsfABr3olFao/ZZ/\nOvf2G2alcRaFBduON0ECQQDYCXEWzGjQVrPBSC7xFOlgr1+is8yb5X015oeJxnPX\nID2bi/EWP9TNLMgzgdeD1xsnhIldIl+Z0ipL//4zMW5DAkEAyh7fHD1qHxb/QvMo\n+RuVbboZ74HaWR5zsE+Rh6LMaefF06BQPr+zDuUPGna0jr3KitOrzKKRgLd+fX4P\natoS8QJAeSV6TG2eTU6BiN7ArCKs6LIPsD6he77KY0J+OS2XYkjLI4HrVS3AWLpH\nHlMultk2egehvB99etXXMD1CwFR03wJABB7M/Y5i829MlNjQJQPi7/GzRaaoBNkS\nEq4MkW9IK4CGD+JcwGq4A723qRpyY9aKonneLrXBsZYMBhLjzZHUgQJAPFZJdOqg\ngUaQoFMqLeT1cJaZX6nATdw+HOnIa9LDtHhqNIZ2ywkTrn8v9C/ElU8Blo8mbaJr\n0vL2xhVOX386Pw==\n-----END PRIVATE KEY-----\n"
+        }
+      },
+      "input": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      },
+      "expected": {
+        "type": "string",
+        "text": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.RpHK3JznjNtaN7mSU80Y5w6p9zc1PTGas5BJSSzoadKXu2FpJd3Yp3k32b5SE8_l-aWxXjKEl_6OYykpvcpB9VGs6xc3eCJhbFT_072eRysWBaK-MgJ8CzdW3ot2HwOJG_7v6OE6VWgYlQVOdJKhwSzIoKAZbyvra5KrjYdKYdY"
+      },
+      "warnings": [
+        "W_INSECURE"
+      ]
+    },
+    {
+      "name": "EdDSA",
+      "args": {
+        "algorithm": "EdDSA",
+        "key": {
+          "encoding": "utf8",
+          "value": "-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEIE10AqsTMU/18JDLsxXKlnFadqLGzzjkAjpAOjIXlPWl\n-----END PRIVATE KEY-----\n"
+        }
+      },
+      "input": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      },
+      "expected": {
+        "type": "string",
+        "text": "eyJhbGciOiJFZERTQSIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.TUQGNwsWJkK7iiSUbViqHtV1I2pK1vin7UMJMp3QZeCFTiJsMUvsrLOzFYzS4bISk9OyqMoMKuj3GID-aCvIAQ"
+      }
+    },
+    {
+      "name": "none warns",
+      "args": {
+        "algorithm": "none"
+      },
+      "input": {
+        "type": "json",
+        "value": {
+          "a": 1
+        }
+      },
+      "expected": {
+        "type": "string",
+        "text": "eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJhIjoxfQ."
+      },
+      "warnings": [
+        "W_INSECURE"
+      ]
+    },
+    {
+      "name": "payload must be an object",
+      "args": {
+        "key": {
+          "encoding": "utf8",
+          "value": "a-string-secret-at-least-256-bits-long"
+        }
+      },
+      "input": {
+        "type": "json",
+        "value": [
+          1
+        ]
+      },
+      "expected": {
+        "error": "E_INPUT_TYPE"
+      }
+    },
+    {
+      "name": "empty HMAC secret",
+      "args": {},
+      "input": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "header not JSON",
+      "args": {
+        "key": {
+          "encoding": "utf8",
+          "value": "a-string-secret-at-least-256-bits-long"
+        },
+        "header": "kid"
+      },
+      "input": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "header not an object",
+      "args": {
+        "key": {
+          "encoding": "utf8",
+          "value": "a-string-secret-at-least-256-bits-long"
+        },
+        "header": "[]"
+      },
+      "input": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "header cannot change alg",
+      "args": {
+        "key": {
+          "encoding": "utf8",
+          "value": "a-string-secret-at-least-256-bits-long"
+        },
+        "header": "{\"alg\":\"none\"}"
+      },
+      "input": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "RS256 with an EC key",
+      "args": {
+        "algorithm": "RS256",
+        "key": {
+          "encoding": "utf8",
+          "value": "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQggUNfKi8M2huSO5pz\n8/pHnEIKkh8LkOaqQ6AEZRi/KrGhRANCAASTw2zqtjT0tXve3LvEeOXenS2aeQsj\n6wRTqwBF9ABR88KYxZaXTnWL4zVPW24q8fEle4IvpI2MDW3OaHjHTP+P\n-----END PRIVATE KEY-----\n"
+        }
+      },
+      "input": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      },
+      "expected": {
+        "error": "E_CRYPTO"
+      }
+    },
+    {
+      "name": "ES256 with a P-384 key",
+      "args": {
+        "algorithm": "ES256",
+        "key": {
+          "encoding": "utf8",
+          "value": "-----BEGIN PRIVATE KEY-----\nMIG2AgEAMBAGByqGSM49AgEGBSuBBAAiBIGeMIGbAgEBBDDsEDFKGFRxbXSqzxE+\nn0+7089MVHBV39uNe0xqTPPYEovq1WSaLlPhzWiNCINf9vmhZANiAASgDEMo9vmN\nnPllEJtRLikUDsgUuayla/wTneF3+YqrrZRoFcHY0Y8Jj9zcTLGPcBo3HTmMQgNY\nQx7752qHfJmpgNbv5F+yLo7+RosV0CEZZvyNhDpLGoJbHPywiMDdwDE=\n-----END PRIVATE KEY-----\n"
+        }
+      },
+      "input": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      },
+      "expected": {
+        "error": "E_CRYPTO"
+      }
+    },
+    {
+      "name": "EdDSA with an RSA key",
+      "args": {
+        "algorithm": "EdDSA",
+        "key": {
+          "encoding": "utf8",
+          "value": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDF1gMRNMLtyKBX\nROsqM+ohmKy5mWMg7FKRvEeBJx6I7bs3FjSbuyRs9YiKQzRh4A5onhjl7g4n1nA8\nl4WPpMH2aS7ShAGwbmzVZA+fOvQG9aFw8QjrH0tYr7qHxRyQSIQyGwc1HqqEj1b4\njpdowKJ5PU1k5dN4fDZjA6jg92gOXbiTmJqASAMv4hYxo85guS4W9FaZcOUjC/oc\n2a69xtFZ9/yd0tdCOZTxPmKpV6gvxZbkpRrVy/JUpu2EcDsPRUoHg2HY28KZVQg4\nOzl3/PQnidzg01NbRjvR9gnkfFN6L1+KO2fxT4nY7i/kqDHZT/cTMGtbt6UjL7Wn\nYdN9aZcVAgMBAAECggEAGfIWVuRXiD3eoXNdcBx84UkXpgOy13eG4KwTqKGLxKOB\nARl9bssdXNjavl9P+GIdIaVSWJ1e5+SctaWdk5glA/8Jb/x2CECDL30++0ANDviZ\n4qkJ5WQmSoxJZ1L3iwinpbabvGC4NkhiPJjezJMu+72Jb+kgUdXggB3TwSVRVUjD\n7DA7wdueOXs9vh1Rm4+na3h3QLNQBIkrxrvLqHstMabYYe48+X8as2a+y+58N+jb\njE3zpJZHf7oq3R3Y63ftrwp+wGKRqkgfVO76YZ0VI2TZ8t0i/CmKN9SWDJG1fMJ1\nuuyP3XRwjard/DZhXBMeShwlfM+7ZNBkbhQPdLdnwQKBgQD70EXzyCFD8H+mdHmU\nmlY+OQ/PVghSNJ6iJPSwKKzDYRVYDLdGEcAWdGm6iEyOr2wPqJgED+1Y6t3d/MiC\nQTkFswFxP4L4+eTiTo6YcF4g8u0rd6W9+5OQrkNACwF8gVR55lXtp+YKnCBaboA/\nBRI4W1GLKW/vFHwrWdv5GzWnhQKBgQDJIAIlCKX8Lyrw2GLqExMOCPcAz1mpAaH2\nyJRLvxpr8r+dbNdVRTPSWLBA/nwRmL29hwEllvX6TYeTf2nT/SwDT5Z3vGx5TDnN\na6zygNSfqeefCsmhXkCrwP9eYam4IYNJFID9fPXfUeiuJK8QoUuGRPKx0qJ9Lptv\n5kY3hvYeUQKBgQDfx7IyuBqf5t16Dq5xWkrkVw9uwVT5wRtsmwz8c9k8dE1kh0Bk\nO6gKDIBdLX1jnA+bRsd5bLIPwAFVoqyJ3O6Q2wigHMIHAwTd/NQKMmnkPB5674RS\ndn0oKUVIZ791ZvWssv6QChKMQT0bQHImDxqnDLhFxJhdzkWevOeY1A51hQKBgCZL\nH91pPiE74dMlf//NTe14K39N+2ZAV1QjcIjTg/ZVq8IPfRhRKsK7/CMD0R+Qk1/I\nmqFLkt3rcQrWUZH5PC4NMzrs90JJDyBbhfxOJy2XLfCMH0PILEwHXRfdRHE4gESj\n0MNyzWWNtN2jQmnKLBUOf5732dQ30YSGtYvQ+H9hAoGBAN5sFWoipcNX3sVsJV+1\nSRuMCuabwQZUFiRy3ISakAARkrpW3bVc+lAAh8Q5GBS/anvkGb9bfoNVzAXPK5CH\nVtUrAv3OFYeN3s/BehkdyXPOlVPqLY7a3R/gbOx9KrSILi4rSuEaDV4JmpH9FLmb\nG7c1aXiG0jhtdIUbP260qHpP\n-----END PRIVATE KEY-----\n"
+        }
+      },
+      "input": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      },
+      "expected": {
+        "error": "E_CRYPTO"
+      }
+    },
+    {
+      "name": "public key cannot sign",
+      "args": {
+        "algorithm": "RS256",
+        "key": {
+          "encoding": "utf8",
+          "value": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxdYDETTC7cigV0TrKjPq\nIZisuZljIOxSkbxHgSceiO27NxY0m7skbPWIikM0YeAOaJ4Y5e4OJ9ZwPJeFj6TB\n9mku0oQBsG5s1WQPnzr0BvWhcPEI6x9LWK+6h8UckEiEMhsHNR6qhI9W+I6XaMCi\neT1NZOXTeHw2YwOo4PdoDl24k5iagEgDL+IWMaPOYLkuFvRWmXDlIwv6HNmuvcbR\nWff8ndLXQjmU8T5iqVeoL8WW5KUa1cvyVKbthHA7D0VKB4Nh2NvCmVUIODs5d/z0\nJ4nc4NNTW0Y70fYJ5HxTei9fijtn8U+J2O4v5Kgx2U/3EzBrW7elIy+1p2HTfWmX\nFQIDAQAB\n-----END PUBLIC KEY-----\n"
+        }
+      },
+      "input": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      },
+      "expected": {
+        "error": "E_CRYPTO"
+      }
+    },
+    {
+      "name": "DSA private key refused",
+      "args": {
+        "algorithm": "RS256",
+        "key": {
+          "encoding": "utf8",
+          "value": "-----BEGIN PRIVATE KEY-----\nMIICZAIBADCCAjkGByqGSM44BAEwggIsAoIBAQCavao4HzMQdAyrVKh7rsCvCHRy\naCYaoMfhRgfJEwCa8QGcv/hOfl6f066ZY6oGngwZTyz8KZ2dxAK3ciXFxyrd0nH/\nfxPbe7eqYGGjjarV8gcdVjaO9WVtxcCrO4PoomZFaoUOpjoXZwxbvCGBQhdA+FwB\nCsQs8nrzd8O7mZPyY3BgeF/mJJIF98zR8cCHze89Z/j2rFrArCIlDHCdb4mecv6w\nC04ug+4dLe9kJtc+j8tLemXRr6PKZ3gHh/nzRWEajcsgkUul0IcKDONNS5E/EjaZ\nZ8UkPYzyp6NA4PFSF7kW42oZgqUhR0SHqLXWrmrdPycFAlDGsqqkeOixi6U9AiEA\nhus3JI7eV+JWha0qR5Y4s7zfXOJna7sMTsolSU/0PcUCggEAalgmF/pB8Dphm+1N\n/Yydpo5booyKpGLnybDCkIrHvsInYKWwc1cwtoqS1GpvODftY5VNXNf+m+h8dv+o\nTX4WKuAsgZ2oZ0YG6efP7qqDf1z8+OaztQ7GzknsI3QGu3eyhD/KswuCLTJ2uHYB\ng/Lm8bJbjcZ8xhtCa861PQT6qo3gG25cd+NTl/80Uv64b88XpCgpWMtQqr8b0YiR\nMTd2U4wlV4GtLObyt5Ii5gvtOWOfE/X1+YYj81gnlzhlivILbgru3E+t88dVV/G8\nxeeAbdYOVVMPXSVM2qKDTFXg8hpCtZFyjp+vmcmIvy6sre5djhKhFeqfZUNCnE5p\ned4RNwQiAiB7z0k5d/k89HlRS5swMYle6i5kkEr5lensxXcJwgv+GA==\n-----END PRIVATE KEY-----\n"
+        }
+      },
+      "input": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      },
+      "expected": {
+        "error": "E_CRYPTO"
+      }
+    },
+    {
+      "name": "unknown algorithm",
+      "args": {
+        "algorithm": "HS1"
+      },
+      "input": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

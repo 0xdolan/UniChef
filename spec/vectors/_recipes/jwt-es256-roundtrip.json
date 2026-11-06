@@ -1,0 +1,63 @@
+{
+  "recipe": {
+    "version": 1,
+    "name": "JWT ES256 round trip",
+    "description": "ES256 signatures are randomised, so sign then verify with the public key.",
+    "steps": [
+      {
+        "op": "jwt-sign",
+        "args": {
+          "algorithm": "ES256",
+          "key": {
+            "encoding": "utf8",
+            "value": "-----BEGIN PRIVATE KEY-----\nMIGHAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBG0wawIBAQQggUNfKi8M2huSO5pz\n8/pHnEIKkh8LkOaqQ6AEZRi/KrGhRANCAASTw2zqtjT0tXve3LvEeOXenS2aeQsj\n6wRTqwBF9ABR88KYxZaXTnWL4zVPW24q8fEle4IvpI2MDW3OaHjHTP+P\n-----END PRIVATE KEY-----\n"
+          }
+        }
+      },
+      {
+        "op": "jwt-verify",
+        "args": {
+          "algorithm": "ES256",
+          "key": {
+            "encoding": "utf8",
+            "value": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEk8Ns6rY09LV73ty7xHjl3p0tmnkL\nI+sEU6sARfQAUfPCmMWWl051i+M1T1tuKvHxJXuCL6SNjA1tzmh4x0z/jw==\n-----END PUBLIC KEY-----\n"
+          }
+        }
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "claims",
+      "input": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "sub": "1234567890",
+          "name": "John Doe",
+          "admin": true,
+          "iat": 1516239022
+        }
+      }
+    },
+    {
+      "name": "empty object",
+      "input": {
+        "type": "json",
+        "value": {}
+      },
+      "expected": {
+        "type": "json",
+        "value": {}
+      }
+    }
+  ]
+}
