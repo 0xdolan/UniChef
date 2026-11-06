@@ -1,0 +1,126 @@
+{
+  "op": "to-code-points",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "U+ by default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Aé😀"
+      },
+      "expected": {
+        "type": "string",
+        "text": "U+0041 U+00E9 U+1F600"
+      }
+    },
+    {
+      "name": "hex",
+      "args": {
+        "format": "hex"
+      },
+      "input": {
+        "type": "string",
+        "text": "A😀"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0041 1F600"
+      }
+    },
+    {
+      "name": "0x",
+      "args": {
+        "format": "0x"
+      },
+      "input": {
+        "type": "string",
+        "text": "A"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0x0041"
+      }
+    },
+    {
+      "name": "decimal, comma",
+      "args": {
+        "format": "decimal",
+        "delimiter": "comma"
+      },
+      "input": {
+        "type": "string",
+        "text": "Aé"
+      },
+      "expected": {
+        "type": "string",
+        "text": "65,233"
+      }
+    },
+    {
+      "name": "newline",
+      "args": {
+        "delimiter": "newline"
+      },
+      "input": {
+        "type": "string",
+        "text": "ab"
+      },
+      "expected": {
+        "type": "string",
+        "text": "U+0061\nU+0062"
+      }
+    },
+    {
+      "name": "surrogate from a codepoints dish",
+      "args": {},
+      "input": {
+        "type": "codepoints",
+        "values": [
+          55296,
+          65
+        ]
+      },
+      "expected": {
+        "type": "string",
+        "text": "U+D800 U+0041"
+      }
+    },
+    {
+      "name": "NUL",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "\u0000"
+      },
+      "expected": {
+        "type": "string",
+        "text": "U+0000"
+      }
+    },
+    {
+      "name": "unknown delimiter",
+      "args": {
+        "delimiter": "tab"
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

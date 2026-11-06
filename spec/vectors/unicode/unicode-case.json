@@ -1,0 +1,142 @@
+{
+  "op": "unicode-case",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "upper with special casing",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "straße ﬁ"
+      },
+      "expected": {
+        "type": "string",
+        "text": "STRASSE FI"
+      }
+    },
+    {
+      "name": "lower with final sigma",
+      "args": {
+        "mode": "lower"
+      },
+      "input": {
+        "type": "string",
+        "text": "ΟΔΟΣ Σ"
+      },
+      "expected": {
+        "type": "string",
+        "text": "οδος σ"
+      }
+    },
+    {
+      "name": "title",
+      "args": {
+        "mode": "title"
+      },
+      "input": {
+        "type": "string",
+        "text": "hello wORLD ǆ"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Hello World ǅ"
+      }
+    },
+    {
+      "name": "Turkish upper",
+      "args": {
+        "locale": "tr"
+      },
+      "input": {
+        "type": "string",
+        "text": "istanbul"
+      },
+      "expected": {
+        "type": "string",
+        "text": "İSTANBUL"
+      }
+    },
+    {
+      "name": "Turkish lower",
+      "args": {
+        "mode": "lower",
+        "locale": "tr"
+      },
+      "input": {
+        "type": "string",
+        "text": "Iİ"
+      },
+      "expected": {
+        "type": "string",
+        "text": "ıi"
+      }
+    },
+    {
+      "name": "full fold",
+      "args": {
+        "mode": "fold"
+      },
+      "input": {
+        "type": "string",
+        "text": "Straße"
+      },
+      "expected": {
+        "type": "string",
+        "text": "strasse"
+      }
+    },
+    {
+      "name": "simple fold",
+      "args": {
+        "mode": "fold",
+        "simple": true
+      },
+      "input": {
+        "type": "string",
+        "text": "Straße K"
+      },
+      "expected": {
+        "type": "string",
+        "text": "straße k"
+      }
+    },
+    {
+      "name": "astral",
+      "args": {
+        "mode": "lower"
+      },
+      "input": {
+        "type": "string",
+        "text": "𐐀"
+      },
+      "expected": {
+        "type": "string",
+        "text": "𐐨"
+      }
+    },
+    {
+      "name": "unknown locale",
+      "args": {
+        "locale": "de"
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

@@ -8,8 +8,10 @@ from hypothesis import given
 from hypothesis import strategies as st
 
 from conftest import UCD_DIR, ucd_version
+from unichef.core.dish import Dish, Table
 from unichef.core.errors import UniChefError
-from unichef.unicode import case, confusables, data, names, props
+from unichef.core.runner import run_operation
+from unichef.unicode import case, confusables, data, names, normalize, props
 
 RAW = UCD_DIR / ucd_version()
 
@@ -300,3 +302,19 @@ def test_resolved_script_sets() -> None:
     assert confusables.resolved_script_set("aа") == frozenset()
     assert confusables.resolved_script_set("123") is None
     assert confusables.resolved_script_set("漢あ") == frozenset({"Jpan"})
+
+
+def test_decomposition_mapping() -> None:
+    assert normalize.decomposition(0xAC00) == ("", (0x1100, 0x1161))
+    assert normalize.decomposition(0xAC01) == ("", (0xAC00, 0x11A8))
+    assert normalize.decomposition(0x00BD) == ("<fraction>", (0x31, 0x2044, 0x32))
+    assert normalize.decomposition(0x41) is None
+
+
+def test_mixed_script_without_a_majority_script() -> None:
+    # Two Inherited marks whose Script_Extensions do not overlap: mixed, but no majority.
+    result = run_operation("analyse-characters", {}, Dish.of_string("゙҅"))
+    table = result.dish.value
+    assert isinstance(table, Table)
+    assert all("mixed-script" not in str(row[-1]) for row in table.rows)
+    assert confusables.resolved_script_set("゙҅") == frozenset()

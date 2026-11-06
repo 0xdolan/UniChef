@@ -1,0 +1,142 @@
+{
+  "op": "unescape-unicode",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "text without escapes",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "plain \\ text"
+      },
+      "expected": {
+        "type": "string",
+        "text": "plain \\ text"
+      }
+    },
+    {
+      "name": "surrogate pair",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "\\u00e9\\uD83D\\uDE00"
+      },
+      "expected": {
+        "type": "string",
+        "text": "é😀"
+      }
+    },
+    {
+      "name": "braces before four digits",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "\\u{1F600}\\u{41}"
+      },
+      "expected": {
+        "type": "string",
+        "text": "😀A"
+      }
+    },
+    {
+      "name": "all formats",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "U+0041 &#x42;&#67; %u00e9 \\U0001F600"
+      },
+      "expected": {
+        "type": "string",
+        "text": "A BC é 😀"
+      }
+    },
+    {
+      "name": "lone surrogate",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "\\uD83D x \\uDE00"
+      },
+      "expected": {
+        "type": "string",
+        "text": "� x �"
+      }
+    },
+    {
+      "name": "pair needs the same format",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "\\uD83D%uDE00"
+      },
+      "expected": {
+        "type": "string",
+        "text": "��"
+      }
+    },
+    {
+      "name": "above 10FFFF is left alone",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "\\u{110000} &#1114112;"
+      },
+      "expected": {
+        "type": "string",
+        "text": "\\u{110000} &#1114112;"
+      }
+    },
+    {
+      "name": "one format only",
+      "args": {
+        "format": "u-plus"
+      },
+      "input": {
+        "type": "string",
+        "text": "\\u0041 U+0041 U+1F600"
+      },
+      "expected": {
+        "type": "string",
+        "text": "\\u0041 A 😀"
+      }
+    },
+    {
+      "name": "percent-u pair",
+      "args": {
+        "format": "percent-u"
+      },
+      "input": {
+        "type": "string",
+        "text": "%uD83D%uDE00!"
+      },
+      "expected": {
+        "type": "string",
+        "text": "😀!"
+      }
+    },
+    {
+      "name": "unknown format",
+      "args": {
+        "format": "nope"
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

@@ -130,3 +130,131 @@ The output uses upper-case hex over the UTF-8 bytes of the input.
 - UTF-16 and UTF-32: a lone surrogate, a code point above U+10FFFF, or a trailing partial unit each becomes one U+FFFD.
 - `ascii`: each byte above 7F becomes U+FFFD.
 - A BOM is kept as U+FEFF in every encoding.
+
+### `to-binary`, `to-octal`, `to-decimal` (bytes → string)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `delimiter` | `space` \| `comma` \| `colon` \| `newline` \| `none` | `space` | Separator between bytes. `to-decimal` has no `none`. |
+
+Binary bytes are padded to 8 digits and octal bytes to 3. Decimal bytes are not padded.
+
+### `from-binary`, `from-octal`, `from-decimal` (string → bytes)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `delimiter` | `auto` or any delimiter of the matching `to-*` op | `auto` | How the input is split. |
+
+- `auto` splits on runs of whitespace and `,:;` and ignores empty tokens.
+- An explicit delimiter splits on exactly that character, so an empty token is an error.
+- `none` (binary and octal only) reads fixed groups of 8 or 3 digits. A length that is not a multiple of the group size is an error.
+- Each token is 1–8 binary, 1–3 octal or 1–3 decimal digits, with a value of at most 255. Anything else, including signs and prefixes, is `E_DECODE`.
+- Empty input gives empty bytes.
+
+### `html-entity-encode` (string → string)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `scope` | `special` \| `non-ascii` \| `all` | `special` | Which characters to encode: the five characters `& < > " '`, those plus every non-ASCII character, or every character. |
+| `format` | `named` \| `decimal` \| `hex` | `named` | The reference form. |
+
+- `named` uses the WHATWG names that end in `;` and stand for one code point. When several names exist, the shortest wins, and a tie goes to the name greatest in code-point order (`&lt;`, not `&LT;`). A character with no name falls back to hex.
+- Hex references use upper-case digits without padding (`&#xE9;`).
+- An astral character gets one reference for its code point, never a surrogate pair.
+
+### `html-entity-decode` (string → string)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `strict` | boolean | `false` | Fail with `E_DECODE` on a missing semicolon, an unknown `&name;`, or a numeric reference to an invalid code point. |
+
+Decoding follows the HTML tokenizer's character-reference rules for text content, using the pinned list in `data/html/`:
+
+- A named reference takes the longest known name. Legacy names may omit the `;`, so `&notit;` becomes `¬it;`.
+- `&#D` and `&#xH` may omit the `;`.
+- 0, surrogates and values above 10FFFF become U+FFFD. 80–9F map through windows-1252, so `&#128;` becomes `€`.
+- An `&` that starts no reference is kept as it is.
+
+## Operation arguments (unicode category)
+
+### `escape-unicode` (string → string)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `format` | `backslash-u` \| `backslash-u-braces` \| `backslash-big-u` \| `u-plus` \| `html-hex` \| `html-decimal` \| `percent-u` | `backslash-u` | `\uXXXX`, `\u{X}`, `\UXXXXXXXX`, `U+XXXX`, `&#xX;`, `&#D;` or `%uXXXX`. |
+| `scope` | `non-ascii` \| `all` \| `non-printable` | `non-ascii` | Which characters to escape. |
+
+- Hex digits are upper case.
+- `backslash-u` and `percent-u` write astral characters as surrogate pairs.
+- `non-printable` means General_Category C\*, Zl or Zp, Zs other than U+0020, or Default_Ignorable_Code_Point.
+
+### `unescape-unicode` (string → string)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `format` | `all` or any `escape-unicode` format | `all` | Which escapes to recognise. |
+
+- `\u{…}` takes 1–6 hex digits. `U+` takes 4–6. `&#x…;` and `&#…;` need the `;`.
+- Adjacent high and low surrogates of the same UTF-16 format (`\u` or `%u`) combine into one character. Any other surrogate becomes U+FFFD.
+- An escape above 10FFFF is left as it is.
+
+### `normalize`, `unicode-case`, `strip-diacritics`, `grapheme-split` (string → string)
+
+- `normalize`: `form` is `NFC` (default), `NFD`, `NFKC` or `NFKD` (UAX #15).
+- `unicode-case`:
+  - `mode` is `upper` (default), `lower`, `title` or `fold`.
+  - `locale` is `none`, `tr`, `az` or `lt`.
+  - `simple` switches `fold` to simple folding.
+  - Full mappings and Final_Sigma apply. `title` title-cases a cased character that no letter, mark or number precedes (case-ignorable characters such as apostrophes are skipped) and lower-cases the rest.
+- `strip-diacritics`:
+  - Applies NFD, removes each code point that is gc Mn, Script Inherited and Diacritic, then applies NFC.
+  - Script-specific marks, such as the Devanagari virama, are kept.
+  - Letters with no decomposition (`ø`, `ł`) are unchanged.
+- `grapheme-split`: joins the UAX #29 extended grapheme clusters with `delimiter` (default LF).
+
+### `to-code-points` (codepoints → string) and `from-code-points` (string → codepoints)
+
+- `to-code-points`:
+  - `format` is `u-plus` (`U+0041`), `hex` (`0041`), `0x` (`0x0041`) or `decimal` (`65`). Hex forms have at least 4 upper-case digits.
+  - `delimiter` is `space`, `comma` or `newline`.
+  - A surrogate in a `codepoints` dish is written as it is.
+- `from-code-points`:
+  - Splits on runs of whitespace, `,` and `;`.
+  - A `U+`, `u+`, `0x` or `0X` prefix always means hex. Bare tokens use `base` (`hex` by default, or `decimal`).
+  - A value above 10FFFF or a malformed token is `E_DECODE`.
+  - Surrogates are kept. They become U+FFFD only if the dish is later turned into text.
+
+### `count` (bytes → integer)
+
+`unit` is `bytes`, `utf16-units`, `code-points` (default), `graphemes` or `lines`.
+
+- Units other than `bytes` decode the input as UTF-8 first, so each ill-formed sequence counts as U+FFFD.
+- `lines` counts LF-separated lines. A final LF does not start a new line, and empty input has 0 lines.
+
+### `analyse-characters` (string → table)
+
+The columns are those of PRD §4.6. `granularity` is `codepoint` (default) or `grapheme`.
+
+Cell formats:
+
+| Column | Format |
+|---|---|
+| `name` | A correction alias first, then the name, then a control alias, then a label such as `<reserved-0378>`. |
+| `script`, `scx` | Four-letter script codes. `scx` codes are space-separated. |
+| `utf8`, `utf16` | Upper-case hex, space-separated. |
+| `decomposition` | The single-level mapping in UnicodeData style (`<compat> 0020 0308`), Hangul included. |
+| `char` | The character itself, with these exceptions. Controls, format characters, Zl, Zp, unassigned, private-use, surrogate, White_Space and default-ignorable characters show as `⟨name⟩`. A nonspacing mark at the start of a row gets U+25CC before it. |
+
+`flags`:
+
+- `zero-width` is U+180E, U+200B–U+200D, U+2060 or U+FEFF.
+- `unassigned` excludes noncharacters.
+- `confusable` means the character has a `confusables.txt` mapping.
+- `mixed-script` applies only when the UTS #39 resolved script set of the whole input is empty. It then marks the characters whose augmented script set lacks the majority Script. The majority is counted over characters whose Script is not Common or Inherited, and a tie goes to the smallest script code.
+
+In `grapheme` mode, each row is one cluster:
+
+- `index` is the inclusive code-point range `start-end`.
+- `cp`, `utf8` and `utf16` are joined with spaces.
+- The other per-code-point columns are joined with ` + `. A column that is empty for every code point stays empty.
+- The flags of the cluster are merged.

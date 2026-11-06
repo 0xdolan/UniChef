@@ -1,0 +1,528 @@
+{
+  "op": "analyse-characters",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "index",
+            "cp",
+            "char",
+            "name",
+            "gc",
+            "block",
+            "script",
+            "scx",
+            "age",
+            "bidi",
+            "ea",
+            "utf8",
+            "utf16",
+            "decomposition",
+            "flags"
+          ],
+          "rows": []
+        }
+      }
+    },
+    {
+      "name": "ASCII letter",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "index",
+            "cp",
+            "char",
+            "name",
+            "gc",
+            "block",
+            "script",
+            "scx",
+            "age",
+            "bidi",
+            "ea",
+            "utf8",
+            "utf16",
+            "decomposition",
+            "flags"
+          ],
+          "rows": [
+            [
+              0,
+              "U+0061",
+              "a",
+              "LATIN SMALL LETTER A",
+              "Ll",
+              "Basic Latin",
+              "Latn",
+              "Latn",
+              "1.1",
+              "L",
+              "Na",
+              "61",
+              "0061",
+              "",
+              ""
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "precomposed letter",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "é"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "index",
+            "cp",
+            "char",
+            "name",
+            "gc",
+            "block",
+            "script",
+            "scx",
+            "age",
+            "bidi",
+            "ea",
+            "utf8",
+            "utf16",
+            "decomposition",
+            "flags"
+          ],
+          "rows": [
+            [
+              0,
+              "U+00E9",
+              "é",
+              "LATIN SMALL LETTER E WITH ACUTE",
+              "Ll",
+              "Latin-1 Supplement",
+              "Latn",
+              "Latn",
+              "1.1",
+              "L",
+              "A",
+              "C3 A9",
+              "00E9",
+              "0065 0301",
+              ""
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "hidden characters use labels",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": " ​\n"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "index",
+            "cp",
+            "char",
+            "name",
+            "gc",
+            "block",
+            "script",
+            "scx",
+            "age",
+            "bidi",
+            "ea",
+            "utf8",
+            "utf16",
+            "decomposition",
+            "flags"
+          ],
+          "rows": [
+            [
+              0,
+              "U+0020",
+              "⟨SPACE⟩",
+              "SPACE",
+              "Zs",
+              "Basic Latin",
+              "Zyyy",
+              "Zyyy",
+              "1.1",
+              "WS",
+              "Na",
+              "20",
+              "0020",
+              "",
+              ""
+            ],
+            [
+              1,
+              "U+200B",
+              "⟨ZERO WIDTH SPACE⟩",
+              "ZERO WIDTH SPACE",
+              "Cf",
+              "General Punctuation",
+              "Zyyy",
+              "Zyyy",
+              "1.1",
+              "BN",
+              "N",
+              "E2 80 8B",
+              "200B",
+              "",
+              "zero-width,default-ignorable"
+            ],
+            [
+              2,
+              "U+000A",
+              "⟨LINE FEED⟩",
+              "LINE FEED",
+              "Cc",
+              "Basic Latin",
+              "Zyyy",
+              "Zyyy",
+              "1.1",
+              "B",
+              "N",
+              "0A",
+              "000A",
+              "",
+              ""
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "mixed script flags the minority",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "aaа"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "index",
+            "cp",
+            "char",
+            "name",
+            "gc",
+            "block",
+            "script",
+            "scx",
+            "age",
+            "bidi",
+            "ea",
+            "utf8",
+            "utf16",
+            "decomposition",
+            "flags"
+          ],
+          "rows": [
+            [
+              0,
+              "U+0061",
+              "a",
+              "LATIN SMALL LETTER A",
+              "Ll",
+              "Basic Latin",
+              "Latn",
+              "Latn",
+              "1.1",
+              "L",
+              "Na",
+              "61",
+              "0061",
+              "",
+              ""
+            ],
+            [
+              1,
+              "U+0061",
+              "a",
+              "LATIN SMALL LETTER A",
+              "Ll",
+              "Basic Latin",
+              "Latn",
+              "Latn",
+              "1.1",
+              "L",
+              "Na",
+              "61",
+              "0061",
+              "",
+              ""
+            ],
+            [
+              2,
+              "U+0430",
+              "а",
+              "CYRILLIC SMALL LETTER A",
+              "Ll",
+              "Cyrillic",
+              "Cyrl",
+              "Cyrl",
+              "1.1",
+              "L",
+              "A",
+              "D0 B0",
+              "0430",
+              "",
+              "confusable,mixed-script"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "combining mark gets a dotted circle",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "́"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "index",
+            "cp",
+            "char",
+            "name",
+            "gc",
+            "block",
+            "script",
+            "scx",
+            "age",
+            "bidi",
+            "ea",
+            "utf8",
+            "utf16",
+            "decomposition",
+            "flags"
+          ],
+          "rows": [
+            [
+              0,
+              "U+0301",
+              "◌́",
+              "COMBINING ACUTE ACCENT",
+              "Mn",
+              "Combining Diacritical Marks",
+              "Zinh",
+              "Cher Cyrl Grek Latn Osge Sunu Tale Todr",
+              "1.1",
+              "NSM",
+              "A",
+              "CC 81",
+              "0301",
+              "",
+              ""
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "Hangul decomposition",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "한"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "index",
+            "cp",
+            "char",
+            "name",
+            "gc",
+            "block",
+            "script",
+            "scx",
+            "age",
+            "bidi",
+            "ea",
+            "utf8",
+            "utf16",
+            "decomposition",
+            "flags"
+          ],
+          "rows": [
+            [
+              0,
+              "U+D55C",
+              "한",
+              "HANGUL SYLLABLE HAN",
+              "Lo",
+              "Hangul Syllables",
+              "Hang",
+              "Hang",
+              "2.0",
+              "L",
+              "W",
+              "ED 95 9C",
+              "D55C",
+              "D558 11AB",
+              ""
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "astral",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "😀"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "index",
+            "cp",
+            "char",
+            "name",
+            "gc",
+            "block",
+            "script",
+            "scx",
+            "age",
+            "bidi",
+            "ea",
+            "utf8",
+            "utf16",
+            "decomposition",
+            "flags"
+          ],
+          "rows": [
+            [
+              0,
+              "U+1F600",
+              "😀",
+              "GRINNING FACE",
+              "So",
+              "Emoticons",
+              "Zyyy",
+              "Zyyy",
+              "6.1",
+              "ON",
+              "W",
+              "F0 9F 98 80",
+              "D83D DE00",
+              "",
+              ""
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "grapheme granularity",
+      "args": {
+        "granularity": "grapheme"
+      },
+      "input": {
+        "type": "string",
+        "text": "é한"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "index",
+            "cp",
+            "char",
+            "name",
+            "gc",
+            "block",
+            "script",
+            "scx",
+            "age",
+            "bidi",
+            "ea",
+            "utf8",
+            "utf16",
+            "decomposition",
+            "flags"
+          ],
+          "rows": [
+            [
+              "0-1",
+              "U+0065 U+0301",
+              "é",
+              "LATIN SMALL LETTER E + COMBINING ACUTE ACCENT",
+              "Ll + Mn",
+              "Basic Latin + Combining Diacritical Marks",
+              "Latn + Zinh",
+              "Latn + Cher Cyrl Grek Latn Osge Sunu Tale Todr",
+              "1.1 + 1.1",
+              "L + NSM",
+              "Na + A",
+              "65 CC 81",
+              "0065 0301",
+              "",
+              "mixed-script"
+            ],
+            [
+              "2-2",
+              "U+D55C",
+              "한",
+              "HANGUL SYLLABLE HAN",
+              "Lo",
+              "Hangul Syllables",
+              "Hang",
+              "Hang",
+              "2.0",
+              "L",
+              "W",
+              "ED 95 9C",
+              "D55C",
+              "D558 11AB",
+              ""
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "unknown granularity",
+      "args": {
+        "granularity": "word"
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}
