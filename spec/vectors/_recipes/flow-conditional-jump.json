@@ -1,0 +1,80 @@
+{
+  "recipe": {
+    "version": 1,
+    "name": "Conditional jump loop",
+    "description": "Collapse a run of a by one per pass while the dish still contains aa; the jump allows at most 10 passes after the first.",
+    "steps": [
+      {
+        "op": "label",
+        "args": {
+          "name": "again"
+        }
+      },
+      {
+        "op": "find-replace",
+        "args": {
+          "pattern": "aa",
+          "replacement": "a",
+          "global": false
+        }
+      },
+      {
+        "op": "conditional-jump",
+        "args": {
+          "pattern": "aa",
+          "to": "again",
+          "max": 10
+        }
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "empty",
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "collapses fully",
+      "input": {
+        "type": "string",
+        "text": "aaaa"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a"
+      }
+    },
+    {
+      "name": "other text is kept",
+      "input": {
+        "type": "string",
+        "text": "baab"
+      },
+      "expected": {
+        "type": "string",
+        "text": "bab"
+      }
+    },
+    {
+      "name": "stops at the limit with a warning",
+      "input": {
+        "type": "string",
+        "text": "aaaaaaaaaaaaaaaaaaaa"
+      },
+      "expected": {
+        "type": "string",
+        "text": "aaaaaaaaa"
+      },
+      "warnings": [
+        "W_JUMP_LIMIT"
+      ]
+    }
+  ]
+}

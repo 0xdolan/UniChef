@@ -1,0 +1,123 @@
+{
+  "op": "unique-lines",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "keeps first occurrence order",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a\nb\na"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a\nb"
+      }
+    },
+    {
+      "name": "final LF is kept",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a\na\n"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a\n"
+      }
+    },
+    {
+      "name": "ignore case",
+      "args": {
+        "ignore_case": true
+      },
+      "input": {
+        "type": "string",
+        "text": "a\nA\nb"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a\nb"
+      }
+    },
+    {
+      "name": "count",
+      "args": {
+        "count": true
+      },
+      "input": {
+        "type": "string",
+        "text": "a\nb\na"
+      },
+      "expected": {
+        "type": "string",
+        "text": "2\ta\n1\tb"
+      }
+    },
+    {
+      "name": "ignore case and count keep the first spelling",
+      "args": {
+        "ignore_case": true,
+        "count": true
+      },
+      "input": {
+        "type": "string",
+        "text": "A\na\nb\na\n"
+      },
+      "expected": {
+        "type": "string",
+        "text": "3\tA\n1\tb\n"
+      }
+    },
+    {
+      "name": "full case folding: sharp s equals SS",
+      "args": {
+        "ignore_case": true
+      },
+      "input": {
+        "type": "string",
+        "text": "ß\nSS\nss"
+      },
+      "expected": {
+        "type": "string",
+        "text": "ß"
+      }
+    },
+    {
+      "name": "empty lines",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "\n\na"
+      },
+      "expected": {
+        "type": "string",
+        "text": "\na"
+      }
+    },
+    {
+      "name": "non-boolean count",
+      "args": {
+        "count": "yes"
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

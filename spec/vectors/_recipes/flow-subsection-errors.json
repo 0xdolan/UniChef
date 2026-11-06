@@ -1,0 +1,29 @@
+{
+  "recipe": {
+    "version": 1,
+    "name": "Subsection errors",
+    "description": "A group past the pattern's groups is an argument error.",
+    "steps": [
+      {
+        "op": "subsection",
+        "args": {
+          "pattern": "(a)",
+          "group": 2,
+          "steps": []
+        }
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "group out of range",
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

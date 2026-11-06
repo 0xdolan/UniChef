@@ -1,0 +1,149 @@
+{
+  "op": "sort-lines",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "ascending",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "b\na\nc"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a\nb\nc"
+      }
+    },
+    {
+      "name": "final LF is kept",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "b\na\n"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a\nb\n"
+      }
+    },
+    {
+      "name": "code point order, not collation",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a\nB\nÄ\nb"
+      },
+      "expected": {
+        "type": "string",
+        "text": "B\na\nb\nÄ"
+      }
+    },
+    {
+      "name": "astral after BMP (not UTF-16 order)",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "😀\n～"
+      },
+      "expected": {
+        "type": "string",
+        "text": "～\n😀"
+      }
+    },
+    {
+      "name": "descending",
+      "args": {
+        "order": "descending"
+      },
+      "input": {
+        "type": "string",
+        "text": "a\nc\nb"
+      },
+      "expected": {
+        "type": "string",
+        "text": "c\nb\na"
+      }
+    },
+    {
+      "name": "case-insensitive is stable",
+      "args": {
+        "key": "case-insensitive"
+      },
+      "input": {
+        "type": "string",
+        "text": "b\nA\na\nB"
+      },
+      "expected": {
+        "type": "string",
+        "text": "A\na\nb\nB"
+      }
+    },
+    {
+      "name": "descending keeps equal lines in input order",
+      "args": {
+        "key": "case-insensitive",
+        "order": "descending"
+      },
+      "input": {
+        "type": "string",
+        "text": "b\nA\na"
+      },
+      "expected": {
+        "type": "string",
+        "text": "b\nA\na"
+      }
+    },
+    {
+      "name": "numeric; lines without a number go last",
+      "args": {
+        "key": "numeric"
+      },
+      "input": {
+        "type": "string",
+        "text": "10\nx\n9\n-1.5\n"
+      },
+      "expected": {
+        "type": "string",
+        "text": "-1.5\n9\n10\nx\n"
+      }
+    },
+    {
+      "name": "length in code points",
+      "args": {
+        "key": "length"
+      },
+      "input": {
+        "type": "string",
+        "text": "ccc\n😀\nbb\nd"
+      },
+      "expected": {
+        "type": "string",
+        "text": "😀\nd\nbb\nccc"
+      }
+    },
+    {
+      "name": "unknown key",
+      "args": {
+        "key": "random"
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

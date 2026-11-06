@@ -1,0 +1,178 @@
+{
+  "op": "regex-extract",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {
+        "pattern": "a"
+      },
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "all matches",
+      "args": {
+        "pattern": "\\d+"
+      },
+      "input": {
+        "type": "string",
+        "text": "a1b22c333"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1\n22\n333"
+      }
+    },
+    {
+      "name": "separator",
+      "args": {
+        "pattern": "\\d+",
+        "separator": ","
+      },
+      "input": {
+        "type": "string",
+        "text": "a1b22c333"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1,22,333"
+      }
+    },
+    {
+      "name": "capture group",
+      "args": {
+        "pattern": "(\\w)=(\\d)",
+        "group": 2
+      },
+      "input": {
+        "type": "string",
+        "text": "a=1 b=2"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1\n2"
+      }
+    },
+    {
+      "name": "no match",
+      "args": {
+        "pattern": "z"
+      },
+      "input": {
+        "type": "string",
+        "text": "abc"
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "non-participating group gives empty",
+      "args": {
+        "pattern": "(a)|b",
+        "group": 1,
+        "separator": ","
+      },
+      "input": {
+        "type": "string",
+        "text": "ab"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a,"
+      }
+    },
+    {
+      "name": "empty matches count",
+      "args": {
+        "pattern": "x*",
+        "separator": ","
+      },
+      "input": {
+        "type": "string",
+        "text": "ab"
+      },
+      "expected": {
+        "type": "string",
+        "text": ",,"
+      }
+    },
+    {
+      "name": "script property",
+      "args": {
+        "pattern": "\\p{sc=Grek}+"
+      },
+      "input": {
+        "type": "string",
+        "text": "abc αβγ δ"
+      },
+      "expected": {
+        "type": "string",
+        "text": "αβγ\nδ"
+      }
+    },
+    {
+      "name": "flag i",
+      "args": {
+        "pattern": "é",
+        "flags": "i"
+      },
+      "input": {
+        "type": "string",
+        "text": "É é e"
+      },
+      "expected": {
+        "type": "string",
+        "text": "É\né"
+      }
+    },
+    {
+      "name": "\\w is Unicode-aware",
+      "args": {
+        "pattern": "\\w+"
+      },
+      "input": {
+        "type": "string",
+        "text": "naïve ١٢ _x-"
+      },
+      "expected": {
+        "type": "string",
+        "text": "naïve\n١٢\n_x"
+      }
+    },
+    {
+      "name": "group out of range",
+      "args": {
+        "pattern": "(a)",
+        "group": 2
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "bare script name is not a property",
+      "args": {
+        "pattern": "\\p{Greek}"
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

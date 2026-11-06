@@ -1,0 +1,116 @@
+{
+  "op": "join",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "default comma",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a\nb\nc"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a,b,c"
+      }
+    },
+    {
+      "name": "final LF is dropped",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a\nb\n"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a,b"
+      }
+    },
+    {
+      "name": "custom delimiter",
+      "args": {
+        "delimiter": " | "
+      },
+      "input": {
+        "type": "string",
+        "text": "a\nb"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a | b"
+      }
+    },
+    {
+      "name": "single line",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "abc"
+      },
+      "expected": {
+        "type": "string",
+        "text": "abc"
+      }
+    },
+    {
+      "name": "a lone LF is one empty line",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "\n"
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "empty lines are kept",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a\n\nb"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a,,b"
+      }
+    },
+    {
+      "name": "CR is not a line separator",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a\r\nb"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a\r,b"
+      }
+    },
+    {
+      "name": "non-string delimiter",
+      "args": {
+        "delimiter": 5
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}
