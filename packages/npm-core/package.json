@@ -4,17 +4,37 @@
   "description": "Unicode-first data transformation core: recipes, operations and the Unicode engine.",
   "type": "module",
   "license": "GPL-3.0-or-later",
-  "repository": { "type": "git", "url": "git+https://github.com/0xdolan/unichef.git", "directory": "packages/npm-core" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/0xdolan/unichef.git",
+    "directory": "packages/npm-core"
+  },
   "homepage": "https://0xdolan.github.io/unichef/",
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22"
+  },
   "sideEffects": false,
   "exports": {
-    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" },
-    "./ops": { "types": "./dist/ops/registry.d.ts", "import": "./dist/ops/registry.js" },
-    "./unicode": { "types": "./dist/unicode/index.d.ts", "import": "./dist/unicode/index.js" },
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./ops": {
+      "types": "./dist/ops/registry.d.ts",
+      "import": "./dist/ops/registry.js"
+    },
+    "./unicode": {
+      "types": "./dist/unicode/index.d.ts",
+      "import": "./dist/unicode/index.js"
+    },
     "./data/*": "./data/*"
   },
-  "files": ["dist", "data", "README.md", "LICENSE"],
+  "files": [
+    "dist",
+    "data",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
@@ -31,5 +51,8 @@
     "fast-check": "4.10.2",
     "vitest": "5.1.0"
   },
-  "publishConfig": { "access": "public", "provenance": true }
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
 }
