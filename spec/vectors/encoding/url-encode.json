@@ -1,0 +1,118 @@
+{
+  "op": "url-encode",
+  "cases": [
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "component keeps unreserved",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "AZaz09-._~"
+      },
+      "expected": {
+        "type": "string",
+        "text": "AZaz09-._~"
+      }
+    },
+    {
+      "name": "component encodes reserved and space",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a b&c=d/e?"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a%20b%26c%3Dd%2Fe%3F"
+      }
+    },
+    {
+      "name": "non-BMP U+1F600",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "😀"
+      },
+      "expected": {
+        "type": "string",
+        "text": "%F0%9F%98%80"
+      }
+    },
+    {
+      "name": "non-ASCII BMP",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "café"
+      },
+      "expected": {
+        "type": "string",
+        "text": "caf%C3%A9"
+      }
+    },
+    {
+      "name": "lone surrogate becomes U+FFFD",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "\ud800"
+      },
+      "expected": {
+        "type": "string",
+        "text": "%EF%BF%BD"
+      }
+    },
+    {
+      "name": "mode all",
+      "args": {
+        "mode": "all"
+      },
+      "input": {
+        "type": "string",
+        "text": "Az~"
+      },
+      "expected": {
+        "type": "string",
+        "text": "%41%7A%7E"
+      }
+    },
+    {
+      "name": "mode reserved-only",
+      "args": {
+        "mode": "reserved-only"
+      },
+      "input": {
+        "type": "string",
+        "text": "a b/c?d=é%"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a b%2Fc%3Fd%3Dé%25"
+      }
+    },
+    {
+      "name": "error: unknown mode",
+      "args": {
+        "mode": "form"
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

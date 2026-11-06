@@ -1,0 +1,180 @@
+{
+  "op": "from-hex",
+  "cases": [
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": ""
+      }
+    },
+    {
+      "name": "auto: spaced",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "66 6f 6f"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "666f6f"
+      }
+    },
+    {
+      "name": "auto: mixed case, no delimiter",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "F09f9880"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "f09f9880"
+      }
+    },
+    {
+      "name": "auto: 0x prefixes and commas",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "0x66, 0x6F"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "666f"
+      }
+    },
+    {
+      "name": "auto: \\x prefixes",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "\\x66\\x6f"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "666f"
+      }
+    },
+    {
+      "name": "auto: colon and newline",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "de:ad\nbe:ef"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "deadbeef"
+      }
+    },
+    {
+      "name": "explicit colon",
+      "args": {
+        "delimiter": "colon"
+      },
+      "input": {
+        "type": "string",
+        "text": "de:ad:be:ef"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "deadbeef"
+      }
+    },
+    {
+      "name": "explicit 0x",
+      "args": {
+        "delimiter": "0x"
+      },
+      "input": {
+        "type": "string",
+        "text": "0x660x6f"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "666f"
+      }
+    },
+    {
+      "name": "explicit none",
+      "args": {
+        "delimiter": "none"
+      },
+      "input": {
+        "type": "string",
+        "text": "deadbeef"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "deadbeef"
+      }
+    },
+    {
+      "name": "error: odd digit count",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "666"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: non-hex character",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "6g"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: explicit colon rejects single digit",
+      "args": {
+        "delimiter": "colon"
+      },
+      "input": {
+        "type": "string",
+        "text": "de:a:be"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: explicit space rejects double space",
+      "args": {
+        "delimiter": "space"
+      },
+      "input": {
+        "type": "string",
+        "text": "de  ad"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: unknown delimiter",
+      "args": {
+        "delimiter": "tab"
+      },
+      "input": {
+        "type": "string",
+        "text": "00"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}
