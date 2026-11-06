@@ -1,0 +1,183 @@
+{
+  "op": "from-base64",
+  "cases": [
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": ""
+      }
+    },
+    {
+      "name": "ascii",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Zm9vYmFy"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "666f6f626172"
+      }
+    },
+    {
+      "name": "padded tail",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Zm8="
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "666f"
+      }
+    },
+    {
+      "name": "non-BMP U+1F600",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "8J+YgA=="
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "f09f9880"
+      }
+    },
+    {
+      "name": "non-strict ignores whitespace and junk",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Zm9v\nYm Fy!"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "666f6f626172"
+      }
+    },
+    {
+      "name": "non-strict accepts missing padding",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Zg"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "66"
+      }
+    },
+    {
+      "name": "url alphabet",
+      "args": {
+        "alphabet": "url"
+      },
+      "input": {
+        "type": "string",
+        "text": "-_8="
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "fbff"
+      }
+    },
+    {
+      "name": "custom alphabet",
+      "args": {
+        "alphabet": "custom",
+        "custom": "/+9876543210zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA."
+      },
+      "input": {
+        "type": "string",
+        "text": "mZD."
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "666f"
+      }
+    },
+    {
+      "name": "strict accepts canonical input",
+      "args": {
+        "strict": true
+      },
+      "input": {
+        "type": "string",
+        "text": "Zm9vYg=="
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "666f6f62"
+      }
+    },
+    {
+      "name": "error: strict rejects missing padding",
+      "args": {
+        "strict": true
+      },
+      "input": {
+        "type": "string",
+        "text": "Zg"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: strict rejects whitespace",
+      "args": {
+        "strict": true
+      },
+      "input": {
+        "type": "string",
+        "text": "Zm9v YmFy"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: strict rejects non-zero trailing bits",
+      "args": {
+        "strict": true
+      },
+      "input": {
+        "type": "string",
+        "text": "Zh=="
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: single trailing character",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Zm9vY"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: unknown alphabet",
+      "args": {
+        "alphabet": "base64"
+      },
+      "input": {
+        "type": "string",
+        "text": "Zg=="
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

@@ -1,0 +1,152 @@
+{
+  "op": "to-hex",
+  "cases": [
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "ascii, default space delimiter",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "666f6f"
+      },
+      "expected": {
+        "type": "string",
+        "text": "66 6f 6f"
+      }
+    },
+    {
+      "name": "non-BMP U+1F600",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "f09f9880"
+      },
+      "expected": {
+        "type": "string",
+        "text": "f0 9f 98 80"
+      }
+    },
+    {
+      "name": "delimiter none",
+      "args": {
+        "delimiter": "none"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "666f6f"
+      },
+      "expected": {
+        "type": "string",
+        "text": "666f6f"
+      }
+    },
+    {
+      "name": "delimiter comma",
+      "args": {
+        "delimiter": "comma"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "666f6f"
+      },
+      "expected": {
+        "type": "string",
+        "text": "66,6f,6f"
+      }
+    },
+    {
+      "name": "delimiter colon, upper case",
+      "args": {
+        "delimiter": "colon",
+        "case": "upper"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "fbff00"
+      },
+      "expected": {
+        "type": "string",
+        "text": "FB:FF:00"
+      }
+    },
+    {
+      "name": "delimiter newline",
+      "args": {
+        "delimiter": "newline"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "0a0d"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0a\n0d"
+      }
+    },
+    {
+      "name": "delimiter 0x prefixes each byte",
+      "args": {
+        "delimiter": "0x"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "666f"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0x660x6f"
+      }
+    },
+    {
+      "name": "delimiter \\x prefixes each byte",
+      "args": {
+        "delimiter": "\\x"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "666f"
+      },
+      "expected": {
+        "type": "string",
+        "text": "\\x66\\x6f"
+      }
+    },
+    {
+      "name": "error: unknown delimiter",
+      "args": {
+        "delimiter": "tab"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "00"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "error: unknown case",
+      "args": {
+        "case": "title"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "00"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

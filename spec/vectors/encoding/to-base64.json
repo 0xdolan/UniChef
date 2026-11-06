@@ -1,0 +1,189 @@
+{
+  "op": "to-base64",
+  "cases": [
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "ascii 'f'",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "66"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Zg=="
+      }
+    },
+    {
+      "name": "ascii 'fo'",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "666f"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Zm8="
+      }
+    },
+    {
+      "name": "ascii 'foobar'",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "666f6f626172"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Zm9vYmFy"
+      }
+    },
+    {
+      "name": "non-BMP U+1F600",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "f09f9880"
+      },
+      "expected": {
+        "type": "string",
+        "text": "8J+YgA=="
+      }
+    },
+    {
+      "name": "standard alphabet uses + and /",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "fbff"
+      },
+      "expected": {
+        "type": "string",
+        "text": "+/8="
+      }
+    },
+    {
+      "name": "url alphabet",
+      "args": {
+        "alphabet": "url"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "fbff"
+      },
+      "expected": {
+        "type": "string",
+        "text": "-_8="
+      }
+    },
+    {
+      "name": "no padding",
+      "args": {
+        "padding": false
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "666f"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Zm8"
+      }
+    },
+    {
+      "name": "custom 65-char alphabet with pad",
+      "args": {
+        "alphabet": "custom",
+        "custom": "/+9876543210zyxwvutsrqponmlkjihgfedcbaZYXWVUTSRQPONMLKJIHGFEDCBA."
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "666f"
+      },
+      "expected": {
+        "type": "string",
+        "text": "mZD."
+      }
+    },
+    {
+      "name": "custom 64-char alphabet defaults pad to '='",
+      "args": {
+        "alphabet": "custom",
+        "custom": "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "fbff"
+      },
+      "expected": {
+        "type": "string",
+        "text": "-_8="
+      }
+    },
+    {
+      "name": "error: custom alphabet too short",
+      "args": {
+        "alphabet": "custom",
+        "custom": "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "00"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "error: custom alphabet missing",
+      "args": {
+        "alphabet": "custom"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "00"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "error: custom alphabet has duplicates",
+      "args": {
+        "alphabet": "custom",
+        "custom": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "00"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "error: unknown arg",
+      "args": {
+        "pad": true
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "00"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

@@ -1,0 +1,265 @@
+{
+  "op": "decode-text",
+  "cases": [
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "ascii, utf-8 default",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "4869"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Hi"
+      }
+    },
+    {
+      "name": "non-BMP utf-8",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "f09f9880"
+      },
+      "expected": {
+        "type": "string",
+        "text": "😀"
+      }
+    },
+    {
+      "name": "utf-8 BOM preserved",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "efbbbf41"
+      },
+      "expected": {
+        "type": "string",
+        "text": "﻿A"
+      }
+    },
+    {
+      "name": "utf-8 overlong C0 80",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "c080"
+      },
+      "expected": {
+        "type": "string",
+        "text": "��"
+      }
+    },
+    {
+      "name": "utf-8 surrogate ED A0 80",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "eda080"
+      },
+      "expected": {
+        "type": "string",
+        "text": "���"
+      }
+    },
+    {
+      "name": "utf-8 above U+10FFFF",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "f4908080"
+      },
+      "expected": {
+        "type": "string",
+        "text": "����"
+      }
+    },
+    {
+      "name": "utf-8 bad continuation E0 80 41",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "e08041"
+      },
+      "expected": {
+        "type": "string",
+        "text": "��A"
+      }
+    },
+    {
+      "name": "utf-8 truncated at end E2 82",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "e282"
+      },
+      "expected": {
+        "type": "string",
+        "text": "�"
+      }
+    },
+    {
+      "name": "utf-16le surrogate pair",
+      "args": {
+        "encoding": "utf-16le"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "3dd800de"
+      },
+      "expected": {
+        "type": "string",
+        "text": "😀"
+      }
+    },
+    {
+      "name": "utf-16le BOM preserved",
+      "args": {
+        "encoding": "utf-16le"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "fffe4100"
+      },
+      "expected": {
+        "type": "string",
+        "text": "﻿A"
+      }
+    },
+    {
+      "name": "utf-16be lone surrogate and odd byte",
+      "args": {
+        "encoding": "utf-16be"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "d800004100"
+      },
+      "expected": {
+        "type": "string",
+        "text": "�A�"
+      }
+    },
+    {
+      "name": "utf-32le",
+      "args": {
+        "encoding": "utf-32le"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "00f60100"
+      },
+      "expected": {
+        "type": "string",
+        "text": "😀"
+      }
+    },
+    {
+      "name": "utf-32be out of range",
+      "args": {
+        "encoding": "utf-32be"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "00110000"
+      },
+      "expected": {
+        "type": "string",
+        "text": "�"
+      }
+    },
+    {
+      "name": "iso-8859-1",
+      "args": {
+        "encoding": "iso-8859-1"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "63616680e9"
+      },
+      "expected": {
+        "type": "string",
+        "text": "café"
+      }
+    },
+    {
+      "name": "windows-1252 WHATWG",
+      "args": {
+        "encoding": "windows-1252"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "80819d9f"
+      },
+      "expected": {
+        "type": "string",
+        "text": "€Ÿ"
+      }
+    },
+    {
+      "name": "ascii replaces high bytes",
+      "args": {
+        "encoding": "ascii"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "41ff"
+      },
+      "expected": {
+        "type": "string",
+        "text": "A�"
+      }
+    },
+    {
+      "name": "error: strict utf-8",
+      "args": {
+        "errors": "strict"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "c080"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: strict ascii",
+      "args": {
+        "encoding": "ascii",
+        "errors": "strict"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "41ff"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: unknown errors mode",
+      "args": {
+        "errors": "ignore"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "41"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

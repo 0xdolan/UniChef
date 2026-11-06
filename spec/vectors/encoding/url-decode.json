@@ -1,0 +1,128 @@
+{
+  "op": "url-decode",
+  "cases": [
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "ascii",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a%20b%26c"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a b&c"
+      }
+    },
+    {
+      "name": "lower-case hex digits",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "%2f%2F"
+      },
+      "expected": {
+        "type": "string",
+        "text": "//"
+      }
+    },
+    {
+      "name": "non-BMP U+1F600",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "%F0%9F%98%80"
+      },
+      "expected": {
+        "type": "string",
+        "text": "😀"
+      }
+    },
+    {
+      "name": "malformed escapes left as-is",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "100%25 %zz %4"
+      },
+      "expected": {
+        "type": "string",
+        "text": "100% %zz %4"
+      }
+    },
+    {
+      "name": "invalid UTF-8 replaced by maximal subpart",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "%C0%80%E2%82"
+      },
+      "expected": {
+        "type": "string",
+        "text": "���"
+      }
+    },
+    {
+      "name": "plus kept by default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a+b"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a+b"
+      }
+    },
+    {
+      "name": "plus-as-space",
+      "args": {
+        "plus-as-space": true
+      },
+      "input": {
+        "type": "string",
+        "text": "a+b%2B"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a b+"
+      }
+    },
+    {
+      "name": "literal non-ASCII passes through",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "café%21"
+      },
+      "expected": {
+        "type": "string",
+        "text": "café!"
+      }
+    },
+    {
+      "name": "error: unknown arg",
+      "args": {
+        "plusAsSpace": true
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}
