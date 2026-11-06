@@ -24,27 +24,36 @@ help: ## List the available targets
 		/^[a-zA-Z0-9_-]+:.*## / {printf "  %-12s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 bootstrap: ## Install Git LFS objects, pnpm and uv environments and the pre-commit hook
-	$(call not_yet,the TypeScript and Python cores)
+	corepack enable
+	pnpm install --frozen-lockfile
+	cd packages/python-cli && uv sync --locked --all-groups
 
 fmt: ## Format Python (ruff) and TypeScript (prettier) sources
-	$(call not_yet,the Python core)
+	cd packages/python-cli && uv run ruff check --fix . && uv run ruff format .
+	pnpm fmt
 
 lint: ## Run ruff, ESLint and Prettier checks as CI does
-	$(call not_yet,the Python core)
+	cd packages/python-cli && uv run ruff check . && uv run ruff format --check .
+	pnpm -r lint
+	pnpm fmt:check
 
 typecheck: ## Run mypy --strict and tsc --noEmit
-	$(call not_yet,the Python core)
+	cd packages/python-cli && uv run mypy
+	pnpm -r typecheck
 
 test-py: ## Run the Python unit and integration tests
-	$(call not_yet,the Python core)
+	cd packages/python-cli && uv run pytest
 
 test-ts: ## Run the TypeScript unit tests
-	$(call not_yet,the TypeScript core)
+	pnpm -r test
 
 test: test-py test-ts ## Run all unit and integration tests
 
 parity: ## Run the shared test vectors in both languages and cross-check results
-	$(call not_yet,the TypeScript core)
+	mkdir -p reports
+	cd packages/python-cli && uv run pytest tests/parity --no-cov --junitxml=../../reports/py-parity.xml
+	cd packages/npm-core && pnpm exec vitest run test/parity --reporter=default --reporter=junit --outputFile.junit=../../reports/ts-parity.xml
+	uv run scripts/parity-report.py reports/py-parity.xml reports/ts-parity.xml
 
 e2e: ## Run the Playwright end-to-end tests
 	$(call not_yet,the web app)
@@ -70,10 +79,10 @@ screenshots: ## Capture CLI and web screenshots
 	$(call not_yet,the assets step)
 
 build-py: ## Build the Python sdist and wheel into dist/
-	$(call not_yet,the CLI)
+	cd packages/python-cli && uv build --out-dir ../../dist/python
 
 build-npm: ## Build the @unichef/core npm package into dist/
-	$(call not_yet,the TypeScript core)
+	pnpm --filter @unichef/core build
 
 build-web: ## Build the web app into dist/
 	$(call not_yet,the web app)
@@ -97,6 +106,6 @@ docker-ci: ## Run CI and E2E inside the dev container
 	$(COMPOSE) run --rm e2e
 
 clean: ## Remove build output and caches
-	rm -rf dist build assets/branding/dist node_modules/.cache
+	rm -rf dist build reports assets/branding/dist node_modules/.cache
 	find . -type d \( -name __pycache__ -o -name .pytest_cache -o -name .mypy_cache \
 		-o -name .ruff_cache \) -prune -exec rm -rf {} +
