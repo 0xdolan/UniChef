@@ -208,6 +208,15 @@ describe('playground (FR-030)', () => {
     expect(link.getAttribute('href')).toMatch(/^#\/\?r=[\w-]+&i=[\w-]+$/);
   });
 
+  it('keeps example labels to one short line', async () => {
+    const { clip } = await import('../src/features/lab/PlaygroundPage.js');
+    expect(clip('Hello')).toBe('Hello');
+    expect(clip('index\tcp\nchar')).toBe('index cp char');
+    const long = clip('👋'.repeat(40));
+    expect(Array.from(long)).toHaveLength(32);
+    expect(long.endsWith('…')).toBe(true);
+  });
+
   it('says when the operation does not exist', async () => {
     open('#/playground/no-such-op');
     expect(await screen.findByText('There is no operation “no-such-op”.')).toBeTruthy();

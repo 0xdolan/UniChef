@@ -24,6 +24,15 @@ import styles from './Lab.module.css';
 import { useWorkbenchHref } from './links.js';
 
 export const RUN_MS = 300;
+const LABEL_CHARS = 32;
+
+/** One line of at most `LABEL_CHARS` code points, for an example button. */
+export function clip(text: string): string {
+  const chars = Array.from(text.replace(/\s+/g, ' '));
+  return chars.length > LABEL_CHARS
+    ? `${chars.slice(0, LABEL_CHARS - 1).join('')}…`
+    : chars.join('');
+}
 
 /** Starting input when an op has no examples. */
 export function sampleInput(op: Operation): string {
@@ -117,6 +126,7 @@ function Demo({
                 <button
                   type="button"
                   className={styles.button}
+                  title={`${example.input} → ${example.output}`}
                   onClick={() => {
                     const [loaded] = stepsFromDoc({
                       version: 1,
@@ -126,7 +136,7 @@ function Demo({
                     setInput(example.input);
                   }}
                 >
-                  {example.input} → {example.output}
+                  {clip(example.input)} → {clip(example.output)}
                 </button>
               </li>
             ))}
