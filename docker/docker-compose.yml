@@ -1,0 +1,35 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Local CI parity (PRD §11.7): docker compose -f docker/docker-compose.yml run --rm ci
+name: unichef
+x-dev: &dev
+  build: { context: .., dockerfile: docker/Dev.Dockerfile, target: dev }
+  volumes:
+    ['..:/workspace', 'uv-cache:/home/dev/.cache/uv', 'pnpm-store:/home/dev/.local/share/pnpm']
+  # The host's node_modules would point at the host's pnpm store; give the container its own.
+  tmpfs:
+    - /workspace/node_modules:uid=1000,gid=1000,exec
+    - /workspace/packages/npm-core/node_modules:uid=1000,gid=1000,exec
+  working_dir: /workspace
+  # Install the locked dependencies into the container's own environments, then run the command.
+  entrypoint:
+    - bash
+    - -c
+    - pnpm install --frozen-lockfile && (cd packages/python-cli && uv sync --locked --all-groups) && exec "$$@"
+    - setup
+services:
+  lint: { <<: *dev, command: make lint typecheck }
+  test-py: { <<: *dev, command: make test-py }
+  test-ts: { <<: *dev, command: make test-ts }
+  parity: { <<: *dev, command: make parity }
+  build: { <<: *dev, command: make build }
+  assets: { <<: *dev, command: make assets }
+  deb: { <<: *dev, user: root, command: make deb-check }
+  e2e:
+    image: mcr.microsoft.com/playwright:v1.56.0-noble # pin to the @playwright/test version in pnpm-lock
+    volumes: ['..:/workspace']
+    working_dir: /workspace
+    command: sh -c "corepack enable && pnpm i --frozen-lockfile && pnpm --filter web e2e"
+  ci:
+    <<: *dev
+    command: make ci
+volumes: { uv-cache: {}, pnpm-store: {} }

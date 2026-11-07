@@ -44,6 +44,7 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
   - `scripts/version/check.py` and the `version-consistency` CI job fail on any mismatch.
   - `spec/ops.json`, the operation metadata index, generated from the Python registry (`make ops`). A drift check runs in CI and the npm-core tests compare their registry with it.
   - `scripts/check-traceability.py` fails when a PRD requirement ID has no test or CI step. IDs for work not built yet are listed in `scripts/traceability-pending.txt`.
+- **Local CI** (`docker/`): `make docker-ci` runs `make ci` in an Ubuntu 24.04 dev container (`Dev.Dockerfile`, `docker-compose.yml`) with the container's own uv and pnpm environments. `make ci` skips stages that are not built yet. A `docker` CI job builds the image on amd64 and arm64.
 - **Spec:** shared vectors for every operation, with published known answers for hashing and AES.
 - **Build:** the WHATWG HTML entity table pipeline (`scripts/html/build.py`), with SHA-256 lock verification.
 - **Developer tooling:** the `ui-ux-pro-max` and `shadcn` agent skills, vendored for the responsive web UI work. They are not shipped.

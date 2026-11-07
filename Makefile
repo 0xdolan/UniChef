@@ -10,10 +10,17 @@ MAKEFLAGS += --no-builtin-rules --warn-undefined-variables
 COMPOSE := docker compose -f docker/docker-compose.yml
 V ?=
 
-# Targets whose tooling lands in a later build step stop with a clear message.
+# Targets whose tooling lands in a later build step stop with a clear message. Under
+# `make ci` they are skipped instead, so the pipeline covers every stage that exists.
+ifneq ($(filter ci,$(MAKECMDGOALS)),)
+define not_yet
+@echo "make $@: skipped; it arrives with $(1) (PRD §16.1)." >&2
+endef
+else
 define not_yet
 @echo "make $@: not available yet; it arrives with $(1) (PRD §16.1)." >&2; exit 2
 endef
+endif
 
 .PHONY: help bootstrap fmt lint typecheck test-py test-ts test parity e2e ucd ucd-check entities entities-check \
 	ops ops-check assets screenshots build-py build-npm build-web build-ext build deb-check \
@@ -115,8 +122,9 @@ traceability: ## Fail if a PRD requirement ID is referenced by no test or CI ste
 ci: lint typecheck test parity ucd-check entities-check ops-check version-check traceability build deb-check ## Run the full CI pipeline locally
 
 docker-ci: ## Run CI and E2E inside the dev container
-	$(COMPOSE) run --rm ci
-	$(COMPOSE) run --rm e2e
+	$(COMPOSE) run --rm --build ci
+	@if [ -d clients/web ]; then $(COMPOSE) run --rm e2e; \
+	else echo "make e2e: skipped; it arrives with the web app (PRD §16.1)." >&2; fi
 
 clean: ## Remove build output and caches
 	rm -rf dist build reports assets/branding/dist node_modules/.cache
