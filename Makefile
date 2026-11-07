@@ -16,12 +16,12 @@ define not_yet
 endef
 
 .PHONY: help bootstrap fmt lint typecheck test-py test-ts test parity e2e ucd ucd-check entities entities-check \
-	assets screenshots build-py build-npm build-web build-ext build deb-check version \
-	ci docker-ci clean
+	ops ops-check assets screenshots build-py build-npm build-web build-ext build deb-check \
+	version version-check traceability ci docker-ci clean
 
 help: ## List the available targets
 	@awk 'BEGIN {FS = ":.*## "; printf "Usage: make <target>\n\nTargets:\n"} \
-		/^[a-zA-Z0-9_-]+:.*## / {printf "  %-12s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
+		/^[a-zA-Z0-9_-]+:.*## / {printf "  %-14s %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 bootstrap: ## Install Git LFS objects, pnpm and uv environments and the pre-commit hook
 	corepack enable
@@ -72,6 +72,12 @@ entities: ## Verify the pinned WHATWG entity list and write html-entities.json.g
 entities-check: ## Rebuild the HTML entity artefact and fail if it drifts from the committed one
 	uv run scripts/html/build.py --check
 
+ops: ## Regenerate spec/ops.json from the Python operation registry
+	uv run --project packages/python-cli --locked python scripts/spec/ops.py
+
+ops-check: ## Fail if spec/ops.json drifts from the Python operation registry
+	uv run --project packages/python-cli --locked python scripts/spec/ops.py --check
+
 assets: ## Build favicons, icons and store images from the branding masters
 	$(call not_yet,the assets step)
 
@@ -97,9 +103,16 @@ deb-check: ## Run the Debian packaging pre-flight checks
 
 version: ## Set the project version everywhere: make version V=x.y.z
 	@test -n "$(V)" || { echo "Usage: make version V=x.y.z" >&2; exit 2; }
-	$(call not_yet,the release tooling)
+	uv run scripts/version/sync.py "$(V)"
 
-ci: lint typecheck test parity ucd-check entities-check build deb-check ## Run the full CI pipeline locally
+version-check: ## Fail if any file disagrees with VERSION; run the release tooling tests
+	uv run scripts/version/check.py
+	uv run --with pytest==9.2.0 pytest scripts -q -p no:cacheprovider
+
+traceability: ## Fail if a PRD requirement ID is referenced by no test or CI step
+	uv run scripts/check-traceability.py
+
+ci: lint typecheck test parity ucd-check entities-check ops-check version-check traceability build deb-check ## Run the full CI pipeline locally
 
 docker-ci: ## Run CI and E2E inside the dev container
 	$(COMPOSE) run --rm ci

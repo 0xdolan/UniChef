@@ -70,6 +70,8 @@ jobs:
           shopt -s globstar nullglob
           files=(scripts/**/*.sh)
           if (( ${#files[@]} )); then shellcheck "${files[@]}"; fi
+      - name: requirement traceability
+        run: uv run scripts/check-traceability.py
 
   typecheck:
     name: typecheck
@@ -169,7 +171,22 @@ jobs:
           uv run scripts/ucd/build.py --check
       - name: HTML entity artefact matches data/html
         run: uv run scripts/html/build.py --check
+      - name: spec/ops.json matches the operation registry
+        run: uv run --project packages/python-cli --locked python scripts/spec/ops.py --check
       - run: git diff --exit-code
+
+  version-consistency:
+    name: version-consistency
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          enable-cache: true
+      - name: Every file agrees with VERSION (REL-001)
+        run: uv run scripts/version/check.py
+      - name: Release tooling tests
+        run: uv run --with pytest==9.2.0 pytest scripts -q -p no:cacheprovider
 
   build:
     name: build

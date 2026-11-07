@@ -39,6 +39,11 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
   - Lint, typecheck, Python and TypeScript test matrices.
   - A parity job that checks both cores ran every vector case (`scripts/parity-report.py`).
   - UCD and HTML data drift checks, package builds, CodeQL, Dependabot and CODEOWNERS.
+- **Release tooling:**
+  - `make version V=…` (`scripts/version/sync.py`) sets the version in every file that carries it, mapping SemVer to the PEP 440, npm, Debian and extension forms, and moves the [Unreleased] changelog entries under the new version.
+  - `scripts/version/check.py` and the `version-consistency` CI job fail on any mismatch.
+  - `spec/ops.json`, the operation metadata index, generated from the Python registry (`make ops`). A drift check runs in CI and the npm-core tests compare their registry with it.
+  - `scripts/check-traceability.py` fails when a PRD requirement ID has no test or CI step. IDs for work not built yet are listed in `scripts/traceability-pending.txt`.
 - **Spec:** shared vectors for every operation, with published known answers for hashing and AES.
 - **Build:** the WHATWG HTML entity table pipeline (`scripts/html/build.py`), with SHA-256 lock verification.
 - **Developer tooling:** the `ui-ux-pro-max` and `shadcn` agent skills, vendored for the responsive web UI work. They are not shipped.
