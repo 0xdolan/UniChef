@@ -14,7 +14,7 @@ export const AUTO_BAKE_MS = 300;
 /** Watchdog budget for one bake (`limits.bakeMs`, PRD §6.4). */
 export const BAKE_MS = 10_000;
 
-const createWorker = (): WorkerLike =>
+export const createBakeWorker = (): WorkerLike =>
   new Worker(new URL('../worker/bake.worker.ts', import.meta.url), { type: 'module' });
 
 /** Starts a bake of the current recipe and input. */
@@ -56,7 +56,7 @@ function onMessage(message: FromWorker): void {
 }
 
 /** Owns the worker for the workbench's lifetime. Returns a function that bakes now. */
-export function useBaker(create: () => WorkerLike = createWorker): () => void {
+export function useBaker(create: () => WorkerLike = createBakeWorker): () => void {
   const client = useRef<BakeClient | null>(null);
 
   useEffect(() => {

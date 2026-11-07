@@ -32,6 +32,7 @@ SOURCES = (
     "scripts/**/test_*.py",
     "clients/**/e2e/**/*.ts",
     "clients/**/*.test.ts",
+    "clients/**/*.test.tsx",
     ".github/workflows/*.yml",
 )
 

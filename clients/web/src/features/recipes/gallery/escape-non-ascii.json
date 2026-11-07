@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "name": "Escape non-ASCII",
+  "description": "Write every non-ASCII character as a \\u escape, for source code or JSON.",
+  "steps": [
+    {
+      "op": "escape-unicode",
+      "args": {
+        "format": "backslash-u",
+        "scope": "non-ascii"
+      }
+    }
+  ]
+}

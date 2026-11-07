@@ -20,12 +20,28 @@ const BlocksPage = lazy(() =>
 const ScriptsPage = lazy(() =>
   import('../features/chars/ScriptsPage.js').then((m) => ({ default: m.ScriptsPage })),
 );
+const RegexPage = lazy(() =>
+  import('../features/lab/RegexPage.js').then((m) => ({ default: m.RegexPage })),
+);
+const PlaygroundPage = lazy(() =>
+  import('../features/lab/PlaygroundPage.js').then((m) => ({ default: m.PlaygroundPage })),
+);
+const RecipesPage = lazy(() =>
+  import('../features/recipes/RecipesPage.js').then((m) => ({ default: m.RecipesPage })),
+);
+const AboutPage = lazy(() =>
+  import('../features/lab/AboutPage.js').then((m) => ({ default: m.AboutPage })),
+);
 
 const NAV: readonly (readonly [string, MessageKey, readonly string[]])[] = [
   ['#/', 'nav.workbench', ['']],
   ['#/chars', 'nav.chars', ['chars', 'char']],
   ['#/blocks', 'nav.blocks', ['blocks']],
   ['#/scripts', 'nav.scripts', ['scripts']],
+  ['#/regex', 'nav.regex', ['regex']],
+  ['#/playground', 'nav.playground', ['playground']],
+  ['#/recipes', 'nav.recipes', ['recipes']],
+  ['#/about', 'nav.about', ['about']],
 ];
 
 function decode(param: string): string {
@@ -48,6 +64,14 @@ function Page({ section, param }: { readonly section: string; readonly param: st
       return <BlocksPage param={param} />;
     case 'scripts':
       return <ScriptsPage param={param} />;
+    case 'regex':
+      return <RegexPage />;
+    case 'playground':
+      return <PlaygroundPage param={param} />;
+    case 'recipes':
+      return <RecipesPage />;
+    case 'about':
+      return <AboutPage />;
     default:
       return (
         <main id="main" className={styles.notFound}>

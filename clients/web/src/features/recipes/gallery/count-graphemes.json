@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "name": "Count what users see",
+  "description": "Normalize to NFC, then count grapheme clusters: the characters a reader perceives, not bytes or code units.",
+  "steps": [
+    {
+      "op": "normalize",
+      "args": {
+        "form": "NFC"
+      }
+    },
+    {
+      "op": "count",
+      "args": {
+        "unit": "graphemes"
+      }
+    }
+  ]
+}

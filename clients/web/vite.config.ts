@@ -7,6 +7,8 @@ import react from '@vitejs/plugin-react';
 import type { Plugin } from 'vite';
 import { defineConfig } from 'vitest/config';
 
+import { licences } from './vite.licenses.js';
+
 const core = fileURLToPath(new URL('../../packages/npm-core/src/', import.meta.url));
 const constants = JSON.parse(
   readFileSync(new URL('../../project.constants.json', import.meta.url), 'utf8'),
@@ -35,7 +37,7 @@ function csp(): Plugin {
 
 export default defineConfig({
   base: new URL(constants.PAGES_URL).pathname,
-  plugins: [react(), csp()],
+  plugins: [react(), csp(), licences(fileURLToPath(new URL('package.json', import.meta.url)))],
   // Build against the core's sources, so the app needs no separate core build step.
   resolve: {
     alias: [

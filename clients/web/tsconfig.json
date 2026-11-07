@@ -15,5 +15,5 @@
       "@unichef/core/*": ["../../packages/npm-core/src/*"]
     }
   },
-  "include": ["src", "test", "vite.config.ts"]
+  "include": ["src", "test", "vite.config.ts", "vite.licenses.ts"]
 }

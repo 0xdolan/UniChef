@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "name": "Decode Base64 to text",
+  "description": "Decode Base64 and read the bytes as UTF-8.",
+  "steps": [
+    {
+      "op": "from-base64"
+    },
+    {
+      "op": "decode-text",
+      "args": {
+        "encoding": "utf-8"
+      }
+    }
+  ]
+}

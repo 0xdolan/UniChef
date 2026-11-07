@@ -1,0 +1,240 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
+/* The regex lab, playground, recipe gallery and About pages. */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: var(--gap) max(var(--gap), 16px);
+  overflow: auto;
+}
+
+.title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.subtitle {
+  margin: 12px 0 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.page a {
+  color: var(--primary);
+}
+
+.muted {
+  margin: 0;
+  color: var(--muted);
+}
+
+.error {
+  margin: 0;
+  color: var(--error);
+}
+
+.mono {
+  font-family: var(--font-mono);
+  /* Patterns and `<=` must read as typed, not as ligatures. */
+  font-variant-ligatures: none;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.field:first-child {
+  flex: 1 1 280px;
+}
+
+.label {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.input {
+  padding: 6px 8px;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+textarea.input {
+  resize: vertical;
+}
+
+.flags {
+  display: flex;
+  gap: 12px;
+  margin: 0;
+  padding: 0 0 6px;
+  border: 0;
+}
+
+.status {
+  min-height: 1.5em;
+}
+
+.highlight,
+.code,
+.output {
+  margin: 0;
+  padding: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.code {
+  max-height: 320px;
+  overflow: auto;
+  font-size: 12px;
+}
+
+.output {
+  min-height: 3em;
+}
+
+.match {
+  background: color-mix(in srgb, var(--accent) 35%, transparent);
+  color: inherit;
+  border-radius: 2px;
+}
+
+.match:nth-of-type(even) {
+  background: color-mix(in srgb, var(--cp) 35%, transparent);
+}
+
+/* An empty match is a caret between characters. */
+.match[data-empty] {
+  border-inline-start: 2px solid var(--accent);
+}
+
+.details summary {
+  cursor: pointer;
+  color: var(--muted);
+}
+
+.tableWrap {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 4px 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: start;
+  vertical-align: top;
+}
+
+.button {
+  align-self: flex-start;
+  padding: 4px 12px;
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  text-decoration: none;
+}
+
+.page a.button {
+  color: var(--text);
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.card h2 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chips li {
+  padding: 1px 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.args {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+  gap: 8px 16px;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 4px 16px;
+  margin: 0;
+}
+
+.facts dt {
+  color: var(--muted);
+}
+
+.facts dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.licence pre {
+  max-height: 240px;
+  overflow: auto;
+  font-size: 12px;
+}
