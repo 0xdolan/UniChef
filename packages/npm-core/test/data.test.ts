@@ -25,6 +25,9 @@ describe('data loader', () => {
   it('uses a custom source and reports failures', async () => {
     setDataSource(() => Promise.resolve(new Uint8Array(gzipSync('{"x":1}'))));
     expect(await loadData('any.json.gz')).toEqual({ x: 1 });
+    // A server that sends the file with Content-Encoding: gzip hands over plain JSON.
+    setDataSource(() => Promise.resolve(new TextEncoder().encode('{"y":2}')));
+    expect(await loadData('plain.json.gz')).toEqual({ y: 2 });
     setDataSource(() => Promise.reject(new Error('gone')));
     await expect(loadData('missing.json.gz')).rejects.toBeInstanceOf(UniChefError);
   });
