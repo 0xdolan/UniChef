@@ -1,0 +1,5 @@
+# Only the runtime stage reads the build context (dist/python/*.whl).
+**/node_modules
+**/.venv
+**/__pycache__
+.git
