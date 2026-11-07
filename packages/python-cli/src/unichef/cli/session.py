@@ -81,16 +81,17 @@ class Streams:
 
 def _enable_ansi() -> None:  # pragma: no cover - Windows consoles only
     """Turn on VT processing so ANSI colours render in older Windows consoles."""
-    if sys.platform != "win32":
-        return
-    import ctypes  # noqa: PLC0415
+    # A positive platform check, not an early return: mypy skips the block on other
+    # platforms instead of flagging the code after the return as unreachable.
+    if sys.platform == "win32":
+        import ctypes  # noqa: PLC0415
 
-    kernel32 = ctypes.windll.kernel32
-    for handle_id in (-11, -12):  # STD_OUTPUT_HANDLE, STD_ERROR_HANDLE
-        handle = kernel32.GetStdHandle(handle_id)
-        mode = ctypes.c_uint32()
-        if kernel32.GetConsoleMode(handle, ctypes.byref(mode)):
-            kernel32.SetConsoleMode(handle, mode.value | 0x0004)
+        kernel32 = ctypes.windll.kernel32
+        for handle_id in (-11, -12):  # STD_OUTPUT_HANDLE, STD_ERROR_HANDLE
+            handle = kernel32.GetStdHandle(handle_id)
+            mode = ctypes.c_uint32()
+            if kernel32.GetConsoleMode(handle, ctypes.byref(mode)):
+                kernel32.SetConsoleMode(handle, mode.value | 0x0004)
 
 
 @dataclass(slots=True)

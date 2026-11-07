@@ -29,6 +29,9 @@ DISH_TYPES: tuple[DishType, ...] = (
     "table",
 )
 MAX_CODE_POINT = 0x10FFFF
+# JSON nesting deeper than this fails with E_LIMIT. The C decoder on Python 3.14+ no
+# longer hits the recursion limit first, so the bound is explicit (as MAX_JSON_DEPTH in TS).
+MAX_JSON_DEPTH = 900
 # ECMAScript Number::toString switches to exponent form outside these bounds.
 _MAX_FIXED_DIGITS = 21
 _MIN_FIXED_EXPONENT = -6
@@ -186,7 +189,7 @@ def json_loads(text: str, warn: WarnFn | None = None) -> JsonValue:
         return out
 
     try:
-        return cast(
+        value = cast(
             JsonValue,
             json.loads(text, object_pairs_hook=pairs, parse_constant=_reject_constant),
         )
@@ -194,6 +197,24 @@ def json_loads(text: str, warn: WarnFn | None = None) -> JsonValue:
         raise UniChefError("E_INPUT_TYPE", "The string is not valid JSON.") from exc
     except RecursionError as exc:
         raise UniChefError("E_LIMIT", "The JSON value is nested too deeply.") from exc
+    if _json_depth(value) > MAX_JSON_DEPTH:
+        raise UniChefError("E_LIMIT", "The JSON value is nested too deeply.")
+    return value
+
+
+def _json_depth(value: JsonValue) -> int:
+    """The container nesting depth of ``value``, without recursion (a scalar is 0)."""
+    deepest = 0
+    stack: list[tuple[JsonValue, int]] = [(value, 0)]
+    while stack:
+        item, depth = stack.pop()
+        if isinstance(item, list | dict):
+            depth += 1
+            deepest = max(deepest, depth)
+            stack.extend(
+                (child, depth) for child in (item.values() if isinstance(item, dict) else item)
+            )
+    return deepest
 
 
 # ---------------------------------------------------------------------------

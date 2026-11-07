@@ -9,6 +9,7 @@ from hypothesis import given
 from hypothesis import strategies as st
 
 from unichef.core.dish import (
+    MAX_JSON_DEPTH,
     ROUTES,
     Dish,
     JsonValue,
@@ -96,6 +97,10 @@ def test_json_loads_is_strict(text: str) -> None:
 def test_json_loads_deep_nesting_is_a_limit() -> None:
     with pytest.raises(UniChefError) as info:
         json_loads("[" * 100_000 + "]" * 100_000)
+    assert info.value.code == "E_LIMIT"
+    assert json_loads("[" * MAX_JSON_DEPTH + "]" * MAX_JSON_DEPTH) is not None
+    with pytest.raises(UniChefError) as info:
+        json_loads('{"a":' * MAX_JSON_DEPTH + "[]" + "}" * MAX_JSON_DEPTH)
     assert info.value.code == "E_LIMIT"
 
 
