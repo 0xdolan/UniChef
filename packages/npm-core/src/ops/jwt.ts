@@ -269,6 +269,15 @@ export const jwtDecode = defineOp({
     'checking the signature or time claims. Surrounding whitespace is ignored.',
   inputType: 'string',
   outputType: 'json',
+  examples: [
+    {
+      input:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ6b2UiLCJuYW1lIjoiWm_DqyJ9.LnREL73KHFVV8Kd87ekU3tfCtTEPKHZQHS957yru1Sw',
+      args: {},
+      output:
+        '{"header":{"alg":"HS256","typ":"JWT"},"payload":{"sub":"zoe","name":"Zoë"},"signature":"LnREL73KHFVV8Kd87ekU3tfCtTEPKHZQHS957yru1Sw"}',
+    },
+  ],
   run(text, _args, ctx) {
     const token = parseToken(text, ctx);
     return new Map<string, JsonValue>([
@@ -289,6 +298,14 @@ export const jwtSign = defineOp({
     'but not `alg`. PS* and ES* signatures are randomised; `none` warns W_INSECURE.',
   inputType: 'json',
   outputType: 'string',
+  examples: [
+    {
+      input: '{"sub": "zoe", "name": "Zoë"}',
+      args: { key: { encoding: 'utf8', value: 'secret' } },
+      output:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ6b2UiLCJuYW1lIjoiWm_DqyJ9.LnREL73KHFVV8Kd87ekU3tfCtTEPKHZQHS957yru1Sw',
+    },
+  ],
   args: [
     enumArg('algorithm', [...ALGORITHMS, 'none']),
     bytesArg('key', '', KEY_ENCODINGS),
@@ -348,6 +365,14 @@ export const jwtVerify = defineOp({
     'refused. Time claims (`exp`, `nbf`) are not checked. Failures raise E_CRYPTO.',
   inputType: 'string',
   outputType: 'json',
+  examples: [
+    {
+      input:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ6b2UiLCJuYW1lIjoiWm_DqyJ9.LnREL73KHFVV8Kd87ekU3tfCtTEPKHZQHS957yru1Sw',
+      args: { key: { encoding: 'utf8', value: 'secret' } },
+      output: '{"sub":"zoe","name":"Zoë"}',
+    },
+  ],
   args: [enumArg('algorithm', ALGORITHMS), bytesArg('key', '', KEY_ENCODINGS)],
   async run(text, args, ctx) {
     const token = parseToken(text, ctx);

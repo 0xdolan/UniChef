@@ -57,6 +57,9 @@ def op_entry(op: Operation) -> dict[str, Any]:
         "output": op.output_type,
         "parity": op.parity,
         "args": [arg_entry(a) for a in op.args],
+        "examples": [
+            {"input": e.input, "args": dict(e.args), "output": e.output} for e in op.examples
+        ],
     }
 
 

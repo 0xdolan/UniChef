@@ -3,7 +3,7 @@
 
 import { sha256 } from '@noble/hashes/sha2.js';
 
-import type { Dish, DishType, DishValues, JsonValue } from '../dish/types.js';
+import type { Dish, DishType, DishValues } from '../dish/types.js';
 import { decode as base64Decode } from '../dish/base64.js';
 import { encode as utf8Encode } from '../dish/utf8.js';
 import { UniChefError, type PathItem, type RunWarning, type WarningCode } from '../errors.js';
@@ -344,9 +344,17 @@ export class OpContext {
   };
 }
 
+/** JSON as it appears in a recipe document (objects are plain, not `JsonObject` maps). */
+export type PlainJson =
+  null | boolean | number | string | readonly PlainJson[] | { readonly [key: string]: PlainJson };
+
+/**
+ * `input` is read as a string dish; `output` is the result as the web playground shows it
+ * (bytes as UTF-8 when valid, otherwise spaced hex; code points as `U+XXXX`).
+ */
 export interface Example {
   readonly input: string;
-  readonly args: Readonly<Record<string, JsonValue>>;
+  readonly args: Readonly<Record<string, PlainJson>>;
   readonly output: string;
 }
 

@@ -8,7 +8,7 @@ from collections.abc import Buffer, Callable
 from typing import Protocol
 
 from unichef.core.errors import UniChefError
-from unichef.core.registry import Args, OpContext, bytes_arg, enum_arg, int_arg, operation
+from unichef.core.registry import Args, Example, OpContext, bytes_arg, enum_arg, int_arg, operation
 
 _CHUNK = 1 << 20
 
@@ -34,14 +34,28 @@ def _insecure(ctx: OpContext, name: str) -> None:
     ctx.warn("W_INSECURE", f"{name} is broken for collision resistance; do not rely on it.")
 
 
-@operation("md5", "MD5", "Hashing", "bytes", "string")
+@operation(
+    "md5",
+    "MD5",
+    "Hashing",
+    "bytes",
+    "string",
+    examples=(Example("abc", {}, "900150983cd24fb0d6963f7d28e17f72"),),
+)
 def md5(data: bytes, _args: Args, ctx: OpContext) -> str:
     """MD5 digest (RFC 1321). Warns W_INSECURE."""
     _insecure(ctx, "MD5")
     return _digest("md5", data, ctx)
 
 
-@operation("sha1", "SHA-1", "Hashing", "bytes", "string")
+@operation(
+    "sha1",
+    "SHA-1",
+    "Hashing",
+    "bytes",
+    "string",
+    examples=(Example("abc", {}, "a9993e364706816aba3e25717850c26c9cd0d89d"),),
+)
 def sha1(data: bytes, _args: Args, ctx: OpContext) -> str:
     """SHA-1 digest (FIPS 180-4). Warns W_INSECURE."""
     _insecure(ctx, "SHA-1")
@@ -65,6 +79,9 @@ SHA2_SIZES = {
     "bytes",
     "string",
     (enum_arg("size", tuple(SHA2_SIZES)),),
+    examples=(
+        Example("abc", {}, "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"),
+    ),
 )
 def sha2(data: bytes, args: Args, ctx: OpContext) -> str:
     """SHA-2 digest (FIPS 180-4); `size` is 256 (default), 224, 384, 512, 512-224 or
@@ -79,6 +96,9 @@ def sha2(data: bytes, args: Args, ctx: OpContext) -> str:
     "bytes",
     "string",
     (enum_arg("size", ("256", "224", "384", "512")),),
+    examples=(
+        Example("abc", {}, "3a985da74fe225b2045c172d6bd390bd855f086e3e9d525b46bfe24511431532"),
+    ),
 )
 def sha3(data: bytes, args: Args, ctx: OpContext) -> str:
     """SHA-3 digest (FIPS 202); `size` is 256 (default), 224, 384 or 512."""
@@ -92,6 +112,7 @@ def sha3(data: bytes, args: Args, ctx: OpContext) -> str:
     "bytes",
     "string",
     (enum_arg("size", ("128", "256")), int_arg("length", 32, 1, 65536)),
+    examples=(Example("abc", {"length": 16}, "5881092dd818bf5cf8a3ddb793fbcba7"),),
 )
 def shake(data: bytes, args: Args, ctx: OpContext) -> str:
     """SHAKE extendable-output function (FIPS 202); `size` is 128 (default) or 256 and
@@ -120,6 +141,11 @@ def _blake2(
     "bytes",
     "string",
     (int_arg("size", 64, 1, 64), bytes_arg("key")),
+    examples=(
+        Example(
+            "abc", {"size": 32}, "bddd813c634239723171ef3fee98579b94964e3bb1cb3e427262c8c068d52319"
+        ),
+    ),
 )
 def blake2b(data: bytes, args: Args, ctx: OpContext) -> str:
     """BLAKE2b (RFC 7693); `size` is the digest length in bytes (1-64, default 64) and
@@ -134,6 +160,9 @@ def blake2b(data: bytes, args: Args, ctx: OpContext) -> str:
     "bytes",
     "string",
     (int_arg("size", 32, 1, 32), bytes_arg("key")),
+    examples=(
+        Example("abc", {}, "508c5e8c327c14e2e1a72ba34eeb452f37458b209ed63a294d999b4c86675982"),
+    ),
 )
 def blake2s(data: bytes, args: Args, ctx: OpContext) -> str:
     """BLAKE2s (RFC 7693); `size` is the digest length in bytes (1-32, default 32) and
@@ -150,13 +179,27 @@ def _checksum(fn: Callable[[Buffer, int], int], start: int, data: bytes, ctx: Op
     return f"{value:08x}"
 
 
-@operation("crc32", "CRC-32", "Hashing", "bytes", "string")
+@operation(
+    "crc32",
+    "CRC-32",
+    "Hashing",
+    "bytes",
+    "string",
+    examples=(Example("The quick brown fox jumps over the lazy dog", {}, "414fa339"),),
+)
 def crc32(data: bytes, _args: Args, ctx: OpContext) -> str:
     """CRC-32 (ISO-HDLC, as in zlib and PNG) as 8 hex digits."""
     return _checksum(zlib.crc32, 0, data, ctx)
 
 
-@operation("adler32", "Adler-32", "Hashing", "bytes", "string")
+@operation(
+    "adler32",
+    "Adler-32",
+    "Hashing",
+    "bytes",
+    "string",
+    examples=(Example("Wikipedia", {}, "11e60398"),),
+)
 def adler32(data: bytes, _args: Args, ctx: OpContext) -> str:
     """Adler-32 (RFC 1950) as 8 hex digits."""
     return _checksum(zlib.adler32, 1, data, ctx)
@@ -181,6 +224,13 @@ HMAC_HASHES = {
     "bytes",
     "string",
     (enum_arg("hash", tuple(HMAC_HASHES)), bytes_arg("key")),
+    examples=(
+        Example(
+            "message",
+            {"key": {"encoding": "utf8", "value": "secret"}},
+            "8b5f48702995c1598c573db1e21866a9b825d4a794d169d7060a03605796360b",
+        ),
+    ),
 )
 def hmac(data: bytes, args: Args, ctx: OpContext) -> str:
     """HMAC (RFC 2104) with `hash` (default sha256) and a bytes `key`."""

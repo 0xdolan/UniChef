@@ -55,6 +55,7 @@ export const md5 = defineOp({
   description: 'MD5 digest (RFC 1321). Warns W_INSECURE.',
   inputType: 'bytes',
   outputType: 'string',
+  examples: [{ input: 'abc', args: {}, output: '900150983cd24fb0d6963f7d28e17f72' }],
   run(data, _args, ctx) {
     insecure(ctx, 'MD5');
     return hexDigest(md5Hash.create(), data, ctx);
@@ -68,6 +69,7 @@ export const sha1 = defineOp({
   description: 'SHA-1 digest (FIPS 180-4). Warns W_INSECURE.',
   inputType: 'bytes',
   outputType: 'string',
+  examples: [{ input: 'abc', args: {}, output: 'a9993e364706816aba3e25717850c26c9cd0d89d' }],
   run(data, _args, ctx) {
     insecure(ctx, 'SHA-1');
     return hexDigest(sha1Hash.create(), data, ctx);
@@ -100,6 +102,13 @@ export const sha2 = defineOp({
     'SHA-2 digest (FIPS 180-4); `size` is 256 (default), 224, 384, 512, 512-224 or 512-256.',
   inputType: 'bytes',
   outputType: 'string',
+  examples: [
+    {
+      input: 'abc',
+      args: {},
+      output: 'ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad',
+    },
+  ],
   args: [enumArg('size', [...SHA2_SIZES.keys()])],
   run: (data, args, ctx) => hexDigest(pick(SHA2_SIZES, args, 'size').create(), data, ctx),
 });
@@ -118,6 +127,13 @@ export const sha3 = defineOp({
   description: 'SHA-3 digest (FIPS 202); `size` is 256 (default), 224, 384 or 512.',
   inputType: 'bytes',
   outputType: 'string',
+  examples: [
+    {
+      input: 'abc',
+      args: {},
+      output: '3a985da74fe225b2045c172d6bd390bd855f086e3e9d525b46bfe24511431532',
+    },
+  ],
   args: [enumArg('size', [...SHA3_SIZES.keys()])],
   run: (data, args, ctx) => hexDigest(pick(SHA3_SIZES, args, 'size').create(), data, ctx),
 });
@@ -131,6 +147,7 @@ export const shake = defineOp({
     '`length` is the output length in bytes (default 32).',
   inputType: 'bytes',
   outputType: 'string',
+  examples: [{ input: 'abc', args: { length: 16 }, output: '5881092dd818bf5cf8a3ddb793fbcba7' }],
   args: [enumArg('size', ['128', '256']), intArg('length', 32, 1, 65536)],
   run(data, args, ctx) {
     const fn = args.text('size') === '128' ? shake128 : shake256;
@@ -168,6 +185,13 @@ export const blake2b = defineOp({
     '`key` an optional key of up to 64 bytes.',
   inputType: 'bytes',
   outputType: 'string',
+  examples: [
+    {
+      input: 'abc',
+      args: { size: 32 },
+      output: 'bddd813c634239723171ef3fee98579b94964e3bb1cb3e427262c8c068d52319',
+    },
+  ],
   args: [intArg('size', 64, 1, 64), bytesArg('key')],
   run: (data, args, ctx) => blake2(blake2bHash, 64, data, args, ctx),
 });
@@ -181,6 +205,13 @@ export const blake2s = defineOp({
     '`key` an optional key of up to 32 bytes.',
   inputType: 'bytes',
   outputType: 'string',
+  examples: [
+    {
+      input: 'abc',
+      args: {},
+      output: '508c5e8c327c14e2e1a72ba34eeb452f37458b209ed63a294d999b4c86675982',
+    },
+  ],
   args: [intArg('size', 32, 1, 32), bytesArg('key')],
   run: (data, args, ctx) => blake2(blake2sHash, 32, data, args, ctx),
 });
@@ -248,6 +279,9 @@ export const crc32 = defineOp({
   description: 'CRC-32 (ISO-HDLC, as in zlib and PNG) as 8 hex digits.',
   inputType: 'bytes',
   outputType: 'string',
+  examples: [
+    { input: 'The quick brown fox jumps over the lazy dog', args: {}, output: '414fa339' },
+  ],
   run: (data, _args, ctx) => checksum(crc32Update, 0, data, ctx),
 });
 
@@ -258,6 +292,7 @@ export const adler32 = defineOp({
   description: 'Adler-32 (RFC 1950) as 8 hex digits.',
   inputType: 'bytes',
   outputType: 'string',
+  examples: [{ input: 'Wikipedia', args: {}, output: '11e60398' }],
   run: (data, _args, ctx) => checksum(adler32Update, 1, data, ctx),
 });
 
@@ -279,6 +314,13 @@ export const hmac = defineOp({
   description: 'HMAC (RFC 2104) with `hash` (default sha256) and a bytes `key`.',
   inputType: 'bytes',
   outputType: 'string',
+  examples: [
+    {
+      input: 'message',
+      args: { key: { encoding: 'utf8', value: 'secret' } },
+      output: '8b5f48702995c1598c573db1e21866a9b825d4a794d169d7060a03605796360b',
+    },
+  ],
   args: [enumArg('hash', [...HMAC_HASHES.keys()]), bytesArg('key')],
   run(data, args, ctx) {
     const mac = hmacHash.create(pick(HMAC_HASHES, args, 'hash'), args.data('key'));

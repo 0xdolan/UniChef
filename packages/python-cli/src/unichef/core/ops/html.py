@@ -14,7 +14,7 @@ from importlib.resources import files
 from unichef.core.dish import MAX_CODE_POINT
 from unichef.core.errors import UniChefError
 from unichef.core.ops.encoding import CHECK_EVERY, W1252_DECODE
-from unichef.core.registry import Args, OpContext, bool_arg, enum_arg, operation
+from unichef.core.registry import Args, Example, OpContext, bool_arg, enum_arg, operation
 from unichef.unicode import utf8
 
 _SPECIAL = frozenset("&<>\"'")
@@ -97,6 +97,7 @@ def _reference(text: str, i: int, strict: bool) -> tuple[str, int] | None:
     "string",
     "string",
     (bool_arg("strict"),),
+    examples=(Example("&lt;p&gt;caf&eacute; &#x1F44B;&lt;/p&gt;", {}, "<p>café 👋</p>"),),
 )
 def html_entity_decode(text: str, args: Args, ctx: OpContext) -> str:
     """Decode named and numeric character references as HTML does in text content: the
@@ -134,6 +135,7 @@ def html_entity_decode(text: str, args: Args, ctx: OpContext) -> str:
         enum_arg("scope", ("special", "non-ascii", "all")),
         enum_arg("format", ("named", "decimal", "hex")),
     ),
+    examples=(Example("<p>café</p>", {}, "&lt;p&gt;café&lt;/p&gt;"),),
 )
 def html_entity_encode(text: str, args: Args, ctx: OpContext) -> str:
     """Replace characters with references. `scope` is the five HTML-special characters

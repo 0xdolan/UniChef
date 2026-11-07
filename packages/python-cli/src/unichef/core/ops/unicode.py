@@ -13,6 +13,7 @@ from unichef.core.dish import Cell, Table
 from unichef.core.errors import UniChefError
 from unichef.core.registry import (
     Args,
+    Example,
     OpContext,
     bool_arg,
     enum_arg,
@@ -102,6 +103,10 @@ def _non_printable(cp: int) -> bool:
         enum_arg("format", ESCAPE_FORMATS),
         enum_arg("scope", ("non-ascii", "all", "non-printable")),
     ),
+    examples=(
+        Example("café 👋", {}, "caf\\u00E9 \\uD83D\\uDC4B"),
+        Example("café 👋", {"format": "html-hex"}, "caf&#xE9; &#x1F44B;"),
+    ),
 )
 def escape_unicode(text: str, args: Args, ctx: OpContext) -> str:
     """Write characters as escapes with upper-case hex. `scope` picks every non-ASCII
@@ -126,6 +131,7 @@ def escape_unicode(text: str, args: Args, ctx: OpContext) -> str:
     "string",
     "string",
     (enum_arg("format", ("all", *ESCAPE_FORMATS)),),
+    examples=(Example("caf\\u00e9 \\U0001F44B", {}, "café 👋"),),
 )
 def unescape_unicode(text: str, args: Args, ctx: OpContext) -> str:
     """Replace escapes with characters; `all` recognises every format. Adjacent UTF-16
@@ -182,6 +188,7 @@ def unescape_unicode(text: str, args: Args, ctx: OpContext) -> str:
     "string",
     "string",
     (enum_arg("form", normalize.FORMS),),
+    examples=(Example("ﬁ ① Ｘ²", {"form": "NFKC"}, "fi 1 X2"),),
 )
 def normalize_text(text: str, args: Args, ctx: OpContext) -> str:
     """Apply a Unicode normalization form (UAX #15) from the pinned UCD."""
@@ -199,6 +206,10 @@ def normalize_text(text: str, args: Args, ctx: OpContext) -> str:
         enum_arg("mode", ("upper", "lower", "title", "fold")),
         enum_arg("locale", case.LOCALES),
         bool_arg("simple"),
+    ),
+    examples=(
+        Example("straße", {"mode": "upper"}, "STRASSE"),
+        Example("İstanbul", {"mode": "lower", "locale": "tr"}, "istanbul"),
     ),
 )
 def unicode_case(text: str, args: Args, ctx: OpContext) -> str:
@@ -221,7 +232,14 @@ def _is_diacritic_mark(cp: int) -> bool:
     )
 
 
-@operation("strip-diacritics", "Strip Diacritics", "Unicode", "string", "string")
+@operation(
+    "strip-diacritics",
+    "Strip Diacritics",
+    "Unicode",
+    "string",
+    "string",
+    examples=(Example("Crème brûlée", {}, "Creme brulee"),),
+)
 def strip_diacritics(text: str, _args: Args, ctx: OpContext) -> str:
     """NFD, then drop nonspacing marks that are Diacritic and of the Inherited script,
     then NFC. Script-specific marks such as the Devanagari virama are kept, and letters
@@ -238,6 +256,7 @@ def strip_diacritics(text: str, _args: Args, ctx: OpContext) -> str:
     "string",
     "string",
     (string_arg("delimiter", "\n"),),
+    examples=(Example("e\u0301👋\U0001f3fd🇮🇶", {"delimiter": " "}, "e\u0301 👋\U0001f3fd 🇮🇶"),),
 )
 def grapheme_split(text: str, args: Args, ctx: OpContext) -> str:
     """Join the extended grapheme clusters (UAX #29) with `delimiter`."""
@@ -268,6 +287,7 @@ _CODE_POINT_TOKEN = re.compile(r"(?:([Uu]\+|0[xX])([0-9A-Fa-f]{1,6})|([0-9A-Fa-f
         enum_arg("format", tuple(CODE_POINT_FORMATS)),
         enum_arg("delimiter", tuple(CODE_POINT_DELIMITERS)),
     ),
+    examples=(Example("Hi 👋", {}, "U+0048 U+0069 U+0020 U+1F44B"),),
 )
 def to_code_points(cps: list[int], args: Args, ctx: OpContext) -> str:
     """Write each code point as `U+0041`, `0041`, `0x0041` or `65`."""
@@ -283,6 +303,10 @@ def to_code_points(cps: list[int], args: Args, ctx: OpContext) -> str:
     "string",
     "codepoints",
     (enum_arg("base", ("hex", "decimal")),),
+    examples=(
+        Example("48 69 1F44B", {}, "U+0048 U+0069 U+1F44B"),
+        Example("72 105 128075", {"base": "decimal"}, "U+0048 U+0069 U+1F44B"),
+    ),
 )
 def from_code_points(text: str, args: Args, ctx: OpContext) -> list[int]:
     """Read code points separated by whitespace, commas or semicolons. A `U+` or `0x`
@@ -318,6 +342,11 @@ COUNT_UNITS = ("bytes", "utf16-units", "code-points", "graphemes", "lines")
     "bytes",
     "integer",
     (enum_arg("unit", COUNT_UNITS, "code-points"),),
+    examples=(
+        Example("e\u0301👋\U0001f3fd", {"unit": "graphemes"}, "2"),
+        Example("e\u0301👋\U0001f3fd", {"unit": "code-points"}, "4"),
+        Example("e\u0301👋\U0001f3fd", {"unit": "bytes"}, "11"),
+    ),
 )
 def count(data: bytes, args: Args, ctx: OpContext) -> int:
     """Count bytes, or decode UTF-8 (U+FFFD for ill-formed input) and count UTF-16
@@ -433,6 +462,24 @@ def _columns(cp: int, foreign: Callable[[int], bool]) -> dict[str, str]:
     "string",
     "table",
     (enum_arg("granularity", ("codepoint", "grapheme")),),
+    examples=(
+        Example(
+            "e\u0301👋\U0001f3fd",
+            {},
+            (
+                "index\tcp\tchar\tname\tgc\tblock\tscript\tscx\tage\tbidi\tea\tutf8\tutf1"
+                "6\tdecomposition\tflags\n0\tU+0065\te\tLATIN SMALL LETTER "
+                "E\tLl\tBasic Latin\tLatn\tLatn\t1.1\tL\tNa\t65\t0065\t\t\n"
+                "1\tU+0301\t◌\u0301\tCOMBINING ACUTE ACCENT\tMn\tCombining Diacritical "
+                "Marks\tZinh\tCher Cyrl Grek Latn Osge Sunu Tale Todr\t1."
+                "1\tNSM\tA\tCC 81\t0301\t\t\n2\tU+1F44B\t👋\tWAVING HAND "
+                "SIGN\tSo\tMiscellaneous Symbols and Pictographs\tZyyy\tZyyy\t6."
+                "0\tON\tW\tF0 9F 91 8B\tD83D DC4B\t\t\n3\tU+1F3FD\t\U0001f3fd\tEMOJI MODIFIER "
+                "FITZPATRICK TYPE-4\tSk\tMiscellaneous Symbols and "
+                "Pictographs\tZyyy\tZyyy\t8.0\tON\tW\tF0 9F 8F BD\tD83C DFFD\t\t"
+            ),
+        ),
+    ),
 )
 def analyse_characters(text: str, args: Args, ctx: OpContext) -> Table:
     """One row per code point (or grapheme cluster) with the columns of PRD §4.6. In

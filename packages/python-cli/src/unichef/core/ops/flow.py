@@ -12,6 +12,7 @@ from unichef.core.dish import Dish, coerce
 from unichef.core.errors import UniChefError
 from unichef.core.registry import (
     Args,
+    Example,
     OpContext,
     bool_arg,
     int_arg,
@@ -32,6 +33,17 @@ MAX_GROUP = 99
     "string",
     "string",
     (string_arg("split", "\n"), string_arg("merge", "\n"), steps_arg()),
+    examples=(
+        Example(
+            "a,b,c",
+            {
+                "split": ",",
+                "merge": " | ",
+                "steps": [{"op": "unicode-case", "args": {"mode": "upper"}}],
+            },
+            "A | B | C",
+        ),
+    ),
 )
 def fork(text: str, args: Args, ctx: OpContext) -> str:
     """Split the input on `split`, run `steps` on each part, and join the results with
@@ -45,7 +57,15 @@ def fork(text: str, args: Args, ctx: OpContext) -> str:
     return args.text("merge").join(out)
 
 
-@operation("sub-recipe", "Sub-recipe", "Flow", "bytes", "bytes", (steps_arg(),))
+@operation(
+    "sub-recipe",
+    "Sub-recipe",
+    "Flow",
+    "bytes",
+    "bytes",
+    (steps_arg(),),
+    examples=(Example("hello", {"steps": [{"op": "to-base64"}, {"op": "reverse"}]}, "=8GbsVGa"),),
+)
 def sub_recipe(data: bytes, args: Args, ctx: OpContext) -> bytes:
     """Run `steps` as one group. The runner keeps the dish type across the group; this
     function serves direct calls only."""
@@ -53,13 +73,29 @@ def sub_recipe(data: bytes, args: Args, ctx: OpContext) -> bytes:
     return cast(bytes, coerce(result, "bytes", ctx.warn).value)
 
 
-@operation("label", "Label", "Flow", "bytes", "bytes", (string_arg("name"),))
+@operation(
+    "label",
+    "Label",
+    "Flow",
+    "bytes",
+    "bytes",
+    (string_arg("name"),),
+    examples=(Example("unchanged", {"name": "start"}, "unchanged"),),
+)
 def label(data: bytes, _args: Args, _ctx: OpContext) -> bytes:
     """A jump target. The dish passes through unchanged, whatever its type."""
     return data
 
 
-@operation("comment", "Comment", "Flow", "bytes", "bytes", (string_arg("text", multiline=True),))
+@operation(
+    "comment",
+    "Comment",
+    "Flow",
+    "bytes",
+    "bytes",
+    (string_arg("text", multiline=True),),
+    examples=(Example("unchanged", {"text": "notes for readers"}, "unchanged"),),
+)
 def comment(data: bytes, _args: Args, _ctx: OpContext) -> bytes:
     """An annotation. The dish passes through unchanged, whatever its type."""
     return data
@@ -72,6 +108,7 @@ def comment(data: bytes, _args: Args, _ctx: OpContext) -> bytes:
     "string",
     "string",
     (string_arg("to"), int_arg("max", 10, 0, 1000)),
+    examples=(Example("unchanged", {"to": "start", "max": 0}, "unchanged"),),
 )
 def jump(_text: str, _args: Args, _ctx: OpContext) -> bool:
     """Jump to the label `to`, at most `max` times; then continue with a W_JUMP_LIMIT
@@ -92,6 +129,7 @@ def jump(_text: str, _args: Args, _ctx: OpContext) -> bool:
         string_arg("to"),
         int_arg("max", 10, 0, 1000),
     ),
+    examples=(Example("no digits here", {"pattern": "\\d", "to": "end"}, "no digits here"),),
 )
 def conditional_jump(text: str, args: Args, ctx: OpContext) -> bool:
     """Jump to the label `to` when `pattern` matches the dish (or does not, with
@@ -113,6 +151,17 @@ def conditional_jump(text: str, args: Args, ctx: OpContext) -> bool:
         int_arg("group", 0, 0, MAX_GROUP),
         bool_arg("global", True),
         steps_arg(),
+    ),
+    examples=(
+        Example(
+            "name=zoë id=7",
+            {
+                "pattern": "=(\\w+)",
+                "group": 1,
+                "steps": [{"op": "unicode-case", "args": {"mode": "upper"}}],
+            },
+            "name=ZOË id=7",
+        ),
     ),
 )
 def subsection(text: str, args: Args, ctx: OpContext) -> str:

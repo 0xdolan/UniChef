@@ -118,6 +118,10 @@ const escapeUnicode = defineOp({
     'astral characters as surrogate pairs.',
   inputType: 'string',
   outputType: 'string',
+  examples: [
+    { input: 'café 👋', args: {}, output: 'caf\\u00E9 \\uD83D\\uDC4B' },
+    { input: 'café 👋', args: { format: 'html-hex' }, output: 'caf&#xE9; &#x1F44B;' },
+  ],
   args: [
     enumArg('format', ESCAPE_FORMATS),
     enumArg('scope', ['non-ascii', 'all', 'non-printable']),
@@ -152,6 +156,7 @@ const unescapeUnicode = defineOp({
     'escape above 10FFFF is left as it is.',
   inputType: 'string',
   outputType: 'string',
+  examples: [{ input: 'caf\\u00e9 \\U0001F44B', args: {}, output: 'café 👋' }],
   args: [enumArg('format', ['all', ...ESCAPE_FORMATS])],
   run(text, args, ctx) {
     ctx.check();
@@ -208,6 +213,7 @@ const normalizeOp = defineOp({
   description: 'Apply a Unicode normalization form (UAX #15) from the pinned UCD.',
   inputType: 'string',
   outputType: 'string',
+  examples: [{ input: 'ﬁ ① Ｘ²', args: { form: 'NFKC' }, output: 'fi 1 X2' }],
   args: [enumArg('form', normalize.FORMS)],
   async run(text, args, ctx) {
     await ready('core');
@@ -224,6 +230,10 @@ const unicodeCase = defineOp({
     'is full case folding, or simple folding with `simple` (ignored by other modes).',
   inputType: 'string',
   outputType: 'string',
+  examples: [
+    { input: 'straße', args: { mode: 'upper' }, output: 'STRASSE' },
+    { input: 'İstanbul', args: { mode: 'lower', locale: 'tr' }, output: 'istanbul' },
+  ],
   args: [
     enumArg('mode', ['upper', 'lower', 'title', 'fold']),
     enumArg('locale', caseMap.LOCALES),
@@ -261,6 +271,7 @@ const stripDiacritics = defineOp({
     'with no decomposition (ø, ł) are unchanged.',
   inputType: 'string',
   outputType: 'string',
+  examples: [{ input: 'Crème brûlée', args: {}, output: 'Creme brulee' }],
   async run(text, _args, ctx) {
     await ready('core');
     const decomposed = normalize.normalize('NFD', text, ctx.check);
@@ -278,6 +289,9 @@ const graphemeSplit = defineOp({
   description: 'Join the extended grapheme clusters (UAX #29) with `delimiter`.',
   inputType: 'string',
   outputType: 'string',
+  examples: [
+    { input: 'e\u0301👋\u{1f3fd}🇮🇶', args: { delimiter: ' ' }, output: 'e\u0301 👋\u{1f3fd} 🇮🇶' },
+  ],
   args: [stringArg('delimiter', '\n')],
   async run(text, args, ctx) {
     await ready('core');
@@ -305,6 +319,7 @@ const toCodePointsOp = defineOp({
   description: 'Write each code point as `U+0041`, `0041`, `0x0041` or `65`.',
   inputType: 'codepoints',
   outputType: 'string',
+  examples: [{ input: 'Hi 👋', args: {}, output: 'U+0048 U+0069 U+0020 U+1F44B' }],
   args: [
     enumArg('format', Object.keys(CODE_POINT_FORMATS)),
     enumArg('delimiter', Object.keys(CODE_POINT_DELIMITERS)),
@@ -326,6 +341,10 @@ const fromCodePointsOp = defineOp({
     '(they become U+FFFD if the dish is later used as text).',
   inputType: 'string',
   outputType: 'codepoints',
+  examples: [
+    { input: '48 69 1F44B', args: {}, output: 'U+0048 U+0069 U+1F44B' },
+    { input: '72 105 128075', args: { base: 'decimal' }, output: 'U+0048 U+0069 U+1F44B' },
+  ],
   args: [enumArg('base', ['hex', 'decimal'])],
   run(text, args, ctx) {
     ctx.check();
@@ -370,6 +389,11 @@ const count = defineOp({
     'start a new line).',
   inputType: 'bytes',
   outputType: 'integer',
+  examples: [
+    { input: 'e\u0301👋\u{1f3fd}', args: { unit: 'graphemes' }, output: '2' },
+    { input: 'e\u0301👋\u{1f3fd}', args: { unit: 'code-points' }, output: '4' },
+    { input: 'e\u0301👋\u{1f3fd}', args: { unit: 'bytes' }, output: '11' },
+  ],
   args: [enumArg('unit', COUNT_UNITS, 'code-points')],
   async run(data, args, ctx) {
     const unit = args.text('unit');
@@ -517,6 +541,14 @@ const analyseCharacters = defineOp({
     'values are joined with ` + `, bytes and units with a space, and flags are merged.',
   inputType: 'string',
   outputType: 'table',
+  examples: [
+    {
+      input: 'e\u0301👋\u{1f3fd}',
+      args: {},
+      output:
+        'index\tcp\tchar\tname\tgc\tblock\tscript\tscx\tage\tbidi\tea\tutf8\tutf16\tdecomposition\tflags\n0\tU+0065\te\tLATIN SMALL LETTER E\tLl\tBasic Latin\tLatn\tLatn\t1.1\tL\tNa\t65\t0065\t\t\n1\tU+0301\t◌\u0301\tCOMBINING ACUTE ACCENT\tMn\tCombining Diacritical Marks\tZinh\tCher Cyrl Grek Latn Osge Sunu Tale Todr\t1.1\tNSM\tA\tCC 81\t0301\t\t\n2\tU+1F44B\t👋\tWAVING HAND SIGN\tSo\tMiscellaneous Symbols and Pictographs\tZyyy\tZyyy\t6.0\tON\tW\tF0 9F 91 8B\tD83D DC4B\t\t\n3\tU+1F3FD\t\u{1f3fd}\tEMOJI MODIFIER FITZPATRICK TYPE-4\tSk\tMiscellaneous Symbols and Pictographs\tZyyy\tZyyy\t8.0\tON\tW\tF0 9F 8F BD\tD83C DFFD\t\t',
+    },
+  ],
   args: [enumArg('granularity', ['codepoint', 'grapheme'])],
   async run(text, args, ctx): Promise<Table> {
     await ready();

@@ -134,6 +134,9 @@ export const htmlEntityDecode = defineOp({
     'instead.',
   inputType: 'string',
   outputType: 'string',
+  examples: [
+    { input: '&lt;p&gt;caf&eacute; &#x1F44B;&lt;/p&gt;', args: {}, output: '<p>café 👋</p>' },
+  ],
   args: [boolArg('strict')],
   async run(text, args, ctx) {
     const t = await entityTable();
@@ -172,6 +175,7 @@ export const htmlEntityEncode = defineOp({
     'get one reference each.',
   inputType: 'string',
   outputType: 'string',
+  examples: [{ input: '<p>café</p>', args: {}, output: '&lt;p&gt;café&lt;/p&gt;' }],
   args: [
     enumArg('scope', ['special', 'non-ascii', 'all']),
     enumArg('format', ['named', 'decimal', 'hex']),

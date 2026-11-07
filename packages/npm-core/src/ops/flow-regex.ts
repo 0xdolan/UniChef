@@ -61,6 +61,9 @@ export const conditionalJump = defineOp({
     '`invert`), at most `max` times; then continue with a W_JUMP_LIMIT warning.',
   inputType: 'string',
   outputType: 'string',
+  examples: [
+    { input: 'no digits here', args: { pattern: '\\d', to: 'end' }, output: 'no digits here' },
+  ],
   args: [
     regexArg('pattern'),
     stringArg('flags'),
@@ -86,6 +89,17 @@ export const subsection = defineOp({
     'match is used. An error inside a match fails the step; its path names the match.',
   inputType: 'string',
   outputType: 'string',
+  examples: [
+    {
+      input: 'name=zoë id=7',
+      args: {
+        pattern: '=(\\w+)',
+        group: 1,
+        steps: [{ op: 'unicode-case', args: { mode: 'upper' } }],
+      },
+      output: 'name=ZOË id=7',
+    },
+  ],
   args: [
     regexArg('pattern'),
     stringArg('flags'),

@@ -20,6 +20,13 @@ export const fork = defineOp({
     '`merge`. An error in any branch fails the fork; its path names the branch.',
   inputType: 'string',
   outputType: 'string',
+  examples: [
+    {
+      input: 'a,b,c',
+      args: { split: ',', merge: ' | ', steps: [{ op: 'unicode-case', args: { mode: 'upper' } }] },
+      output: 'A | B | C',
+    },
+  ],
   args: [stringArg('split', '\n'), stringArg('merge', '\n'), stepsArg()],
   async run(text, args, ctx) {
     const sep = args.text('split');
@@ -43,6 +50,13 @@ export const subRecipe = defineOp({
     'function serves direct calls only.',
   inputType: 'bytes',
   outputType: 'bytes',
+  examples: [
+    {
+      input: 'hello',
+      args: { steps: [{ op: 'to-base64' }, { op: 'reverse' }] },
+      output: '=8GbsVGa',
+    },
+  ],
   args: [stepsArg()],
   async run(data, args, ctx) {
     const result = await ctx.runNested(args.steps(), ofBytes(data));
@@ -57,6 +71,7 @@ export const label = defineOp({
   description: 'A jump target. The dish passes through unchanged, whatever its type.',
   inputType: 'bytes',
   outputType: 'bytes',
+  examples: [{ input: 'unchanged', args: { name: 'start' }, output: 'unchanged' }],
   args: [stringArg('name')],
   run: (data) => data,
 });
@@ -68,6 +83,7 @@ export const comment = defineOp({
   description: 'An annotation. The dish passes through unchanged, whatever its type.',
   inputType: 'bytes',
   outputType: 'bytes',
+  examples: [{ input: 'unchanged', args: { text: 'notes for readers' }, output: 'unchanged' }],
   args: [stringArg('text', '', true)],
   run: (data) => data,
 });
@@ -81,6 +97,7 @@ export const jump = defineOp({
     'warning. Every jump counts towards the step limit.',
   inputType: 'string',
   outputType: 'string',
+  examples: [{ input: 'unchanged', args: { to: 'start', max: 0 }, output: 'unchanged' }],
   args: [stringArg('to'), intArg('max', 10, 0, 1000)],
   run: () => true,
 });
