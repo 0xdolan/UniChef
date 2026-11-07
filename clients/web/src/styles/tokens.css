@@ -1,0 +1,67 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
+/* Design tokens (PRD §5.5). Dark is the default; light follows the system or data-theme. */
+
+:root {
+  color-scheme: dark;
+  --bg: #11131a;
+  --surface: #1a1d27;
+  --surface-2: #232734;
+  --border: #2f3445;
+  --primary: #8b7cf6;
+  --accent: #f5a524;
+  --text: #e6e8ee;
+  --muted: #8a93a6;
+  --cp: #22d3ee;
+  --ok: #34d399;
+  --warn: #fbbf24;
+  --error: #f87171;
+  --on-primary: #11131a;
+
+  --font-ui: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: ui-monospace, 'Cascadia Code', 'JetBrains Mono', Menlo, monospace;
+  --radius: 6px;
+  --gap: 12px;
+  --transition: 120ms ease-out;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+    color-scheme: light;
+    --bg: #f6f7fa;
+    --surface: #ffffff;
+    --surface-2: #eef0f5;
+    --border: #d5d9e2;
+    --primary: #5b4bd8;
+    --accent: #b26b00;
+    --text: #1b1f2a;
+    --muted: #5e6678;
+    --cp: #0e7490;
+    --ok: #047857;
+    --warn: #a16207;
+    --error: #b91c1c;
+    --on-primary: #ffffff;
+  }
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+  --bg: #f6f7fa;
+  --surface: #ffffff;
+  --surface-2: #eef0f5;
+  --border: #d5d9e2;
+  --primary: #5b4bd8;
+  --accent: #b26b00;
+  --text: #1b1f2a;
+  --muted: #5e6678;
+  --cp: #0e7490;
+  --ok: #047857;
+  --warn: #a16207;
+  --error: #b91c1c;
+  --on-primary: #ffffff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --transition: 0s;
+  }
+}

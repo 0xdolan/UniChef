@@ -1,0 +1,59 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.app > main {
+  flex: 1;
+  min-height: 0;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 8px var(--gap);
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.header a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.header a[aria-current='page'] {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.logo {
+  color: var(--primary);
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.skip {
+  position: absolute;
+  inset-inline-start: 8px;
+  top: -40px;
+  padding: 6px 10px;
+  background: var(--primary);
+  color: var(--on-primary);
+  border-radius: var(--radius);
+}
+
+.skip:focus {
+  top: 8px;
+}
+
+.notFound {
+  padding: 32px;
+}
+
+.notFound a {
+  color: var(--primary);
+}

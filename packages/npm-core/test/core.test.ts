@@ -398,6 +398,30 @@ describe('runner', () => {
     expect(full.stepsExecuted).toBe(2);
   });
 
+  it('reports every executed step through onStep', async () => {
+    const events: { path: readonly unknown[]; dish: Dish }[] = [];
+    const r = parseRecipe(
+      recipe([
+        { op: 'comment' },
+        { op: 'comment', disabled: true },
+        { op: 'sub-recipe', args: { steps: [{ op: 'label', args: { name: 'x' } }] } },
+      ]),
+    );
+    await bake(r, str('a'), {
+      onStep: (e) => {
+        expect(e.ms).toBeGreaterThanOrEqual(0);
+        events.push({ path: e.path, dish: e.dish });
+      },
+    });
+    expect(events.map((e) => e.path)).toEqual([[0], [2, 0], [2]]);
+    expect(events.every((e) => e.dish.type === 'string')).toBe(true);
+    const viaOp = await runOperation('fork', {}, str('a'), {
+      onStep: (e) => events.push({ path: e.path, dish: e.dish }),
+    });
+    expect(viaOp.dish).toEqual(str('a'));
+    expect(events.at(-1)?.path).toEqual([0]);
+  });
+
   it('enforces the step and input limits', async () => {
     const loop = parseRecipe(
       recipe([

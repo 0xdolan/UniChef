@@ -9,7 +9,10 @@
 
 import { UniChefError } from '../errors.js';
 
-/** Returns the gzipped bytes of one data file, e.g. `ucd-core-18.0.0.json.gz`. */
+/**
+ * Returns the bytes of one data file, e.g. `ucd-core-18.0.0.json.gz`: gzipped, or already
+ * decompressed when a server sent it with `Content-Encoding: gzip`.
+ */
 export type DataSource = (file: string) => Promise<Uint8Array>;
 
 async function defaultSource(file: string): Promise<Uint8Array> {
@@ -35,6 +38,9 @@ export function setDataSource(fn: DataSource): void {
 }
 
 async function gunzip(data: Uint8Array): Promise<string> {
+  if (data[0] !== 0x1f || data[1] !== 0x8b) {
+    return new TextDecoder().decode(data);
+  }
   const stream = new Blob([data as Uint8Array<ArrayBuffer>])
     .stream()
     .pipeThrough(new DecompressionStream('gzip'))
