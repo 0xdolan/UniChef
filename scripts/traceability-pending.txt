@@ -1,13 +1,11 @@
 # Requirement IDs with no test or CI step yet (see scripts/check-traceability.py).
 # Remove an ID when a test name, docstring or workflow step references it.
 FR-001
-FR-002
 FR-003
 FR-004
 FR-005
 FR-006
 FR-007
-FR-008
 FR-009
 FR-030
 GOV-010
@@ -36,4 +34,3 @@ SEC-006
 SEC-007
 SEC-008
 SEC-009
-SEC-010

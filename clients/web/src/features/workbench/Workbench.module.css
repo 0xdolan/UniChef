@@ -9,6 +9,10 @@
   min-height: 0;
 }
 
+.workbench:has(> .notice) {
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
 @media (width < 900px) {
   .workbench {
     grid-template-columns: 1fr;
@@ -18,7 +22,7 @@
 
 .io {
   display: grid;
-  grid-template-rows: 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
   gap: var(--gap);
   min-height: 0;
 }
@@ -183,7 +187,6 @@
 
 .stepName {
   flex: 1;
-  font-weight: 600;
 }
 
 .stepActions {
@@ -234,4 +237,151 @@
   padding-inline-start: 18px;
   color: var(--warn);
   font-size: 13px;
+}
+
+.notice {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px var(--gap);
+  border: 1px solid var(--border);
+  border-inline-start: 3px solid var(--primary);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.notice p {
+  flex: 1;
+  margin: 0;
+}
+
+.notice[data-tone='warn'] {
+  border-inline-start-color: var(--warn);
+}
+
+.notice[data-tone='error'] {
+  border-inline-start-color: var(--error);
+}
+
+.handle {
+  cursor: grab;
+  touch-action: none;
+}
+
+.step[data-dragging] {
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 30%);
+}
+
+.step[data-selected] {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+.step[data-failed] {
+  border-color: var(--error);
+  border-inline-start-color: var(--error);
+}
+
+.step[data-skipped] {
+  opacity: 0.5;
+}
+
+.stepName {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  text-align: start;
+  cursor: pointer;
+}
+
+.stepName:hover,
+.stepName[aria-pressed='true'] {
+  color: var(--primary);
+}
+
+.badge[data-stale] {
+  opacity: 0.5;
+}
+
+.stepError,
+.stepNote,
+.note {
+  margin: 4px 0 0;
+  font-size: 13px;
+}
+
+.stepError {
+  color: var(--error);
+}
+
+.stepNote,
+.note {
+  color: var(--muted);
+}
+
+.segmented {
+  display: flex;
+  flex: 1;
+  gap: 12px;
+}
+
+.segmented label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dump {
+  margin: 0;
+  padding: 8px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.dump[data-view='hex'] {
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.diff {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.diff > div {
+  min-width: 0;
+}
+
+.diffTitle {
+  margin: 0;
+  padding: 4px 8px 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.tableWrap {
+  overflow: auto;
+}
+
+.table {
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.table th,
+.table td {
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  text-align: start;
 }

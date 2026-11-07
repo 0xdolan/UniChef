@@ -42,6 +42,11 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
   - Every bake runs in a Web Worker. Auto-bake is debounced by 300 ms, and a new bake cancels the previous one. A watchdog restarts a worker that overruns its budget or ignores a cancel.
   - Offline: the UCD and entity data ship as hashed build assets. A strict CSP is set on the production build.
   - Dark and light themes from the PRD palette, an ARIA live bake status, and reduced motion support.
+- **Web app**, second slice:
+  - The step inspector: each step shows a live badge with its output type, size and time. Selecting a step shows the first 4 KiB of its output as text, a hex dump or a table, with an option to compare it with the step's input. The failing step is outlined with its error, and the steps after it are marked as not run.
+  - Steps reorder by drag and drop with a mouse, touch or the keyboard, with screen reader announcements.
+  - The recipe, input and input format live in the URL fragment (`#/?r=…&i=…&f=…`, deflate-raw and Base64url), so a link restores the workbench. Inputs that would make the link longer than 32 KiB are left out, with a notice. A "Copy link" button copies the link.
+  - Links with more than 20 steps open with auto-bake off and a prompt to review the recipe first. Damaged links show a notice and leave the workbench unchanged.
 - **CI** (`.github/`):
   - Lint, typecheck, Python and TypeScript test matrices.
   - A parity job that checks both cores ran every vector case (`scripts/parity-report.py`).

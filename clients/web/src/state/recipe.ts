@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 /** The editable recipe: plain JSON args plus a stable `uid` per step for React keys. */
 
-import { getOperation, type ArgSpec } from '@unichef/core';
+import { getOperation, parseRecipe, type ArgSpec } from '@unichef/core';
 
 import type { RecipeDoc } from '../worker/protocol.js';
 
@@ -18,6 +18,8 @@ export interface StepModel {
   readonly args: Readonly<Record<string, RawArg>>;
   readonly disabled: boolean;
   readonly breakpoint: boolean;
+  readonly label?: string;
+  readonly comment?: string;
 }
 
 let counter = 0;
@@ -89,6 +91,21 @@ export const moveStep = (
     return out;
   });
 
+/** Move step `uid` to where step `over` is, when both are in the same list (drag and drop). */
+export const moveTo = (
+  steps: readonly StepModel[],
+  uid: string,
+  over: string,
+): readonly StepModel[] =>
+  updateList(steps, uid, (list, i) => {
+    const to = list.findIndex((s) => s.uid === over);
+    if (to < 0 || to === i) return list;
+    const out = [...list];
+    const [step] = out.splice(i, 1);
+    if (step !== undefined) out.splice(to, 0, step);
+    return out;
+  });
+
 function stepDoc(step: StepModel): Record<string, unknown> {
   const args: Record<string, unknown> = {};
   for (const [name, value] of Object.entries(step.args)) {
@@ -99,6 +116,8 @@ function stepDoc(step: StepModel): Record<string, unknown> {
     args,
     ...(step.disabled ? { disabled: true } : {}),
     ...(step.breakpoint ? { breakpoint: true } : {}),
+    ...(step.label === undefined ? {} : { label: step.label }),
+    ...(step.comment === undefined ? {} : { comment: step.comment }),
   };
 }
 
@@ -107,3 +126,34 @@ export const recipeDoc = (steps: readonly StepModel[]): RecipeDoc => ({
   version: 1,
   steps: steps.map(stepDoc),
 });
+
+type Json = Readonly<Record<string, unknown>>;
+
+function stepFromDoc(raw: Json): StepModel {
+  const step = newStep(raw.op as string);
+  const given = (raw.args ?? {}) as Json;
+  const args: Record<string, RawArg> = { ...step.args };
+  for (const spec of getOperation(step.op).args) {
+    const value = given[spec.name];
+    if (value === undefined) continue;
+    args[spec.name] =
+      spec.kind === 'steps' ? (value as readonly Json[]).map(stepFromDoc) : (value as RawArg);
+  }
+  return {
+    ...step,
+    args,
+    disabled: raw.disabled === true,
+    breakpoint: raw.breakpoint === true,
+    ...(typeof raw.label === 'string' ? { label: raw.label } : {}),
+    ...(typeof raw.comment === 'string' ? { comment: raw.comment } : {}),
+  };
+}
+
+/**
+ * The editable steps of a recipe document from outside (a shared link). `parseRecipe`
+ * validates it first and throws `UniChefError`, so the casts below only see valid shapes.
+ */
+export function stepsFromDoc(doc: unknown): StepModel[] {
+  parseRecipe(doc);
+  return ((doc as Json).steps as readonly Json[]).map(stepFromDoc);
+}

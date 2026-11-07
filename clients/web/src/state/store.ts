@@ -1,13 +1,15 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 /** App state (PRD §6.4): recipe, input, bake result, UI and settings slices. */
 
-import type { Dish, RunWarning } from '@unichef/core';
+import type { Dish, DishType, PathItem, RunWarning } from '@unichef/core';
 import { create } from 'zustand';
 
+import type { MessageKey } from '../i18n/index.js';
 import type { InputFormat } from '../lib/format.js';
 import type { WorkerError } from '../worker/protocol.js';
 import {
   moveStep,
+  moveTo,
   newStep,
   removeStep,
   updateStep,
@@ -17,11 +19,33 @@ import {
 
 export type BakeStatus = 'idle' | 'baking' | 'done' | 'error';
 
+/** What the inspector knows about one executed step (FR-002). */
+export interface StepSnapshot {
+  readonly type: DishType;
+  /** Full size of the step's output, from `dishSize`. */
+  readonly byteLength: number;
+  /** The first 4 KiB. */
+  readonly preview: Dish;
+  readonly ms: number;
+}
+
+/** Snapshot key for a step path: `2`, or `2/0` inside a sub-recipe. */
+export const pathKey = (path: readonly PathItem[]): string => path.join('/');
+
+export interface Notice {
+  readonly key: MessageKey;
+  readonly vars?: Readonly<Record<string, string | number>>;
+  readonly tone: 'info' | 'warn' | 'error';
+}
+
 interface RecipeSlice {
   steps: readonly StepModel[];
   addStep: (op: string) => void;
   removeStep: (uid: string) => void;
   moveStep: (uid: string, delta: number) => void;
+  /** Drag and drop: move `uid` to the place of `over` in the same list. */
+  moveTo: (uid: string, over: string) => void;
+  setSteps: (steps: readonly StepModel[]) => void;
   setArg: (uid: string, name: string, value: RawArg) => void;
   toggleDisabled: (uid: string) => void;
   clearRecipe: () => void;
@@ -40,7 +64,12 @@ interface BakeSlice {
   warnings: readonly RunWarning[];
   error: WorkerError | null;
   ms: number;
+  /** Step outputs by `pathKey`, from the latest bake that reported any. */
+  snapshots: Readonly<Record<string, StepSnapshot>>;
+  /** True until the running bake reports, so old badges stay up instead of flickering. */
+  snapshotsStale: boolean;
   bakeStarted: () => void;
+  stepDone: (path: readonly PathItem[], snapshot: StepSnapshot) => void;
   bakeDone: (output: Dish, warnings: readonly RunWarning[], ms: number) => void;
   bakeFailed: (error: WorkerError) => void;
 }
@@ -48,6 +77,11 @@ interface BakeSlice {
 interface UiSlice {
   opQuery: string;
   setOpQuery: (query: string) => void;
+  /** `pathKey` of the step shown in the inspector. */
+  selected: string | null;
+  select: (key: string | null) => void;
+  notice: Notice | null;
+  setNotice: (notice: Notice | null) => void;
 }
 
 interface SettingsSlice {
@@ -68,6 +102,12 @@ export const useApp = create<AppState>()((set) => ({
   moveStep: (uid, delta) => {
     set((s) => ({ steps: moveStep(s.steps, uid, delta) }));
   },
+  moveTo: (uid, over) => {
+    set((s) => ({ steps: moveTo(s.steps, uid, over) }));
+  },
+  setSteps: (steps) => {
+    set({ steps, selected: null });
+  },
   setArg: (uid, name, value) => {
     set((s) => ({
       steps: updateStep(s.steps, uid, (step) => ({
@@ -82,7 +122,7 @@ export const useApp = create<AppState>()((set) => ({
     }));
   },
   clearRecipe: () => {
-    set({ steps: [] });
+    set({ steps: [], selected: null });
   },
 
   input: '',
@@ -99,19 +139,48 @@ export const useApp = create<AppState>()((set) => ({
   warnings: [],
   error: null,
   ms: 0,
+  snapshots: {},
+  snapshotsStale: false,
   bakeStarted: () => {
-    set({ status: 'baking' });
+    set({ status: 'baking', snapshotsStale: true });
+  },
+  stepDone: (path, snapshot) => {
+    set((s) => ({
+      snapshots: { ...(s.snapshotsStale ? {} : s.snapshots), [pathKey(path)]: snapshot },
+      snapshotsStale: false,
+    }));
   },
   bakeDone: (output, warnings, ms) => {
-    set({ status: 'done', output, warnings, ms, error: null });
+    set((s) => ({
+      status: 'done',
+      output,
+      warnings,
+      ms,
+      error: null,
+      ...(s.snapshotsStale ? { snapshots: {}, snapshotsStale: false } : {}),
+    }));
   },
   bakeFailed: (error) => {
-    set({ status: 'error', error, output: null, warnings: [] });
+    set((s) => ({
+      status: 'error',
+      error,
+      output: null,
+      warnings: [],
+      ...(s.snapshotsStale ? { snapshots: {}, snapshotsStale: false } : {}),
+    }));
   },
 
   opQuery: '',
   setOpQuery: (opQuery) => {
     set({ opQuery });
+  },
+  selected: null,
+  select: (selected) => {
+    set({ selected });
+  },
+  notice: null,
+  setNotice: (notice) => {
+    set({ notice });
   },
 
   autoBake: true,
