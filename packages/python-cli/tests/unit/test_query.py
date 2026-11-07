@@ -98,7 +98,8 @@ def test_name_regex_errors_and_timeout() -> None:
         query("name~/a++/")
     assert info.value.code == "E_REGEX_UNSUPPORTED"
     with pytest.raises(UniChefError) as info:
-        query("name~/(A|AA|.A)+B/", timeout_ms=1)
+        # Exponential backtracking on every name, so 1 ms runs out on any machine.
+        query("name~/^(.|.)+ $/", timeout_ms=1)
     assert info.value.code == "E_REGEX_TIMEOUT"
 
 
