@@ -34,7 +34,14 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
 - **TypeScript core** (`packages/npm-core`, `@unichef/core`):
   - A port of the Python core with the same dish types, Unicode engine, regex profile and every operation.
   - It passes every shared vector.
-  - The gzipped data files load lazily in Node and browsers, and hosts can supply their own source with `setDataSource()`.
+  - The gzipped data files load lazily in Node and browsers, and hosts can supply their own source with `setDataSource()`. A source may return the files already decompressed, as browsers do when a server sends `Content-Encoding: gzip`.
+  - `bake()` takes an `onStep` hook that reports each executed step's path, dish and time.
+- **Web app** (`clients/web`), first slice:
+  - The Workbench (`#/`): a searchable operation list, a recipe with schema-driven argument forms for every argument kind (nested steps included), and input and output panes.
+  - Input as text, hex or Base64.
+  - Every bake runs in a Web Worker. Auto-bake is debounced by 300 ms, and a new bake cancels the previous one. A watchdog restarts a worker that overruns its budget or ignores a cancel.
+  - Offline: the UCD and entity data ship as hashed build assets. A strict CSP is set on the production build.
+  - Dark and light themes from the PRD palette, an ARIA live bake status, and reduced motion support.
 - **CI** (`.github/`):
   - Lint, typecheck, Python and TypeScript test matrices.
   - A parity job that checks both cores ran every vector case (`scripts/parity-report.py`).

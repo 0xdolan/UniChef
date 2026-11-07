@@ -63,7 +63,7 @@ parity: ## Run the shared test vectors in both languages and cross-check results
 	uv run scripts/parity-report.py reports/py-parity.xml reports/ts-parity.xml
 
 e2e: ## Run the Playwright end-to-end tests
-	$(call not_yet,the web app)
+	$(call not_yet,the web app's end-to-end tests)
 
 ucd: ## Fetch and verify the UCD, compile it and write it to both packages
 	uv run scripts/ucd/fetch.py
@@ -97,8 +97,8 @@ build-py: ## Build the Python sdist and wheel into dist/
 build-npm: ## Build the @unichef/core npm package into dist/
 	pnpm --filter @unichef/core build
 
-build-web: ## Build the web app into dist/
-	$(call not_yet,the web app)
+build-web: ## Build the web app into clients/web/dist/
+	pnpm --filter web build
 
 build-ext: ## Build the browser extensions into dist/
 	$(call not_yet,the extensions)
@@ -123,8 +123,8 @@ ci: lint typecheck test parity ucd-check entities-check ops-check version-check 
 
 docker-ci: ## Run CI and E2E inside the dev container
 	$(COMPOSE) run --rm --build ci
-	@if [ -d clients/web ]; then $(COMPOSE) run --rm e2e; \
-	else echo "make e2e: skipped; it arrives with the web app (PRD §16.1)." >&2; fi
+	@if [ -f clients/web/playwright.config.ts ]; then $(COMPOSE) run --rm e2e; \
+	else echo "make e2e: skipped; it arrives with the web app's end-to-end tests (PRD §16.1)." >&2; fi
 
 clean: ## Remove build output and caches
 	rm -rf dist build reports assets/branding/dist node_modules/.cache

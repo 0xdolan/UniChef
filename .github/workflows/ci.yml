@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Continuous integration (PRD §11.2). Jobs for parts that do not exist yet (web build and
-# e2e, extensions, Debian packaging, Docker, Safari) are added as those parts land.
+# Continuous integration (PRD §11.2). Jobs for parts that do not exist yet (web e2e,
+# extensions, Debian packaging, Safari) are added as those parts land.
 name: ci
 
 on:
@@ -209,6 +209,8 @@ jobs:
           uvx twine check --strict ../../dist/python/*
       - name: '@unichef/core'
         run: pnpm --filter @unichef/core build
+      - name: Web app
+        run: pnpm --filter web build
 
   docker:
     name: docker (${{ matrix.os }})

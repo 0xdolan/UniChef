@@ -1,0 +1,60 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 13px;
+}
+
+.field > label {
+  color: var(--muted);
+}
+
+.inline {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+
+.inline > label {
+  color: var(--text);
+}
+
+.row {
+  display: flex;
+  gap: 6px;
+}
+
+.row > input {
+  flex: 1;
+  min-width: 0;
+}
+
+.control {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 4px 6px;
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.nested {
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 6px;
+  margin: 0;
+}
+
+.nested > legend {
+  color: var(--muted);
+  padding: 0 4px;
+}
