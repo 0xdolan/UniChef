@@ -5,6 +5,7 @@ pnpm-lock.yaml
 packages/npm-core/data/
 packages/python-cli/
 spec/vectors/
+spec/ops.json
 data/
 assets/
 .claude/
