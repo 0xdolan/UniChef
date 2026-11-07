@@ -97,7 +97,6 @@ export const jump = defineOp({
     'warning. Every jump counts towards the step limit.',
   inputType: 'string',
   outputType: 'string',
-  examples: [{ input: 'unchanged', args: { to: 'start', max: 0 }, output: 'unchanged' }],
   args: [stringArg('to'), intArg('max', 10, 0, 1000)],
   run: () => true,
 });

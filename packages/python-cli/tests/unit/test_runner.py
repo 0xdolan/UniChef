@@ -163,6 +163,14 @@ def _oom(_data: bytes, _args: Args, _ctx: OpContext) -> bytes:
     raise MemoryError
 
 
+@pytest.mark.parametrize("op_id", ["jump", "conditional-jump"])
+def test_run_operation_checks_jump_targets(op_id: str) -> None:
+    with pytest.raises(UniChefError) as info:
+        run_operation(op_id, {"to": "nowhere"}, Dish("string", "x"))
+    assert info.value.code == "E_RECIPE_SCHEMA"
+    assert info.value.path == [0]
+
+
 @pytest.mark.parametrize(
     ("fn", "code"), [(_boom, "E_INTERNAL"), (_deep, "E_LIMIT"), (_oom, "E_LIMIT")]
 )

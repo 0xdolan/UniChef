@@ -308,6 +308,12 @@ export function parseSteps(
     throw schemaError(path, `A step list holds at most ${MAX_STEPS_PER_LIST} steps.`);
   }
   const steps = raw.map((item, i) => parseStep(item, [...path, i], depth));
+  checkJumps(steps, path);
+  return steps;
+}
+
+/** Every jump in one step list must target a label in that list. */
+export function checkJumps(steps: readonly Step[], path: readonly PathItem[]): void {
   const targets = jumpTargets(steps, path);
   steps.forEach((step, i) => {
     if (JUMP_OPS.has(step.op)) {
@@ -317,7 +323,6 @@ export function parseSteps(
       }
     }
   });
-  return steps;
 }
 
 /** Validate a decoded recipe document and resolve it (both phases). */

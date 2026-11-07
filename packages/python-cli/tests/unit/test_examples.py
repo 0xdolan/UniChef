@@ -4,6 +4,7 @@
 import pytest
 
 from unichef.core.dish import Dish, coerce
+from unichef.core.recipe import JUMP_OPS
 from unichef.core.registry import Operation, all_operations
 from unichef.core.runner import run_operation
 
@@ -23,7 +24,8 @@ def example_text(dish: Dish) -> str:
 
 @pytest.mark.parametrize("op", all_operations(), ids=lambda op: op.id)
 def test_examples(op: Operation) -> None:
-    assert op.examples
+    # A jump needs a label in the same step list, so it cannot run as a one-step example.
+    assert bool(op.examples) != (op.id in JUMP_OPS)
     for example in op.examples:
         result = run_operation(op.id, dict(example.args), Dish("string", example.input))
         assert example_text(result.dish) == example.output

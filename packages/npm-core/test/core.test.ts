@@ -310,6 +310,11 @@ describe('recipe validation', () => {
     expect(await code(() => parseRecipe(raw))).toBe('E_RECIPE_SCHEMA');
   });
 
+  it.each(['jump', 'conditional-jump'])('checks %s targets in runOperation', async (op) => {
+    const run = () => runOperation(op, { to: 'nowhere' }, { type: 'string', value: 'x' });
+    expect(await code(run)).toBe('E_RECIPE_SCHEMA');
+  });
+
   it('rejects deep nesting and unknown ops', async () => {
     let steps: unknown[] = [];
     for (let i = 0; i < 8; i += 1) {

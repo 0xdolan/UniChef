@@ -6,7 +6,7 @@ from typing import cast
 
 from unichef.core.dish import Dish, DishValue, Table, coerce
 from unichef.core.errors import PathItem, RunWarning, UniChefError
-from unichef.core.recipe import JUMP_OPS, Recipe, jump_targets, resolve_args
+from unichef.core.recipe import JUMP_OPS, Recipe, check_jumps, jump_targets, resolve_args
 from unichef.core.registry import (
     Args,
     Limits,
@@ -200,5 +200,6 @@ def run_operation(
 ) -> BakeResult:
     """Run one operation with raw (JSON) arguments, as ``unichef op`` does."""
     op = get_operation(op_id)
-    step = Step(op=op_id, args=resolve_args(op, args, [0]))
-    return bake(Recipe(steps=[step]), dish, ctx=ctx)
+    steps = [Step(op=op_id, args=resolve_args(op, args, [0]))]
+    check_jumps(steps, [])
+    return bake(Recipe(steps=steps), dish, ctx=ctx)

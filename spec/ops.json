@@ -361,16 +361,7 @@
           "maximum": 1000
         }
       ],
-      "examples": [
-        {
-          "input": "no digits here",
-          "args": {
-            "pattern": "\\d",
-            "to": "end"
-          },
-          "output": "no digits here"
-        }
-      ]
+      "examples": []
     },
     {
       "id": "count",
@@ -1155,16 +1146,7 @@
           "maximum": 1000
         }
       ],
-      "examples": [
-        {
-          "input": "unchanged",
-          "args": {
-            "to": "start",
-            "max": 0
-          },
-          "output": "unchanged"
-        }
-      ]
+      "examples": []
     },
     {
       "id": "jwt-decode",

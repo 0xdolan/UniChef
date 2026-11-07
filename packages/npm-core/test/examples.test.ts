@@ -7,6 +7,7 @@ import { coerce } from '../src/dish/coerce.js';
 import { ofString, type Dish } from '../src/dish/types.js';
 import { allOperations } from '../src/ops/registry.js';
 import { runOperation } from '../src/recipe/run.js';
+import { JUMP_OPS } from '../src/recipe/validate.js';
 
 const strictUtf8 = new TextDecoder('utf-8', { fatal: true });
 
@@ -27,7 +28,8 @@ function exampleText(dish: Dish): string {
 
 describe('operation examples', () => {
   it.each(allOperations().map((op) => [op.id, op] as const))('%s', async (_id, op) => {
-    expect(op.examples.length).toBeGreaterThan(0);
+    // A jump needs a label in the same step list, so it cannot run as a one-step example.
+    expect(op.examples.length > 0).toBe(!JUMP_OPS.has(op.id));
     for (const example of op.examples) {
       const result = await runOperation(op.id, example.args, ofString(example.input));
       expect(exampleText(result.dish)).toBe(example.output);

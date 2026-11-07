@@ -25,7 +25,7 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
   - Hashing: MD5, SHA-1, SHA-2, SHA-3, SHAKE, BLAKE2b, BLAKE2s, CRC-32, Adler-32 and HMAC.
   - Crypto: XOR, ROT13, ROT47, Atbash and AES (CBC, CTR, GCM, ECB).
   - JWT: `jwt-decode`, `jwt-sign` and `jwt-verify` with the HS, RS, PS, ES and EdDSA algorithms.
-  - Every operation has examples (77 in all) in both cores and in `spec/ops.json`. Tests in each core run them and check the stated output.
+  - Every operation except `jump` and `conditional-jump` has examples (75 in all) in both cores and in `spec/ops.json`. Tests in each core run them and check the stated output.
 - **Python CLI** (`unichef`, `python -m unichef`):
   - The full command tree, help tree and themed output with the exact palette.
   - JSON output that follows the output envelope schema.

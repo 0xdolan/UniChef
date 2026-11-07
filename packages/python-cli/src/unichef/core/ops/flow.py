@@ -108,7 +108,6 @@ def comment(data: bytes, _args: Args, _ctx: OpContext) -> bytes:
     "string",
     "string",
     (string_arg("to"), int_arg("max", 10, 0, 1000)),
-    examples=(Example("unchanged", {"to": "start", "max": 0}, "unchanged"),),
 )
 def jump(_text: str, _args: Args, _ctx: OpContext) -> bool:
     """Jump to the label `to`, at most `max` times; then continue with a W_JUMP_LIMIT
@@ -129,7 +128,6 @@ def jump(_text: str, _args: Args, _ctx: OpContext) -> bool:
         string_arg("to"),
         int_arg("max", 10, 0, 1000),
     ),
-    examples=(Example("no digits here", {"pattern": "\\d", "to": "end"}, "no digits here"),),
 )
 def conditional_jump(text: str, args: Args, ctx: OpContext) -> bool:
     """Jump to the label `to` when `pattern` matches the dish (or does not, with

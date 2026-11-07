@@ -61,9 +61,6 @@ export const conditionalJump = defineOp({
     '`invert`), at most `max` times; then continue with a W_JUMP_LIMIT warning.',
   inputType: 'string',
   outputType: 'string',
-  examples: [
-    { input: 'no digits here', args: { pattern: '\\d', to: 'end' }, output: 'no digits here' },
-  ],
   args: [
     regexArg('pattern'),
     stringArg('flags'),
