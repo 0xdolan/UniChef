@@ -537,4 +537,20 @@ describe('query', () => {
     const slow = 'blk=Basic_Latin & name~/^(?:[A-Z ]|[A-Z ])*!/';
     expect(code(() => q.query(slow, { timeoutMs: 1 }))).toBe('E_REGEX_TIMEOUT');
   });
+
+  it('runs name regexes after the rest of an & chain', () => {
+    const seen: string[] = [];
+    const matcher = (pattern: string) => (name: string) => {
+      seen.push(name);
+      return new RegExp(pattern).test(name);
+    };
+    const found = q.query('name~/ARROW$/ & gc=Sm & age<=6.0', { matcher }).codePoints;
+    expect(found).toContain(0x2190);
+    expect(seen.length).toBeLessThan(1000);
+    expect(q.query('!name~/DIGIT/ & blk=ASCII & gc=Nd', { matcher }).codePoints).toEqual([]);
+    expect(q.query('gc=Nd & (name~/ZERO/ | name~/ONE$/) & blk=ASCII').codePoints).toEqual([
+      0x30, 0x31,
+    ]);
+    expect(code(() => q.query('name~ARROW & gc=Sm'))).toBe('E_ARG_INVALID');
+  });
 });

@@ -36,6 +36,7 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
   - It passes every shared vector.
   - The gzipped data files load lazily in Node and browsers, and hosts can supply their own source with `setDataSource()`. A source may return the files already decompressed, as browsers do when a server sends `Content-Encoding: gzip`.
   - `bake()` takes an `onStep` hook that reports each executed step's path, dish and time.
+  - Queries run `name~/…/` terms after the rest of their `&` chain, so `name~/ARROW$/ & gc=Sm & age<=6.0` scans the math symbols' names only (about 400 ms to 6 ms in a browser). Results are unchanged.
 - **Web app** (`clients/web`), first slice:
   - The Workbench (`#/`): a searchable operation list, a recipe with schema-driven argument forms for every argument kind (nested steps included), and input and output panes.
   - Input as text, hex or Base64.
@@ -47,6 +48,11 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
   - Steps reorder by drag and drop with a mouse, touch or the keyboard, with screen reader announcements.
   - The recipe, input and input format live in the URL fragment (`#/?r=…&i=…&f=…`, deflate-raw and Base64url), so a link restores the workbench. Inputs that would make the link longer than 32 KiB are left out, with a notice. A "Copy link" button copies the link.
   - Links with more than 20 steps open with auto-bake off and a prompt to review the recipe first. Damaged links show a notice and leave the workbench unchanged.
+- **Web app**, third slice:
+  - Character search (`#/chars?q=…`) with the query language. Plain words search names, and a loose exact name match (UAX44-LM2) links straight to its character. Results show in a virtualised grid.
+  - Character detail (`#/char/U+0645`): every property, aliases, and each escape format with a copy button.
+  - Blocks (`#/blocks`, `#/blocks/Basic_Latin`) with assigned counts, and scripts (`#/scripts`, `#/scripts/Arab`) by Script or Script_Extensions.
+  - Lookups run in their own worker, so they never wait behind a bake. The pages load on first visit.
 - **CI** (`.github/`):
   - Lint, typecheck, Python and TypeScript test matrices.
   - A parity job that checks both cores ran every vector case (`scripts/parity-report.py`).

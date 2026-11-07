@@ -11,7 +11,9 @@
  *     comparison = prop , op , value | binary_prop ;
  *
  * Evaluation narrows a candidate set from left to right, so `gc=Lu & name~/LATIN/` runs
- * the regex over uppercase letters only. Results are code points in ascending order.
+ * the regex over uppercase letters only. Name regexes are the slow terms, so in an `&`
+ * chain they run last, whatever their position: `name~/ARROW$/ & gc=Sm` scans the math
+ * symbols' names only. Results are code points in ascending order.
  *
  * `name~/…/` runs the UniChef regex engine with a per-search bound of `timeoutMs`
  * (default 2000, as in Python). Tests may inject another `matcher`.
@@ -232,12 +234,39 @@ class Evaluator {
   }
 
   private and(within: Ranges): Ranges {
-    let result = this.unary(within);
-    while (this.isPunct('&')) {
+    const deferred: { test: (text: string) => boolean; negate: boolean }[] = [];
+    let result = within;
+    for (;;) {
+      const term = this.nameTerm();
+      if (term === null) result = this.unary(result);
+      else deferred.push(term);
+      if (!this.isPunct('&')) break;
       this.pos++;
-      result = this.unary(result);
+    }
+    for (const { test, negate } of deferred) {
+      const hits = this.name(test, result);
+      result = negate ? intersect(result, complement(hits)) : hits;
     }
     return result;
+  }
+
+  /**
+   * Reads `name~/…/` or `!name~/…/` and compiles its regex, leaving the scan to the caller.
+   * Anything else is left unread and gives null.
+   */
+  private nameTerm(): { test: (text: string) => boolean; negate: boolean } | null {
+    const negate = this.isPunct('!');
+    const word = this.tokens[this.pos + (negate ? 1 : 0)];
+    const tilde = this.tokens[this.pos + (negate ? 2 : 1)];
+    if (word?.kind !== 'word' || props.loose(word.text) !== 'name' || tilde?.text !== '~') {
+      return null;
+    }
+    this.pos += negate ? 3 : 2;
+    const pattern = this.next();
+    if (pattern.kind !== 'regex') {
+      fail(`Expected /regex/ after name~ at offset ${String(pattern.pos)}.`);
+    }
+    return { test: this.matcher(pattern.text, pattern.flags), negate };
   }
 
   private unary(within: Ranges): Ranges {
@@ -258,14 +287,6 @@ class Evaluator {
     if (t.kind !== 'word') {
       fail(`Expected a property or '(' at offset ${String(t.pos)} in the query.`);
     }
-    if (props.loose(t.text) === 'name' && this.peek().text === '~') {
-      this.pos++;
-      const pattern = this.next();
-      if (pattern.kind !== 'regex') {
-        fail(`Expected /regex/ after name~ at offset ${String(pattern.pos)}.`);
-      }
-      return this.name(pattern, within);
-    }
     const op = this.peek();
     if (op.kind !== 'op') {
       return intersect(within, this.binary(t.text, 'yes'));
@@ -278,8 +299,7 @@ class Evaluator {
     return intersect(within, this.compare(t.text, op.text, value.text));
   }
 
-  private name(t: Token, within: Ranges): Ranges {
-    const test = this.matcher(t.text, t.flags);
+  private name(test: (text: string) => boolean, within: Ranges): Ranges {
     const hits = new Set<number>();
     for (const [cp, text] of names.iterNames(within)) {
       if (test(text)) {
