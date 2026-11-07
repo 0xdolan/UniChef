@@ -9,6 +9,11 @@
   overflow: auto;
 }
 
+/* The page scrolls; its children keep their height instead of shrinking to fit. */
+.page > * {
+  flex-shrink: 0;
+}
+
 .title {
   margin: 0;
   font-size: 20px;
