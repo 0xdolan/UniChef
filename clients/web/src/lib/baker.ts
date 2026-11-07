@@ -30,19 +30,26 @@ function startBake(client: BakeClient): void {
     return;
   }
   bakeStarted();
-  client.bake(recipeDoc(steps), dish, { snapshots: false, limits: DEFAULT_LIMITS }, BAKE_MS);
+  client.bake(recipeDoc(steps), dish, { snapshots: true, limits: DEFAULT_LIMITS }, BAKE_MS);
 }
 
 function onMessage(message: FromWorker): void {
-  const { bakeDone, bakeFailed } = useApp.getState();
+  const { bakeDone, bakeFailed, stepDone } = useApp.getState();
   switch (message.kind) {
+    case 'step':
+      stepDone(message.path, {
+        type: message.type,
+        byteLength: message.byteLength,
+        preview: message.preview,
+        ms: message.ms,
+      });
+      break;
     case 'done':
       bakeDone(message.output, message.warnings, message.ms);
       break;
     case 'error':
       bakeFailed(message.error);
       break;
-    case 'step':
     case 'ready':
       break;
   }

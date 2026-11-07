@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 
 import { t } from '../../i18n/index.js';
+import { currentFragment } from '../../lib/url-state.js';
 import { useApp } from '../../state/store.js';
 import { StepList } from './StepList.js';
 import styles from './Workbench.module.css';
@@ -12,12 +13,30 @@ export function RecipePane({ onBake }: { readonly onBake: () => void }): ReactNo
   const clear = useApp((s) => s.clearRecipe);
   const autoBake = useApp((s) => s.autoBake);
   const setAutoBake = useApp((s) => s.setAutoBake);
+  const [copied, setCopied] = useState(false);
+  const copyLink = async () => {
+    const url = new URL(window.location.href);
+    url.hash = await currentFragment();
+    await navigator.clipboard.writeText(url.href);
+    setCopied(true);
+    setTimeout(() => {
+      setCopied(false);
+    }, 1500);
+  };
   return (
     <section className={styles.pane} aria-labelledby="recipe-title">
       <div className={styles.paneHead}>
         <h2 id="recipe-title" className={styles.paneTitle}>
           {t('recipe.title')}
         </h2>
+        <button
+          type="button"
+          className={styles.button}
+          onClick={() => void copyLink()}
+          disabled={steps.length === 0}
+        >
+          {copied ? t('recipe.linkCopied') : t('recipe.copyLink')}
+        </button>
         <button
           type="button"
           className={styles.button}

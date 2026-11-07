@@ -32,6 +32,9 @@ function renderWorkbench() {
   return { worker };
 }
 
+/** The bake status line; dnd-kit adds its own `status` live region for announcements. */
+const bakeStatus = () => document.querySelector('[data-status]')?.textContent;
+
 const settle = () => {
   act(() => {
     vi.advanceTimersByTime(AUTO_BAKE_MS);
@@ -70,7 +73,7 @@ describe('Workbench', () => {
       });
     });
     expect(screen.getByRole('textbox', { name: 'Output' })).toHaveProperty('value', '68 69');
-    expect(screen.getByRole('status').textContent).toBe('Baked in 2 ms.');
+    expect(bakeStatus()).toBe('Baked in 2 ms.');
   });
 
   it('reports the failing step from a worker error', () => {
@@ -83,7 +86,7 @@ describe('Workbench', () => {
         error: { code: 'E_ARG_INVALID', message: 'bad flags', path: [2, 0] },
       });
     });
-    expect(screen.getByRole('status').textContent).toBe('Step 3.1 failed: bad flags');
+    expect(bakeStatus()).toBe('Step 3.1 failed: bad flags');
   });
 
   it('reports bad hex input without baking', () => {
@@ -94,7 +97,7 @@ describe('Workbench', () => {
     fireEvent.change(screen.getByRole('textbox', { name: 'Input' }), { target: { value: 'abc' } });
     settle();
     expect(worker().sent.filter((m) => m.kind === 'bake')).toEqual([]);
-    expect(screen.getByRole('status').textContent).toContain('pairs of hex digits');
+    expect(bakeStatus()).toContain('pairs of hex digits');
   });
 
   it('adds steps inside a nested step list', () => {
@@ -106,5 +109,75 @@ describe('Workbench', () => {
     expect(screen.getByLabelText('Unit')).toBeDefined();
     const [fork] = useApp.getState().steps;
     expect(fork?.args.steps).toMatchObject([{ op: 'reverse' }]);
+  });
+
+  it('shows step badges and the selected step in the inspector', () => {
+    const { worker } = renderWorkbench();
+    fireEvent.click(screen.getByRole('button', { name: 'Add To Hex to the recipe' }));
+    fireEvent.change(screen.getByRole('textbox', { name: 'Input' }), { target: { value: 'hi' } });
+    settle();
+    const { id } = worker().lastBake();
+    const preview = makeDish('string', '68 69');
+    act(() => {
+      worker().emit({
+        kind: 'step',
+        id,
+        path: [0],
+        type: 'string',
+        byteLength: 9000,
+        preview,
+        ms: 3.4,
+      });
+    });
+    expect(screen.getByText('string · 9000 ch · 3 ms')).toBeDefined();
+    expect(screen.getByText('Select a step to see its output.')).toBeDefined();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Inspect step 1, To Hex' }));
+    expect(screen.getByRole('heading', { name: 'Step 1: To Hex' })).toBeDefined();
+    expect(screen.getByText('68 69')).toBeDefined();
+    expect(screen.getByText('Showing the first 5 ch of 9000 ch.')).toBeDefined();
+
+    fireEvent.click(screen.getByRole('radio', { name: 'Hex' }));
+    expect(screen.getByText(/^00000000 36 38 20 36 39 \|68 69\|$/)).toBeDefined();
+
+    fireEvent.click(screen.getByRole('radio', { name: 'Text' }));
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Compare with the step input' }));
+    expect(screen.getByRole('heading', { name: 'Input', level: 3 })).toBeDefined();
+    expect(screen.getByText('hi', { selector: 'pre' })).toBeDefined();
+  });
+
+  it('outlines the failing step and marks later steps as not run', () => {
+    const { worker } = renderWorkbench();
+    for (const name of ['To Hex', 'Reverse', 'Normalize']) {
+      fireEvent.click(screen.getByRole('button', { name: `Add ${name} to the recipe` }));
+    }
+    settle();
+    act(() => {
+      worker().emit({
+        kind: 'error',
+        id: worker().lastBake().id,
+        error: { code: 'E_ARG_INVALID', message: 'bad unit', path: [1] },
+      });
+    });
+    const cards = document.querySelectorAll('ol > li');
+    expect(
+      [...cards].map((li) => [li.hasAttribute('data-failed'), li.hasAttribute('data-skipped')]),
+    ).toEqual([
+      [false, false],
+      [true, false],
+      [false, true],
+    ]);
+    expect(screen.getByText('bad unit')).toBeDefined();
+    expect(screen.getByText('Not run: an earlier step failed.')).toBeDefined();
+  });
+
+  it('shows a dismissible notice', () => {
+    renderWorkbench();
+    act(() => {
+      useApp.getState().setNotice({ key: 'share.review', vars: { count: 25 }, tone: 'warn' });
+    });
+    expect(screen.getByRole('alert').textContent).toContain('This link holds 25 steps');
+    fireEvent.click(screen.getByRole('button', { name: 'Dismiss' }));
+    expect(screen.queryByRole('alert')).toBeNull();
   });
 });

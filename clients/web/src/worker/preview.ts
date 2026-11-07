@@ -3,8 +3,8 @@
 
 import { makeDish, type Dish } from '@unichef/core';
 
-/** Characters, bytes, code points or table rows kept in a step preview. */
-export const PREVIEW_LIMIT = 64 * 1024;
+/** Characters, bytes, code points or table rows kept in a step preview (FR-002: 4 KiB). */
+export const PREVIEW_LIMIT = 4 * 1024;
 
 export function preview(dish: Dish, limit = PREVIEW_LIMIT): Dish {
   switch (dish.type) {
