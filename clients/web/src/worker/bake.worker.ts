@@ -3,12 +3,18 @@
 
 /// <reference lib="webworker" />
 
-import { bake, dishSize, isUniChefError, parseRecipe, setDataSource } from '@unichef/core';
+import { bake, dishSize, parseRecipe, setDataSource } from '@unichef/core';
 import { UCD_VERSION } from '@unichef/core/unicode/data.js';
 
 import { dataSource } from '../lib/data.js';
 import { preview } from './preview.js';
-import { transferables, type FromWorker, type ToWorker, type WorkerError } from './protocol.js';
+import {
+  toWorkerError,
+  transferables,
+  type FromWorker,
+  type ToWorker,
+  type WorkerError,
+} from './protocol.js';
 
 declare const self: DedicatedWorkerGlobalScope;
 
@@ -16,14 +22,6 @@ let current: { id: number; controller: AbortController } | null = null;
 
 function post(message: FromWorker, transfer: Transferable[] = []): void {
   self.postMessage(message, transfer);
-}
-
-function toWorkerError(exc: unknown): WorkerError {
-  if (isUniChefError(exc)) {
-    return { code: exc.code, message: exc.message, path: exc.path };
-  }
-  const message = exc instanceof Error ? exc.message : String(exc);
-  return { code: 'E_INTERNAL', message, path: [] };
 }
 
 async function runBake(message: Extract<ToWorker, { kind: 'bake' }>): Promise<void> {

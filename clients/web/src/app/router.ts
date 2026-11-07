@@ -16,5 +16,13 @@ export function routePath(hash: string): string {
   return path === '' ? '/' : path;
 }
 
-export const useRoute = (): string =>
-  useSyncExternalStore(subscribe, () => routePath(window.location.hash));
+/** The route's query, e.g. `q` in `#/chars?q=arrow`. */
+export function routeQuery(hash: string): URLSearchParams {
+  const at = hash.indexOf('?');
+  return new URLSearchParams(at === -1 ? '' : hash.slice(at + 1));
+}
+
+/** The whole fragment, `#` included; re-renders on every hash change. */
+export const useHash = (): string => useSyncExternalStore(subscribe, () => window.location.hash);
+
+export const useRoute = (): string => routePath(useHash());

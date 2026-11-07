@@ -4,7 +4,14 @@
  * clones (Maps, bigints and byte arrays survive), with byte buffers transferred.
  */
 
-import type { Dish, DishType, Limits, PathItem, RunWarning } from '@unichef/core';
+import {
+  isUniChefError,
+  type Dish,
+  type DishType,
+  type Limits,
+  type PathItem,
+  type RunWarning,
+} from '@unichef/core';
 
 /** A recipe document as JSON, validated by the worker with `parseRecipe`. */
 export type RecipeDoc = Readonly<Record<string, unknown>>;
@@ -55,4 +62,13 @@ export type FromWorker =
 /** Byte buffers to transfer with a dish, so large inputs are moved rather than copied. */
 export function transferables(dish: Dish): Transferable[] {
   return dish.type === 'bytes' ? [dish.value.buffer as ArrayBuffer] : [];
+}
+
+/** Any thrown value as a `WorkerError`; only `UniChefError` keeps its code and path. */
+export function toWorkerError(exc: unknown): WorkerError {
+  if (isUniChefError(exc)) {
+    return { code: exc.code, message: exc.message, path: exc.path };
+  }
+  const message = exc instanceof Error ? exc.message : String(exc);
+  return { code: 'E_INTERNAL', message, path: [] };
 }
