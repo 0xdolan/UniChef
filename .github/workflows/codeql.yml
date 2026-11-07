@@ -35,6 +35,7 @@ jobs:
         with:
           languages: ${{ matrix.language }}
           build-mode: none
+          config-file: ./.github/codeql/codeql-config.yml
       # Code scanning is not enabled while the repository is private, so the results stay in the
       # run: kept as an artifact, and the job fails on any finding. Drop upload: never once it is.
       - uses: github/codeql-action/analyze@33d7b85da1a04171e211befe2c739303b9a4c066 # v4.39.3
