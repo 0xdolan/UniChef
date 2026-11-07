@@ -5,14 +5,16 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Fail if a PRD requirement ID is referenced by no test or CI workflow (PRD §0.3, §11.6).
 
-Requirement IDs (FR-, NFR-, SEC-, REL-, GOV- plus three digits) are read from
-UniChef-PRD.md. An ID is covered when it appears in a test file (Python tests, TypeScript
-tests, the scripts' own tests, Playwright specs) or in a workflow under .github/workflows.
+Requirement IDs (FR-, NFR-, SEC-, REL-, GOV- plus three digits) are listed in
+scripts/traceability-ids.txt. The PRD itself is kept local, so when UniChef-PRD.md is
+present the check also fails if that list is out of date; `--write` regenerates it. An ID
+is covered when it appears in a test file (Python tests, TypeScript tests, the scripts' own
+tests, Playwright specs) or in a workflow under .github/workflows.
 
 IDs for work that does not exist yet are listed in scripts/traceability-pending.txt. The
 check also fails when a pending ID becomes covered, so the list only shrinks.
 
-    uv run scripts/check-traceability.py
+    uv run scripts/check-traceability.py [--write]
 """
 
 import re
@@ -21,6 +23,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 PRD = ROOT / "UniChef-PRD.md"
+IDS = ROOT / "scripts" / "traceability-ids.txt"
 PENDING = ROOT / "scripts" / "traceability-pending.txt"
 ID = re.compile(r"\b(?:FR|NFR|SEC|REL|GOV)-\d{3}\b")
 SOURCES = (
@@ -42,15 +45,22 @@ def covered_ids() -> set[str]:
     return found
 
 
-def pending_ids() -> set[str]:
-    lines = PENDING.read_text(encoding="utf-8").splitlines()
+def listed_ids(path: Path) -> set[str]:
+    lines = path.read_text(encoding="utf-8").splitlines()
     return {line.split("#")[0].strip() for line in lines} - {""}
 
 
 def main() -> int:
-    required = set(ID.findall(PRD.read_text(encoding="utf-8")))
+    if PRD.exists() and "--write" in sys.argv[1:]:
+        in_prd = sorted(set(ID.findall(PRD.read_text(encoding="utf-8"))))
+        header = f"# Requirement IDs in {PRD.name}; regenerate with --write.\n"
+        IDS.write_text(header + "".join(f"{i}\n" for i in in_prd), encoding="utf-8")
+    required = listed_ids(IDS)
+    if PRD.exists() and set(ID.findall(PRD.read_text(encoding="utf-8"))) != required:
+        print(f"traceability: {IDS.name} is out of date; run with --write", file=sys.stderr)
+        return 1
     covered = covered_ids()
-    pending = pending_ids()
+    pending = listed_ids(PENDING)
     problems = [
         *(f"{i} is not referenced by any test or CI step" for i in required - covered - pending),
         *(f"{i} is covered now; remove it from {PENDING.name}" for i in pending & covered),
