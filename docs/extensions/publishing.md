@@ -8,7 +8,7 @@ The release workflow attaches `unichef-chrome-<version>.zip` and `unichef-firefo
 
 ### 1. The `store-publish` environment
 
-The workflow creates this environment on its first run. Set the maintainer as its required reviewer, and allow only `v*` tags and the `main` and `develop` branches to deploy to it:
+This environment is already set up. The maintainer is its required reviewer, and only `v*` tags and the `main` and `develop` branches can deploy to it. To set it up again:
 
 ```sh
 gh api -X PUT repos/0xdolan/unichef/environments/store-publish --input - <<'JSON'
