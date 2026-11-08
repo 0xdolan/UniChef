@@ -184,6 +184,36 @@
       "expected": {
         "error": "E_ARG_INVALID"
       }
+    },
+    {
+      "name": "custom non-ASCII BMP alphabet and pad",
+      "args": {
+        "alphabet": "custom",
+        "custom": "АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюя·"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "556e694368656620e29895"
+      },
+      "expected": {
+        "type": "string",
+        "text": "ХЦщйРцбеЩвГвжЙФ·"
+      }
+    },
+    {
+      "name": "custom astral alphabet and pad",
+      "args": {
+        "alphabet": "custom",
+        "custom": "𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳𝐴𝐵𝐶𝐷𝐸𝐹𝐺𝐻𝐼𝐽𝐾𝐿𝟎"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "666f6f21"
+      },
+      "expected": {
+        "type": "string",
+        "text": "𝐙𝐦𝐽𝐯𝐈𝐐𝟎𝟎"
+      }
     }
   ]
 }

@@ -373,6 +373,36 @@
   overflow: auto;
 }
 
+.outputTable {
+  flex: 1;
+  min-height: 120px;
+  overflow: auto;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+/* Separate borders: collapsed ones leave a gap above a sticky header. Each cell draws its
+ * right and bottom edges, so rows are exactly 22px, as the virtualiser assumes. */
+.outputTable .table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.outputTable td,
+.outputTable th {
+  border-width: 0 1px 1px 0;
+  height: 22px;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.outputTable thead th {
+  position: sticky;
+  top: 0;
+  background: var(--surface);
+}
+
 .table {
   border-collapse: collapse;
   font-family: var(--font-mono);

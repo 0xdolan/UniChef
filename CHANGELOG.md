@@ -72,6 +72,12 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
   - `spec/cyberchef-vectors.json` holds 98 shared import cases, 23 of them errors, which both cores run.
   - The Python importer now accepts only plain decimal numbers in chef format, so `inf` and `1_0` are rejected as they are in TypeScript.
 - **GitHub Pages** (`.github/workflows/pages.yml`): on a push to `main` or a manual run, builds the web app and the `@unichef/core` API reference (TypeDoc, at `api/`) and deploys them to https://0xdolan.github.io/unichef/. `make pages` builds the same site locally. The service worker leaves `api/` alone.
+- **Performance budgets** (PRD §13.1), checked in CI:
+  - NFR-001 and NFR-003 run in Playwright (Chromium) against the production build: first paint and interactivity on throttled "Fast 4G", and `analyse-characters` on 100 000 code points.
+  - NFR-002 and NFR-004 run in both cores with `make perf`, without coverage: a Base64 round trip plus SHA-256 on 10 MiB, and name queries over every named code point.
+  - Base64 is about 4 times faster in TypeScript and about 17 times faster in Python. The 10 MiB chain takes about 0.5 s and 0.3 s, down from 1.7 s and 5.2 s.
+  - Name queries (`name~/…/`) over every named code point take about 15–35 ms instead of 440 ms in TypeScript. The regex predicate now reads the clock once per 64 names, since each clock read cost as much as testing a name.
+  - The output pane shows a table as virtualised rows instead of tab-separated text, and "Copy output" still copies it as TSV. With 100 000 rows, the output appears in under 1 s (down from 8 s), and the first rows in about 100 ms.
 - The core exports the types its public signatures use (`DishValues`, `BytesEncoding`, `Example`, `NestedRunner`, `PlainJson`, `WarnFn`), so they show in the API reference.
 - **CI** (`.github/`):
   - Lint, typecheck, Python and TypeScript test matrices.

@@ -111,6 +111,10 @@ jobs:
           enable-cache: true
       - run: uv sync --locked --all-groups --python ${{ matrix.py }}
       - run: uv run --locked pytest
+      # The budgets are set for a 4-core x86-64 machine, like the hosted Ubuntu runner.
+      - name: Performance budgets (NFR-002, NFR-004)
+        if: matrix.os == 'ubuntu-24.04'
+        run: uv run --locked pytest tests/perf -m perf --no-cov
 
   test-ts:
     name: test-ts (node ${{ matrix.node }})
@@ -128,6 +132,8 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm -r test
+      - name: Performance budgets (NFR-002, NFR-004)
+        run: pnpm --filter @unichef/core perf
 
   parity:
     name: parity

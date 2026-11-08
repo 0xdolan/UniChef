@@ -50,10 +50,19 @@ export class Match {
 }
 
 export class Compiled {
+  private tester: RegExp | undefined;
+
   constructor(
     readonly translation: Translation,
     readonly regexp: RegExp,
   ) {}
+
+  /** The same pattern without the `d` and `g` flags, for match-or-not tests. Match indices
+   * make every exec about 50 times slower, which a scan over all names cannot afford. */
+  get test(): RegExp {
+    this.tester ??= new RegExp(this.regexp.source, 'v');
+    return this.tester;
+  }
 
   get groups(): number {
     return this.translation.groups;
@@ -116,9 +125,32 @@ export function search(c: Compiled, text: string, timeoutMs: number, pos = 0): M
   return found;
 }
 
-/** A fast "does it match anywhere" test for scanning many short strings. */
+/** Calls between clock reads in `predicate`. */
+export const CLOCK_EVERY = 64;
+
+/**
+ * A fast "does it match anywhere" test for scanning many short strings. Reading the clock
+ * costs about as much as testing a short name, so it is read once per `CLOCK_EVERY` calls,
+ * and the bound applies to each such batch. A native search cannot be interrupted, so the
+ * check was always made after the fact; batching keeps the bound and drops the cost.
+ */
 export function predicate(c: Compiled, timeoutMs: number): (text: string) => boolean {
-  return (text) => search(c, text, timeoutMs) !== null;
+  const re = c.test;
+  let calls = 0;
+  let started = 0;
+  return (text) => {
+    if (calls === 0) {
+      started = performance.now();
+    }
+    const found = re.test(text);
+    if (++calls === CLOCK_EVERY) {
+      calls = 0;
+      if (performance.now() - started > timeoutMs) {
+        throw timeout(timeoutMs, c.translation.source);
+      }
+    }
+    return found;
+  };
 }
 
 /** Every match, left to right, with JavaScript's `g`-flag stepping. The bound covers the

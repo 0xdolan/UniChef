@@ -244,13 +244,24 @@ describe('matching', () => {
     expect(test('GREEK')).toBe(false);
   });
 
+  it('times a predicate per batch from its first call', async () => {
+    const test = run.predicate(run.compileRegex('a'), 5);
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    // Idle time before the first call does not count against the bound.
+    for (let i = 0; i < 3 * run.CLOCK_EVERY; i++) expect(test('a')).toBe(true);
+  });
+
   it('raises E_REGEX_TIMEOUT once a search has overrun', () => {
     // A JavaScript search cannot be stopped, so the input is only moderately catastrophic.
     const slow = run.compileRegex('(a|aa)+b');
     const text = 'a'.repeat(30);
     for (const call of [
       () => run.search(slow, text, 1),
-      () => run.predicate(slow, 1)(text),
+      () => {
+        // The predicate reads the clock once per batch of calls.
+        const test = run.predicate(slow, 1);
+        for (let i = 0; i < run.CLOCK_EVERY; i++) test(text);
+      },
       () => [...run.finditer(slow, text, 1)],
     ]) {
       expect(code(call)).toBe('E_REGEX_TIMEOUT');

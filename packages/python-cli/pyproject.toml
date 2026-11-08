@@ -89,6 +89,12 @@ module = ["regex.*"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
-addopts = "-ra --strict-markers --cov=unichef --cov-report=term-missing --cov-fail-under=90"
+# Performance budgets run on their own (`make perf`): coverage tracing would skew them.
+addopts = "-ra --strict-markers -m 'not perf' --cov=unichef --cov-report=term-missing --cov-fail-under=90"
 testpaths = ["tests"]
-markers = ["parity: shared vector tests", "conformance: UCD conformance tests", "slow: long-running"]
+markers = [
+    "parity: shared vector tests",
+    "conformance: UCD conformance tests",
+    "slow: long-running",
+    "perf: performance budgets (PRD §13.1), run by make perf",
+]
