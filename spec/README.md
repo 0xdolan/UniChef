@@ -197,6 +197,42 @@ Decoding follows the HTML tokenizer's character-reference rules for text content
 - 0, surrogates and values above 10FFFF become U+FFFD. 80–9F map through windows-1252, so `&#128;` becomes `€`.
 - An `&` that starts no reference is kept as it is.
 
+### `to-base58` (bytes → string) and `from-base58` (string → bytes)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `alphabet` | `bitcoin` \| `flickr` | `bitcoin` | `1–9A–HJ–NP–Za–km–z`, or Flickr's order with the lower-case letters first. |
+| `strict` | boolean | `false` | `from-base58` only. Any character outside the alphabet is `E_DECODE`. |
+
+The bytes are read as one big-endian number. Each leading zero byte becomes one leading `1` (the alphabet's first digit), and back. Without `strict`, `from-base58` discards every character outside the alphabet, including `0`, `O`, `I` and `l`.
+
+### `to-base85` (bytes → string) and `from-base85` (string → bytes)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `alphabet` | `ascii85` \| `z85` | `ascii85` | Ascii85 (`!`–`u`) or ZeroMQ Z85. |
+| `delimiters` | boolean | `false` | `to-base85` only. Wrap Ascii85 in `<~` and `~>`. With `z85` it is `E_ARG_INVALID`. |
+| `strict` | boolean | `false` | `from-base85` only. |
+
+Each group of four bytes is a big-endian number written as five digits. A final group of 1–3 bytes is padded with zero bytes and written as its first 1–3 + 1 digits. Z85 itself requires whole groups; UniChef encodes a final partial group the same way as Ascii85. In Ascii85, a whole group of four zero bytes is written as `z`; a partial final group never is.
+
+`from-base85` with `ascii85` removes one enclosing `<~ … ~>`. Without `strict`, it also trims surrounding whitespace first and discards every character outside the alphabet (and `z`). A final group is padded with the alphabet's last digit. Errors (`E_DECODE`): a `z` inside a group, a final group of one digit, or a group above FFFFFFFF.
+
+With `strict`, every character must be a digit (or `z`), and the input must be exactly what `to-base85` writes for its bytes: `!!!!!` for a zero group, or a non-canonical final group, is `E_DECODE`.
+
+### `quoted-printable-encode` (bytes → string) and `quoted-printable-decode` (string → bytes)
+
+RFC 2045 §6.7.
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `mode` | `text` \| `binary` | `text` | `encode` only. In `text`, LF and CRLF are line breaks, written as CRLF. In `binary`, CR and LF are escaped like other bytes. |
+| `strict` | boolean | `false` | `decode` only. |
+
+`quoted-printable-encode` writes bytes 21–7E except `=` as they are, and spaces and tabs as they are unless they end a line. Every other byte is `=XX` in upper-case hex, and a lone CR is `=0D`. Lines longer than 76 characters get soft line breaks (`=` then CRLF), never inside an `=XX`.
+
+`quoted-printable-decode` removes spaces and tabs at the end of each line, and then a final `=` with its line break (a soft break). Other line breaks are kept as LF or CRLF, as written. Without `strict`, `=xx` in lower case is decoded, an `=` that starts no escape is kept as it is, and characters above 7F become their UTF-8 bytes. With `strict`, all three are `E_DECODE`.
+
 ## Operation arguments (unicode category)
 
 ### `escape-unicode` (string → string)

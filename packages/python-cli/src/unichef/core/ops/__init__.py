@@ -3,7 +3,18 @@
 
 import importlib
 
-MODULES = ("flow", "encoding", "text", "html", "unicode", "security", "hashing", "crypto", "jwt")
+MODULES = (
+    "flow",
+    "encoding",
+    "codecs",
+    "text",
+    "html",
+    "unicode",
+    "security",
+    "hashing",
+    "crypto",
+    "jwt",
+)
 
 
 def load() -> None:

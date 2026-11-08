@@ -1253,6 +1253,147 @@
       "error": {
         "code": "E_RECIPE_SCHEMA"
       }
+    },
+    {
+      "name": "To Base58, defaults",
+      "input": "[{\"op\": \"To Base58\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-base58"
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Base58, bitcoin",
+      "input": "[{\"op\": \"To Base58\", \"args\": [\"123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-base58",
+            "args": {
+              "alphabet": "bitcoin"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "From Base58, keeps non-alphabet characters (strict)",
+      "input": "[{\"op\": \"From Base58\", \"args\": [\"123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz\", false]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "from-base58",
+            "args": {
+              "alphabet": "bitcoin",
+              "strict": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Base85, Z85",
+      "input": "[{\"op\": \"To Base85\", \"args\": [\"0-9a-zA-Z.\\\\-:+=^!/*?&<>()[]{}@%$#\", false]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-base85",
+            "args": {
+              "alphabet": "z85",
+              "delimiters": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Base85, with delimiters",
+      "input": "[{\"op\": \"To Base85\", \"args\": [\"!-u\", true]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-base85",
+            "args": {
+              "alphabet": "ascii85",
+              "delimiters": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "From Base85, defaults",
+      "input": "[{\"op\": \"From Base85\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "from-base85"
+          }
+        ]
+      }
+    },
+    {
+      "name": "From Base85, Z85 without zero-group char",
+      "input": "[{\"op\": \"From Base85\", \"args\": [\"0-9a-zA-Z.\\\\-:+=^!/*?&<>()[]{}@%$#\", true, \"\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "from-base85",
+            "args": {
+              "alphabet": "z85",
+              "strict": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Quoted Printable",
+      "input": "[{\"op\": \"To Quoted Printable\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "quoted-printable-encode"
+          }
+        ]
+      }
+    },
+    {
+      "name": "From Quoted Printable",
+      "input": "[{\"op\": \"From Quoted Printable\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "quoted-printable-decode"
+          }
+        ]
+      }
+    },
+    {
+      "name": "error: To Base58 with the Ripple alphabet",
+      "input": "[{\"op\": \"To Base58\", \"args\": [\"rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz\"]}]",
+      "error": {
+        "code": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "error: From Base85 with the IPv6 alphabet",
+      "input": "[{\"op\": \"From Base85\", \"args\": [\"0-9A-Za-z!#$%&()*+\\\\-;<=>?@^_`{|}~\", true, \"\"]}]",
+      "error": {
+        "code": "E_ARG_INVALID"
+      }
     }
   ]
 }

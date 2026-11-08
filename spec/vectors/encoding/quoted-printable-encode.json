@@ -1,0 +1,128 @@
+{
+  "op": "quoted-printable-encode",
+  "cases": [
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "plain ASCII is unchanged",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "48656c6c6f2c20576f726c6421"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Hello, World!"
+      }
+    },
+    {
+      "name": "'=' and UTF-8 are escaped",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "636166c3a9203d2034e282ac"
+      },
+      "expected": {
+        "type": "string",
+        "text": "caf=C3=A9 =3D 4=E2=82=AC"
+      }
+    },
+    {
+      "name": "trailing space and tab before a line break are escaped",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "61200a62090d0a6320"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a=20\r\nb=09\r\nc=20"
+      }
+    },
+    {
+      "name": "LF and CRLF become CRLF, a lone CR is escaped",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "610d620a630d0a"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a=0Db\r\nc\r\n"
+      }
+    },
+    {
+      "name": "soft line breaks at 76 columns",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "7878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878"
+      },
+      "expected": {
+        "type": "string",
+        "text": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx=\r\nxxxxx"
+      }
+    },
+    {
+      "name": "a line of exactly 76 characters is not wrapped",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "79797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979797979"
+      },
+      "expected": {
+        "type": "string",
+        "text": "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+      }
+    },
+    {
+      "name": "an escape is never split",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "7878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878c3a9"
+      },
+      "expected": {
+        "type": "string",
+        "text": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx=\r\n=C3=A9"
+      }
+    },
+    {
+      "name": "binary mode escapes line breaks",
+      "args": {
+        "mode": "binary"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "610d0a620a"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a=0D=0Ab=0A"
+      }
+    },
+    {
+      "name": "error: unknown mode",
+      "args": {
+        "mode": "crlf"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "00"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

@@ -737,6 +737,38 @@
       ]
     },
     {
+      "id": "from-base58",
+      "name": "From Base58",
+      "category": "Encoding",
+      "description": "Decode Base58. Without `strict`, it skips characters outside the alphabet.",
+      "input": "string",
+      "output": "bytes",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "alphabet",
+          "kind": "enum",
+          "default": "bitcoin",
+          "options": [
+            "bitcoin",
+            "flickr"
+          ]
+        },
+        {
+          "name": "strict",
+          "kind": "boolean",
+          "default": false
+        }
+      ],
+      "examples": [
+        {
+          "input": "9Ajdvzr",
+          "args": {},
+          "output": "Hello"
+        }
+      ]
+    },
+    {
       "id": "from-base64",
       "name": "From Base64",
       "category": "Encoding",
@@ -771,6 +803,38 @@
           "input": "SGVsbG8sIHdvcmxkIQ==",
           "args": {},
           "output": "Hello, world!"
+        }
+      ]
+    },
+    {
+      "id": "from-base85",
+      "name": "From Base85",
+      "category": "Encoding",
+      "description": "Decode Ascii85 (optionally inside `<~ ~>`) or Z85. Without `strict`, it skips characters outside the alphabet.",
+      "input": "string",
+      "output": "bytes",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "alphabet",
+          "kind": "enum",
+          "default": "ascii85",
+          "options": [
+            "ascii85",
+            "z85"
+          ]
+        },
+        {
+          "name": "strict",
+          "kind": "boolean",
+          "default": false
+        }
+      ],
+      "examples": [
+        {
+          "input": "87cURDZ",
+          "args": {},
+          "output": "Hello"
         }
       ]
     },
@@ -1363,6 +1427,56 @@
       ]
     },
     {
+      "id": "quoted-printable-decode",
+      "name": "Quoted-Printable Decode",
+      "category": "Encoding",
+      "description": "Decode quoted-printable. Soft line breaks and trailing spaces are removed, and other line breaks are kept as they are. Without `strict`, lower-case hex is accepted and a stray `=` is kept.",
+      "input": "string",
+      "output": "bytes",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "strict",
+          "kind": "boolean",
+          "default": false
+        }
+      ],
+      "examples": [
+        {
+          "input": "caf=C3=A9 =3D 4=E2=82=AC",
+          "args": {},
+          "output": "café = 4€"
+        }
+      ]
+    },
+    {
+      "id": "quoted-printable-encode",
+      "name": "Quoted-Printable Encode",
+      "category": "Encoding",
+      "description": "Encode bytes as quoted-printable, with lines of at most 76 characters. In `text` mode, LF and CRLF are line breaks, written as CRLF; in `binary` mode they are escaped.",
+      "input": "bytes",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "mode",
+          "kind": "enum",
+          "default": "text",
+          "options": [
+            "text",
+            "binary"
+          ]
+        }
+      ],
+      "examples": [
+        {
+          "input": "café = 4€",
+          "args": {},
+          "output": "caf=C3=A9 =3D 4=E2=82=AC"
+        }
+      ]
+    },
+    {
       "id": "regex-extract",
       "name": "Regex extract",
       "category": "Text",
@@ -1904,6 +2018,33 @@
       ]
     },
     {
+      "id": "to-base58",
+      "name": "To Base58",
+      "category": "Encoding",
+      "description": "Encode bytes as Base58. Each leading zero byte becomes the alphabet's first digit.",
+      "input": "bytes",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "alphabet",
+          "kind": "enum",
+          "default": "bitcoin",
+          "options": [
+            "bitcoin",
+            "flickr"
+          ]
+        }
+      ],
+      "examples": [
+        {
+          "input": "Hello",
+          "args": {},
+          "output": "9Ajdvzr"
+        }
+      ]
+    },
+    {
       "id": "to-base64",
       "name": "To Base64",
       "category": "Encoding",
@@ -1938,6 +2079,38 @@
           "input": "Hello, world!",
           "args": {},
           "output": "SGVsbG8sIHdvcmxkIQ=="
+        }
+      ]
+    },
+    {
+      "id": "to-base85",
+      "name": "To Base85",
+      "category": "Encoding",
+      "description": "Encode bytes as Ascii85 (`z` for a group of four zero bytes) or Z85.",
+      "input": "bytes",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "alphabet",
+          "kind": "enum",
+          "default": "ascii85",
+          "options": [
+            "ascii85",
+            "z85"
+          ]
+        },
+        {
+          "name": "delimiters",
+          "kind": "boolean",
+          "default": false
+        }
+      ],
+      "examples": [
+        {
+          "input": "Hello",
+          "args": {},
+          "output": "87cURDZ"
         }
       ]
     },

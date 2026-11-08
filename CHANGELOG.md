@@ -18,6 +18,7 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
   - The character query language.
 - **Operations:**
   - Encoding: base64, base32, hex, URL, text encodings, binary, octal, decimal and HTML entities.
+  - Beta encoding (#7): `to-base58`/`from-base58` (Bitcoin and Flickr alphabets), `to-base85`/`from-base85` (Ascii85 with `z` and optional `<~ ~>`, and Z85) and `quoted-printable-encode`/`decode` (RFC 2045, with `text` and `binary` modes), with shared vectors and CyberChef import.
   - Text: the text operations.
   - Flow: the flow operations, including `subsection` and `conditional-jump`.
   - Unicode: escapes, normalize, case, diacritics, graphemes, code points, `count` and `analyse-characters`.
@@ -25,7 +26,7 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
   - Hashing: MD5, SHA-1, SHA-2, SHA-3, SHAKE, BLAKE2b, BLAKE2s, CRC-32, Adler-32 and HMAC.
   - Crypto: XOR, ROT13, ROT47, Atbash and AES (CBC, CTR, GCM, ECB).
   - JWT: `jwt-decode`, `jwt-sign` and `jwt-verify` with the HS, RS, PS, ES and EdDSA algorithms.
-  - Every operation except `jump` and `conditional-jump` has examples (75 in all) in both cores and in `spec/ops.json`. Tests in each core run them and check the stated output.
+  - Every operation except `jump` and `conditional-jump` has examples (81 in all) in both cores and in `spec/ops.json`. Tests in each core run them and check the stated output.
 - **Python CLI** (`unichef`, `python -m unichef`):
   - The full command tree, help tree and themed output with the exact palette.
   - JSON output that follows the output envelope schema.

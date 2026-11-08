@@ -4,6 +4,7 @@
 import { UniChefError } from '../errors.js';
 import { pyRepr, type Operation } from './types.js';
 import { CRYPTO_OPS } from './crypto.js';
+import { CODEC_OPS } from './codecs.js';
 import { ENCODING_OPS } from './encoding.js';
 import { FLOW_OPS } from './flow.js';
 import { HASHING_OPS } from './hashing.js';
@@ -19,6 +20,7 @@ const MODULES: readonly (readonly Operation[])[] = [
   FLOW_REGEX_OPS,
   TEXT_OPS,
   ENCODING_OPS,
+  CODEC_OPS,
   HTML_OPS,
   HASHING_OPS,
   CRYPTO_OPS,
