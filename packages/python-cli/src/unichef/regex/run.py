@@ -101,7 +101,10 @@ def predicate(compiled: Compiled, timeout_ms: int) -> Callable[[str], bool]:
 
     def test(text: str) -> bool:
         try:
-            return search(text, timeout=seconds) is not None
+            # Positional (pos, endpos, concurrent, partial, timeout), keeping the GIL: on short
+            # names the keyword form and GIL release cost more than the search (NFR-004).
+            # The timeout still interrupts a runaway search.
+            return search(text, None, None, False, False, seconds) is not None
         except TimeoutError as exc:
             raise _timeout(timeout_ms, compiled.translation.source) from exc
 
