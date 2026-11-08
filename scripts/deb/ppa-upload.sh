@@ -3,9 +3,10 @@
 # Build signed source packages for every series in debian/ppa-series.txt and upload them
 # to the PPA (PRD §8.5).
 #
-#   GPG_KEY_ID=… scripts/deb/ppa-upload.sh [--ref REF] [--rev N] [--dry-run]
+#   GPG_KEY_ID=… scripts/deb/ppa-upload.sh [--ref REF] [--rev N] [--series CODENAME] [--dry-run]
 #
 # --rev N   the PPA revision, 1 for a new upstream version; raise it to re-upload one.
+# --series  upload only this series from debian/ppa-series.txt.
 # --dry-run builds and lints the source packages but does not sign or upload them.
 # Needs devscripts, dput, lintian, debhelper, dh-python, pybuild-plugin-pyproject and
 # bash-completion. The GPG key's UID e-mail must be the Maintainer in debian/control, and
@@ -15,11 +16,12 @@ cd "$(dirname "$0")/../.."
 
 die() { echo "ppa-upload: $*" >&2; exit 1; }
 
-ref="" rev=1 dry=false
+ref="" rev=1 only="" dry=false
 while (($#)); do
   case "$1" in
     --ref) ref="${2:?--ref needs a value}"; shift 2 ;;
     --rev) rev="${2:?--rev needs a value}"; shift 2 ;;
+    --series) only="${2:?--series needs a value}"; shift 2 ;;
     --dry-run) dry=true; shift ;;
     *) die "unknown option $1" ;;
   esac
@@ -44,6 +46,10 @@ orig=$(scripts/deb/make-orig.sh --out "$out" ${ref:+--ref "$ref"} "$version")
 
 mapfile -t series < <(grep -v '^[[:space:]]*\(#\|$\)' debian/ppa-series.txt)
 ((${#series[@]})) || die "debian/ppa-series.txt lists no series."
+if [[ -n "$only" ]]; then
+  [[ " ${series[*]} " == *" $only "* ]] || die "$only is not in debian/ppa-series.txt."
+  series=("$only")
+fi
 
 changes=()
 for s in "${series[@]}"; do
