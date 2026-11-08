@@ -2,11 +2,12 @@
 /** Input and output panes, and the bake status line (an ARIA live region). */
 
 import { dishSize, type PathItem } from '@unichef/core';
-import { useState, type ReactNode } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 
 import { t, type MessageKey } from '../../i18n/index.js';
 import { INPUT_FORMATS, dishText, sizeLabel, type InputFormat } from '../../lib/format.js';
 import { useApp } from '../../state/store.js';
+import { OutputTable } from './OutputTable.js';
 import styles from './Workbench.module.css';
 
 /** A step path as shown to people: 1-based, dotted (`3.1`). */
@@ -87,7 +88,11 @@ export function OutputPane(): ReactNode {
   const output = useApp((s) => s.output);
   const warnings = useApp((s) => s.warnings);
   const [copied, setCopied] = useState(false);
-  const text = output === null ? '' : dishText(output);
+  // A table shows as rows; its text (TSV) is built only when it is copied.
+  const text = useMemo(
+    () => (output === null || output.type === 'table' ? '' : dishText(output)),
+    [output],
+  );
   const size = output === null ? '' : sizeLabel(output.type, dishSize(output));
   return (
     <section className={styles.pane} aria-labelledby="output-title">
@@ -106,18 +111,24 @@ export function OutputPane(): ReactNode {
           className={styles.button}
           disabled={output === null}
           onClick={() => {
-            void navigator.clipboard.writeText(text).then(() => {
-              setCopied(true);
-              setTimeout(() => {
-                setCopied(false);
-              }, 1500);
-            });
+            void navigator.clipboard
+              .writeText(output?.type === 'table' ? dishText(output) : text)
+              .then(() => {
+                setCopied(true);
+                setTimeout(() => {
+                  setCopied(false);
+                }, 1500);
+              });
           }}
         >
           {copied ? t('output.copied') : t('output.copy')}
         </button>
       </div>
-      <textarea aria-labelledby="output-title" className={styles.text} readOnly value={text} />
+      {output?.type === 'table' ? (
+        <OutputTable table={output.value} labelledBy="output-title" />
+      ) : (
+        <textarea aria-labelledby="output-title" className={styles.text} readOnly value={text} />
+      )}
       {warnings.length > 0 && (
         <ul className={styles.warnings}>
           {warnings.map((w, i) => (

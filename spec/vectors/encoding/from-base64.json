@@ -178,6 +178,93 @@
       "expected": {
         "error": "E_ARG_INVALID"
       }
+    },
+    {
+      "name": "custom non-ASCII BMP alphabet",
+      "args": {
+        "alphabet": "custom",
+        "custom": "АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюя·"
+      },
+      "input": {
+        "type": "string",
+        "text": "ХЦщйРцбеЩвГвжЙФ·"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "556e694368656620e29895"
+      }
+    },
+    {
+      "name": "custom astral alphabet",
+      "args": {
+        "alphabet": "custom",
+        "custom": "𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳𝐴𝐵𝐶𝐷𝐸𝐹𝐺𝐻𝐼𝐽𝐾𝐿𝟎"
+      },
+      "input": {
+        "type": "string",
+        "text": "𝐙𝐦𝐽𝐯𝐈𝐐𝟎𝟎"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "666f6f21"
+      }
+    },
+    {
+      "name": "lenient skips astral and foreign characters",
+      "args": {
+        "alphabet": "custom",
+        "custom": "АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюя·"
+      },
+      "input": {
+        "type": "string",
+        "text": "😀ХЦщйР x😀цбеЩвГвжЙФ·"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "556e694368656620e29895"
+      }
+    },
+    {
+      "name": "lenient standard alphabet skips an emoji",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Zm😀9v"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "666f6f"
+      }
+    },
+    {
+      "name": "error: strict rejects an astral character",
+      "args": {
+        "alphabet": "custom",
+        "custom": "АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюя·",
+        "strict": true
+      },
+      "input": {
+        "type": "string",
+        "text": "ХЦщй😀РцбеЩвГвжЙФ·"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: strict rejects wrong custom padding",
+      "args": {
+        "alphabet": "custom",
+        "custom": "АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюя·",
+        "strict": true
+      },
+      "input": {
+        "type": "string",
+        "text": "ХЦщйРцбеЩвГвжЙФ··"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
     }
   ]
 }

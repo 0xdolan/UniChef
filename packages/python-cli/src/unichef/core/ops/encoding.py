@@ -1,7 +1,9 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Encoding operations (PRD §3.8 Alpha; semantics in spec/README.md)."""
 
+import binascii
 import re
+from functools import cache
 from typing import Literal
 
 from unichef.core.dish import MAX_CODE_POINT
@@ -68,10 +70,16 @@ def _decode_radix(chars: str, index: dict[str, int], bits: int, *, strict: bool)
     return bytes(out)
 
 
-def _strict_body(text: str, pad: str, group: int, alphabet: dict[str, int]) -> str:
+@cache
+def _outside(alphabet: str) -> re.Pattern[str]:
+    """Matches any run of characters that are not in ``alphabet``."""
+    return re.compile("[^" + "".join(re.escape(ch) for ch in alphabet) + "]+")
+
+
+def _strict_body(text: str, pad: str, group: int, alphabet: str) -> str:
     body = text.rstrip(pad) if pad else text
     pads = len(text) - len(body)
-    if len(text) % group or any(ch not in alphabet for ch in body):
+    if len(text) % group or _outside(alphabet).search(body):
         raise _decode_error("Strict mode: the input is not canonical.")
     expected = -len(body) % group
     if pads != expected:
@@ -85,6 +93,8 @@ def _strict_body(text: str, pad: str, group: int, alphabet: dict[str, int]) -> s
 B64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
 B64URL = B64[:62] + "-_"
 B64_ALPHABETS = ("standard", "url", "custom")
+# Bytes per encoded chunk: a multiple of 3, so the chunks join without padding.
+_B64_CHUNK = 3 * CHECK_EVERY
 
 
 def _b64_alphabet(args: Args) -> tuple[str, str]:
@@ -114,7 +124,13 @@ def _b64_alphabet(args: Args) -> tuple[str, str]:
 def to_base64(data: bytes, args: Args, ctx: OpContext) -> str:
     """Encode bytes as Base64 (RFC 4648 §4 or §5, or a custom alphabet)."""
     alphabet, pad = _b64_alphabet(args)
-    text = _encode_radix(data, alphabet, 6, ctx)
+    parts = []
+    for start in range(0, len(data), _B64_CHUNK):
+        ctx.check()
+        parts.append(binascii.b2a_base64(data[start : start + _B64_CHUNK], newline=False))
+    text = b"".join(parts).decode("ascii").rstrip("=")
+    if alphabet != B64:
+        text = text.translate(str.maketrans(B64, alphabet))
     if args.flag("padding"):
         text += pad * (-len(text) % 4)
     return text
@@ -132,13 +148,23 @@ def to_base64(data: bytes, args: Args, ctx: OpContext) -> str:
 def from_base64(text: str, args: Args, ctx: OpContext) -> bytes:
     """Decode Base64. Without `strict`, characters outside the alphabet are skipped."""
     alphabet, pad = _b64_alphabet(args)
-    index = {ch: i for i, ch in enumerate(alphabet)}
     ctx.check()
     strict = args.flag("strict")
-    chars = (
-        _strict_body(text, pad, 4, index) if strict else "".join(ch for ch in text if ch in index)
-    )
-    return _decode_radix(chars, index, 6, strict=strict)
+    chars = _strict_body(text, pad, 4, alphabet) if strict else _outside(alphabet).sub("", text)
+    if alphabet != B64:
+        chars = chars.translate(str.maketrans(alphabet, B64))
+    tail = len(chars) % 4
+    if tail == 1:
+        raise _decode_error("The input ends with an incomplete group.")
+    # Two or three final symbols leave 4 or 2 bits over, which strict mode wants zero.
+    if strict and tail and B64.index(chars[-1]) & (0xF if tail == 2 else 0x3):  # noqa: PLR2004
+        raise _decode_error("The unused trailing bits are not zero.")
+    chars += "=" * (-len(chars) % 4)
+    out = []
+    for start in range(0, len(chars), 4 * CHECK_EVERY):
+        ctx.check()
+        out.append(binascii.a2b_base64(chars[start : start + 4 * CHECK_EVERY]))
+    return b"".join(out)
 
 
 # ---------------------------------------------------------------------------
@@ -181,7 +207,7 @@ def from_base32(text: str, args: Args, ctx: OpContext) -> bytes:
     ctx.check()
     strict = args.flag("strict")
     if strict:
-        chars = _strict_body(text, "=", 8, index)
+        chars = _strict_body(text, "=", 8, alphabet)
     else:
         upper = {ch.lower(): i for ch, i in index.items() if ch.isalpha()}
         chars = "".join(

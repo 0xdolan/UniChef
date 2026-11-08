@@ -171,6 +171,26 @@ describe('Workbench', () => {
     expect(screen.getByText('Not run: an earlier step failed.')).toBeDefined();
   });
 
+  it('shows a table output as virtualised rows and copies it as TSV (NFR-003)', async () => {
+    renderWorkbench();
+    const writeText = vi.fn(() => Promise.resolve());
+    Object.assign(navigator, { clipboard: { writeText } });
+    const rows = Array.from({ length: 5000 }, (_, i) => [i, `U+${i.toString(16)}`]);
+    act(() => {
+      useApp.setState({ output: makeDish('table', { columns: ['index', 'cp'], rows }) });
+    });
+    const table = screen.getByRole('table', { name: 'Output' });
+    expect(table.getAttribute('aria-rowcount')).toBe('5001');
+    const shown = table.querySelectorAll('tr[aria-rowindex]');
+    expect(shown.length).toBeGreaterThan(1);
+    expect(shown.length).toBeLessThan(100);
+    expect(shown[1]?.textContent).toBe('0U+0');
+    expect(screen.queryByRole('textbox', { name: 'Output' })).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Copy output' }));
+    await act(() => Promise.resolve());
+    expect(writeText).toHaveBeenCalledWith(expect.stringMatching(/^index\tcp\n0\tU\+0\n/));
+  });
+
   it('shows a dismissible notice', () => {
     renderWorkbench();
     act(() => {

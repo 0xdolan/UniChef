@@ -40,7 +40,8 @@
     "api-docs": "typedoc",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint .",
-    "test": "vitest run --coverage"
+    "test": "vitest run --coverage",
+    "perf": "vitest run --config vitest.perf.config.ts"
   },
   "dependencies": {
     "@noble/ciphers": "2.4.0",

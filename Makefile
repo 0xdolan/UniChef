@@ -22,7 +22,7 @@ define not_yet
 endef
 endif
 
-.PHONY: help bootstrap fmt lint typecheck test-py test-ts test parity e2e ucd ucd-check entities entities-check \
+.PHONY: help bootstrap fmt lint typecheck test-py test-ts test perf parity e2e ucd ucd-check entities entities-check \
 	ops ops-check assets screenshots build-py build-npm build-web pages build-ext build deb-check \
 	version version-check traceability ci docker-ci clean
 
@@ -55,6 +55,10 @@ test-ts: ## Run the TypeScript unit tests
 	pnpm -r test
 
 test: test-py test-ts ## Run all unit and integration tests
+
+perf: ## Check the core performance budgets (NFR-002, NFR-004) without coverage
+	cd packages/python-cli && uv run pytest tests/perf -m perf --no-cov
+	pnpm --filter @unichef/core perf
 
 parity: ## Run the shared test vectors in both languages and cross-check results
 	mkdir -p reports

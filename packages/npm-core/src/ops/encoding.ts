@@ -40,8 +40,15 @@ function encodeRadix(
   alphabet: readonly string[],
   bits: number,
   ctx: OpContext,
-): string[] {
-  const out: string[] = [];
+): string {
+  // When every symbol is one non-surrogate UTF-16 unit, the output is built as bytes and
+  // decoded in one call, which is far faster on large inputs than joining one-character
+  // strings (NFR-002). Without surrogates the decode is exact.
+  const units = alphabet.every((ch) => ch.length === 1 && !isSurrogate(ch.charCodeAt(0)))
+    ? alphabet.map((ch) => ch.charCodeAt(0))
+    : null;
+  const codes = new Uint16Array(symbolCount(data.length, bits));
+  let n = 0;
   let acc = 0;
   let held = 0;
   const mask = (1 << bits) - 1;
@@ -53,28 +60,43 @@ function encodeRadix(
     held += 8;
     while (held >= bits) {
       held -= bits;
-      out.push(alphabet[(acc >> held) & mask] ?? '');
+      codes[n] = (acc >> held) & mask;
+      n += 1;
     }
   }
   if (held) {
-    out.push(alphabet[(acc << (bits - held)) & mask] ?? '');
+    codes[n] = (acc << (bits - held)) & mask;
   }
-  return out;
+  if (units === null) {
+    return Array.from(codes, (v) => alphabet[v] ?? '').join('');
+  }
+  if (units.every((unit) => unit < 0x80)) {
+    const ascii = new Uint8Array(codes.length);
+    for (let i = 0; i < codes.length; i += 1) {
+      ascii[i] = units[codes[i] ?? 0] ?? 0;
+    }
+    return new TextDecoder().decode(ascii);
+  }
+  const bytes = new Uint8Array(codes.length * 2);
+  for (let i = 0; i < codes.length; i += 1) {
+    const unit = units[codes[i] ?? 0] ?? 0;
+    bytes[2 * i] = unit & 0xff;
+    bytes[2 * i + 1] = unit >> 8;
+  }
+  return new TextDecoder('utf-16le').decode(bytes);
 }
 
-/** Decode alphabet characters; trailing bits must be < `bits` (zero when strict). */
-function decodeRadix(
-  chars: readonly string[],
-  index: ReadonlyMap<string, number>,
-  bits: number,
-  strict: boolean,
-): Uint8Array {
-  const out = new Uint8Array(Math.floor((chars.length * bits) / BYTE_BITS));
+/** How many `bits`-bit symbols encode `bytes` bytes, before padding. */
+const symbolCount = (bytes: number, bits: number): number => Math.ceil((bytes * BYTE_BITS) / bits);
+
+/** Decode alphabet values; trailing bits must be < `bits` (zero when strict). */
+function decodeRadix(values: Uint8Array, bits: number, strict: boolean): Uint8Array {
+  const out = new Uint8Array(Math.floor((values.length * bits) / BYTE_BITS));
   let n = 0;
   let acc = 0;
   let held = 0;
-  for (const ch of chars) {
-    acc = ((acc << bits) | (index.get(ch) ?? 0)) & 0xffff;
+  for (const value of values) {
+    acc = ((acc << bits) | value) & 0xffff;
     held += bits;
     if (held >= BYTE_BITS) {
       held -= BYTE_BITS;
@@ -89,6 +111,66 @@ function decodeRadix(
     throw decodeError('The unused trailing bits are not zero.');
   }
   return out.subarray(0, n);
+}
+
+const valuesOf = (chars: readonly string[], index: ReadonlyMap<string, number>): Uint8Array =>
+  Uint8Array.from(chars, (ch) => index.get(ch) ?? 0);
+
+/**
+ * UTF-16 unit → alphabet value (-1 outside it), or `null` unless every character and the pad
+ * are single units outside the surrogates. Then one unit is one code point, so scanning units
+ * gives the same result as scanning code points: a surrogate pair is never in the alphabet.
+ */
+function unitTable(alphabet: readonly string[], pad: string): Int8Array | null {
+  if (pad.length !== 1 || isSurrogate(pad.charCodeAt(0))) {
+    return null;
+  }
+  const table = new Int8Array(0x10000).fill(-1);
+  for (const [i, ch] of alphabet.entries()) {
+    const unit = ch.charCodeAt(0);
+    if (ch.length !== 1 || isSurrogate(unit)) {
+      return null;
+    }
+    table[unit] = i;
+  }
+  return table;
+}
+
+/** `strictBody` and the lenient filter over UTF-16 units, for a `unitTable` alphabet. */
+function unitValues(
+  text: string,
+  table: Int8Array,
+  pad: string,
+  group: number,
+  strict: boolean,
+): Uint8Array {
+  let end = text.length;
+  if (strict) {
+    while (end > 0 && text[end - 1] === pad) {
+      end -= 1;
+    }
+  }
+  const values = new Uint8Array(end);
+  let n = 0;
+  for (let i = 0; i < end; i += 1) {
+    const value = table[text.charCodeAt(i)] ?? -1;
+    if (value >= 0) {
+      values[n] = value;
+      n += 1;
+    } else if (strict) {
+      throw decodeError('Strict mode: the input is not canonical.');
+    }
+  }
+  if (strict) {
+    // Every unit was in the alphabet or a pad, so units and code points agree here.
+    if (text.length % group) {
+      throw decodeError('Strict mode: the input is not canonical.');
+    }
+    if (text.length - end !== padCount(end, group)) {
+      throw decodeError('Strict mode: the padding is wrong.');
+    }
+  }
+  return values.subarray(0, n);
 }
 
 function strictBody(
@@ -154,10 +236,7 @@ export const toBase64 = defineOp({
   run(data, args, ctx) {
     const [alphabet, pad] = b64Alphabet(args);
     const out = encodeRadix(data, alphabet, 6, ctx);
-    if (args.flag('padding')) {
-      out.push(pad.repeat(padCount(out.length, 4)));
-    }
-    return out.join('');
+    return args.flag('padding') ? out + pad.repeat(padCount(symbolCount(data.length, 6), 4)) : out;
   },
 });
 
@@ -172,12 +251,16 @@ export const fromBase64 = defineOp({
   args: [enumArg('alphabet', B64_ALPHABETS), stringArg('custom'), boolArg('strict')],
   run(text, args, ctx) {
     const [alphabet, pad] = b64Alphabet(args);
-    const index = indexOf(alphabet);
     ctx.check();
     const strict = args.flag('strict');
+    const table = unitTable(alphabet, pad);
+    if (table !== null) {
+      return decodeRadix(unitValues(text, table, pad, 4, strict), 6, strict);
+    }
+    const index = indexOf(alphabet);
     const all = Array.from(text);
     const chars = strict ? strictBody(all, pad, 4, index) : all.filter((ch) => index.has(ch));
-    return decodeRadix(chars, index, 6, strict);
+    return decodeRadix(valuesOf(chars, index), 6, strict);
   },
 });
 
@@ -201,10 +284,7 @@ export const toBase32 = defineOp({
   args: [enumArg('alphabet', Object.keys(B32)), boolArg('padding', true)],
   run(data, args, ctx) {
     const out = encodeRadix(data, Array.from(B32[args.text('alphabet')] ?? ''), 5, ctx);
-    if (args.flag('padding')) {
-      out.push('='.repeat(padCount(out.length, 8)));
-    }
-    return out.join('');
+    return args.flag('padding') ? out + '='.repeat(padCount(symbolCount(data.length, 5), 8)) : out;
   },
 });
 
@@ -238,7 +318,7 @@ export const fromBase32 = defineOp({
     if (!B32_TAILS.has(chars.length % 8)) {
       throw decodeError('The input ends with an incomplete Base32 group.');
     }
-    return decodeRadix(chars, index, 5, strict);
+    return decodeRadix(valuesOf(chars, index), 5, strict);
   },
 });
 
