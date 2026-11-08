@@ -5,6 +5,7 @@ import { UniChefError } from '../errors.js';
 import { pyRepr, type Operation } from './types.js';
 import { CRYPTO_OPS } from './crypto.js';
 import { CODEC_OPS } from './codecs.js';
+import { COMPRESSION_OPS } from './compression.js';
 import { DATA_OPS } from './data.js';
 import { ENCODING_OPS } from './encoding.js';
 import { FLOW_OPS } from './flow.js';
@@ -29,6 +30,7 @@ const MODULES: readonly (readonly Operation[])[] = [
   UNICODE_OPS,
   SECURITY_OPS,
   DATA_OPS,
+  COMPRESSION_OPS,
 ];
 
 const REGISTRY = new Map<string, Operation>();

@@ -9,6 +9,7 @@ import { allOperations } from '../src/ops/registry.js';
 import { runOperation } from '../src/recipe/run.js';
 import { JUMP_OPS } from '../src/recipe/validate.js';
 
+const BINARY_INPUT = new Set(['gunzip']);
 const strictUtf8 = new TextDecoder('utf-8', { fatal: true });
 
 /** The output as the web playground shows it: bytes as UTF-8 when valid, otherwise hex. */
@@ -29,8 +30,10 @@ function exampleText(dish: Dish): string {
 describe('operation examples', () => {
   it.each(allOperations().map((op) => [op.id, op] as const))('%s', async (_id, op) => {
     // A jump needs a label in the same step list, so it cannot run as a one-step example,
-    // and a random op has no fixed output to state (seeded recipe vectors cover it).
-    const exempt = JUMP_OPS.has(op.id) || op.parity === 'nondeterministic';
+    // a random op has no fixed output to state (seeded recipe vectors cover it), and gzip
+    // data starts with 1F 8B, which no text encodes to in UTF-8 (vectors cover it).
+    const exempt =
+      JUMP_OPS.has(op.id) || op.parity === 'nondeterministic' || BINARY_INPUT.has(op.id);
     expect(op.examples.length > 0).toBe(!exempt);
     for (const example of op.examples) {
       const result = await runOperation(op.id, example.args, ofString(example.input));

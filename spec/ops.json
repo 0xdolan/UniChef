@@ -1127,6 +1127,44 @@
       ]
     },
     {
+      "id": "gunzip",
+      "name": "Gunzip",
+      "category": "Compression",
+      "description": "Decompress gzip data (RFC 1952), member after member, checking each CRC-32 and length. Anything after the last member that is not another member is an error.",
+      "input": "bytes",
+      "output": "bytes",
+      "parity": "exact",
+      "args": [],
+      "examples": []
+    },
+    {
+      "id": "gzip",
+      "name": "Gzip",
+      "category": "Compression",
+      "description": "Compress to one gzip member (RFC 1952) with no file name, a zero modification time and OS 255 (unknown), so the output does not depend on when or where it is made.",
+      "input": "bytes",
+      "output": "bytes",
+      "parity": "roundtrip",
+      "args": [
+        {
+          "name": "level",
+          "kind": "integer",
+          "default": 6,
+          "minimum": 0,
+          "maximum": 9
+        }
+      ],
+      "examples": [
+        {
+          "input": "Hi",
+          "args": {
+            "level": 0
+          },
+          "output": "1f 8b 08 00 00 00 00 00 00 ff 01 02 00 fd ff 48 69 0e 0e 17 4d 02 00 00 00"
+        }
+      ]
+    },
+    {
       "id": "head",
       "name": "Head",
       "category": "Text",
@@ -1778,6 +1816,50 @@
           "input": "café = 4€",
           "args": {},
           "output": "caf=C3=A9 =3D 4=E2=82=AC"
+        }
+      ]
+    },
+    {
+      "id": "raw-deflate",
+      "name": "Raw Deflate",
+      "category": "Compression",
+      "description": "Compress to a raw DEFLATE stream (RFC 1951) with no header or checksum. Level 0 stores the input uncompressed; 1 is fastest and 9 smallest.",
+      "input": "bytes",
+      "output": "bytes",
+      "parity": "roundtrip",
+      "args": [
+        {
+          "name": "level",
+          "kind": "integer",
+          "default": 6,
+          "minimum": 0,
+          "maximum": 9
+        }
+      ],
+      "examples": [
+        {
+          "input": "Hi",
+          "args": {
+            "level": 0
+          },
+          "output": "01 02 00 fd ff 48 69"
+        }
+      ]
+    },
+    {
+      "id": "raw-inflate",
+      "name": "Raw Inflate",
+      "category": "Compression",
+      "description": "Decompress a raw DEFLATE stream (RFC 1951). The stream must be complete, and no bytes may follow it.",
+      "input": "bytes",
+      "output": "bytes",
+      "parity": "exact",
+      "args": [],
+      "examples": [
+        {
+          "input": "K\u0004\u0000",
+          "args": {},
+          "output": "a"
         }
       ]
     },
@@ -2913,6 +2995,50 @@
             }
           },
           "output": "HELLO"
+        }
+      ]
+    },
+    {
+      "id": "zlib-deflate",
+      "name": "Zlib Deflate",
+      "category": "Compression",
+      "description": "Compress to the zlib format (RFC 1950): a 2-byte header, raw DEFLATE and an Adler-32 checksum.",
+      "input": "bytes",
+      "output": "bytes",
+      "parity": "roundtrip",
+      "args": [
+        {
+          "name": "level",
+          "kind": "integer",
+          "default": 6,
+          "minimum": 0,
+          "maximum": 9
+        }
+      ],
+      "examples": [
+        {
+          "input": "Hi",
+          "args": {
+            "level": 0
+          },
+          "output": "78 01 01 02 00 fd ff 48 69 00 fb 00 b2"
+        }
+      ]
+    },
+    {
+      "id": "zlib-inflate",
+      "name": "Zlib Inflate",
+      "category": "Compression",
+      "description": "Decompress zlib data (RFC 1950) and check its Adler-32. A preset dictionary is not supported, and no bytes may follow the checksum.",
+      "input": "bytes",
+      "output": "bytes",
+      "parity": "exact",
+      "args": [],
+      "examples": [
+        {
+          "input": "x\u0001K\u0004\u0000\u0000b\u0000b",
+          "args": {},
+          "output": "a"
         }
       ]
     }

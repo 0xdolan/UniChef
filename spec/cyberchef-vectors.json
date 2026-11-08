@@ -1038,11 +1038,11 @@
     },
     {
       "name": "unknown operations",
-      "input": "[{\"op\":\"Magic\",\"args\":[]},{\"op\":\"Zlib Deflate\",\"args\":[]},{\"op\":\"Magic\"}]",
+      "input": "[{\"op\":\"Magic\",\"args\":[]},{\"op\":\"Bzip2 Decompress\",\"args\":[]},{\"op\":\"Magic\"}]",
       "error": {
         "code": "E_OP_UNKNOWN",
         "detail": {
-          "operations": ["Magic", "Zlib Deflate"]
+          "operations": ["Bzip2 Decompress", "Magic"]
         }
       }
     },
@@ -1605,6 +1605,81 @@
         "detail": {
           "operations": ["Parse URI"]
         }
+      }
+    },
+    {
+      "name": "Raw Deflate then Raw Inflate, defaults",
+      "input": "[{\"op\": \"Raw Deflate\", \"args\": [\"Dynamic Huffman Coding\"]}, {\"op\": \"Raw Inflate\", \"args\": [0, 0, \"Adaptive\", false, false]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "raw-deflate",
+            "args": {
+              "level": 6
+            }
+          },
+          {
+            "op": "raw-inflate"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Zlib Deflate stored, Zlib Inflate",
+      "input": "[{\"op\": \"Zlib Deflate\", \"args\": [\"None (Store)\"]}, {\"op\": \"Zlib Inflate\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "zlib-deflate",
+            "args": {
+              "level": 0
+            }
+          },
+          {
+            "op": "zlib-inflate"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Gzip and Gunzip",
+      "input": "[{\"op\": \"Gzip\", \"args\": [\"Dynamic Huffman Coding\", \"\", \"\", false]}, {\"op\": \"Gunzip\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "gzip",
+            "args": {
+              "level": 6
+            }
+          },
+          {
+            "op": "gunzip"
+          }
+        ]
+      }
+    },
+    {
+      "name": "error: Raw Deflate with fixed Huffman coding",
+      "input": "[{\"op\": \"Raw Deflate\", \"args\": [\"Fixed Huffman Coding\"]}]",
+      "error": {
+        "code": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "error: Gzip with a file name",
+      "input": "[{\"op\": \"Gzip\", \"args\": [\"Dynamic Huffman Coding\", \"a.txt\", \"\", false]}]",
+      "error": {
+        "code": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "error: Zlib Inflate from a start index",
+      "input": "[{\"op\": \"Zlib Inflate\", \"args\": [2, 0, \"Adaptive\", false, false]}]",
+      "error": {
+        "code": "E_ARG_INVALID"
       }
     }
   ]

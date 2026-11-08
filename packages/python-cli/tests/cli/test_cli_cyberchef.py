@@ -175,9 +175,9 @@ def test_too_many_args_and_bad_args() -> None:
 
 def test_unknown_operations() -> None:
     with pytest.raises(UniChefError) as info:
-        import_recipe('[{"op":"Magic","args":[]},{"op":"Zlib Deflate","args":[]}]')
+        import_recipe('[{"op":"Magic","args":[]},{"op":"Bzip2 Decompress","args":[]}]')
     assert info.value.code == "E_OP_UNKNOWN"
-    assert info.value.detail == {"operations": ["Magic", "Zlib Deflate"]}
+    assert info.value.detail == {"operations": ["Bzip2 Decompress", "Magic"]}
 
 
 def test_scopes_and_merge() -> None:
