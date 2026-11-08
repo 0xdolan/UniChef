@@ -1,0 +1,15 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "types": ["chrome", "node"],
+    "noEmit": true,
+    "declaration": false,
+    "declarationMap": false,
+    // build/ runs under Node's type stripping, which needs the real `.ts` specifiers.
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true
+  },
+  "include": ["src", "build", "test"]
+}

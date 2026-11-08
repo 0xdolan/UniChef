@@ -18,7 +18,15 @@ const banned = [
 ];
 
 export default tseslint.config(
-  { ignores: ['**/dist/**', '**/coverage/**', '**/node_modules/**', 'packages/python-cli/**'] },
+  {
+    ignores: [
+      '**/dist/**',
+      '**/dist-extension/**',
+      '**/coverage/**',
+      '**/node_modules/**',
+      'packages/python-cli/**',
+    ],
+  },
   js.configs.recommended,
   ...tseslint.configs.strictTypeChecked,
   ...tseslint.configs.stylisticTypeChecked,

@@ -83,26 +83,41 @@ const pwa = VitePWA({
   },
 });
 
-export default defineConfig({
-  base: new URL(constants.PAGES_URL).pathname,
-  plugins: [
-    react(),
-    csp(),
-    icons(),
-    pwa,
-    licences(fileURLToPath(new URL('package.json', import.meta.url))),
-  ],
-  // Build against the core's sources, so the app needs no separate core build step.
-  resolve: {
-    alias: [
-      { find: /^@unichef\/core$/, replacement: `${core}index.ts` },
-      { find: /^@unichef\/core\/(.*)$/, replacement: `${core}$1` },
+const ext = new URL('../extensions/common/src/', import.meta.url);
+
+// `vite build --mode extension` builds the extensions' panel and popup page (PRD §7.5)
+// into dist-extension/: relative URLs, no service worker, and icons from the extension
+// package instead of the PWA's.
+export default defineConfig(({ mode }) => {
+  const extension = mode === 'extension';
+  return {
+    base: extension ? './' : new URL(constants.PAGES_URL).pathname,
+    plugins: [
+      react(),
+      csp(),
+      ...(extension ? [] : [icons(), pwa]),
+      licences(fileURLToPath(new URL('package.json', import.meta.url))),
     ],
-  },
-  worker: { format: 'es' },
-  build: { target: 'es2022', manifest: true, sourcemap: true },
-  test: {
-    environment: 'jsdom',
-    include: ['test/**/*.test.{ts,tsx}'],
-  },
+    // Build against the core's sources, so the app needs no separate core build step.
+    resolve: {
+      alias: [
+        { find: /^@unichef\/core$/, replacement: `${core}index.ts` },
+        { find: /^@unichef\/core\/(.*)$/, replacement: `${core}$1` },
+        { find: /^@ext\/(.*)$/, replacement: `${fileURLToPath(ext)}$1` },
+      ],
+    },
+    worker: { format: 'es' as const },
+    build: extension
+      ? {
+          target: 'es2022',
+          outDir: 'dist-extension',
+          emptyOutDir: true,
+          rolldownOptions: { input: fileURLToPath(new URL('extension.html', import.meta.url)) },
+        }
+      : { target: 'es2022', manifest: true, sourcemap: true },
+    test: {
+      environment: 'jsdom',
+      include: ['test/**/*.test.{ts,tsx}'],
+    },
+  };
 });

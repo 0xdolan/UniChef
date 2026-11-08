@@ -1,0 +1,14 @@
+{
+  "extName": {
+    "message": "UniChef",
+    "description": "The extension's name in the browser and the stores."
+  },
+  "extDescription": {
+    "message": "Inspect selected text character by character, find invisible and bidi characters, and run UniChef recipes offline.",
+    "description": "The store and extension-page description (132 characters at most)."
+  },
+  "menuInspect": {
+    "message": "Inspect with UniChef",
+    "description": "The context-menu item shown on a text selection."
+  }
+}

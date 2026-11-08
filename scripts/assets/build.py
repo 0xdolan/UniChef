@@ -2,8 +2,9 @@
 """Derive favicons, app and extension icons, store images and the RGB PDF from the
 branding masters (PRD §9.2), and lint the masters (§9.1).
 
-    uv run scripts/assets/build.py          # write assets/branding/dist/
-    uv run scripts/assets/build.py --lint   # check assets/branding/source/*.svg
+    uv run scripts/assets/build.py              # write assets/branding/dist/
+    uv run scripts/assets/build.py --only ext/  # only the outputs under dist/ext/
+    uv run scripts/assets/build.py --lint       # check assets/branding/source/*.svg
 
 What to build is listed in ``assets/branding/manifest.json``. SVGs are rasterised by
 ``rsvg-convert`` (librsvg). ImageMagick (``magick``, or ``convert`` on ImageMagick 6)
@@ -198,14 +199,23 @@ def pdf_env() -> dict[str, str]:
     return env
 
 
-def build() -> int:
+def build(only: str | None = None) -> int:
+    """Build every output, or with ``only`` just those whose path starts with it (CI
+    builds ``ext/`` without the screenshots, which live in Git LFS)."""
     manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
+    specs = [s for s in manifest["outputs"] if only is None or s["out"].startswith(only)]
+    if not specs:
+        raise BuildError(f"no output starts with {only!r}")
     tools = Tools()
-    if DIST.exists():
+    if only is None and DIST.exists():
         shutil.rmtree(DIST)
+    elif only is not None:
+        stale = DIST / only
+        if stale.is_dir():
+            shutil.rmtree(stale)
     written: list[Path] = []
     with tempfile.TemporaryDirectory() as tmp:
-        for spec in manifest["outputs"]:
+        for spec in specs:
             written += build_one(tools, spec, manifest, Path(tmp))
     pngs = [str(p) for p in written if p.suffix == ".png"]
     run(tools.oxipng, "-q", "-o", "4", "--strip", "safe", *pngs)
@@ -217,9 +227,10 @@ def build() -> int:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--lint", action="store_true", help="check the SVG masters only")
+    parser.add_argument("--only", metavar="PREFIX", help="build only outputs under dist/PREFIX")
     args = parser.parse_args()
     try:
-        return lint() if args.lint else build()
+        return lint() if args.lint else build(args.only)
     except BuildError as exc:
         sys.stderr.write(f"assets: {exc}\n")
         return 1
