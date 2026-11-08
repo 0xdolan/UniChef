@@ -1,0 +1,16 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Findings that are deliberate. Every exclusion says why.
+name: unichef
+
+# Tests build weak keys and odd inputs on purpose, to check that they are refused or handled.
+paths-ignore:
+  - '**/test/**'
+  - '**/tests/**'
+
+query-filters:
+  # UniChef offers ciphers and modes such as AES-CBC and ECB as operations a user picks; refusing
+  # them would remove features, not a weakness.
+  - exclude:
+      id: py/weak-cryptographic-algorithm
+  - exclude:
+      id: js/weak-cryptographic-algorithm
