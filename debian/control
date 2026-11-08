@@ -1,0 +1,33 @@
+Source: unichef
+Section: utils
+Priority: optional
+Maintainer: 0xdolan <0xdolan@gmail.com>
+Rules-Requires-Root: no
+Build-Depends: debhelper-compat (= 13),
+               dh-sequence-bash-completion,
+               dh-sequence-python3,
+               pybuild-plugin-pyproject,
+               python3-all,
+               python3-hatchling,
+               python3-rich,
+               python3-regex,
+               python3-cryptography,
+               python3-pytest <!nocheck>,
+               python3-hypothesis <!nocheck>
+Standards-Version: 4.6.2
+Homepage: https://0xdolan.github.io/unichef/
+Vcs-Browser: https://github.com/0xdolan/unichef
+Vcs-Git: https://github.com/0xdolan/unichef.git -b main
+
+Package: unichef
+Architecture: all
+Depends: ${misc:Depends}, ${python3:Depends}
+Description: Unicode character analysis and data-transformation recipes
+ UniChef inspects text at the code-point level (names, blocks, scripts,
+ Unicode properties, normalization and grapheme clusters), detects
+ invisible characters, bidirectional-control abuse and confusable
+ homoglyphs, and runs deterministic recipes of encoding, hashing,
+ encryption and text operations.
+ .
+ Recipes are interchangeable with the UniChef web application and
+ browser extensions.

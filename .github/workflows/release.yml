@@ -93,6 +93,11 @@ jobs:
           pnpm --filter @unichef/core build
           mkdir -p dist/npm
           pnpm --filter @unichef/core pack --pack-destination "$PWD/dist/npm"
+      - name: Source tarball (the Debian orig, PRD §8.3; debian/watch looks for it)
+        run: |
+          orig=$(scripts/deb/make-orig.sh --ref HEAD --out "$RUNNER_TEMP")
+          mkdir -p dist/source
+          mv "$orig" "dist/source/unichef-$(tr -d '[:space:]' < VERSION).tar.gz"
       - name: SBOM (Python)
         uses: anchore/sbom-action@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c # v0.24.3
         with:
@@ -135,6 +140,7 @@ jobs:
           subject-path: |
             dist/python/*
             dist/npm/*.tgz
+            dist/source/*
 
   pypi:
     name: pypi
@@ -236,6 +242,7 @@ jobs:
           files: |
             dist/python/*
             dist/npm/*.tgz
+            dist/source/*
             dist/sbom/*
             dist/SHA256SUMS
           fail_on_unmatched_files: true

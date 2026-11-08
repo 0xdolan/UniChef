@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Continuous integration (PRD §11.2). Jobs for parts that do not exist yet (extensions,
-# Debian packaging, Safari) are added as those parts land.
+# Continuous integration (PRD §11.2). Jobs for parts that do not exist yet (Safari) are
+# added as those parts land.
 name: ci
 
 on:
@@ -269,3 +269,22 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Build the dev image (no push)
         run: docker build --target dev -f docker/Dev.Dockerfile .
+
+  deb:
+    name: deb (${{ matrix.series }})
+    strategy:
+      fail-fast: false
+      matrix:
+        # Every series in debian/ppa-series.txt (checked against UBUNTU_SERIES by
+        # version-consistency): build the .deb, run lintian and the autopkgtest (PRD §8.5).
+        series: ['24.04', '26.04']
+    runs-on: ubuntu-24.04
+    container: ubuntu:${{ matrix.series }}
+    steps:
+      - name: Install git
+        run: apt-get update -qq && apt-get install -y -qq --no-install-recommends ca-certificates git
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Build, lintian and autopkgtest with system packages only (REL-010)
+        run: scripts/deb/check.sh

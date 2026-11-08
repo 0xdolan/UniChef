@@ -1,0 +1,8 @@
+Test-Command: unichef version && printf 'foo' | unichef op to-base64 --format raw | grep -qx 'Zm9v' && unichef char U+0041 --format json | grep -q 'LATIN CAPITAL LETTER A'
+Depends: unichef
+Restrictions: superficial
+
+# The upstream test suite against the installed package (the tests import unichef from
+# the system, not from the source tree).
+Test-Command: cd packages/python-cli && python3 -m pytest -o addopts="-ra --strict-markers" -m "not slow and not perf" -p no:cacheprovider tests
+Depends: unichef, python3-pytest, python3-hypothesis

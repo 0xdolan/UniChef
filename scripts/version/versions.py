@@ -164,6 +164,11 @@ TARGETS: tuple[Target, ...] = (
             Field(_json_key("version_name"), lambda v: v.semver),
         ),
     ),
+    # The top entry's upstream version; PPA uploads add their suffix at build time (PRD §8.5).
+    Target(
+        "debian/changelog",
+        (Field(re.compile(r"\Aunichef \(([^)]*)-1\)"), lambda v: v.debian),),
+    ),
 )
 
 

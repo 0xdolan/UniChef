@@ -3,6 +3,7 @@
 so the man page never drifts from ``--help`` (PRD §5.7)."""
 
 import argparse
+import os
 import sys
 from datetime import UTC, datetime
 
@@ -62,9 +63,16 @@ def _subparsers(parser: argparse.ArgumentParser) -> dict[str, argparse.ArgumentP
     return {}
 
 
+def page_date() -> str:
+    """``SOURCE_DATE_EPOCH`` as a date, for reproducible builds (REL-010); else today."""
+    epoch = os.environ.get("SOURCE_DATE_EPOCH", "")
+    when = datetime.fromtimestamp(int(epoch), UTC) if epoch.isdigit() else datetime.now(UTC)
+    return when.strftime("%Y-%m-%d")
+
+
 def render(date: str | None = None) -> str:
     root, commands = build_parser()
-    today = date or datetime.now(UTC).strftime("%Y-%m-%d")
+    today = date or page_date()
     globals_ = {a.dest for a in root._actions if a.option_strings}
     subs = _subparsers(root)
     out = [

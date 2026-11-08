@@ -24,7 +24,12 @@ services:
   parity: { <<: *dev, command: make parity }
   build: { <<: *dev, command: make build }
   assets: { <<: *dev, command: make assets }
-  deb: { <<: *dev, user: root, command: make deb-check }
+  # Debian pre-flight (PRD §8.5) in a clean Ubuntu: SERIES=26.04 for another release.
+  deb:
+    image: ubuntu:${SERIES:-24.04}
+    volumes: ['..:/src:ro']
+    working_dir: /src
+    command: scripts/deb/check.sh
   e2e:
     # Must match the @playwright/test version in pnpm-lock.yaml (scripts/version/check.py).
     image: mcr.microsoft.com/playwright:v1.64.1-noble
