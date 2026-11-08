@@ -20,6 +20,10 @@ on:
         description: PPA revision (raise it to re-upload the same version)
         type: string
         default: '1'
+      series:
+        description: Upload only this series (empty for all in debian/ppa-series.txt)
+        type: string
+        default: ''
 
 permissions:
   contents: read
@@ -82,7 +86,8 @@ jobs:
         env:
           GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
           REV: ${{ inputs.rev || '1' }}
-        run: scripts/deb/ppa-upload.sh --ref HEAD --rev "$REV"
+          SERIES: ${{ inputs.series }}
+        run: scripts/deb/ppa-upload.sh --ref HEAD --rev "$REV" ${SERIES:+--series "$SERIES"}
       - name: Remove the key
         if: always()
         run: rm -rf ~/.gnupg

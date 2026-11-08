@@ -39,6 +39,9 @@ revision:
 gh workflow run ppa.yml -R 0xdolan/unichef -f ref=v0.1.0-alpha.1 -f rev=2
 ```
 
+Add `-f series=<codename>` to upload only one series, for example after Launchpad refused one
+of them.
+
 ## Adding or dropping a series
 
 1. Edit `UBUNTU_SERIES` in `project.constants.json` and `debian/ppa-series.txt`.
