@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 /**
  * `virtual:licenses`: every npm package the app ships (the runtime dependencies and theirs,
- * not dev tools), with its licence text, for the About page (PRD §6.4).
+ * plus the Workbox runtime in the service worker, not dev tools), with its licence text,
+ * for the About page (PRD §6.4).
  */
 import { readdirSync, readFileSync, realpathSync } from 'node:fs';
 import { findPackageJSON } from 'node:module';
@@ -45,6 +46,11 @@ function locate(dep: string, from: string): string | undefined {
   }
 }
 
+/** Packages a build tool copies into the output: `generateSW` bundles these into `sw.js`. */
+const BUNDLED: Readonly<Record<string, readonly string[]>> = {
+  'workbox-build': ['workbox-core', 'workbox-precaching', 'workbox-routing', 'workbox-strategies'],
+};
+
 const runtimeDeps = (manifest: Manifest): string[] =>
   Object.keys({ ...manifest.peerDependencies, ...manifest.dependencies });
 
@@ -77,6 +83,10 @@ export function collectLicences(root: string): Licence[] {
     }
   };
   visit(root, runtimeDeps(readManifest(root)));
+  for (const [tool, deps] of Object.entries(BUNDLED)) {
+    const file = locate(tool, root);
+    if (file !== undefined) visit(realpathSync(file), deps);
+  }
   return [...found.values()].sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
 }
 

@@ -272,7 +272,9 @@ describe('about page', () => {
 
   it('lists runtime dependencies only, with their licence texts', () => {
     const names = collectLicences(resolve('package.json')).map((l) => l.name);
-    expect(names).toEqual(expect.arrayContaining(['react', 'zustand', '@noble/hashes']));
+    expect(names).toEqual(
+      expect.arrayContaining(['react', 'zustand', '@noble/hashes', 'workbox-precaching']),
+    );
     expect(
       names.some((n) => n.startsWith('@types/') || n === 'vite' || n === '@unichef/core'),
     ).toBe(false);

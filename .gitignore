@@ -33,3 +33,5 @@ Thumbs.db
 .claude/settings.local.json
 reports/
 .claude/worktrees/
+test-results/
+playwright-report/

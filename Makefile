@@ -62,8 +62,8 @@ parity: ## Run the shared test vectors in both languages and cross-check results
 	cd packages/npm-core && pnpm exec vitest run test/parity --reporter=default --reporter=junit --outputFile.junit=../../reports/ts-parity.xml
 	uv run scripts/parity-report.py reports/py-parity.xml reports/ts-parity.xml
 
-e2e: ## Run the Playwright end-to-end tests
-	$(call not_yet,the web app's end-to-end tests)
+e2e: build-web ## Run the Playwright end-to-end tests against the built web app
+	pnpm --filter web e2e
 
 ucd: ## Fetch and verify the UCD, compile it and write it to both packages
 	uv run scripts/ucd/fetch.py
@@ -97,8 +97,9 @@ build-py: ## Build the Python sdist and wheel into dist/
 build-npm: ## Build the @unichef/core npm package into dist/
 	pnpm --filter @unichef/core build
 
-build-web: ## Build the web app into clients/web/dist/
+build-web: ## Build the web app into clients/web/dist/ and check its bundle budgets
 	pnpm --filter web build
+	node scripts/check-bundle.mjs
 
 build-ext: ## Build the browser extensions into dist/
 	$(call not_yet,the extensions)
