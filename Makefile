@@ -39,10 +39,11 @@ fmt: ## Format Python (ruff) and TypeScript (prettier) sources
 	cd packages/python-cli && uv run ruff check --fix . && uv run ruff format .
 	pnpm fmt
 
-lint: ## Run ruff, ESLint and Prettier checks as CI does
+lint: ## Run ruff, ESLint, Prettier and the SVG master checks as CI does
 	cd packages/python-cli && uv run ruff check . && uv run ruff format --check .
 	pnpm -r lint
 	pnpm fmt:check
+	uv run scripts/assets/build.py --lint
 
 typecheck: ## Run mypy --strict and tsc --noEmit
 	cd packages/python-cli && uv run mypy
@@ -90,7 +91,7 @@ ops-check: ## Fail if spec/ops.json drifts from the Python operation registry
 	uv run --project packages/python-cli --locked python scripts/spec/ops.py --check
 
 assets: ## Build favicons, icons and store images from the branding masters
-	$(call not_yet,the assets step)
+	uv run scripts/assets/build.py
 
 screenshots: build-web ## Capture CLI and web screenshots into assets/docs/screenshots/
 	uv run --project packages/python-cli --locked python scripts/screenshots/cli.py

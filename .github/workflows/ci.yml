@@ -63,6 +63,8 @@ jobs:
         run: pnpm -r lint
       - name: Prettier
         run: pnpm fmt:check
+      - name: SVG masters (PRD §9.1)
+        run: uv run scripts/assets/build.py --lint
       - name: actionlint
         run: uvx --from actionlint-py==1.7.12.25 actionlint
       - name: shellcheck
