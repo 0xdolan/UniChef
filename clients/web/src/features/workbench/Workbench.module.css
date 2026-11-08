@@ -385,3 +385,39 @@
   border: 1px solid var(--border);
   text-align: start;
 }
+
+.dialog {
+  width: min(560px, calc(100vw - 32px));
+  padding: 0;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.dialog::backdrop {
+  background: rgb(0 0 0 / 50%);
+}
+
+.dialogBody {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+}
+
+.dialogText {
+  font-family: var(--font-mono);
+  resize: vertical;
+  padding: 6px 8px;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.dialogError {
+  margin: 0;
+  color: var(--error);
+  overflow-wrap: anywhere;
+}

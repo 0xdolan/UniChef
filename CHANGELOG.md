@@ -66,6 +66,11 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
   - Bundle budgets (`scripts/check-bundle.mjs`) run after every web build: initial JS 250 KiB, and the UCD files at 400, 900 and 150 KiB, all gzipped.
   - Character grid cells name their character with hidden text that starts with the visible code point, so voice control users can say what they see.
   - `scripts/version/check.py` also checks that the Playwright image in `docker/docker-compose.yml` matches the locked `@playwright/test` version.
+- **Web app**, sixth slice:
+  - An "Import" dialog in the recipe pane takes a CyberChef recipe as JSON or in chef format and replaces the recipe. It names every operation it cannot map.
+  - The TypeScript core exports the importer (`importCyberChef`, `parseCyberChef`, `cyberChefOperations`), a port of the Python one with the same map.
+  - `spec/cyberchef-vectors.json` holds 98 shared import cases, 23 of them errors, which both cores run.
+  - The Python importer now accepts only plain decimal numbers in chef format, so `inf` and `1_0` are rejected as they are in TypeScript.
 - **CI** (`.github/`):
   - Lint, typecheck, Python and TypeScript test matrices.
   - A parity job that checks both cores ran every vector case (`scripts/parity-report.py`).

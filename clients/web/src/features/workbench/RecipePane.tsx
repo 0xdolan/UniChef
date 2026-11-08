@@ -6,6 +6,7 @@ import { t } from '../../i18n/index.js';
 import { currentFragment } from '../../lib/url-state.js';
 import { hasSecrets } from '../../state/recipe.js';
 import { useApp } from '../../state/store.js';
+import { ImportDialog } from './ImportDialog.js';
 import { StepList } from './StepList.js';
 import styles from './Workbench.module.css';
 
@@ -32,6 +33,7 @@ export function RecipePane({ onBake }: { readonly onBake: () => void }): ReactNo
         <h2 id="recipe-title" className={styles.paneTitle}>
           {t('recipe.title')}
         </h2>
+        <ImportDialog />
         <button
           type="button"
           className={styles.button}
