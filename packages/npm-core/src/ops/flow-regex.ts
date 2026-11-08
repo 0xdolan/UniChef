@@ -86,6 +86,17 @@ export const subsection = defineOp({
     'match is used. An error inside a match fails the step; its path names the match.',
   inputType: 'string',
   outputType: 'string',
+  examples: [
+    {
+      input: 'name=zoë id=7',
+      args: {
+        pattern: '=(\\w+)',
+        group: 1,
+        steps: [{ op: 'unicode-case', args: { mode: 'upper' } }],
+      },
+      output: 'name=ZOË id=7',
+    },
+  ],
   args: [
     regexArg('pattern'),
     stringArg('flags'),

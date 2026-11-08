@@ -14,6 +14,7 @@ from unichef.core.errors import UniChefError
 from unichef.core.registry import (
     JS_SAFE_INTEGER,
     Args,
+    Example,
     OpContext,
     bool_arg,
     enum_arg,
@@ -65,6 +66,13 @@ def _bad(message: str) -> UniChefError:
         bool_arg("literal"),
         bool_arg("global", True),
     ),
+    examples=(
+        Example(
+            "2026-11-07",
+            {"pattern": "(\\d+)-(\\d+)-(\\d+)", "replacement": "$3/$2/$1"},
+            "07/11/2026",
+        ),
+    ),
 )
 def find_replace(text: str, args: Args, ctx: OpContext) -> str:
     """Replace matches of `pattern` with `replacement`. As a regex, the replacement uses
@@ -104,6 +112,13 @@ def find_replace(text: str, args: Args, ctx: OpContext) -> str:
         int_arg("group", 0, 0, MAX_GROUP),
         string_arg("separator", "\n"),
     ),
+    examples=(
+        Example(
+            "Mail ana@example.org or bo@example.net",
+            {"pattern": "[\\w.]+@[\\w.]+", "separator": "\n"},
+            "ana@example.org\nbo@example.net",
+        ),
+    ),
 )
 def regex_extract(text: str, args: Args, ctx: OpContext) -> str:
     """List every match of `pattern` (or its capture group `group`), joined by
@@ -129,6 +144,7 @@ def regex_extract(text: str, args: Args, ctx: OpContext) -> str:
     "string",
     "string",
     (string_arg("delimiter", ","), string_arg("join", "\n")),
+    examples=(Example("a,b,c", {"delimiter": ",", "join": "\n"}, "a\nb\nc"),),
 )
 def split(text: str, args: Args, _ctx: OpContext) -> str:
     """Split on the literal `delimiter` and join the parts with `join`."""
@@ -138,7 +154,15 @@ def split(text: str, args: Args, _ctx: OpContext) -> str:
     return args.text("join").join(text.split(delimiter))
 
 
-@operation("join", "Join lines", "Text", "string", "string", (string_arg("delimiter", ","),))
+@operation(
+    "join",
+    "Join lines",
+    "Text",
+    "string",
+    "string",
+    (string_arg("delimiter", ","),),
+    examples=(Example("one\ntwo\nthree", {"delimiter": ", "}, "one, two, three"),),
+)
 def join(text: str, args: Args, _ctx: OpContext) -> str:
     """Join the lines with `delimiter`. A final LF is dropped."""
     lines, _ = _lines(text)
@@ -152,6 +176,10 @@ def join(text: str, args: Args, _ctx: OpContext) -> str:
     "bytes",
     "bytes",
     (enum_arg("unit", ("graphemes", "code-points", "bytes")),),
+    examples=(
+        Example("e\u0301👋\U0001f3fd", {"unit": "graphemes"}, "👋\U0001f3fde\u0301"),
+        Example("abc", {}, "cba"),
+    ),
 )
 def reverse(data: bytes, args: Args, ctx: OpContext) -> bytes:
     """Reverse the order of graphemes (default), code points or bytes. The first two
@@ -190,6 +218,12 @@ _SORT_KEYS: dict[str, Callable[[str], Any]] = {
         enum_arg("key", tuple(_SORT_KEYS)),
         enum_arg("order", ("ascending", "descending")),
     ),
+    examples=(
+        Example("pear\napple\nÉclair\nbanana", {}, "apple\nbanana\npear\nÉclair"),
+        Example(
+            "10 apples\n9 pears\n100 plums", {"key": "numeric"}, "9 pears\n10 apples\n100 plums"
+        ),
+    ),
 )
 def sort_lines(text: str, args: Args, _ctx: OpContext) -> str:
     """Stable sort of the lines. `code-point` compares code points; `case-insensitive`
@@ -209,6 +243,7 @@ def sort_lines(text: str, args: Args, _ctx: OpContext) -> str:
     "string",
     "string",
     (bool_arg("ignore_case"), bool_arg("count")),
+    examples=(Example("b\na\nb\nc\na", {}, "b\na\nc"),),
 )
 def unique_lines(text: str, args: Args, _ctx: OpContext) -> str:
     """Keep the first of each set of equal lines, in input order. `ignore_case` compares
@@ -243,13 +278,29 @@ _TAKE_ARGS = (
 )
 
 
-@operation("head", "Head", "Text", "string", "string", _TAKE_ARGS)
+@operation(
+    "head",
+    "Head",
+    "Text",
+    "string",
+    "string",
+    _TAKE_ARGS,
+    examples=(Example("one\ntwo\nthree", {"count": 2}, "one\ntwo"),),
+)
 def head(text: str, args: Args, ctx: OpContext) -> str:
     """The first `count` lines (keeping a final LF), graphemes or code points."""
     return _take(text, args, ctx, last=False)
 
 
-@operation("tail", "Tail", "Text", "string", "string", _TAKE_ARGS)
+@operation(
+    "tail",
+    "Tail",
+    "Text",
+    "string",
+    "string",
+    _TAKE_ARGS,
+    examples=(Example("one\ntwo\nthree", {"count": 2}, "two\nthree"),),
+)
 def tail(text: str, args: Args, ctx: OpContext) -> str:
     """The last `count` lines (keeping a final LF), graphemes or code points."""
     return _take(text, args, ctx, last=True)
@@ -273,6 +324,7 @@ def _strip(text: str, side: str) -> str:
     "string",
     "string",
     (enum_arg("side", ("both", "start", "end")), bool_arg("lines")),
+    examples=(Example("  padded  ", {}, "padded"),),
 )
 def trim(text: str, args: Args, _ctx: OpContext) -> str:
     """Remove White_Space characters from the start, end or both ends of the text, or

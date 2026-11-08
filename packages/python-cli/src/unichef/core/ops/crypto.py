@@ -8,6 +8,7 @@ from cryptography.hazmat.primitives.ciphers import Cipher, CipherContext, algori
 from unichef.core.errors import UniChefError
 from unichef.core.registry import (
     Args,
+    Example,
     OpContext,
     bool_arg,
     bytes_arg,
@@ -41,6 +42,7 @@ def _crypto(message: str) -> UniChefError:
     "bytes",
     "bytes",
     (bytes_arg("key"), enum_arg("scheme", ("standard", "rolling"))),
+    examples=(Example("hello", {"key": {"encoding": "hex", "value": "20"}}, "HELLO"),),
 )
 def xor(data: bytes, args: Args, ctx: OpContext) -> bytes:
     """XOR with a repeating `key`. `rolling` adds the number of completed passes over the
@@ -77,6 +79,7 @@ def _rotate(ch: str, first: str, size: int, amount: int) -> str:
     "string",
     "string",
     (int_arg("amount", 13, -_ROT_LIMIT, _ROT_LIMIT), bool_arg("digits")),
+    examples=(Example("Hello, World!", {}, "Uryyb, Jbeyq!"),),
 )
 def rot13(text: str, args: Args, _ctx: OpContext) -> str:
     """Rotate ASCII letters by `amount` (default 13, case kept); with `digits`, also
@@ -102,6 +105,7 @@ def rot13(text: str, args: Args, _ctx: OpContext) -> str:
     "string",
     "string",
     (int_arg("amount", 47, -_ROT_LIMIT, _ROT_LIMIT),),
+    examples=(Example("Hello, World!", {}, "w6==@[ (@C=5P"),),
 )
 def rot47(text: str, args: Args, _ctx: OpContext) -> str:
     """Rotate printable ASCII U+0021..U+007E by `amount` (default 47) mod 94."""
@@ -118,7 +122,9 @@ _ATBASH = str.maketrans(
 )
 
 
-@operation("atbash", "Atbash", "Crypto", "string", "string")
+@operation(
+    "atbash", "Atbash", "Crypto", "string", "string", examples=(Example("Hello", {}, "Svool"),)
+)
 def atbash(text: str, _args: Args, _ctx: OpContext) -> str:
     """Mirror the ASCII alphabet (A<->Z, case kept). Other characters are unchanged."""
     return text.translate(_ATBASH)
@@ -187,7 +193,24 @@ def _check_blocks(args: Args, size: int, what: str) -> None:
         raise _crypto(f"{what} is {size} bytes, not a multiple of the 16-byte block.")
 
 
-@operation("aes-encrypt", "AES Encrypt", "Crypto", "bytes", "bytes", AES_ARGS)
+@operation(
+    "aes-encrypt",
+    "AES Encrypt",
+    "Crypto",
+    "bytes",
+    "bytes",
+    AES_ARGS,
+    examples=(
+        Example(
+            "Attack at dawn",
+            {
+                "key": {"encoding": "hex", "value": "000102030405060708090a0b0c0d0e0f"},
+                "iv": {"encoding": "hex", "value": "0f0e0d0c0b0a09080706050403020100"},
+            },
+            "b4 dd 38 c9 96 76 b8 ec b1 d3 ad bd 52 ad 57 70",
+        ),
+    ),
+)
 def aes_encrypt(data: bytes, args: Args, ctx: OpContext) -> bytes:
     """AES in CBC (default), CTR, GCM or ECB mode. `padding` (PKCS#7 by default) applies
     to CBC and ECB. In GCM the 16-byte tag is appended and `aad` is authenticated. ECB
@@ -205,7 +228,25 @@ def aes_encrypt(data: bytes, args: Args, ctx: OpContext) -> bytes:
     return _run(encryptor, data, ctx)
 
 
-@operation("aes-decrypt", "AES Decrypt", "Crypto", "bytes", "bytes", AES_ARGS)
+@operation(
+    "aes-decrypt",
+    "AES Decrypt",
+    "Crypto",
+    "bytes",
+    "bytes",
+    AES_ARGS,
+    examples=(
+        Example(
+            "r[Q~Cg",
+            {
+                "key": {"encoding": "hex", "value": "000102030405060708090a0b0c0d0e0f"},
+                "mode": "ctr",
+                "iv": {"encoding": "hex", "value": "000000000000000000000000000004b2"},
+            },
+            "secret",
+        ),
+    ),
+)
 def aes_decrypt(data: bytes, args: Args, ctx: OpContext) -> bytes:
     """Inverse of `aes-encrypt` with the same arguments. In GCM the last 16 bytes are the
     tag; a wrong key, IV, AAD or tag raises E_CRYPTO, as does bad PKCS#7 padding."""

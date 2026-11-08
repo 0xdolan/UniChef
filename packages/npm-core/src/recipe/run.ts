@@ -8,7 +8,7 @@ import { UniChefError, type PathItem, type RunWarning } from '../errors.js';
 import { getOperation } from '../ops/registry.js';
 import { Args, OpContext, Rng, outputLimit, type Limits, type Step } from '../ops/types.js';
 import { VERSION } from '../version.js';
-import { JUMP_OPS, jumpTargets, resolveArgs, type Recipe } from './validate.js';
+import { JUMP_OPS, checkJumps, jumpTargets, resolveArgs, type Recipe } from './validate.js';
 
 /** No-op steps: the dish passes through with its type unchanged. */
 export const PASSTHROUGH_OPS: ReadonlySet<string> = new Set(['label', 'comment']);
@@ -241,6 +241,7 @@ export async function runOperation(
     label: null,
     comment: null,
   };
+  checkJumps([step], []);
   return bake(
     { steps: [step], name: null, description: null, seed: null, version: 1 },
     dish,

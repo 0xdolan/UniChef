@@ -3,7 +3,7 @@
 confusables and restriction levels."""
 
 from unichef.core.dish import Cell, Table
-from unichef.core.registry import Args, OpContext, bool_arg, operation, string_arg
+from unichef.core.registry import Args, Example, OpContext, bool_arg, operation, string_arg
 from unichef.unicode import confusables, names, props
 
 _LF = 0x0A
@@ -42,7 +42,23 @@ def invisible_kind(cp: int) -> str | None:
     return next((kind for kind, hit in checks if hit), None)
 
 
-@operation("detect-invisible", "Detect Invisible Characters", "Security", "string", "table")
+@operation(
+    "detect-invisible",
+    "Detect Invisible Characters",
+    "Security",
+    "string",
+    "table",
+    examples=(
+        Example(
+            "a\u200bb\u2060c",
+            {},
+            (
+                "index\tcp\tname\tkind\tline\tcolumn\n1\tU+200B\tZERO WIDTH "
+                "SPACE\tzero-width\t1\t2\n3\tU+2060\tWORD JOINER\tzero-width\t1\t4"
+            ),
+        ),
+    ),
+)
 def detect_invisible(text: str, _args: Args, ctx: OpContext) -> Table:
     """One row per invisible code point: bidi controls (Trojan Source, CVE-2021-42574),
     tag characters, variation selectors, zero-width characters, Hangul fillers and other
@@ -64,7 +80,14 @@ def detect_invisible(text: str, _args: Args, ctx: OpContext) -> Table:
     return Table(INVISIBLE_COLUMNS, tuple(rows))
 
 
-@operation("remove-bidi-controls", "Remove Bidi Controls", "Security", "string", "string")
+@operation(
+    "remove-bidi-controls",
+    "Remove Bidi Controls",
+    "Security",
+    "string",
+    "string",
+    examples=(Example("abc\u202edef\u202c", {}, "abcdef"),),
+)
 def remove_bidi_controls(text: str, _args: Args, _ctx: OpContext) -> str:
     """Delete every Bidi_Control character (U+061C, U+200E, U+200F, U+202A..U+202E,
     U+2066..U+2069)."""
@@ -82,6 +105,13 @@ def _hex(text: str) -> str:
     "string",
     "table",
     (string_arg("reference", ""),),
+    examples=(
+        Example(
+            "p\u0430ypal",
+            {},
+            "index\tcp\tname\tprototype\n1\tU+0430\tCYRILLIC SMALL LETTER A\tU+0061",
+        ),
+    ),
 )
 def detect_confusables(text: str, args: Args, ctx: OpContext) -> Table:
     """UTS #39 skeletons (NFD, confusables.txt, NFD). With a `reference`, one row compares
@@ -140,6 +170,10 @@ def restriction_level(text: str, profile: bool = True) -> str:
     "string",
     "string",
     (bool_arg("profile", True),),
+    examples=(
+        Example("paypal", {}, "ASCII-Only"),
+        Example("p\u0430ypal", {}, "Minimally Restrictive"),
+    ),
 )
 def script_mix_check(text: str, args: Args, ctx: OpContext) -> str:
     """The UTS #39 restriction level of the whole input: ASCII-Only, Single Script,

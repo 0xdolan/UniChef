@@ -22,6 +22,7 @@ from unichef.core.dish import JsonValue, json_dumps, json_loads
 from unichef.core.errors import UniChefError
 from unichef.core.registry import (
     Args,
+    Example,
     OpContext,
     bytes_arg,
     enum_arg,
@@ -272,7 +273,28 @@ def _verify(alg: str, message: bytes, signature: bytes, args: Args, ctx: OpConte
 # Operations
 
 
-@operation("jwt-decode", "JWT Decode", "Crypto", "string", "json")
+@operation(
+    "jwt-decode",
+    "JWT Decode",
+    "Crypto",
+    "string",
+    "json",
+    examples=(
+        Example(
+            (
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."
+                "eyJzdWIiOiJ6b2UiLCJuYW1lIjoiWm_DqyJ9."
+                "LnREL73KHFVV8Kd87ekU3tfCtTEPKHZQHS957yru1Sw"
+            ),
+            {},
+            (
+                '{"header":{"alg":"HS256","typ":"JWT"},"payload":{"sub":"zoe"'
+                ',"name":"Zoë"},"signature":"LnREL73KHFVV8Kd87ekU3tfCtTEPKHZQ'
+                'HS957yru1Sw"}'
+            ),
+        ),
+    ),
+)
 def jwt_decode(text: str, _args: Args, ctx: OpContext) -> JsonValue:
     """Split a JWT into `header`, `payload` and `signature` (base64url text), without
     checking the signature or time claims. Surrounding whitespace is ignored."""
@@ -296,6 +318,17 @@ def jwt_decode(text: str, _args: Args, ctx: OpContext) -> JsonValue:
         string_arg("header", multiline=True),
     ),
     parity="roundtrip",
+    examples=(
+        Example(
+            '{"sub": "zoe", "name": "Zoë"}',
+            {"key": {"encoding": "utf8", "value": "secret"}},
+            (
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."
+                "eyJzdWIiOiJ6b2UiLCJuYW1lIjoiWm_DqyJ9."
+                "LnREL73KHFVV8Kd87ekU3tfCtTEPKHZQHS957yru1Sw"
+            ),
+        ),
+    ),
 )
 def jwt_sign(payload: JsonValue, args: Args, ctx: OpContext) -> str:
     """Sign a JSON object as a JWT. `key` is the HMAC secret for HS*, or a PEM/DER private
@@ -335,6 +368,17 @@ def jwt_sign(payload: JsonValue, args: Args, ctx: OpContext) -> str:
     (
         enum_arg("algorithm", ALGORITHMS),
         bytes_arg("key", encodings=("utf8", "hex", "base64", "latin1")),
+    ),
+    examples=(
+        Example(
+            (
+                "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."
+                "eyJzdWIiOiJ6b2UiLCJuYW1lIjoiWm_DqyJ9."
+                "LnREL73KHFVV8Kd87ekU3tfCtTEPKHZQHS957yru1Sw"
+            ),
+            {"key": {"encoding": "utf8", "value": "secret"}},
+            '{"sub":"zoe","name":"Zoë"}',
+        ),
     ),
 )
 def jwt_verify(text: str, args: Args, ctx: OpContext) -> JsonValue:

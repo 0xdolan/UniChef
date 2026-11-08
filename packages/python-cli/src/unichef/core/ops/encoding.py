@@ -6,7 +6,15 @@ from typing import Literal
 
 from unichef.core.dish import MAX_CODE_POINT
 from unichef.core.errors import UniChefError
-from unichef.core.registry import Args, OpContext, bool_arg, enum_arg, operation, string_arg
+from unichef.core.registry import (
+    Args,
+    Example,
+    OpContext,
+    bool_arg,
+    enum_arg,
+    operation,
+    string_arg,
+)
 from unichef.unicode import utf8
 
 CHECK_EVERY = 64 * 1024
@@ -101,6 +109,7 @@ def _b64_alphabet(args: Args) -> tuple[str, str]:
     "bytes",
     "string",
     (enum_arg("alphabet", B64_ALPHABETS), string_arg("custom"), bool_arg("padding", True)),
+    examples=(Example("Hello, world!", {}, "SGVsbG8sIHdvcmxkIQ=="),),
 )
 def to_base64(data: bytes, args: Args, ctx: OpContext) -> str:
     """Encode bytes as Base64 (RFC 4648 §4 or §5, or a custom alphabet)."""
@@ -118,6 +127,7 @@ def to_base64(data: bytes, args: Args, ctx: OpContext) -> str:
     "string",
     "bytes",
     (enum_arg("alphabet", B64_ALPHABETS), string_arg("custom"), bool_arg("strict")),
+    examples=(Example("SGVsbG8sIHdvcmxkIQ==", {}, "Hello, world!"),),
 )
 def from_base64(text: str, args: Args, ctx: OpContext) -> bytes:
     """Decode Base64. Without `strict`, characters outside the alphabet are skipped."""
@@ -145,6 +155,7 @@ B32_TAILS = frozenset({0, 2, 4, 5, 7})
     "bytes",
     "string",
     (enum_arg("alphabet", tuple(B32)), bool_arg("padding", True)),
+    examples=(Example("Hello", {}, "JBSWY3DP"),),
 )
 def to_base32(data: bytes, args: Args, ctx: OpContext) -> str:
     """Encode bytes as Base32 (RFC 4648 §6) or base32hex (§7)."""
@@ -161,6 +172,7 @@ def to_base32(data: bytes, args: Args, ctx: OpContext) -> str:
     "string",
     "bytes",
     (enum_arg("alphabet", tuple(B32)), bool_arg("strict")),
+    examples=(Example("JBSWY3DP", {}, "Hello"),),
 )
 def from_base32(text: str, args: Args, ctx: OpContext) -> bytes:
     """Decode Base32. Without `strict`, it is case-insensitive and skips other characters."""
@@ -202,6 +214,7 @@ _HEX_DIGITS = re.compile(r"(?:[0-9a-fA-F]{2})*")
         enum_arg("delimiter", HEX_CHOICES, "space"),
         enum_arg("case", ("lower", "upper")),
     ),
+    examples=(Example("Héllo", {}, "48 c3 a9 6c 6c 6f"),),
 )
 def to_hex(data: bytes, args: Args, ctx: OpContext) -> str:
     """Write each byte as two hex digits, separated or prefixed by `delimiter`."""
@@ -223,6 +236,7 @@ def to_hex(data: bytes, args: Args, ctx: OpContext) -> str:
     "string",
     "bytes",
     (enum_arg("delimiter", ("auto", *HEX_CHOICES)),),
+    examples=(Example("48 c3 a9 6c 6c 6f", {}, "Héllo"),),
 )
 def from_hex(text: str, args: Args, ctx: OpContext) -> bytes:
     """Read hex digit pairs. `auto` strips 0x and \\x prefixes, whitespace and ,:;-."""
@@ -311,6 +325,7 @@ _VARIABLE = tuple(d for d in RADIX_DELIMITERS if d != "none")
     "bytes",
     "string",
     (enum_arg("delimiter", _FIXED),),
+    examples=(Example("Hi", {}, "01001000 01101001"),),
 )
 def to_binary(data: bytes, args: Args, ctx: OpContext) -> str:
     """Write each byte as eight binary digits, separated by `delimiter`."""
@@ -324,6 +339,7 @@ def to_binary(data: bytes, args: Args, ctx: OpContext) -> str:
     "string",
     "bytes",
     (enum_arg("delimiter", ("auto", *_FIXED)),),
+    examples=(Example("01001000 01101001", {}, "Hi"),),
 )
 def from_binary(text: str, args: Args, ctx: OpContext) -> bytes:
     """Read bytes of 1-8 binary digits. `auto` splits on runs of whitespace and ,:;
@@ -338,6 +354,7 @@ def from_binary(text: str, args: Args, ctx: OpContext) -> bytes:
     "bytes",
     "string",
     (enum_arg("delimiter", _FIXED),),
+    examples=(Example("Hi", {}, "110 151"),),
 )
 def to_octal(data: bytes, args: Args, ctx: OpContext) -> str:
     """Write each byte as three octal digits, separated by `delimiter`."""
@@ -351,6 +368,7 @@ def to_octal(data: bytes, args: Args, ctx: OpContext) -> str:
     "string",
     "bytes",
     (enum_arg("delimiter", ("auto", *_FIXED)),),
+    examples=(Example("110 151", {}, "Hi"),),
 )
 def from_octal(text: str, args: Args, ctx: OpContext) -> bytes:
     """Read bytes of 1-3 octal digits (at most 377). `auto` splits on runs of whitespace
@@ -365,6 +383,7 @@ def from_octal(text: str, args: Args, ctx: OpContext) -> bytes:
     "bytes",
     "string",
     (enum_arg("delimiter", _VARIABLE),),
+    examples=(Example("Hi", {}, "72 105"),),
 )
 def to_decimal(data: bytes, args: Args, ctx: OpContext) -> str:
     """Write each byte as a decimal number without padding, separated by `delimiter`."""
@@ -378,6 +397,7 @@ def to_decimal(data: bytes, args: Args, ctx: OpContext) -> str:
     "string",
     "bytes",
     (enum_arg("delimiter", ("auto", *_VARIABLE)),),
+    examples=(Example("72 105", {}, "Hi"),),
 )
 def from_decimal(text: str, args: Args, ctx: OpContext) -> bytes:
     """Read bytes of 1-3 decimal digits (at most 255). `auto` splits on runs of
@@ -400,6 +420,7 @@ _PERCENT = re.compile(rb"%([0-9A-Fa-f]{2})")
     "string",
     "string",
     (enum_arg("mode", ("component", "all", "reserved-only")),),
+    examples=(Example("café au lait", {}, "caf%C3%A9%20au%20lait"),),
 )
 def url_encode(text: str, args: Args, ctx: OpContext) -> str:
     """Percent-encode with upper-case hex over the UTF-8 bytes of the input."""
@@ -418,6 +439,7 @@ def url_encode(text: str, args: Args, ctx: OpContext) -> str:
     "string",
     "string",
     (bool_arg("plus-as-space"),),
+    examples=(Example("caf%C3%A9%20au%20lait", {}, "café au lait"),),
 )
 def url_decode(text: str, args: Args, ctx: OpContext) -> str:
     """Decode %XX escapes; malformed escapes stay as they are. Never fails."""
@@ -519,7 +541,18 @@ def _decode_utf32(data: bytes, order: str, strict: bool) -> str:
     return "".join(out)
 
 
-@operation("encode-text", "Encode Text", "Encoding", "string", "bytes", TEXT_ARGS)
+@operation(
+    "encode-text",
+    "Encode Text",
+    "Encoding",
+    "string",
+    "bytes",
+    TEXT_ARGS,
+    examples=(
+        Example("café", {"encoding": "iso-8859-1"}, "63 61 66 e9"),
+        Example("é👋", {"encoding": "utf-16le"}, "e9 00 3d d8 4b dc"),
+    ),
+)
 def encode_text(text: str, args: Args, ctx: OpContext) -> bytes:
     """Encode text in a character encoding. Lone surrogates become U+FFFD; no BOM."""
     ctx.check()
@@ -549,7 +582,15 @@ def encode_text(text: str, args: Args, ctx: OpContext) -> bytes:
     return bytes(out)
 
 
-@operation("decode-text", "Decode Text", "Encoding", "bytes", "string", TEXT_ARGS)
+@operation(
+    "decode-text",
+    "Decode Text",
+    "Encoding",
+    "bytes",
+    "string",
+    TEXT_ARGS,
+    examples=(Example("café", {}, "café"),),
+)
 def decode_text(data: bytes, args: Args, ctx: OpContext) -> str:
     """Decode bytes from a character encoding. Ill-formed input becomes U+FFFD."""
     encoding = args.text("encoding")

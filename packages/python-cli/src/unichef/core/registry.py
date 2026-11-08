@@ -249,6 +249,9 @@ type RunFn = Callable[[Any, Args, OpContext], Any]
 
 @dataclass(slots=True, frozen=True)
 class Example:
+    """``input`` is read as a string dish; ``output`` is the result as the web playground
+    shows it (bytes as UTF-8 when valid, otherwise spaced hex; code points as ``U+XXXX``)."""
+
     input: str
     args: Mapping[str, JsonValue]
     output: str

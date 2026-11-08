@@ -18,6 +18,7 @@ interface IndexEntry {
   output: string;
   parity: string;
   args: Record<string, unknown>[];
+  examples: { input: string; args: Record<string, unknown>; output: string }[];
 }
 
 const index = (
@@ -70,6 +71,7 @@ describe('spec/ops.json', () => {
       output: op.outputType,
       parity: op.parity,
       args: op.args.map(argEntry),
+      examples: op.examples,
     }).toEqual({
       name: entry.name,
       category: entry.category,
@@ -77,6 +79,7 @@ describe('spec/ops.json', () => {
       output: entry.output,
       parity: entry.parity,
       args: entry.args,
+      examples: entry.examples,
     });
   });
 });

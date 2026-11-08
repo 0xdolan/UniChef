@@ -82,6 +82,13 @@ export const findReplace = defineOp({
     'too. With `literal`, both are plain text and the pattern must not be empty.',
   inputType: 'string',
   outputType: 'string',
+  examples: [
+    {
+      input: '2026-11-07',
+      args: { pattern: '(\\d+)-(\\d+)-(\\d+)', replacement: '$3/$2/$1' },
+      output: '07/11/2026',
+    },
+  ],
   args: [
     regexArg('pattern'),
     stringArg('flags'),
@@ -130,6 +137,13 @@ export const regexExtract = defineOp({
     '`separator`. Empty matches count; a group that did not participate gives "".',
   inputType: 'string',
   outputType: 'string',
+  examples: [
+    {
+      input: 'Mail ana@example.org or bo@example.net',
+      args: { pattern: '[\\w.]+@[\\w.]+', separator: '\n' },
+      output: 'ana@example.org\nbo@example.net',
+    },
+  ],
   args: [
     regexArg('pattern'),
     stringArg('flags'),
@@ -158,6 +172,7 @@ export const split = defineOp({
   description: 'Split on the literal `delimiter` and join the parts with `join`.',
   inputType: 'string',
   outputType: 'string',
+  examples: [{ input: 'a,b,c', args: { delimiter: ',', join: '\n' }, output: 'a\nb\nc' }],
   args: [stringArg('delimiter', ','), stringArg('join', '\n')],
   run(text, args) {
     const delimiter = args.text('delimiter');
@@ -175,6 +190,7 @@ export const join = defineOp({
   description: 'Join the lines with `delimiter`. A final LF is dropped.',
   inputType: 'string',
   outputType: 'string',
+  examples: [{ input: 'one\ntwo\nthree', args: { delimiter: ', ' }, output: 'one, two, three' }],
   args: [stringArg('delimiter', ',')],
   run(text, args) {
     return lines(text)[0].join(args.text('delimiter'));
@@ -190,6 +206,10 @@ export const reverse = defineOp({
     'decode UTF-8 first, replacing ill-formed sequences with U+FFFD.',
   inputType: 'bytes',
   outputType: 'bytes',
+  examples: [
+    { input: 'e\u0301👋\u{1f3fd}', args: { unit: 'graphemes' }, output: '👋\u{1f3fd}e\u0301' },
+    { input: 'abc', args: {}, output: 'cba' },
+  ],
   args: [enumArg('unit', ['graphemes', 'code-points', 'bytes'])],
   async run(data, args, ctx) {
     const unit = args.text('unit');
@@ -244,6 +264,14 @@ export const sortLines = defineOp({
     'the order of the keys, keeping equal lines in input order.',
   inputType: 'string',
   outputType: 'string',
+  examples: [
+    { input: 'pear\napple\nÉclair\nbanana', args: {}, output: 'apple\nbanana\npear\nÉclair' },
+    {
+      input: '10 apples\n9 pears\n100 plums',
+      args: { key: 'numeric' },
+      output: '9 pears\n10 apples\n100 plums',
+    },
+  ],
   args: [enumArg('key', Object.keys(SORT_KEYS)), enumArg('order', ['ascending', 'descending'])],
   async run(text, args) {
     await ready('core');
@@ -265,6 +293,7 @@ export const uniqueLines = defineOp({
     'full case folds; `count` prefixes each line with its number of copies and a tab.',
   inputType: 'string',
   outputType: 'string',
+  examples: [{ input: 'b\na\nb\nc\na', args: {}, output: 'b\na\nc' }],
   args: [boolArg('ignore_case'), boolArg('count')],
   async run(text, args) {
     await ready('core');
@@ -317,6 +346,7 @@ export const head = defineOp({
   description: 'The first `count` lines (keeping a final LF), graphemes or code points.',
   inputType: 'string',
   outputType: 'string',
+  examples: [{ input: 'one\ntwo\nthree', args: { count: 2 }, output: 'one\ntwo' }],
   args: TAKE_ARGS,
   run: (text, args, ctx) => take(text, args, ctx, false),
 });
@@ -328,6 +358,7 @@ export const tail = defineOp({
   description: 'The last `count` lines (keeping a final LF), graphemes or code points.',
   inputType: 'string',
   outputType: 'string',
+  examples: [{ input: 'one\ntwo\nthree', args: { count: 2 }, output: 'two\nthree' }],
   args: TAKE_ARGS,
   run: (text, args, ctx) => take(text, args, ctx, true),
 });
@@ -358,6 +389,7 @@ export const trim = defineOp({
     'of every line with `lines` (a final LF is kept).',
   inputType: 'string',
   outputType: 'string',
+  examples: [{ input: '  padded  ', args: {}, output: 'padded' }],
   args: [enumArg('side', ['both', 'start', 'end']), boolArg('lines')],
   async run(text, args) {
     await ready('core');

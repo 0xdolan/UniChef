@@ -40,6 +40,7 @@ export const xor = defineOp({
     'schemes are their own inverse.',
   inputType: 'bytes',
   outputType: 'bytes',
+  examples: [{ input: 'hello', args: { key: { encoding: 'hex', value: '20' } }, output: 'HELLO' }],
   args: [bytesArg('key'), enumArg('scheme', ['standard', 'rolling'])],
   run(data, args, ctx) {
     const key = args.data('key');
@@ -78,6 +79,7 @@ export const rot13 = defineOp({
     '0-9 by the same amount mod 10. Other characters are unchanged.',
   inputType: 'string',
   outputType: 'string',
+  examples: [{ input: 'Hello, World!', args: {}, output: 'Uryyb, Jbeyq!' }],
   args: [intArg('amount', 13, -ROT_LIMIT, ROT_LIMIT), boolArg('digits')],
   run(text, args) {
     const amount = args.int('amount');
@@ -101,6 +103,7 @@ export const rot47 = defineOp({
   description: 'Rotate printable ASCII U+0021..U+007E by `amount` (default 47) mod 94.',
   inputType: 'string',
   outputType: 'string',
+  examples: [{ input: 'Hello, World!', args: {}, output: 'w6==@[ (@C=5P' }],
   args: [intArg('amount', 47, -ROT_LIMIT, ROT_LIMIT)],
   run(text, args) {
     const amount = args.int('amount');
@@ -115,6 +118,7 @@ export const atbash = defineOp({
   description: 'Mirror the ASCII alphabet (A<->Z, case kept). Other characters are unchanged.',
   inputType: 'string',
   outputType: 'string',
+  examples: [{ input: 'Hello', args: {}, output: 'Svool' }],
   run: (text) =>
     text.replace(/[a-zA-Z]/g, (ch) => {
       const base = ch >= 'a' ? 0x61 : 0x41;
@@ -214,6 +218,16 @@ export const aesEncrypt = defineOp({
     'warns W_INSECURE.',
   inputType: 'bytes',
   outputType: 'bytes',
+  examples: [
+    {
+      input: 'Attack at dawn',
+      args: {
+        key: { encoding: 'hex', value: '000102030405060708090a0b0c0d0e0f' },
+        iv: { encoding: 'hex', value: '0f0e0d0c0b0a09080706050403020100' },
+      },
+      output: 'b4 dd 38 c9 96 76 b8 ec b1 d3 ad bd 52 ad 57 70',
+    },
+  ],
   args: AES_ARGS,
   run(data, args, ctx) {
     const key = aesKey(args);
@@ -239,6 +253,17 @@ export const aesDecrypt = defineOp({
     'tag; a wrong key, IV, AAD or tag raises E_CRYPTO, as does bad PKCS#7 padding.',
   inputType: 'bytes',
   outputType: 'bytes',
+  examples: [
+    {
+      input: 'r[Q~Cg',
+      args: {
+        key: { encoding: 'hex', value: '000102030405060708090a0b0c0d0e0f' },
+        mode: 'ctr',
+        iv: { encoding: 'hex', value: '000000000000000000000000000004b2' },
+      },
+      output: 'secret',
+    },
+  ],
   args: AES_ARGS,
   run(data, args, ctx) {
     const key = aesKey(args);

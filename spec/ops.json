@@ -9,7 +9,14 @@
       "input": "bytes",
       "output": "string",
       "parity": "exact",
-      "args": []
+      "args": [],
+      "examples": [
+        {
+          "input": "Wikipedia",
+          "args": {},
+          "output": "11e60398"
+        }
+      ]
     },
     {
       "id": "aes-decrypt",
@@ -72,6 +79,23 @@
             "base64",
             "latin1"
           ]
+        }
+      ],
+      "examples": [
+        {
+          "input": "r[Q~Cg",
+          "args": {
+            "key": {
+              "encoding": "hex",
+              "value": "000102030405060708090a0b0c0d0e0f"
+            },
+            "mode": "ctr",
+            "iv": {
+              "encoding": "hex",
+              "value": "000000000000000000000000000004b2"
+            }
+          },
+          "output": "secret"
         }
       ]
     },
@@ -137,6 +161,22 @@
             "latin1"
           ]
         }
+      ],
+      "examples": [
+        {
+          "input": "Attack at dawn",
+          "args": {
+            "key": {
+              "encoding": "hex",
+              "value": "000102030405060708090a0b0c0d0e0f"
+            },
+            "iv": {
+              "encoding": "hex",
+              "value": "0f0e0d0c0b0a09080706050403020100"
+            }
+          },
+          "output": "b4 dd 38 c9 96 76 b8 ec b1 d3 ad bd 52 ad 57 70"
+        }
       ]
     },
     {
@@ -157,6 +197,13 @@
             "grapheme"
           ]
         }
+      ],
+      "examples": [
+        {
+          "input": "é👋🏽",
+          "args": {},
+          "output": "index\tcp\tchar\tname\tgc\tblock\tscript\tscx\tage\tbidi\tea\tutf8\tutf16\tdecomposition\tflags\n0\tU+0065\te\tLATIN SMALL LETTER E\tLl\tBasic Latin\tLatn\tLatn\t1.1\tL\tNa\t65\t0065\t\t\n1\tU+0301\t◌́\tCOMBINING ACUTE ACCENT\tMn\tCombining Diacritical Marks\tZinh\tCher Cyrl Grek Latn Osge Sunu Tale Todr\t1.1\tNSM\tA\tCC 81\t0301\t\t\n2\tU+1F44B\t👋\tWAVING HAND SIGN\tSo\tMiscellaneous Symbols and Pictographs\tZyyy\tZyyy\t6.0\tON\tW\tF0 9F 91 8B\tD83D DC4B\t\t\n3\tU+1F3FD\t🏽\tEMOJI MODIFIER FITZPATRICK TYPE-4\tSk\tMiscellaneous Symbols and Pictographs\tZyyy\tZyyy\t8.0\tON\tW\tF0 9F 8F BD\tD83C DFFD\t\t"
+        }
       ]
     },
     {
@@ -167,7 +214,14 @@
       "input": "string",
       "output": "string",
       "parity": "exact",
-      "args": []
+      "args": [],
+      "examples": [
+        {
+          "input": "Hello",
+          "args": {},
+          "output": "Svool"
+        }
+      ]
     },
     {
       "id": "blake2b",
@@ -195,6 +249,15 @@
             "base64",
             "latin1"
           ]
+        }
+      ],
+      "examples": [
+        {
+          "input": "abc",
+          "args": {
+            "size": 32
+          },
+          "output": "bddd813c634239723171ef3fee98579b94964e3bb1cb3e427262c8c068d52319"
         }
       ]
     },
@@ -225,6 +288,13 @@
             "latin1"
           ]
         }
+      ],
+      "examples": [
+        {
+          "input": "abc",
+          "args": {},
+          "output": "508c5e8c327c14e2e1a72ba34eeb452f37458b209ed63a294d999b4c86675982"
+        }
       ]
     },
     {
@@ -241,6 +311,15 @@
           "kind": "string",
           "default": "",
           "multiline": true
+        }
+      ],
+      "examples": [
+        {
+          "input": "unchanged",
+          "args": {
+            "text": "notes for readers"
+          },
+          "output": "unchanged"
         }
       ]
     },
@@ -281,7 +360,8 @@
           "minimum": 0,
           "maximum": 1000
         }
-      ]
+      ],
+      "examples": []
     },
     {
       "id": "count",
@@ -304,6 +384,29 @@
             "lines"
           ]
         }
+      ],
+      "examples": [
+        {
+          "input": "é👋🏽",
+          "args": {
+            "unit": "graphemes"
+          },
+          "output": "2"
+        },
+        {
+          "input": "é👋🏽",
+          "args": {
+            "unit": "code-points"
+          },
+          "output": "4"
+        },
+        {
+          "input": "é👋🏽",
+          "args": {
+            "unit": "bytes"
+          },
+          "output": "11"
+        }
       ]
     },
     {
@@ -314,7 +417,14 @@
       "input": "bytes",
       "output": "string",
       "parity": "exact",
-      "args": []
+      "args": [],
+      "examples": [
+        {
+          "input": "The quick brown fox jumps over the lazy dog",
+          "args": {},
+          "output": "414fa339"
+        }
+      ]
     },
     {
       "id": "decode-text",
@@ -349,6 +459,13 @@
             "strict"
           ]
         }
+      ],
+      "examples": [
+        {
+          "input": "café",
+          "args": {},
+          "output": "café"
+        }
       ]
     },
     {
@@ -365,6 +482,13 @@
           "kind": "string",
           "default": ""
         }
+      ],
+      "examples": [
+        {
+          "input": "pаypal",
+          "args": {},
+          "output": "index\tcp\tname\tprototype\n1\tU+0430\tCYRILLIC SMALL LETTER A\tU+0061"
+        }
       ]
     },
     {
@@ -375,7 +499,14 @@
       "input": "string",
       "output": "table",
       "parity": "exact",
-      "args": []
+      "args": [],
+      "examples": [
+        {
+          "input": "a​b⁠c",
+          "args": {},
+          "output": "index\tcp\tname\tkind\tline\tcolumn\n1\tU+200B\tZERO WIDTH SPACE\tzero-width\t1\t2\n3\tU+2060\tWORD JOINER\tzero-width\t1\t4"
+        }
+      ]
     },
     {
       "id": "encode-text",
@@ -409,6 +540,22 @@
             "replace",
             "strict"
           ]
+        }
+      ],
+      "examples": [
+        {
+          "input": "café",
+          "args": {
+            "encoding": "iso-8859-1"
+          },
+          "output": "63 61 66 e9"
+        },
+        {
+          "input": "é👋",
+          "args": {
+            "encoding": "utf-16le"
+          },
+          "output": "e9 00 3d d8 4b dc"
         }
       ]
     },
@@ -444,6 +591,20 @@
             "all",
             "non-printable"
           ]
+        }
+      ],
+      "examples": [
+        {
+          "input": "café 👋",
+          "args": {},
+          "output": "caf\\u00E9 \\uD83D\\uDC4B"
+        },
+        {
+          "input": "café 👋",
+          "args": {
+            "format": "html-hex"
+          },
+          "output": "caf&#xE9; &#x1F44B;"
         }
       ]
     },
@@ -482,6 +643,16 @@
           "kind": "boolean",
           "default": true
         }
+      ],
+      "examples": [
+        {
+          "input": "2026-11-07",
+          "args": {
+            "pattern": "(\\d+)-(\\d+)-(\\d+)",
+            "replacement": "$3/$2/$1"
+          },
+          "output": "07/11/2026"
+        }
       ]
     },
     {
@@ -507,6 +678,24 @@
           "name": "steps",
           "kind": "steps"
         }
+      ],
+      "examples": [
+        {
+          "input": "a,b,c",
+          "args": {
+            "split": ",",
+            "merge": " | ",
+            "steps": [
+              {
+                "op": "unicode-case",
+                "args": {
+                  "mode": "upper"
+                }
+              }
+            ]
+          },
+          "output": "A | B | C"
+        }
       ]
     },
     {
@@ -531,6 +720,13 @@
           "name": "strict",
           "kind": "boolean",
           "default": false
+        }
+      ],
+      "examples": [
+        {
+          "input": "JBSWY3DP",
+          "args": {},
+          "output": "Hello"
         }
       ]
     },
@@ -563,6 +759,13 @@
           "kind": "boolean",
           "default": false
         }
+      ],
+      "examples": [
+        {
+          "input": "SGVsbG8sIHdvcmxkIQ==",
+          "args": {},
+          "output": "Hello, world!"
+        }
       ]
     },
     {
@@ -587,6 +790,13 @@
             "none"
           ]
         }
+      ],
+      "examples": [
+        {
+          "input": "01001000 01101001",
+          "args": {},
+          "output": "Hi"
+        }
       ]
     },
     {
@@ -606,6 +816,20 @@
             "hex",
             "decimal"
           ]
+        }
+      ],
+      "examples": [
+        {
+          "input": "48 69 1F44B",
+          "args": {},
+          "output": "U+0048 U+0069 U+1F44B"
+        },
+        {
+          "input": "72 105 128075",
+          "args": {
+            "base": "decimal"
+          },
+          "output": "U+0048 U+0069 U+1F44B"
         }
       ]
     },
@@ -629,6 +853,13 @@
             "colon",
             "newline"
           ]
+        }
+      ],
+      "examples": [
+        {
+          "input": "72 105",
+          "args": {},
+          "output": "Hi"
         }
       ]
     },
@@ -656,6 +887,13 @@
             "\\x"
           ]
         }
+      ],
+      "examples": [
+        {
+          "input": "48 c3 a9 6c 6c 6f",
+          "args": {},
+          "output": "Héllo"
+        }
       ]
     },
     {
@@ -680,6 +918,13 @@
             "none"
           ]
         }
+      ],
+      "examples": [
+        {
+          "input": "110 151",
+          "args": {},
+          "output": "Hi"
+        }
       ]
     },
     {
@@ -695,6 +940,15 @@
           "name": "delimiter",
           "kind": "string",
           "default": "\n"
+        }
+      ],
+      "examples": [
+        {
+          "input": "é👋🏽🇮🇶",
+          "args": {
+            "delimiter": " "
+          },
+          "output": "é 👋🏽 🇮🇶"
         }
       ]
     },
@@ -723,6 +977,15 @@
             "graphemes",
             "code-points"
           ]
+        }
+      ],
+      "examples": [
+        {
+          "input": "one\ntwo\nthree",
+          "args": {
+            "count": 2
+          },
+          "output": "one\ntwo"
         }
       ]
     },
@@ -761,6 +1024,18 @@
             "latin1"
           ]
         }
+      ],
+      "examples": [
+        {
+          "input": "message",
+          "args": {
+            "key": {
+              "encoding": "utf8",
+              "value": "secret"
+            }
+          },
+          "output": "8b5f48702995c1598c573db1e21866a9b825d4a794d169d7060a03605796360b"
+        }
       ]
     },
     {
@@ -776,6 +1051,13 @@
           "name": "strict",
           "kind": "boolean",
           "default": false
+        }
+      ],
+      "examples": [
+        {
+          "input": "&lt;p&gt;caf&eacute; &#x1F44B;&lt;/p&gt;",
+          "args": {},
+          "output": "<p>café 👋</p>"
         }
       ]
     },
@@ -808,6 +1090,13 @@
             "hex"
           ]
         }
+      ],
+      "examples": [
+        {
+          "input": "<p>café</p>",
+          "args": {},
+          "output": "&lt;p&gt;café&lt;/p&gt;"
+        }
       ]
     },
     {
@@ -823,6 +1112,15 @@
           "name": "delimiter",
           "kind": "string",
           "default": ","
+        }
+      ],
+      "examples": [
+        {
+          "input": "one\ntwo\nthree",
+          "args": {
+            "delimiter": ", "
+          },
+          "output": "one, two, three"
         }
       ]
     },
@@ -847,7 +1145,8 @@
           "minimum": 0,
           "maximum": 1000
         }
-      ]
+      ],
+      "examples": []
     },
     {
       "id": "jwt-decode",
@@ -857,7 +1156,14 @@
       "input": "string",
       "output": "json",
       "parity": "exact",
-      "args": []
+      "args": [],
+      "examples": [
+        {
+          "input": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ6b2UiLCJuYW1lIjoiWm_DqyJ9.LnREL73KHFVV8Kd87ekU3tfCtTEPKHZQHS957yru1Sw",
+          "args": {},
+          "output": "{\"header\":{\"alg\":\"HS256\",\"typ\":\"JWT\"},\"payload\":{\"sub\":\"zoe\",\"name\":\"Zoë\"},\"signature\":\"LnREL73KHFVV8Kd87ekU3tfCtTEPKHZQHS957yru1Sw\"}"
+        }
+      ]
     },
     {
       "id": "jwt-sign",
@@ -906,6 +1212,18 @@
           "default": "",
           "multiline": true
         }
+      ],
+      "examples": [
+        {
+          "input": "{\"sub\": \"zoe\", \"name\": \"Zoë\"}",
+          "args": {
+            "key": {
+              "encoding": "utf8",
+              "value": "secret"
+            }
+          },
+          "output": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ6b2UiLCJuYW1lIjoiWm_DqyJ9.LnREL73KHFVV8Kd87ekU3tfCtTEPKHZQHS957yru1Sw"
+        }
       ]
     },
     {
@@ -948,6 +1266,18 @@
             "latin1"
           ]
         }
+      ],
+      "examples": [
+        {
+          "input": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ6b2UiLCJuYW1lIjoiWm_DqyJ9.LnREL73KHFVV8Kd87ekU3tfCtTEPKHZQHS957yru1Sw",
+          "args": {
+            "key": {
+              "encoding": "utf8",
+              "value": "secret"
+            }
+          },
+          "output": "{\"sub\":\"zoe\",\"name\":\"Zoë\"}"
+        }
       ]
     },
     {
@@ -964,6 +1294,15 @@
           "kind": "string",
           "default": ""
         }
+      ],
+      "examples": [
+        {
+          "input": "unchanged",
+          "args": {
+            "name": "start"
+          },
+          "output": "unchanged"
+        }
       ]
     },
     {
@@ -974,7 +1313,14 @@
       "input": "bytes",
       "output": "string",
       "parity": "exact",
-      "args": []
+      "args": [],
+      "examples": [
+        {
+          "input": "abc",
+          "args": {},
+          "output": "900150983cd24fb0d6963f7d28e17f72"
+        }
+      ]
     },
     {
       "id": "normalize",
@@ -995,6 +1341,15 @@
             "NFKC",
             "NFKD"
           ]
+        }
+      ],
+      "examples": [
+        {
+          "input": "ﬁ ① Ｘ²",
+          "args": {
+            "form": "NFKC"
+          },
+          "output": "fi 1 X2"
         }
       ]
     },
@@ -1030,6 +1385,16 @@
           "kind": "string",
           "default": "\n"
         }
+      ],
+      "examples": [
+        {
+          "input": "Mail ana@example.org or bo@example.net",
+          "args": {
+            "pattern": "[\\w.]+@[\\w.]+",
+            "separator": "\n"
+          },
+          "output": "ana@example.org\nbo@example.net"
+        }
       ]
     },
     {
@@ -1040,7 +1405,14 @@
       "input": "string",
       "output": "string",
       "parity": "exact",
-      "args": []
+      "args": [],
+      "examples": [
+        {
+          "input": "abc‮def‬",
+          "args": {},
+          "output": "abcdef"
+        }
+      ]
     },
     {
       "id": "reverse",
@@ -1060,6 +1432,20 @@
             "code-points",
             "bytes"
           ]
+        }
+      ],
+      "examples": [
+        {
+          "input": "é👋🏽",
+          "args": {
+            "unit": "graphemes"
+          },
+          "output": "👋🏽é"
+        },
+        {
+          "input": "abc",
+          "args": {},
+          "output": "cba"
         }
       ]
     },
@@ -1084,6 +1470,13 @@
           "kind": "boolean",
           "default": false
         }
+      ],
+      "examples": [
+        {
+          "input": "Hello, World!",
+          "args": {},
+          "output": "Uryyb, Jbeyq!"
+        }
       ]
     },
     {
@@ -1102,6 +1495,13 @@
           "minimum": -1000000,
           "maximum": 1000000
         }
+      ],
+      "examples": [
+        {
+          "input": "Hello, World!",
+          "args": {},
+          "output": "w6==@[ (@C=5P"
+        }
       ]
     },
     {
@@ -1118,6 +1518,18 @@
           "kind": "boolean",
           "default": true
         }
+      ],
+      "examples": [
+        {
+          "input": "paypal",
+          "args": {},
+          "output": "ASCII-Only"
+        },
+        {
+          "input": "pаypal",
+          "args": {},
+          "output": "Minimally Restrictive"
+        }
       ]
     },
     {
@@ -1128,7 +1540,14 @@
       "input": "bytes",
       "output": "string",
       "parity": "exact",
-      "args": []
+      "args": [],
+      "examples": [
+        {
+          "input": "abc",
+          "args": {},
+          "output": "a9993e364706816aba3e25717850c26c9cd0d89d"
+        }
+      ]
     },
     {
       "id": "sha2",
@@ -1152,6 +1571,13 @@
             "512-256"
           ]
         }
+      ],
+      "examples": [
+        {
+          "input": "abc",
+          "args": {},
+          "output": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+        }
       ]
     },
     {
@@ -1173,6 +1599,13 @@
             "384",
             "512"
           ]
+        }
+      ],
+      "examples": [
+        {
+          "input": "abc",
+          "args": {},
+          "output": "3a985da74fe225b2045c172d6bd390bd855f086e3e9d525b46bfe24511431532"
         }
       ]
     },
@@ -1200,6 +1633,15 @@
           "default": 32,
           "minimum": 1,
           "maximum": 65536
+        }
+      ],
+      "examples": [
+        {
+          "input": "abc",
+          "args": {
+            "length": 16
+          },
+          "output": "5881092dd818bf5cf8a3ddb793fbcba7"
         }
       ]
     },
@@ -1232,6 +1674,20 @@
             "descending"
           ]
         }
+      ],
+      "examples": [
+        {
+          "input": "pear\napple\nÉclair\nbanana",
+          "args": {},
+          "output": "apple\nbanana\npear\nÉclair"
+        },
+        {
+          "input": "10 apples\n9 pears\n100 plums",
+          "args": {
+            "key": "numeric"
+          },
+          "output": "9 pears\n10 apples\n100 plums"
+        }
       ]
     },
     {
@@ -1253,6 +1709,16 @@
           "kind": "string",
           "default": "\n"
         }
+      ],
+      "examples": [
+        {
+          "input": "a,b,c",
+          "args": {
+            "delimiter": ",",
+            "join": "\n"
+          },
+          "output": "a\nb\nc"
+        }
       ]
     },
     {
@@ -1263,7 +1729,14 @@
       "input": "string",
       "output": "string",
       "parity": "exact",
-      "args": []
+      "args": [],
+      "examples": [
+        {
+          "input": "Crème brûlée",
+          "args": {},
+          "output": "Creme brulee"
+        }
+      ]
     },
     {
       "id": "sub-recipe",
@@ -1277,6 +1750,22 @@
         {
           "name": "steps",
           "kind": "steps"
+        }
+      ],
+      "examples": [
+        {
+          "input": "hello",
+          "args": {
+            "steps": [
+              {
+                "op": "to-base64"
+              },
+              {
+                "op": "reverse"
+              }
+            ]
+          },
+          "output": "=8GbsVGa"
         }
       ]
     },
@@ -1316,6 +1805,24 @@
           "name": "steps",
           "kind": "steps"
         }
+      ],
+      "examples": [
+        {
+          "input": "name=zoë id=7",
+          "args": {
+            "pattern": "=(\\w+)",
+            "group": 1,
+            "steps": [
+              {
+                "op": "unicode-case",
+                "args": {
+                  "mode": "upper"
+                }
+              }
+            ]
+          },
+          "output": "name=ZOË id=7"
+        }
       ]
     },
     {
@@ -1344,6 +1851,15 @@
             "code-points"
           ]
         }
+      ],
+      "examples": [
+        {
+          "input": "one\ntwo\nthree",
+          "args": {
+            "count": 2
+          },
+          "output": "two\nthree"
+        }
       ]
     },
     {
@@ -1368,6 +1884,13 @@
           "name": "padding",
           "kind": "boolean",
           "default": true
+        }
+      ],
+      "examples": [
+        {
+          "input": "Hello",
+          "args": {},
+          "output": "JBSWY3DP"
         }
       ]
     },
@@ -1400,6 +1923,13 @@
           "kind": "boolean",
           "default": true
         }
+      ],
+      "examples": [
+        {
+          "input": "Hello, world!",
+          "args": {},
+          "output": "SGVsbG8sIHdvcmxkIQ=="
+        }
       ]
     },
     {
@@ -1422,6 +1952,13 @@
             "newline",
             "none"
           ]
+        }
+      ],
+      "examples": [
+        {
+          "input": "Hi",
+          "args": {},
+          "output": "01001000 01101001"
         }
       ]
     },
@@ -1455,6 +1992,13 @@
             "newline"
           ]
         }
+      ],
+      "examples": [
+        {
+          "input": "Hi 👋",
+          "args": {},
+          "output": "U+0048 U+0069 U+0020 U+1F44B"
+        }
       ]
     },
     {
@@ -1476,6 +2020,13 @@
             "colon",
             "newline"
           ]
+        }
+      ],
+      "examples": [
+        {
+          "input": "Hi",
+          "args": {},
+          "output": "72 105"
         }
       ]
     },
@@ -1511,6 +2062,13 @@
             "upper"
           ]
         }
+      ],
+      "examples": [
+        {
+          "input": "Héllo",
+          "args": {},
+          "output": "48 c3 a9 6c 6c 6f"
+        }
       ]
     },
     {
@@ -1533,6 +2091,13 @@
             "newline",
             "none"
           ]
+        }
+      ],
+      "examples": [
+        {
+          "input": "Hi",
+          "args": {},
+          "output": "110 151"
         }
       ]
     },
@@ -1560,6 +2125,13 @@
           "kind": "boolean",
           "default": false
         }
+      ],
+      "examples": [
+        {
+          "input": "  padded  ",
+          "args": {},
+          "output": "padded"
+        }
       ]
     },
     {
@@ -1585,6 +2157,13 @@
             "html-decimal",
             "percent-u"
           ]
+        }
+      ],
+      "examples": [
+        {
+          "input": "caf\\u00e9 \\U0001F44B",
+          "args": {},
+          "output": "café 👋"
         }
       ]
     },
@@ -1624,6 +2203,23 @@
           "kind": "boolean",
           "default": false
         }
+      ],
+      "examples": [
+        {
+          "input": "straße",
+          "args": {
+            "mode": "upper"
+          },
+          "output": "STRASSE"
+        },
+        {
+          "input": "İstanbul",
+          "args": {
+            "mode": "lower",
+            "locale": "tr"
+          },
+          "output": "istanbul"
+        }
       ]
     },
     {
@@ -1645,6 +2241,13 @@
           "kind": "boolean",
           "default": false
         }
+      ],
+      "examples": [
+        {
+          "input": "b\na\nb\nc\na",
+          "args": {},
+          "output": "b\na\nc"
+        }
       ]
     },
     {
@@ -1660,6 +2263,13 @@
           "name": "plus-as-space",
           "kind": "boolean",
           "default": false
+        }
+      ],
+      "examples": [
+        {
+          "input": "caf%C3%A9%20au%20lait",
+          "args": {},
+          "output": "café au lait"
         }
       ]
     },
@@ -1681,6 +2291,13 @@
             "all",
             "reserved-only"
           ]
+        }
+      ],
+      "examples": [
+        {
+          "input": "café au lait",
+          "args": {},
+          "output": "caf%C3%A9%20au%20lait"
         }
       ]
     },
@@ -1712,6 +2329,18 @@
             "standard",
             "rolling"
           ]
+        }
+      ],
+      "examples": [
+        {
+          "input": "hello",
+          "args": {
+            "key": {
+              "encoding": "hex",
+              "value": "20"
+            }
+          },
+          "output": "HELLO"
         }
       ]
     }

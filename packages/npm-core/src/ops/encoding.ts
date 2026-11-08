@@ -149,6 +149,7 @@ export const toBase64 = defineOp({
   description: 'Encode bytes as Base64 (RFC 4648 §4 or §5, or a custom alphabet).',
   inputType: 'bytes',
   outputType: 'string',
+  examples: [{ input: 'Hello, world!', args: {}, output: 'SGVsbG8sIHdvcmxkIQ==' }],
   args: [enumArg('alphabet', B64_ALPHABETS), stringArg('custom'), boolArg('padding', true)],
   run(data, args, ctx) {
     const [alphabet, pad] = b64Alphabet(args);
@@ -167,6 +168,7 @@ export const fromBase64 = defineOp({
   description: 'Decode Base64. Without `strict`, characters outside the alphabet are skipped.',
   inputType: 'string',
   outputType: 'bytes',
+  examples: [{ input: 'SGVsbG8sIHdvcmxkIQ==', args: {}, output: 'Hello, world!' }],
   args: [enumArg('alphabet', B64_ALPHABETS), stringArg('custom'), boolArg('strict')],
   run(text, args, ctx) {
     const [alphabet, pad] = b64Alphabet(args);
@@ -195,6 +197,7 @@ export const toBase32 = defineOp({
   description: 'Encode bytes as Base32 (RFC 4648 §6) or base32hex (§7).',
   inputType: 'bytes',
   outputType: 'string',
+  examples: [{ input: 'Hello', args: {}, output: 'JBSWY3DP' }],
   args: [enumArg('alphabet', Object.keys(B32)), boolArg('padding', true)],
   run(data, args, ctx) {
     const out = encodeRadix(data, Array.from(B32[args.text('alphabet')] ?? ''), 5, ctx);
@@ -213,6 +216,7 @@ export const fromBase32 = defineOp({
     'Decode Base32. Without `strict`, it is case-insensitive and skips other characters.',
   inputType: 'string',
   outputType: 'bytes',
+  examples: [{ input: 'JBSWY3DP', args: {}, output: 'Hello' }],
   args: [enumArg('alphabet', Object.keys(B32)), boolArg('strict')],
   run(text, args, ctx) {
     const index = indexOf(Array.from(B32[args.text('alphabet')] ?? ''));
@@ -274,6 +278,7 @@ export const toHex = defineOp({
   description: 'Write each byte as two hex digits, separated or prefixed by `delimiter`.',
   inputType: 'bytes',
   outputType: 'string',
+  examples: [{ input: 'Héllo', args: {}, output: '48 c3 a9 6c 6c 6f' }],
   args: [enumArg('delimiter', HEX_CHOICES, 'space'), enumArg('case', ['lower', 'upper'])],
   run(data, args, ctx) {
     ctx.check();
@@ -297,6 +302,7 @@ export const fromHex = defineOp({
   description: 'Read hex digit pairs. `auto` strips 0x and \\x prefixes, whitespace and ,:;-.',
   inputType: 'string',
   outputType: 'bytes',
+  examples: [{ input: '48 c3 a9 6c 6c 6f', args: {}, output: 'Héllo' }],
   args: [enumArg('delimiter', ['auto', ...HEX_CHOICES])],
   run(text, args, ctx) {
     ctx.check();
@@ -406,6 +412,8 @@ function radixOps(
   delimiters: readonly string[],
   toDescription: string,
   fromDescription: string,
+  /** "Hi" written in this radix, for the examples. */
+  hi: string,
 ): Operation[] {
   const { name } = RADIXES[base];
   return [
@@ -416,6 +424,7 @@ function radixOps(
       description: toDescription,
       inputType: 'bytes',
       outputType: 'string',
+      examples: [{ input: 'Hi', args: {}, output: hi }],
       args: [enumArg('delimiter', delimiters)],
       run: (data, args, ctx) => toRadix(data, base, args.text('delimiter'), ctx),
     }),
@@ -426,6 +435,7 @@ function radixOps(
       description: fromDescription,
       inputType: 'string',
       outputType: 'bytes',
+      examples: [{ input: hi, args: {}, output: 'Hi' }],
       args: [enumArg('delimiter', ['auto', ...delimiters])],
       run: (text, args, ctx) => fromRadix(text, base, args.text('delimiter'), ctx),
     }),
@@ -451,6 +461,7 @@ export const urlEncode = defineOp({
   description: 'Percent-encode with upper-case hex over the UTF-8 bytes of the input.',
   inputType: 'string',
   outputType: 'string',
+  examples: [{ input: 'café au lait', args: {}, output: 'caf%C3%A9%20au%20lait' }],
   args: [enumArg('mode', ['component', 'all', 'reserved-only'])],
   run(text, args, ctx) {
     ctx.check();
@@ -478,6 +489,7 @@ export const urlDecode = defineOp({
   description: 'Decode %XX escapes; malformed escapes stay as they are. Never fails.',
   inputType: 'string',
   outputType: 'string',
+  examples: [{ input: 'caf%C3%A9%20au%20lait', args: {}, output: 'café au lait' }],
   args: [boolArg('plus-as-space')],
   run(text, args, ctx) {
     ctx.check();
@@ -618,6 +630,10 @@ export const encodeText = defineOp({
   description: 'Encode text in a character encoding. Lone surrogates become U+FFFD; no BOM.',
   inputType: 'string',
   outputType: 'bytes',
+  examples: [
+    { input: 'café', args: { encoding: 'iso-8859-1' }, output: '63 61 66 e9' },
+    { input: 'é👋', args: { encoding: 'utf-16le' }, output: 'e9 00 3d d8 4b dc' },
+  ],
   args: TEXT_ARGS,
   run(input, args, ctx) {
     ctx.check();
@@ -658,6 +674,7 @@ export const decodeText = defineOp({
   description: 'Decode bytes from a character encoding. Ill-formed input becomes U+FFFD.',
   inputType: 'bytes',
   outputType: 'string',
+  examples: [{ input: 'café', args: {}, output: 'café' }],
   args: TEXT_ARGS,
   run(data, args, ctx) {
     const encoding = args.text('encoding');
@@ -712,6 +729,7 @@ export const ENCODING_OPS: readonly Operation[] = [
     'Write each byte as eight binary digits, separated by `delimiter`.',
     'Read bytes of 1-8 binary digits. `auto` splits on runs of whitespace and ,:; and ' +
       '`none` reads groups of exactly eight digits.',
+    '01001000 01101001',
   ),
   ...radixOps(
     8,
@@ -720,6 +738,7 @@ export const ENCODING_OPS: readonly Operation[] = [
     'Write each byte as three octal digits, separated by `delimiter`.',
     'Read bytes of 1-3 octal digits (at most 377). `auto` splits on runs of whitespace ' +
       'and ,:; and `none` reads groups of exactly three digits.',
+    '110 151',
   ),
   ...radixOps(
     10,
@@ -728,6 +747,7 @@ export const ENCODING_OPS: readonly Operation[] = [
     'Write each byte as a decimal number without padding, separated by `delimiter`.',
     'Read bytes of 1-3 decimal digits (at most 255). `auto` splits on runs of ' +
       'whitespace and ,:;',
+    '72 105',
   ),
   urlEncode,
   urlDecode,

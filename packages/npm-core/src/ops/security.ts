@@ -54,6 +54,14 @@ const detectInvisible = defineOp({
     '1-based, lines are LF-separated and columns count code points.',
   inputType: 'string',
   outputType: 'table',
+  examples: [
+    {
+      input: 'a\u200bb\u2060c',
+      args: {},
+      output:
+        'index\tcp\tname\tkind\tline\tcolumn\n1\tU+200B\tZERO WIDTH SPACE\tzero-width\t1\t2\n3\tU+2060\tWORD JOINER\tzero-width\t1\t4',
+    },
+  ],
   async run(text, _args, ctx): Promise<Table> {
     await ready('core', 'names');
     const rows: Cell[][] = [];
@@ -87,6 +95,7 @@ const removeBidiControls = defineOp({
     'U+2066..U+2069).',
   inputType: 'string',
   outputType: 'string',
+  examples: [{ input: 'abc\u202edef\u202c', args: {}, output: 'abcdef' }],
   async run(text) {
     await ready('core');
     return Array.from(text)
@@ -110,6 +119,13 @@ const detectConfusables = defineOp({
     'Without one, one row per code point that has a confusables.txt prototype.',
   inputType: 'string',
   outputType: 'table',
+  examples: [
+    {
+      input: 'p\u0430ypal',
+      args: {},
+      output: 'index\tcp\tname\tprototype\n1\tU+0430\tCYRILLIC SMALL LETTER A\tU+0061',
+    },
+  ],
   args: [stringArg('reference', '')],
   async run(text, args, ctx): Promise<Table> {
     await ready();
@@ -186,6 +202,10 @@ const scriptMixCheck = defineOp({
     'Identifier_Status=Allowed (including spaces and punctuation) give Unrestricted.',
   inputType: 'string',
   outputType: 'string',
+  examples: [
+    { input: 'paypal', args: {}, output: 'ASCII-Only' },
+    { input: 'p\u0430ypal', args: {}, output: 'Minimally Restrictive' },
+  ],
   args: [boolArg('profile', true)],
   async run(text, args, ctx) {
     ctx.check();

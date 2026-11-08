@@ -221,13 +221,18 @@ def parse_steps(raw: list[JsonValue], path: list[PathItem], depth: int) -> list[
     if len(raw) > MAX_STEPS_PER_LIST:
         raise _schema_error(path, f"A step list holds at most {MAX_STEPS_PER_LIST} steps.")
     steps = [_parse_step(item, [*path, i], depth) for i, item in enumerate(raw)]
+    check_jumps(steps, path)
+    return steps
+
+
+def check_jumps(steps: list[Step], path: list[PathItem]) -> None:
+    """Every jump in one step list must target a label in that list."""
     targets = jump_targets(steps, path)
     for i, step in enumerate(steps):
         if step.op in JUMP_OPS:
             to = cast(str, step.args["to"])
             if to not in targets:
                 raise _schema_error([*path, i], f"Jump target {to[:64]!r} does not exist.")
-    return steps
 
 
 def parse_recipe(raw: object) -> Recipe:
