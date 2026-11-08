@@ -6,6 +6,8 @@ run on a shared CI machine does not fail the job.
 """
 
 import statistics
+import subprocess
+import sys
 import time
 from collections.abc import Callable
 
@@ -51,3 +53,9 @@ def test_nfr_002_base64_round_trip_and_sha256_on_10_mib() -> None:
 def test_nfr_004_query_over_all_named_code_points(text: str) -> None:
     assert query(text).total > 0
     assert median_ms(lambda: query(text)) <= 400
+
+
+def test_nfr_005_cli_cold_start() -> None:
+    """``unichef version`` in a fresh interpreter, interpreter start-up included."""
+    argv = [sys.executable, "-m", "unichef", "version"]
+    assert median_ms(lambda: subprocess.run(argv, capture_output=True, check=True)) <= 150

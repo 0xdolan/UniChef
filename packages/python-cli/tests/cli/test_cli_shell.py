@@ -135,6 +135,39 @@ def test_process_version() -> None:
     assert result.stdout.startswith(b"unichef ")
 
 
+_PROBE = """
+import sys
+from unichef.__main__ import main
+sys.argv = ["unichef", *sys.argv[1:]]
+try:
+    main()
+except SystemExit:
+    pass
+data = sys.modules.get("unichef.unicode.data")
+loaded = data.load.cache_info().currsize if data else 0
+sys.stderr.write(f"\\nPROBE {loaded} {int('rich' in sys.modules)}\\n")
+"""
+
+
+@pytest.mark.parametrize(
+    ("argv", "rich"),
+    [
+        (["version"], 0),
+        (["version", "--format", "json"], 1),
+        (["--help"], 1),
+        (["op", "to-hex", "abc"], 1),
+        (["op", "sha2", "abc"], 1),
+    ],
+)
+def test_commands_that_need_no_ucd_do_not_load_it(argv: list[str], rich: int) -> None:
+    """NFR-005: the UCD loads lazily, and a bare ``version`` skips Rich as well."""
+    result = subprocess.run(
+        [sys.executable, "-c", _PROBE, *argv], capture_output=True, check=False, timeout=60
+    )
+    probe = result.stderr.decode().rsplit("PROBE ", 1)[1].split()
+    assert probe == ["0", str(rich)]
+
+
 def test_process_pipeline() -> None:
     result = unichef("op", "to-base64", stdin=b"foo")
     assert (result.returncode, result.stdout) == (0, b"Zm9v")
