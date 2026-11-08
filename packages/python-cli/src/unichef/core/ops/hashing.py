@@ -140,7 +140,7 @@ def _blake2(
     "Hashing",
     "bytes",
     "string",
-    (int_arg("size", 64, 1, 64), bytes_arg("key")),
+    (int_arg("size", 64, 1, 64), bytes_arg("key", secret=True)),
     examples=(
         Example(
             "abc", {"size": 32}, "bddd813c634239723171ef3fee98579b94964e3bb1cb3e427262c8c068d52319"
@@ -159,7 +159,7 @@ def blake2b(data: bytes, args: Args, ctx: OpContext) -> str:
     "Hashing",
     "bytes",
     "string",
-    (int_arg("size", 32, 1, 32), bytes_arg("key")),
+    (int_arg("size", 32, 1, 32), bytes_arg("key", secret=True)),
     examples=(
         Example("abc", {}, "508c5e8c327c14e2e1a72ba34eeb452f37458b209ed63a294d999b4c86675982"),
     ),
@@ -223,7 +223,7 @@ HMAC_HASHES = {
     "Hashing",
     "bytes",
     "string",
-    (enum_arg("hash", tuple(HMAC_HASHES)), bytes_arg("key")),
+    (enum_arg("hash", tuple(HMAC_HASHES)), bytes_arg("key", secret=True)),
     examples=(
         Example(
             "message",

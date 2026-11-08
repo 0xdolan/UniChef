@@ -4,7 +4,7 @@
 import { isUniChefError } from '@unichef/core';
 import { useEffect } from 'react';
 
-import { recipeDoc, stepsFromDoc } from '../state/recipe.js';
+import { clearRedacted, recipeDoc, redactSecrets, stepsFromDoc } from '../state/recipe.js';
 import { useApp } from '../state/store.js';
 import { ShareError, decodeState, encodeState } from './share.js';
 
@@ -19,8 +19,14 @@ export async function loadFromHash(hash: string): Promise<void> {
     const state = await decodeState(hash);
     if (state === null) return;
     if (state.recipe !== undefined) {
-      const steps = stepsFromDoc(state.recipe);
+      const { doc, redacted } = clearRedacted(state.recipe);
+      const steps = stepsFromDoc(doc);
       setSteps(steps);
+      if (redacted) {
+        // Nothing bakes with a missing key until the user enters it (SEC-007).
+        setAutoBake(false);
+        setNotice({ key: 'share.redacted', tone: 'warn' });
+      }
       if (steps.length > REVIEW_STEPS) {
         setAutoBake(false);
         setNotice({ key: 'share.review', vars: { count: steps.length }, tone: 'warn' });
@@ -36,11 +42,13 @@ export async function loadFromHash(hash: string): Promise<void> {
   }
 }
 
-/** The fragment for the current state: `#/` when there is nothing to share. */
+/** The fragment for the current state: `#/` when there is nothing to share. Keys and IVs
+ * are redacted unless the user opted in. */
 export async function currentFragment(): Promise<string> {
-  const { steps, input, inputFormat, notice, setNotice } = useApp.getState();
+  const { steps, input, inputFormat, shareSecrets, notice, setNotice } = useApp.getState();
   if (steps.length === 0 && input === '') return '#/';
-  const { fragment, inputOmitted } = await encodeState(recipeDoc(steps), input, inputFormat);
+  const shared = shareSecrets ? steps : redactSecrets(steps);
+  const { fragment, inputOmitted } = await encodeState(recipeDoc(shared), input, inputFormat);
   if (inputOmitted) setNotice({ key: 'share.inputOmitted', tone: 'warn' });
   else if (notice?.key === 'share.inputOmitted') setNotice(null);
   return fragment;
@@ -70,7 +78,8 @@ export function useUrlState(): void {
       if (
         state.steps === prev.steps &&
         state.input === prev.input &&
-        state.inputFormat === prev.inputFormat
+        state.inputFormat === prev.inputFormat &&
+        state.shareSecrets === prev.shareSecrets
       ) {
         return;
       }

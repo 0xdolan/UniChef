@@ -41,7 +41,12 @@ function argEntry(spec: ArgSpec): Record<string, unknown> {
         ...(spec.max === undefined ? {} : { maximum: spec.max }),
       };
     case 'bytes':
-      return { ...head, default: spec.default, encodings: [...spec.encodings] };
+      return {
+        ...head,
+        default: spec.default,
+        encodings: [...spec.encodings],
+        ...(spec.secret === true ? { secret: true } : {}),
+      };
     case 'regex':
       return { ...head, default: spec.default, flags: spec.flags };
     case 'string':

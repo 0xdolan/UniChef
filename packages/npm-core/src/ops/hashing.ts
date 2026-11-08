@@ -10,7 +10,7 @@ import { bytesToHex, type CHash } from '@noble/hashes/utils.js';
 
 import { UniChefError } from '../errors.js';
 import {
-  bytesArg,
+  secretArg,
   defineOp,
   enumArg,
   intArg,
@@ -192,7 +192,7 @@ export const blake2b = defineOp({
       output: 'bddd813c634239723171ef3fee98579b94964e3bb1cb3e427262c8c068d52319',
     },
   ],
-  args: [intArg('size', 64, 1, 64), bytesArg('key')],
+  args: [intArg('size', 64, 1, 64), secretArg('key')],
   run: (data, args, ctx) => blake2(blake2bHash, 64, data, args, ctx),
 });
 
@@ -212,7 +212,7 @@ export const blake2s = defineOp({
       output: '508c5e8c327c14e2e1a72ba34eeb452f37458b209ed63a294d999b4c86675982',
     },
   ],
-  args: [intArg('size', 32, 1, 32), bytesArg('key')],
+  args: [intArg('size', 32, 1, 32), secretArg('key')],
   run: (data, args, ctx) => blake2(blake2sHash, 32, data, args, ctx),
 });
 
@@ -321,7 +321,7 @@ export const hmac = defineOp({
       output: '8b5f48702995c1598c573db1e21866a9b825d4a794d169d7060a03605796360b',
     },
   ],
-  args: [enumArg('hash', [...HMAC_HASHES.keys()]), bytesArg('key')],
+  args: [enumArg('hash', [...HMAC_HASHES.keys()]), secretArg('key')],
   run(data, args, ctx) {
     const mac = hmacHash.create(pick(HMAC_HASHES, args, 'hash'), args.data('key'));
     return hexDigest(mac, data, ctx);

@@ -7,6 +7,7 @@ import { UniChefError } from '../errors.js';
 import {
   boolArg,
   bytesArg,
+  secretArg,
   defineOp,
   enumArg,
   intArg,
@@ -41,7 +42,7 @@ export const xor = defineOp({
   inputType: 'bytes',
   outputType: 'bytes',
   examples: [{ input: 'hello', args: { key: { encoding: 'hex', value: '20' } }, output: 'HELLO' }],
-  args: [bytesArg('key'), enumArg('scheme', ['standard', 'rolling'])],
+  args: [secretArg('key'), enumArg('scheme', ['standard', 'rolling'])],
   run(data, args, ctx) {
     const key = args.data('key');
     if (key.length === 0) {
@@ -131,9 +132,9 @@ export const atbash = defineOp({
 
 export const AES_MODES = ['cbc', 'ctr', 'gcm', 'ecb'];
 const AES_ARGS = [
-  bytesArg('key'),
+  secretArg('key'),
   enumArg('mode', AES_MODES),
-  bytesArg('iv'),
+  secretArg('iv'),
   enumArg('padding', ['pkcs7', 'none']),
   bytesArg('aad'),
 ];

@@ -49,6 +49,7 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
   - Steps reorder by drag and drop with a mouse, touch or the keyboard, with screen reader announcements.
   - The recipe, input and input format live in the URL fragment (`#/?r=…&i=…&f=…`, deflate-raw and Base64url), so a link restores the workbench. Inputs that would make the link longer than 32 KiB are left out, with a notice. A "Copy link" button copies the link.
   - Links with more than 20 steps open with auto-bake off and a prompt to review the recipe first. Damaged links show a notice and leave the workbench unchanged.
+  - Keys and IVs are left out of the URL and copied links as `"<redacted>"`, unless "Include keys and IVs in the link" is ticked (SEC-007). A redacted link opens with those fields empty, auto-bake off and a warning. Operations mark these arguments with `secret`, which `spec/ops.json` records.
 - **Web app**, third slice:
   - Character search (`#/chars?q=…`) with the query language. Plain words search names, and a loose exact name match (UAX44-LM2) links straight to its character. Results show in a virtualised grid.
   - Character detail (`#/char/U+0645`): every property, aliases, and each escape format with a copy button.

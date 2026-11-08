@@ -36,7 +36,8 @@
             "utf8",
             "base64",
             "latin1"
-          ]
+          ],
+          "secret": true
         },
         {
           "name": "mode",
@@ -58,7 +59,8 @@
             "utf8",
             "base64",
             "latin1"
-          ]
+          ],
+          "secret": true
         },
         {
           "name": "padding",
@@ -117,7 +119,8 @@
             "utf8",
             "base64",
             "latin1"
-          ]
+          ],
+          "secret": true
         },
         {
           "name": "mode",
@@ -139,7 +142,8 @@
             "utf8",
             "base64",
             "latin1"
-          ]
+          ],
+          "secret": true
         },
         {
           "name": "padding",
@@ -248,7 +252,8 @@
             "utf8",
             "base64",
             "latin1"
-          ]
+          ],
+          "secret": true
         }
       ],
       "examples": [
@@ -286,7 +291,8 @@
             "utf8",
             "base64",
             "latin1"
-          ]
+          ],
+          "secret": true
         }
       ],
       "examples": [
@@ -1022,7 +1028,8 @@
             "utf8",
             "base64",
             "latin1"
-          ]
+          ],
+          "secret": true
         }
       ],
       "examples": [
@@ -1204,7 +1211,8 @@
             "hex",
             "base64",
             "latin1"
-          ]
+          ],
+          "secret": true
         },
         {
           "name": "header",
@@ -1264,7 +1272,8 @@
             "hex",
             "base64",
             "latin1"
-          ]
+          ],
+          "secret": true
         }
       ],
       "examples": [
@@ -2319,7 +2328,8 @@
             "utf8",
             "base64",
             "latin1"
-          ]
+          ],
+          "secret": true
         },
         {
           "name": "scheme",

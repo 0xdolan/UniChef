@@ -23,7 +23,7 @@ import {
   type LoadedKey,
 } from './jwt-keys.js';
 import {
-  bytesArg,
+  secretArg,
   defineOp,
   enumArg,
   stringArg,
@@ -308,7 +308,7 @@ export const jwtSign = defineOp({
   ],
   args: [
     enumArg('algorithm', [...ALGORITHMS, 'none']),
-    bytesArg('key', '', KEY_ENCODINGS),
+    secretArg('key', KEY_ENCODINGS),
     stringArg('header', '', true),
   ],
   parity: 'roundtrip',
@@ -373,7 +373,7 @@ export const jwtVerify = defineOp({
       output: '{"sub":"zoe","name":"Zoë"}',
     },
   ],
-  args: [enumArg('algorithm', ALGORITHMS), bytesArg('key', '', KEY_ENCODINGS)],
+  args: [enumArg('algorithm', ALGORITHMS), secretArg('key', KEY_ENCODINGS)],
   async run(text, args, ctx) {
     const token = parseToken(text, ctx);
     const alg = args.text('algorithm');

@@ -39,6 +39,8 @@ export type ArgSpec =
       readonly name: string;
       readonly default: string;
       readonly encodings: readonly BytesEncoding[];
+      /** A key or IV, which the web app leaves out of share links (SEC-007). */
+      readonly secret?: boolean;
     }
   | {
       readonly kind: 'integer';
@@ -97,6 +99,12 @@ export const bytesArg = (
   def = '',
   encodings: readonly BytesEncoding[] = ALL_ENCODINGS,
 ): ArgSpec => ({ kind: 'bytes', name, default: def, encodings });
+
+/** A key or IV: a bytes argument that share links leave out (SEC-007). */
+export const secretArg = (
+  name: string,
+  encodings: readonly BytesEncoding[] = ALL_ENCODINGS,
+): ArgSpec => ({ kind: 'bytes', name, default: '', encodings, secret: true });
 
 export const regexArg = (name: string, def = '', flags = ''): ArgSpec => ({
   kind: 'regex',

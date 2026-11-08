@@ -46,6 +46,7 @@ class ArgSpec:
     maximum: int | None = None
     encodings: tuple[BytesEncoding, ...] = ("hex", "utf8", "base64", "latin1")
     multiline: bool = False
+    secret: bool = False
     flags: str = ""
     description: str = ""
 
@@ -72,8 +73,11 @@ def bytes_arg(
     name: str,
     default: str = "",
     encodings: tuple[BytesEncoding, ...] = ("hex", "utf8", "base64", "latin1"),
+    *,
+    secret: bool = False,
 ) -> ArgSpec:
-    return ArgSpec("bytes", name, default, encodings=encodings)
+    """`secret` marks a key or IV, which the web app leaves out of share links (SEC-007)."""
+    return ArgSpec("bytes", name, default, encodings=encodings, secret=secret)
 
 
 def regex_arg(name: str, default: str = "", flags: str = "") -> ArgSpec:
