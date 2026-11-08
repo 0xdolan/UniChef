@@ -3,12 +3,15 @@
 
 import { makeDish, runOperation, type Table } from '@unichef/core';
 import { ESCAPE_FORMATS } from '@unichef/core/ops/unicode.js';
+import { compileRegex, finditer } from '@unichef/core/regex/run.js';
 import { data, names, props, query, ready } from '@unichef/core/unicode/index.js';
 
 import type {
   BlockInfo,
   CharCell,
   CharDetail,
+  RegexMatch,
+  RegexRun,
   ScriptChars,
   ScriptInfo,
   SearchResult,
@@ -19,6 +22,8 @@ import type {
 const QUERY_SYNTAX = /[=<>~&|!()]/;
 const REGEX_SPECIAL = /[.^$*+?()[\]{}|\\/]/g;
 const SURROGATES: readonly [number, number] = [0xd800, 0xdfff];
+/** The regex lab lists this many matches at most. */
+export const MAX_MATCHES = 1000;
 
 /** Plain words search names, case-insensitively, as `unichef search` does. */
 export function expandQuery(text: string): string {
@@ -123,6 +128,53 @@ function search(text: string): SearchResult {
   };
 }
 
+/** Code-point offsets of ascending UTF-16 indices, in one pass over `text`. */
+function codePointOffsets(text: string, indices: readonly number[]): number[] {
+  const out: number[] = [];
+  let unit = 0;
+  let cp = 0;
+  for (const index of indices) {
+    while (unit < index) {
+      unit += (text.codePointAt(unit) ?? 0) > 0xffff ? 2 : 1;
+      cp++;
+    }
+    out.push(cp);
+  }
+  return out;
+}
+
+function regex(pattern: string, flags: string, text: string, timeoutMs: number): RegexRun {
+  const started = performance.now();
+  const compiled = compileRegex(pattern, flags);
+  const found = [];
+  let truncated = false;
+  for (const match of finditer(compiled, text, timeoutMs)) {
+    if (found.length === MAX_MATCHES) {
+      truncated = true;
+      break;
+    }
+    found.push(match);
+  }
+  // Matches do not overlap and come in order, so their edges are already ascending.
+  const edges = codePointOffsets(
+    text,
+    found.flatMap((m) => [m.start, m.end]),
+  );
+  const matches = found.map((m, i): RegexMatch => ({
+    at: [m.start, m.end],
+    cp: [edges[2 * i] ?? 0, edges[2 * i + 1] ?? 0],
+    groups: Array.from({ length: compiled.groups }, (_, g) => m.group(text, g + 1)),
+  }));
+  return {
+    js: compiled.translation.js,
+    named: [...compiled.translation.groupIndex],
+    groups: compiled.groups,
+    matches,
+    truncated,
+    ms: performance.now() - started,
+  };
+}
+
 /** Answer one request. Throws `UniChefError` for a bad query or an unknown script. */
 export async function handle<R extends UcdRequest>(request: R): Promise<UcdResult<R>>;
 export async function handle(request: UcdRequest): Promise<UcdResult<UcdRequest>> {
@@ -140,5 +192,7 @@ export async function handle(request: UcdRequest): Promise<UcdResult<UcdRequest>
       return cells(request.codePoints);
     case 'char':
       return char(request.cp);
+    case 'regex':
+      return regex(request.pattern, request.flags, request.text, request.timeoutMs);
   }
 }

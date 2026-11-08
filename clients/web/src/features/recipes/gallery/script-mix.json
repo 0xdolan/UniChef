@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "name": "Check for mixed scripts",
+  "description": "Report the UTS #39 restriction level of a name. Latin mixed with Cyrillic look-alikes is a classic spoofing sign.",
+  "steps": [
+    {
+      "op": "script-mix-check"
+    }
+  ]
+}

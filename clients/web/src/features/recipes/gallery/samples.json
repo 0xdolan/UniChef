@@ -1,0 +1,14 @@
+{
+  "base64-to-text": "SGVsbG8sIFpvw6sg8J+mhA==",
+  "code-points": "Zo\u00eb \u00b7 \u0633\u0644\u0627\u0645 \u00b7 \ud83e\udd84",
+  "confusable-skeleton": "p\u0430yp\u0430l",
+  "count-graphemes": "e\u0301\ud83d\udc69\u200d\ud83d\udc69\u200d\ud83d\udc67 \ud83c\uddee\ud83c\uddf6",
+  "escape-non-ascii": "Caf\u00e9 \u00b7 \ud83e\udd84",
+  "jwt-inspect": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IlpvXHUwMGViIiwiaWF0IjoxNzAwMDAwMDAwfQ.bm90LWEtcmVhbC1zaWduYXR1cmU",
+  "remove-bidi-controls": "invoice_\u202egpj.exe",
+  "reveal-invisible": "pay\u200bpal.com\u2060 \u00adlogin\ufeff",
+  "script-mix": "p\u0430ypal",
+  "sha256": "UniChef",
+  "slugify": "Cr\u00e8me Br\u00fbl\u00e9e: \u00dcn\u00efcode \u00c9dition!",
+  "utf8-bytes": "Zo\u00eb \u00b7 \u0633\u0644\u0627\u0645 \u00b7 \ud83e\udd84"
+}

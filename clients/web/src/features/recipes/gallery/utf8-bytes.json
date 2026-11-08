@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "name": "Show the UTF-8 bytes",
+  "description": "Encode text as UTF-8 and show each byte in hex.",
+  "steps": [
+    {
+      "op": "encode-text",
+      "args": {
+        "encoding": "utf-8"
+      }
+    },
+    {
+      "op": "to-hex",
+      "args": {
+        "delimiter": "space"
+      }
+    }
+  ]
+}

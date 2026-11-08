@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "name": "Remove bidi controls (Trojan Source)",
+  "description": "Strip the bidirectional formatting characters that can make code or file names read differently from how they run.",
+  "steps": [
+    {
+      "op": "remove-bidi-controls"
+    },
+    {
+      "op": "escape-unicode",
+      "args": {
+        "format": "backslash-u",
+        "scope": "non-ascii"
+      }
+    }
+  ]
+}

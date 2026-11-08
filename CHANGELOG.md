@@ -53,6 +53,11 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
   - Character detail (`#/char/U+0645`): every property, aliases, and each escape format with a copy button.
   - Blocks (`#/blocks`, `#/blocks/Basic_Latin`) with assigned counts, and scripts (`#/scripts`, `#/scripts/Arab`) by Script or Script_Extensions.
   - Lookups run in their own worker, so they never wait behind a bake. The pages load on first visit.
+- **Web app**, fourth slice:
+  - The regex lab (`#/regex?p=…&f=…`) runs the portable profile in a dedicated worker. It highlights matches, lists groups with UTF-16 and code-point offsets, and shows the translated pattern. A worker that overruns the timeout is terminated (`E_REGEX_TIMEOUT`).
+  - The playground (`#/playground/<op-id>`) builds a live demo for every operation from its metadata (FR-030), with a link that opens the step in the workbench.
+  - A recipe gallery (`#/recipes`) of 12 recipes with sample inputs, each opening in the workbench.
+  - The About page (`#/about`) shows the versions, the licence, data notices and every shipped npm package with its licence text, collected at build time.
 - **CI** (`.github/`):
   - Lint, typecheck, Python and TypeScript test matrices.
   - A parity job that checks both cores ran every vector case (`scripts/parity-report.py`).

@@ -12,7 +12,14 @@ export type UcdRequest =
   | { readonly kind: 'scripts' }
   | { readonly kind: 'script'; readonly code: string; readonly extensions: boolean }
   | { readonly kind: 'cells'; readonly codePoints: readonly number[] }
-  | { readonly kind: 'char'; readonly cp: number };
+  | { readonly kind: 'char'; readonly cp: number }
+  | {
+      readonly kind: 'regex';
+      readonly pattern: string;
+      readonly flags: string;
+      readonly text: string;
+      readonly timeoutMs: number;
+    };
 
 /** What a grid cell shows: the printable form from `analyse-characters`, name and category. */
 export interface CharCell {
@@ -62,6 +69,25 @@ export interface CharDetail {
   readonly escapes: readonly (readonly [string, string])[];
 }
 
+/** One regex match. `at` spans are UTF-16 indices for display; `cp` spans are code points. */
+export interface RegexMatch {
+  readonly at: readonly [number, number];
+  readonly cp: readonly [number, number];
+  /** Group 1 onwards; null for a group that did not take part. */
+  readonly groups: readonly (string | null)[];
+}
+
+export interface RegexRun {
+  /** The pattern in the JavaScript dialect the translator produced. */
+  readonly js: string;
+  /** Named groups and their numbers. */
+  readonly named: readonly (readonly [string, number])[];
+  readonly groups: number;
+  readonly matches: readonly RegexMatch[];
+  readonly truncated: boolean;
+  readonly ms: number;
+}
+
 export interface UcdResults {
   readonly search: SearchResult;
   readonly blocks: readonly BlockInfo[];
@@ -69,6 +95,7 @@ export interface UcdResults {
   readonly script: ScriptChars;
   readonly cells: readonly CharCell[];
   readonly char: CharDetail;
+  readonly regex: RegexRun;
 }
 
 export type UcdResult<R extends UcdRequest> = UcdResults[R['kind']];

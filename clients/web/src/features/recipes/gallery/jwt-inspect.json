@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "name": "Inspect a JWT",
+  "description": "Decode a JSON Web Token's header and payload without verifying it.",
+  "steps": [
+    {
+      "op": "jwt-decode"
+    }
+  ]
+}

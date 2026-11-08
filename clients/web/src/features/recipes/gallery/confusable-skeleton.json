@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "name": "Compare confusable skeletons",
+  "description": "Compare the input with a reference name by their UTS #39 skeletons.",
+  "steps": [
+    {
+      "op": "detect-confusables",
+      "args": {
+        "reference": "paypal"
+      }
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "name": "SHA-256 of UTF-8 text",
+  "description": "Hash the input's UTF-8 bytes with SHA-256.",
+  "steps": [
+    {
+      "op": "sha2",
+      "args": {
+        "size": "256"
+      }
+    }
+  ]
+}

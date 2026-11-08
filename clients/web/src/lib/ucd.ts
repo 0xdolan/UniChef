@@ -4,7 +4,7 @@
 import { createContext, useContext } from 'react';
 
 import type { WorkerError } from '../worker/protocol.js';
-import type { FromUcd, ToUcd, UcdRequest, UcdResult } from '../worker/ucd-protocol.js';
+import type { FromUcd, RegexRun, ToUcd, UcdRequest, UcdResult } from '../worker/ucd-protocol.js';
 
 export interface UcdService {
   call<R extends UcdRequest>(request: R): Promise<UcdResult<R>>;
@@ -52,14 +52,89 @@ export class UcdClient implements UcdService {
   }
 }
 
+const createWorker = (): Worker =>
+  new Worker(new URL('../worker/ucd.worker.ts', import.meta.url), { type: 'module' });
+
 let shared: UcdClient | null = null;
 
 /** The app's worker, started on the first character lookup. */
 function workerService(): UcdService {
-  shared ??= new UcdClient(
-    new Worker(new URL('../worker/ucd.worker.ts', import.meta.url), { type: 'module' }),
-  );
+  shared ??= new UcdClient(createWorker());
   return shared;
+}
+
+/** How long past its timeout a regex run may take before the watchdog stops it. */
+export const REGEX_GRACE_MS = 500;
+
+export type RegexRequest = Extract<UcdRequest, { kind: 'regex' }>;
+
+export interface RegexService {
+  run(request: RegexRequest): Promise<RegexRun>;
+  dispose(): void;
+}
+
+interface TerminablePort extends Port {
+  terminate(): void;
+}
+
+/**
+ * Runs regexes in a worker of their own. A JavaScript regex search cannot be interrupted,
+ * so the watchdog terminates the worker when a run overruns its timeout (PRD §4.9). A new
+ * run replaces the one in flight the same way, so it never queues behind a stuck search.
+ */
+export class RegexClient implements RegexService {
+  private worker: { port: TerminablePort; client: UcdClient } | null = null;
+  /** Ends the run in flight with an error. */
+  private abort: ((error: UcdError) => void) | null = null;
+
+  constructor(private readonly create: () => TerminablePort = createWorker) {}
+
+  run(request: RegexRequest): Promise<RegexRun> {
+    this.abort?.(
+      new UcdError({ code: 'E_CANCELLED', message: 'A newer run replaced this one.', path: [] }),
+    );
+    if (this.worker === null) {
+      const port = this.create();
+      this.worker = { port, client: new UcdClient(port) };
+    }
+    const { client } = this.worker;
+    return new Promise((resolve, reject) => {
+      const finish = (): boolean => {
+        if (this.abort !== abort) return false;
+        clearTimeout(timer);
+        this.abort = null;
+        return true;
+      };
+      const abort = (error: UcdError) => {
+        if (!finish()) return;
+        this.restart();
+        reject(error);
+      };
+      const timer = setTimeout(() => {
+        const message = `The regex ran longer than ${String(request.timeoutMs)} ms and was stopped.`;
+        abort(new UcdError({ code: 'E_REGEX_TIMEOUT', message, path: [] }));
+      }, request.timeoutMs + REGEX_GRACE_MS);
+      this.abort = abort;
+      client.call(request).then(
+        (result) => {
+          if (finish()) resolve(result);
+        },
+        (error: unknown) => {
+          if (finish()) reject(error instanceof Error ? error : new Error(String(error)));
+        },
+      );
+    });
+  }
+
+  dispose(): void {
+    this.abort?.(new UcdError({ code: 'E_CANCELLED', message: 'The page closed.', path: [] }));
+    this.restart();
+  }
+
+  private restart(): void {
+    this.worker?.port.terminate();
+    this.worker = null;
+  }
 }
 
 const lazy: UcdService = { call: (request) => workerService().call(request) };
