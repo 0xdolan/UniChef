@@ -4,6 +4,8 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
 
 ## [Unreleased]
 
+## [0.1.0-alpha.1] - 2026-11-08
+
 ### Added
 
 - **Python core** (`packages/python-cli`):
