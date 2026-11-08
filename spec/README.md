@@ -317,6 +317,44 @@ In `grapheme` mode, each row is one cluster:
 - The other per-code-point columns are joined with ` + `. A column that is empty for every code point stays empty.
 - The flags of the cluster are merged.
 
+### `filter-by-property` (string → string)
+
+| Arg | Values | Default | Notes |
+|---|---|---|---|
+| `property` | `general_category` \| `script` \| `script_extensions` \| `block` | `general_category` | |
+| `value` | string | `L` | One or more comma-separated values. Whitespace around each value is ignored. |
+| `mode` | `keep` \| `remove` | `keep` | |
+
+- Values match their UCD names and aliases loosely, as in `\p{…}`: `L`, `Letter`, `Latn`, `basic-latin`.
+- A General_Category group (`L`, `M`, `N`, `P`, `S`, `Z`, `C`, `LC`) covers its members.
+- `script_extensions` takes Script values. A code point matches when the value is in its Script_Extensions set.
+- An unknown value, an empty value or an empty item in the list (`L,,N`) is `E_ARG_INVALID`.
+
+### `show-bidi-classes` (string → table)
+
+Columns are `index`, `cp`, `char`, `bidi`, `bidi_name` and `mirrored`. There is one row per code point.
+
+- `index` is the 0-based code-point offset.
+- `bidi` is the short Bidi_Class value (`L`, `RLO`) and `bidi_name` its long name (`Left_To_Right`).
+- `mirrored` is the Bidi_Mirrored property, as a boolean.
+- `char` follows the `analyse-characters` rules.
+
+### `utf8-explain` (bytes → table)
+
+Columns are `offset`, `byte`, `bits`, `role`, `cp`, `char` and `note`. There is one row per byte.
+
+- `byte` is two upper-case hex digits and `bits` is eight binary digits.
+- `role` is `ASCII`, `lead of N` (N = 2, 3 or 4), `continuation` or `invalid`.
+- `cp` and `char` are set on the first byte of each sequence and empty on its continuation bytes. `char` follows the `analyse-characters` rules.
+- Ill-formed input is split into maximal subparts (Unicode §3.9, Table 3-7), as in every UTF-8 decode. The first byte of each subpart gets `cp` U+FFFD, `char` U+FFFD and a `note`:
+  - `overlong encoding`: C0 or C1, or E0/F0 followed by a continuation byte that is too low.
+  - `surrogate code point`: ED followed by A0–BF.
+  - `above U+10FFFF`: F4 followed by 90–BF.
+  - `byte never used in UTF-8`: F5–FF.
+  - `unexpected continuation byte`: 80–BF with no lead byte.
+  - `incomplete sequence`: a valid lead and prefix, cut short by the end of input or a byte that does not fit.
+- The other bytes of a subpart are plain `continuation` rows.
+
 ## Operation arguments (security category)
 
 ### `detect-invisible` (string → table)

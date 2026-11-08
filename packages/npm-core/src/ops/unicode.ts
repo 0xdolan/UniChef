@@ -11,7 +11,15 @@ import * as utf8 from '../dish/utf8.js';
 import { UniChefError } from '../errors.js';
 import * as caseMap from '../unicode/case.js';
 import * as confusables from '../unicode/confusables.js';
-import { ready, toCodePoints } from '../unicode/data.js';
+import {
+  contains,
+  fromCodePoints,
+  load,
+  ready,
+  toCodePoints,
+  union,
+  type Ranges,
+} from '../unicode/data.js';
 import * as names from '../unicode/names.js';
 import * as normalize from '../unicode/normalize.js';
 import * as props from '../unicode/props.js';
@@ -595,6 +603,228 @@ const analyseCharacters = defineOp({
   },
 });
 
+const FILTER_PROPERTIES: Readonly<Record<string, string>> = {
+  general_category: 'gc',
+  script: 'sc',
+  script_extensions: 'scx',
+  block: 'blk',
+};
+
+function filterRanges(prop: string, spec: string): Ranges {
+  const values = spec.split(',').map((v) => v.trim());
+  if (values.some((v) => v === '')) {
+    throw new UniChefError('E_ARG_INVALID', 'value must list one or more property values.');
+  }
+  const lookup = prop === 'scx' ? 'sc' : prop; // Script_Extensions takes Script values
+  return union(...values.map((v) => props.rangesFor(prop, props.resolveValue(lookup, v))));
+}
+
+const filterByProperty = defineOp({
+  id: 'filter-by-property',
+  name: 'Filter by Property',
+  category: 'Unicode',
+  description:
+    'Keep or remove the code points whose property has one of the comma-separated ' +
+    '`value`s. Names and aliases match loosely (`L`, `Letter`, `Latn`, `Basic Latin`); ' +
+    'a General_Category group such as `L` covers its members.',
+  inputType: 'string',
+  outputType: 'string',
+  examples: [
+    { input: 'Zoë, 42 € 😀', args: {}, output: 'Zoë' },
+    {
+      input: 'Привет, world',
+      args: { property: 'script', value: 'Cyrillic, Common', mode: 'keep' },
+      output: 'Привет, ',
+    },
+  ],
+  args: [
+    enumArg('property', Object.keys(FILTER_PROPERTIES)),
+    stringArg('value', 'L'),
+    enumArg('mode', ['keep', 'remove']),
+  ],
+  async run(text, args, ctx): Promise<string> {
+    await ready();
+    const prop = FILTER_PROPERTIES[args.text('property')] ?? 'gc';
+    const ranges = filterRanges(prop, args.text('value'));
+    const keep = args.text('mode') === 'keep';
+    const out: number[] = [];
+    toCodePoints(text).forEach((cp, i) => {
+      if (i % 4096 === 0) {
+        ctx.check();
+      }
+      if (contains(ranges, cp) === keep) {
+        out.push(cp);
+      }
+    });
+    return fromCodePoints(out);
+  },
+});
+
+const BIDI_COLUMNS = ['index', 'cp', 'char', 'bidi', 'bidi_name', 'mirrored'];
+
+/** Stored value to its longest alias (the long name in PropertyValueAliases.txt). */
+function longValues(prop: string): Map<string, string> {
+  const best = new Map<string, string>();
+  for (const [alias, stored] of Object.entries(load('core').aliases.values[prop] ?? {})) {
+    if (alias.length > (best.get(stored) ?? '').length) {
+      best.set(stored, alias);
+    }
+  }
+  return best;
+}
+
+const showBidiClasses = defineOp({
+  id: 'show-bidi-classes',
+  name: 'Show Bidi Classes',
+  category: 'Unicode',
+  description:
+    'One row per code point with its Bidi_Class (short and long name) and whether it is ' +
+    'Bidi_Mirrored. Controls and invisible characters are shown by name.',
+  inputType: 'string',
+  outputType: 'table',
+  examples: [
+    {
+      input: 'a‮ب(1',
+      args: {},
+      output:
+        'index\tcp\tchar\tbidi\tbidi_name\tmirrored\n' +
+        '0\tU+0061\ta\tL\tLeft_To_Right\tfalse\n' +
+        '1\tU+202E\t⟨RIGHT-TO-LEFT OVERRIDE⟩\tRLO\tRight_To_Left_Override\tfalse\n' +
+        '2\tU+0628\tب\tAL\tArabic_Letter\tfalse\n' +
+        '3\tU+0028\t(\tON\tOther_Neutral\ttrue\n' +
+        '4\tU+0031\t1\tEN\tEuropean_Number\tfalse',
+    },
+  ],
+  args: [],
+  async run(text, _args, ctx): Promise<Table> {
+    await ready();
+    const longNames = longValues('bc');
+    const rows: Cell[][] = [];
+    toCodePoints(text).forEach((cp, i) => {
+      if (i % 4096 === 0) {
+        ctx.check();
+      }
+      const bc = String(props.get('bc', cp));
+      rows.push([
+        i,
+        `U+${hex(cp)}`,
+        display(cp),
+        bc,
+        longNames.get(bc) ?? bc,
+        props.has('Bidi_Mirrored', cp),
+      ]);
+    });
+    return { columns: BIDI_COLUMNS, rows };
+  },
+});
+
+const UTF8_COLUMNS = ['offset', 'byte', 'bits', 'role', 'cp', 'char', 'note'];
+const CONT: readonly [number, number] = [0x80, 0xbf];
+const MAX_SEQUENCE = 4;
+
+/** Lead bytes (Unicode Table 3-7): sequence length and allowed second-byte range. */
+const LEADS = new Map<number, readonly [number, readonly [number, number]]>();
+for (let b = 0xc2; b < 0xe0; b++) LEADS.set(b, [2, CONT]);
+for (let b = 0xe1; b < 0xf0; b++) LEADS.set(b, [3, CONT]);
+for (let b = 0xf1; b < 0xf4; b++) LEADS.set(b, [4, CONT]);
+LEADS.set(0xe0, [3, [0xa0, 0xbf]]);
+LEADS.set(0xed, [3, [0x80, 0x9f]]);
+LEADS.set(0xf0, [4, [0x90, 0xbf]]);
+LEADS.set(0xf4, [4, [0x80, 0x8f]]);
+
+const SECOND_BYTE_NOTES = new Map([
+  [0xe0, 'overlong encoding'],
+  [0xf0, 'overlong encoding'],
+  [0xed, 'surrogate code point'],
+  [0xf4, 'above U+10FFFF'],
+]);
+
+const isCont = (b: number): boolean => b >= CONT[0] && b <= CONT[1];
+
+function invalidNote(b: number): string {
+  if (isCont(b)) {
+    return 'unexpected continuation byte';
+  }
+  return b === 0xc0 || b === 0xc1 ? 'overlong encoding' : 'byte never used in UTF-8';
+}
+
+const utf8Explain = defineOp({
+  id: 'utf8-explain',
+  name: 'UTF-8 Explain',
+  category: 'Unicode',
+  description:
+    'One row per byte: its bits, its role in the UTF-8 structure and, on the first byte ' +
+    'of each sequence, the code point it encodes. Ill-formed input decodes to U+FFFD by ' +
+    'maximal subparts, as everywhere else, and `note` says why.',
+  inputType: 'bytes',
+  outputType: 'table',
+  examples: [
+    {
+      input: 'é€',
+      args: {},
+      output:
+        'offset\tbyte\tbits\trole\tcp\tchar\tnote\n' +
+        '0\tC3\t11000011\tlead of 2\tU+00E9\té\t\n' +
+        '1\tA9\t10101001\tcontinuation\t\t\t\n' +
+        '2\tE2\t11100010\tlead of 3\tU+20AC\t€\t\n' +
+        '3\t82\t10000010\tcontinuation\t\t\t\n' +
+        '4\tAC\t10101100\tcontinuation\t\t\t',
+    },
+  ],
+  args: [],
+  async run(raw, _args, ctx): Promise<Table> {
+    await ready();
+    const rows: Cell[][] = [];
+    const row = (i: number, role: string, cp = '', char = '', note = ''): void => {
+      const b = raw[i] ?? 0;
+      rows.push([i, hex(b, 2), b.toString(2).padStart(8, '0'), role, cp, char, note]);
+    };
+    const n = raw.length;
+    let i = 0;
+    while (i < n) {
+      if (i % 4096 < MAX_SEQUENCE) {
+        ctx.check(); // a sequence may step over a multiple of 4096
+      }
+      const b = raw[i] ?? 0;
+      if (b < ASCII_END) {
+        row(i, 'ASCII', `U+${hex(b)}`, display(b));
+        i += 1;
+        continue;
+      }
+      const lead = LEADS.get(b);
+      if (lead === undefined) {
+        row(i, isCont(b) ? 'continuation' : 'invalid', 'U+FFFD', utf8.REPLACEMENT, invalidNote(b));
+        i += 1;
+        continue;
+      }
+      const [length, [low, high]] = lead;
+      let k = 1;
+      while (k < length && i + k < n) {
+        const [lo, hi] = k === 1 ? [low, high] : CONT;
+        const next = raw[i + k] ?? 0;
+        if (next < lo || next > hi) {
+          break;
+        }
+        k += 1;
+      }
+      if (k === length) {
+        const code = utf8.decode(raw.subarray(i, i + k)).codePointAt(0) ?? 0;
+        row(i, `lead of ${String(length)}`, `U+${hex(code)}`, display(code));
+      } else {
+        // A continuation byte outside the lead's second-byte range: see Table 3-7.
+        const special = k === 1 && i + 1 < n && isCont(raw[i + 1] ?? 0);
+        const note = special ? (SECOND_BYTE_NOTES.get(b) ?? '') : 'incomplete sequence';
+        row(i, `lead of ${String(length)}`, 'U+FFFD', utf8.REPLACEMENT, note);
+      }
+      for (let j = i + 1; j < i + k; j++) {
+        row(j, 'continuation');
+      }
+      i += k;
+    }
+    return { columns: UTF8_COLUMNS, rows };
+  },
+});
+
 export const UNICODE_OPS: readonly Operation[] = [
   escapeUnicode,
   unescapeUnicode,
@@ -606,4 +836,7 @@ export const UNICODE_OPS: readonly Operation[] = [
   fromCodePointsOp,
   count,
   analyseCharacters,
+  filterByProperty,
+  showBidiClasses,
+  utf8Explain,
 ];

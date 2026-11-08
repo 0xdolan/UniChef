@@ -53,7 +53,7 @@ All three files are gzipped JSON objects with a `version` key. Code points are i
 | Key | Content |
 |---|---|
 | `props` | Enumerated properties, each `{default, values, ranges}`: `gc`, `sc`, `blk`, `age`, `bc`, `ccc`, `ea`, `lb`, `GCB`, `InCB`, `NFC_QC`, `NFD_QC`, `NFKC_QC`, `NFKD_QC`. |
-| `binary` | 63 binary properties from `PropList.txt`, `DerivedCoreProperties.txt` and `emoji-data.txt`, as `[start, length, …]`. `Extended_Pictographic` is stored as `ExtPict`. |
+| `binary` | 64 binary properties, as `[start, length, …]`: those in `PropList.txt`, `DerivedCoreProperties.txt` and `emoji-data.txt`, plus `Bidi_Mirrored` from `UnicodeData.txt`. `Extended_Pictographic` is stored as `ExtPict`. |
 | `scx` | `{sets, ranges}`. Each `sets` entry is a sorted list of short script codes. A code point outside every range uses its `sc` value. |
 | `decomp` | `{cp: [tag, [cps]]}`. `tag` is `""` for canonical decompositions, otherwise for example `"<compat>"` or `"<font>"`. Hangul syllables are algorithmic and not listed. |
 | `compExcl` | `Full_Composition_Exclusion` as `[start, length, …]`. |

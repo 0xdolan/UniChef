@@ -20,7 +20,7 @@ from unichef.core.registry import (
     operation,
     string_arg,
 )
-from unichef.unicode import case, confusables, names, normalize, props, segment, utf8
+from unichef.unicode import case, confusables, data, names, normalize, props, segment, utf8
 
 _ASCII_END = 0x80
 _SPACE = 0x20
@@ -518,3 +518,200 @@ def analyse_characters(text: str, args: Args, ctx: OpContext) -> Table:
         rows.append(tuple(merged[c] for c in ANALYSIS_COLUMNS))
         start += len(cps)
     return Table(ANALYSIS_COLUMNS, tuple(rows))
+
+
+# ---------------------------------------------------------------------------
+# Beta: filter-by-property, show-bidi-classes, utf8-explain
+
+_FILTER_PROPERTIES = {
+    "general_category": "gc",
+    "script": "sc",
+    "script_extensions": "scx",
+    "block": "blk",
+}
+
+
+def _filter_ranges(prop: str, spec: str) -> list[tuple[int, int]]:
+    values = [v.strip() for v in spec.split(",")]
+    if not any(values) or not all(values):
+        raise UniChefError("E_ARG_INVALID", "value must list one or more property values.")
+    lookup = "sc" if prop == "scx" else prop  # Script_Extensions takes Script values
+    return data.union(*(props.ranges_for(prop, props.resolve_value(lookup, v)) for v in values))
+
+
+@operation(
+    "filter-by-property",
+    "Filter by Property",
+    "Unicode",
+    "string",
+    "string",
+    (
+        enum_arg("property", tuple(_FILTER_PROPERTIES)),
+        string_arg("value", "L"),
+        enum_arg("mode", ("keep", "remove")),
+    ),
+    examples=(
+        Example("Zoë, 42 € 😀", {}, "Zoë"),
+        Example(
+            "Привет, world",
+            {"property": "script", "value": "Cyrillic, Common", "mode": "keep"},
+            "Привет, ",
+        ),
+    ),
+)
+def filter_by_property(text: str, args: Args, ctx: OpContext) -> str:
+    """Keep or remove the code points whose property has one of the comma-separated
+    `value`s. Names and aliases match loosely (`L`, `Letter`, `Latn`, `Basic Latin`);
+    a General_Category group such as `L` covers its members."""
+    ranges = _filter_ranges(_FILTER_PROPERTIES[args.text("property")], args.text("value"))
+    keep = args.text("mode") == "keep"
+    out: list[str] = []
+    for i, ch in enumerate(text):
+        if i % 4096 == 0:
+            ctx.check()
+        if data.contains(ranges, ord(ch)) == keep:
+            out.append(ch)
+    return "".join(out)
+
+
+BIDI_COLUMNS = ("index", "cp", "char", "bidi", "bidi_name", "mirrored")
+
+
+def _long_values(prop: str) -> dict[str, str]:
+    """Stored value to its longest alias (the long name in PropertyValueAliases.txt)."""
+    best: dict[str, str] = {}
+    for alias, stored in data.load("core")["aliases"]["values"][prop].items():
+        if len(alias) > len(best.get(stored, "")):
+            best[stored] = alias
+    return best
+
+
+@operation(
+    "show-bidi-classes",
+    "Show Bidi Classes",
+    "Unicode",
+    "string",
+    "table",
+    examples=(
+        Example(
+            "a\u202eب(1",
+            {},
+            "index\tcp\tchar\tbidi\tbidi_name\tmirrored\n"
+            "0\tU+0061\ta\tL\tLeft_To_Right\tfalse\n"
+            "1\tU+202E\t⟨RIGHT-TO-LEFT OVERRIDE⟩\tRLO\tRight_To_Left_Override\tfalse\n"
+            "2\tU+0628\tب\tAL\tArabic_Letter\tfalse\n"
+            "3\tU+0028\t(\tON\tOther_Neutral\ttrue\n"
+            "4\tU+0031\t1\tEN\tEuropean_Number\tfalse",
+        ),
+    ),
+)
+def show_bidi_classes(text: str, _args: Args, ctx: OpContext) -> Table:
+    """One row per code point with its Bidi_Class (short and long name) and whether it is
+    Bidi_Mirrored. Controls and invisible characters are shown by name."""
+    long_names = _long_values("bc")
+    rows: list[tuple[Cell, ...]] = []
+    for i, ch in enumerate(text):
+        if i % 4096 == 0:
+            ctx.check()
+        cp = ord(ch)
+        bc = str(props.get("bc", cp))
+        mirrored = props.has("Bidi_Mirrored", cp)
+        rows.append((i, f"U+{cp:04X}", _display(cp), bc, long_names.get(bc, bc), mirrored))
+    return Table(BIDI_COLUMNS, tuple(rows))
+
+
+UTF8_COLUMNS = ("offset", "byte", "bits", "role", "cp", "char", "note")
+_CONT = (0x80, 0xBF)
+# Lead bytes (Unicode Table 3-7): sequence length and allowed second-byte range.
+_LEADS: dict[int, tuple[int, tuple[int, int]]] = {
+    **dict.fromkeys(range(0xC2, 0xE0), (2, _CONT)),
+    0xE0: (3, (0xA0, 0xBF)),
+    **dict.fromkeys(range(0xE1, 0xF0), (3, _CONT)),
+    0xED: (3, (0x80, 0x9F)),
+    0xF0: (4, (0x90, 0xBF)),
+    **dict.fromkeys(range(0xF1, 0xF4), (4, _CONT)),
+    0xF4: (4, (0x80, 0x8F)),
+}
+_SECOND_BYTE_NOTES = {
+    0xE0: "overlong encoding",
+    0xF0: "overlong encoding",
+    0xED: "surrogate code point",
+    0xF4: "above U+10FFFF",
+}
+_MAX_SEQUENCE = 4
+
+
+def _is_cont(b: int) -> bool:
+    return _CONT[0] <= b <= _CONT[1]
+
+
+def _invalid_note(b: int) -> str:
+    if _is_cont(b):
+        return "unexpected continuation byte"
+    if b in {0xC0, 0xC1}:
+        return "overlong encoding"
+    return "byte never used in UTF-8"
+
+
+@operation(
+    "utf8-explain",
+    "UTF-8 Explain",
+    "Unicode",
+    "bytes",
+    "table",
+    examples=(
+        Example(
+            "é€",
+            {},
+            "offset\tbyte\tbits\trole\tcp\tchar\tnote\n"
+            "0\tC3\t11000011\tlead of 2\tU+00E9\té\t\n"
+            "1\tA9\t10101001\tcontinuation\t\t\t\n"
+            "2\tE2\t11100010\tlead of 3\tU+20AC\t€\t\n"
+            "3\t82\t10000010\tcontinuation\t\t\t\n"
+            "4\tAC\t10101100\tcontinuation\t\t\t",
+        ),
+    ),
+)
+def utf8_explain(raw: bytes, _args: Args, ctx: OpContext) -> Table:
+    """One row per byte: its bits, its role in the UTF-8 structure and, on the first byte
+    of each sequence, the code point it encodes. Ill-formed input decodes to U+FFFD by
+    maximal subparts, as everywhere else, and `note` says why."""
+    rows: list[tuple[Cell, ...]] = []
+
+    def row(i: int, role: str, cp: str = "", char: str = "", note: str = "") -> None:
+        rows.append((i, f"{raw[i]:02X}", f"{raw[i]:08b}", role, cp, char, note))
+
+    i, n = 0, len(raw)
+    while i < n:
+        if i % 4096 < _MAX_SEQUENCE:  # a sequence may step over a multiple of 4096
+            ctx.check()
+        b = raw[i]
+        if b < _ASCII_END:
+            row(i, "ASCII", f"U+{b:04X}", _display(b))
+            i += 1
+            continue
+        lead = _LEADS.get(b)
+        if lead is None:
+            role = "continuation" if _is_cont(b) else "invalid"
+            row(i, role, "U+FFFD", "\ufffd", _invalid_note(b))
+            i += 1
+            continue
+        length, (low, high) = lead
+        k = 1
+        while k < length and i + k < n:
+            lo, hi = (low, high) if k == 1 else _CONT
+            if not lo <= raw[i + k] <= hi:
+                break
+            k += 1
+        if k == length:
+            code = ord(utf8.decode(raw[i : i + k]))
+            row(i, f"lead of {length}", f"U+{code:04X}", _display(code))
+        else:
+            # A continuation byte outside the lead's second-byte range: see Table 3-7.
+            special = k == 1 and i + 1 < n and _is_cont(raw[i + 1])
+            note = _SECOND_BYTE_NOTES[b] if special else "incomplete sequence"
+            row(i, f"lead of {length}", "U+FFFD", "\ufffd", note)
+        for j in range(i + 1, i + k):
+            row(j, "continuation")
+        i += k
+    return Table(UTF8_COLUMNS, tuple(rows))

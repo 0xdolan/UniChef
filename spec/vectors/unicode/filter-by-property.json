@@ -1,0 +1,226 @@
+{
+  "op": "filter-by-property",
+  "cases": [
+    {
+      "name": "default keeps letters",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Zoë, 42 € 😀"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Zoë"
+      }
+    },
+    {
+      "name": "remove letters",
+      "args": {
+        "mode": "remove"
+      },
+      "input": {
+        "type": "string",
+        "text": "Zoë, 42 € 😀"
+      },
+      "expected": {
+        "type": "string",
+        "text": ", 42 € 😀"
+      }
+    },
+    {
+      "name": "long gc name",
+      "args": {
+        "value": "Decimal_Number"
+      },
+      "input": {
+        "type": "string",
+        "text": "a1 b2"
+      },
+      "expected": {
+        "type": "string",
+        "text": "12"
+      }
+    },
+    {
+      "name": "several gc values",
+      "args": {
+        "value": "Nd, Zs"
+      },
+      "input": {
+        "type": "string",
+        "text": "a 1٢\t"
+      },
+      "expected": {
+        "type": "string",
+        "text": " 1٢"
+      }
+    },
+    {
+      "name": "script by alias",
+      "args": {
+        "property": "script",
+        "value": "Cyrl"
+      },
+      "input": {
+        "type": "string",
+        "text": "Zoë Привет"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Привет"
+      }
+    },
+    {
+      "name": "script list",
+      "args": {
+        "property": "script",
+        "value": "Cyrillic, Common"
+      },
+      "input": {
+        "type": "string",
+        "text": "Привет, world"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Привет, "
+      }
+    },
+    {
+      "name": "script_extensions includes shared marks",
+      "args": {
+        "property": "script_extensions",
+        "value": "Arab"
+      },
+      "input": {
+        "type": "string",
+        "text": "ب،1"
+      },
+      "expected": {
+        "type": "string",
+        "text": "ب،"
+      }
+    },
+    {
+      "name": "script excludes shared marks",
+      "args": {
+        "property": "script",
+        "value": "Arab"
+      },
+      "input": {
+        "type": "string",
+        "text": "ب،1"
+      },
+      "expected": {
+        "type": "string",
+        "text": "ب"
+      }
+    },
+    {
+      "name": "block loose name",
+      "args": {
+        "property": "block",
+        "value": "basic-latin"
+      },
+      "input": {
+        "type": "string",
+        "text": "aé€"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a"
+      }
+    },
+    {
+      "name": "astral code points",
+      "args": {
+        "value": "So"
+      },
+      "input": {
+        "type": "string",
+        "text": "x😀y"
+      },
+      "expected": {
+        "type": "string",
+        "text": "😀"
+      }
+    },
+    {
+      "name": "combining mark kept separately",
+      "args": {
+        "value": "M"
+      },
+      "input": {
+        "type": "string",
+        "text": "é"
+      },
+      "expected": {
+        "type": "string",
+        "text": "́"
+      }
+    },
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "unknown value",
+      "args": {
+        "value": "Nope"
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "empty list item",
+      "args": {
+        "value": "L,,N"
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "empty value",
+      "args": {
+        "value": " "
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "unknown property",
+      "args": {
+        "property": "age"
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

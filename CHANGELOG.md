@@ -27,8 +27,9 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
   - Crypto: XOR, ROT13, ROT47, Atbash and AES (CBC, CTR, GCM, ECB).
   - Beta crypto (#7): `vigenere-encode`/`decode`, `pbkdf2` (PBKDF2-HMAC with the HMAC hash list, up to 10 000 000 iterations, `W_INSECURE` below 100 000) and `generate-random-bytes` (seeded by the recipe `seed`, so recipe vectors can check it), with shared vectors and CyberChef import of Vigenère and Pseudo-Random Number Generator.
   - Beta data (#7): `json-beautify`, `json-minify`, `json-to-csv` and `csv-to-json` (RFC 4180), `parse-url` (RFC 3986 parts, not decoded) and `parse-query-string` (form encoding, UTF-8), with shared vectors and CyberChef import of JSON Beautify, JSON Minify, CSV to JSON and JSON to CSV.
+  - Beta Unicode (#7): `filter-by-property` (keep or remove by General_Category, Script, Script_Extensions or Block), `show-bidi-classes` (Bidi_Class and Bidi_Mirrored per code point) and `utf8-explain` (each byte's role, with the reason for every ill-formed subpart), with shared vectors. The core UCD artefact now carries Bidi_Mirrored, which `\p{Bidi_Mirrored}` can also match.
   - JWT: `jwt-decode`, `jwt-sign` and `jwt-verify` with the HS, RS, PS, ES and EdDSA algorithms.
-  - Every operation except `jump`, `conditional-jump` and `generate-random-bytes` has examples (90 in all) in both cores and in `spec/ops.json`. Tests in each core run them and check the stated output.
+  - Every operation except `jump`, `conditional-jump` and `generate-random-bytes` has examples (94 in all) in both cores and in `spec/ops.json`. Tests in each core run them and check the stated output.
 - **Python CLI** (`unichef`, `python -m unichef`):
   - The full command tree, help tree and themed output with the exact palette.
   - JSON output that follows the output envelope schema.
