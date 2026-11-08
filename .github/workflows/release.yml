@@ -113,6 +113,9 @@ jobs:
           orig=$(scripts/deb/make-orig.sh --ref HEAD --out "$RUNNER_TEMP")
           mkdir -p dist/source
           mv "$orig" "dist/source/unichef-$(tr -d '[:space:]' < VERSION).tar.gz"
+      # sbom-action writes output-file but does not create its directory.
+      - name: SBOM directory
+        run: mkdir -p dist/sbom
       - name: SBOM (Python)
         uses: anchore/sbom-action@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c # v0.24.3
         with:
