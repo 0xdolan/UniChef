@@ -1,0 +1,28 @@
+{
+  "recipe": {
+    "version": 1,
+    "name": "Random bytes: bad length",
+    "description": "length must be at least 1.",
+    "seed": "000102030405060708090a0b0c0d0e0f",
+    "steps": [
+      {
+        "op": "generate-random-bytes",
+        "args": {
+          "length": 0
+        }
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "Random bytes: bad length",
+      "input": {
+        "type": "string",
+        "text": "x"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

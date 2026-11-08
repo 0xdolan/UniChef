@@ -1,11 +1,14 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Crypto ops (PRD §3.8): XOR, classical ciphers and AES."""
+"""Crypto ops (PRD §3.8): XOR, classical ciphers, AES, PBKDF2 and random bytes."""
+
+import hashlib
 
 from cryptography.exceptions import InvalidTag
 from cryptography.hazmat.primitives import padding as sym_padding
 from cryptography.hazmat.primitives.ciphers import Cipher, CipherContext, algorithms, modes
 
 from unichef.core.errors import UniChefError
+from unichef.core.ops.hashing import HMAC_HASHES
 from unichef.core.registry import (
     Args,
     Example,
@@ -15,6 +18,7 @@ from unichef.core.registry import (
     enum_arg,
     int_arg,
     operation,
+    string_arg,
 )
 
 _CHUNK = 1 << 20
@@ -128,6 +132,132 @@ _ATBASH = str.maketrans(
 def atbash(text: str, _args: Args, _ctx: OpContext) -> str:
     """Mirror the ASCII alphabet (A<->Z, case kept). Other characters are unchanged."""
     return text.translate(_ATBASH)
+
+
+# ---------------------------------------------------------------------------
+# Vigenère
+
+_VIGENERE_CHECK_EVERY = 64 * 1024
+
+
+def _vigenere(text: str, args: Args, ctx: OpContext, sign: int) -> str:
+    key = args.text("key")
+    if not key:
+        raise UniChefError("E_ARG_INVALID", "The Vigenère key is empty.")
+    if not (key.isascii() and key.isalpha()):
+        raise UniChefError("E_ARG_INVALID", "The Vigenère key must contain only letters A-Z.")
+    shifts = [sign * (ord(ch) - ord("a")) for ch in key.lower()]
+    out: list[str] = []
+    used = 0
+    for i, ch in enumerate(text):
+        if i % _VIGENERE_CHECK_EVERY == 0:
+            ctx.check()
+        if "a" <= ch <= "z":
+            base = ord("a")
+        elif "A" <= ch <= "Z":
+            base = ord("A")
+        else:
+            out.append(ch)
+            continue
+        out.append(chr(base + (ord(ch) - base + shifts[used % len(shifts)]) % 26))
+        used += 1
+    return "".join(out)
+
+
+@operation(
+    "vigenere-encode",
+    "Vigenère Encode",
+    "Crypto",
+    "string",
+    "string",
+    (string_arg("key"),),
+    examples=(Example("Hello, World!", {"key": "key"}, "Rijvs, Uyvjn!"),),
+)
+def vigenere_encode(text: str, args: Args, ctx: OpContext) -> str:
+    """Shift each ASCII letter forward by the next letter of `key` (A=0, case kept). Other
+    characters are unchanged and do not use up a key letter."""
+    return _vigenere(text, args, ctx, 1)
+
+
+@operation(
+    "vigenere-decode",
+    "Vigenère Decode",
+    "Crypto",
+    "string",
+    "string",
+    (string_arg("key"),),
+    examples=(Example("Rijvs, Uyvjn!", {"key": "key"}, "Hello, World!"),),
+)
+def vigenere_decode(text: str, args: Args, ctx: OpContext) -> str:
+    """Undo `vigenere-encode`: shift each ASCII letter back by the next letter of `key`."""
+    return _vigenere(text, args, ctx, -1)
+
+
+# ---------------------------------------------------------------------------
+# PBKDF2 and random bytes
+
+PBKDF2_MAX_ITERATIONS = 10_000_000
+_PBKDF2_WEAK = 100_000
+_PBKDF2_MAX_LENGTH = 1024
+RANDOM_MAX = 64 * 1024 * 1024
+_RANDOM_CHUNK = 64 * 1024  # a multiple of 32, so seeded output does not depend on chunking
+
+
+@operation(
+    "pbkdf2",
+    "PBKDF2",
+    "Crypto",
+    "bytes",
+    "string",
+    (
+        enum_arg("hash", tuple(HMAC_HASHES)),
+        int_arg("iterations", _PBKDF2_WEAK, 1, PBKDF2_MAX_ITERATIONS),
+        bytes_arg("salt"),
+        int_arg("length", 32, 1, _PBKDF2_MAX_LENGTH),
+    ),
+    examples=(
+        Example(
+            "password",
+            {"salt": {"encoding": "utf8", "value": "salt"}},
+            "0394a2ede332c9a13eb82e9b24631604c31df978b4e2f0fbd2c549944f9d79a5",
+        ),
+    ),
+)
+def pbkdf2(data: bytes, args: Args, ctx: OpContext) -> str:
+    """Derive a `length`-byte key from the input password (PBKDF2-HMAC, RFC 8018) and
+    return it as hex. Warns W_INSECURE below 100 000 iterations."""
+    iterations = args.integer("iterations")
+    if iterations < _PBKDF2_WEAK:
+        ctx.warn("W_INSECURE", f"{iterations} PBKDF2 iterations is too few to slow down guessing.")
+    ctx.check()
+    key = hashlib.pbkdf2_hmac(
+        HMAC_HASHES[args.text("hash")],
+        data,
+        args.data("salt"),
+        iterations,
+        args.integer("length"),
+    )
+    return key.hex()
+
+
+@operation(
+    "generate-random-bytes",
+    "Generate Random Bytes",
+    "Crypto",
+    "bytes",
+    "bytes",
+    (int_arg("length", 32, 1, RANDOM_MAX),),
+    parity="nondeterministic",
+)
+def generate_random_bytes(_data: bytes, args: Args, ctx: OpContext) -> bytes:
+    """Replace the input with `length` random bytes: from the platform's secure random
+    generator, or, when the recipe has a `seed`, from SHA-256 in counter mode."""
+    length = args.integer("length")
+    out = bytearray()
+    while len(out) < length:
+        ctx.check()
+        out += ctx.rng.random_bytes(min(_RANDOM_CHUNK, length - len(out)))
+    return bytes(out)
 
 
 # ---------------------------------------------------------------------------

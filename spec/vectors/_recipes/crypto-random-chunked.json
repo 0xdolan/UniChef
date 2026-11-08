@@ -1,0 +1,35 @@
+{
+  "recipe": {
+    "version": 1,
+    "name": "Seeded random bytes across chunks",
+    "description": "70 000 bytes span two 64 KiB chunks; the output must not depend on chunking.",
+    "seed": "000102030405060708090a0b0c0d0e0f",
+    "steps": [
+      {
+        "op": "generate-random-bytes",
+        "args": {
+          "length": 70000
+        }
+      },
+      {
+        "op": "sha2",
+        "args": {
+          "size": "256"
+        }
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "Seeded random bytes across chunks",
+      "input": {
+        "type": "bytes",
+        "hex": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": "1ddef88a62aceeb227dded991aeff2db51bfd1b398021a9e4a5ad5378af3f0f4"
+      }
+    }
+  ]
+}

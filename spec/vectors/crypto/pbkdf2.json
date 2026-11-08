@@ -1,0 +1,332 @@
+{
+  "op": "pbkdf2",
+  "cases": [
+    {
+      "name": "RFC 6070: c=1",
+      "args": {
+        "hash": "sha1",
+        "iterations": 1,
+        "salt": {
+          "encoding": "utf8",
+          "value": "salt"
+        },
+        "length": 20
+      },
+      "input": {
+        "type": "string",
+        "text": "password"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0c60c80f961f0e71f3a9b524af6012062fe037a6"
+      },
+      "warnings": [
+        "W_INSECURE"
+      ]
+    },
+    {
+      "name": "RFC 6070: c=2",
+      "args": {
+        "hash": "sha1",
+        "iterations": 2,
+        "salt": {
+          "encoding": "utf8",
+          "value": "salt"
+        },
+        "length": 20
+      },
+      "input": {
+        "type": "string",
+        "text": "password"
+      },
+      "expected": {
+        "type": "string",
+        "text": "ea6c014dc72d6f8ccd1ed92ace1d41f0d8de8957"
+      },
+      "warnings": [
+        "W_INSECURE"
+      ]
+    },
+    {
+      "name": "RFC 6070: c=4096",
+      "args": {
+        "hash": "sha1",
+        "iterations": 4096,
+        "salt": {
+          "encoding": "utf8",
+          "value": "salt"
+        },
+        "length": 20
+      },
+      "input": {
+        "type": "string",
+        "text": "password"
+      },
+      "expected": {
+        "type": "string",
+        "text": "4b007901b765489abead49d926f721d065a429c1"
+      },
+      "warnings": [
+        "W_INSECURE"
+      ]
+    },
+    {
+      "name": "RFC 6070: long password and salt, 25 bytes",
+      "args": {
+        "hash": "sha1",
+        "iterations": 4096,
+        "salt": {
+          "encoding": "utf8",
+          "value": "saltSALTsaltSALTsaltSALTsaltSALTsalt"
+        },
+        "length": 25
+      },
+      "input": {
+        "type": "string",
+        "text": "passwordPASSWORDpassword"
+      },
+      "expected": {
+        "type": "string",
+        "text": "3d2eec4fe41c849b80c8d83662c0e44a8b291a964cf2f07038"
+      },
+      "warnings": [
+        "W_INSECURE"
+      ]
+    },
+    {
+      "name": "RFC 6070: NUL bytes in password and salt",
+      "args": {
+        "hash": "sha1",
+        "iterations": 4096,
+        "salt": {
+          "encoding": "hex",
+          "value": "7361006c74"
+        },
+        "length": 16
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "7061737300776f7264"
+      },
+      "expected": {
+        "type": "string",
+        "text": "56fa6aa75548099dcc37d7f03425e0c3"
+      },
+      "warnings": [
+        "W_INSECURE"
+      ]
+    },
+    {
+      "name": "RFC 7914 §11: SHA-256, 64 bytes",
+      "args": {
+        "hash": "sha256",
+        "iterations": 1,
+        "salt": {
+          "encoding": "utf8",
+          "value": "salt"
+        },
+        "length": 64
+      },
+      "input": {
+        "type": "string",
+        "text": "passwd"
+      },
+      "expected": {
+        "type": "string",
+        "text": "55ac046e56e3089fec1691c22544b605f94185216dde0465e68b9d57c20dacbc49ca9cccf179b645991664b39d77ef317c71b845b1e30bd509112041d3a19783"
+      },
+      "warnings": [
+        "W_INSECURE"
+      ]
+    },
+    {
+      "name": "defaults: SHA-256, 100 000 iterations, 32 bytes, no warning",
+      "args": {
+        "salt": {
+          "encoding": "utf8",
+          "value": "salt"
+        }
+      },
+      "input": {
+        "type": "string",
+        "text": "password"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0394a2ede332c9a13eb82e9b24631604c31df978b4e2f0fbd2c549944f9d79a5"
+      }
+    },
+    {
+      "name": "SHA-512, 1000 iterations",
+      "args": {
+        "hash": "sha512",
+        "iterations": 1000,
+        "salt": {
+          "encoding": "utf8",
+          "value": "NaCl"
+        },
+        "length": 64
+      },
+      "input": {
+        "type": "string",
+        "text": "pässwörd"
+      },
+      "expected": {
+        "type": "string",
+        "text": "c79c0f8201c99a2a8df6a9ed9e9f854772732f37756cbf2106b746f62a385b3fa394a168b66bf8740a0b661e1acac96a369f27256dd38d3c4b47d35df4db7e5e"
+      },
+      "warnings": [
+        "W_INSECURE"
+      ]
+    },
+    {
+      "name": "SHA3-256",
+      "args": {
+        "hash": "sha3-256",
+        "iterations": 10,
+        "salt": {
+          "encoding": "utf8",
+          "value": "salt"
+        },
+        "length": 40
+      },
+      "input": {
+        "type": "string",
+        "text": "password"
+      },
+      "expected": {
+        "type": "string",
+        "text": "30a385e047f4ef78f3f9a1713b0dd4117b75f418fc1f90b0649c38b6f0dacac4268c5c59fdc57a26"
+      },
+      "warnings": [
+        "W_INSECURE"
+      ]
+    },
+    {
+      "name": "MD5",
+      "args": {
+        "hash": "md5",
+        "iterations": 10,
+        "salt": {
+          "encoding": "utf8",
+          "value": "salt"
+        },
+        "length": 16
+      },
+      "input": {
+        "type": "string",
+        "text": "password"
+      },
+      "expected": {
+        "type": "string",
+        "text": "d77d26f3ce166f9dc607a5de3a00718c"
+      },
+      "warnings": [
+        "W_INSECURE"
+      ]
+    },
+    {
+      "name": "empty password and salt",
+      "args": {
+        "iterations": 1,
+        "length": 32
+      },
+      "input": {
+        "type": "bytes",
+        "hex": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": "f7ce0b653d2d72a4108cf5abe912ffdd777616dbbb27a70e8204f3ae2d0f6fad"
+      },
+      "warnings": [
+        "W_INSECURE"
+      ]
+    },
+    {
+      "name": "error: zero iterations",
+      "args": {
+        "iterations": 0,
+        "salt": {
+          "encoding": "utf8",
+          "value": "salt"
+        }
+      },
+      "input": {
+        "type": "string",
+        "text": "password"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "error: more than 10 000 000 iterations",
+      "args": {
+        "iterations": 10000001,
+        "salt": {
+          "encoding": "utf8",
+          "value": "salt"
+        }
+      },
+      "input": {
+        "type": "string",
+        "text": "password"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "error: zero length",
+      "args": {
+        "length": 0,
+        "salt": {
+          "encoding": "utf8",
+          "value": "salt"
+        }
+      },
+      "input": {
+        "type": "string",
+        "text": "password"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "error: unknown hash",
+      "args": {
+        "hash": "whirlpool",
+        "salt": {
+          "encoding": "utf8",
+          "value": "salt"
+        }
+      },
+      "input": {
+        "type": "string",
+        "text": "password"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "error: bad hex salt",
+      "args": {
+        "iterations": 1,
+        "salt": {
+          "encoding": "hex",
+          "value": "zz"
+        }
+      },
+      "input": {
+        "type": "string",
+        "text": "password"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

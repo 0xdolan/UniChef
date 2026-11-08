@@ -1394,6 +1394,107 @@
       "error": {
         "code": "E_ARG_INVALID"
       }
+    },
+    {
+      "name": "Vigenère Encode",
+      "input": "[{\"op\": \"Vigenère Encode\", \"args\": [\"LEMON\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "vigenere-encode",
+            "args": {
+              "key": "LEMON"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Vigenère Decode",
+      "input": "[{\"op\": \"Vigenère Decode\", \"args\": [\"lemon\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "vigenere-decode",
+            "args": {
+              "key": "lemon"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Pseudo-Random Number Generator, defaults",
+      "input": "[{\"op\": \"Pseudo-Random Number Generator\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "generate-random-bytes"
+          },
+          {
+            "op": "to-hex",
+            "args": {
+              "delimiter": "none"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Pseudo-Random Number Generator, raw",
+      "input": "[{\"op\": \"Pseudo-Random Number Generator\", \"args\": [16, \"Raw\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "generate-random-bytes",
+            "args": {
+              "length": 16
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Pseudo-Random Number Generator, hex",
+      "input": "[{\"op\": \"Pseudo-Random Number Generator\", \"args\": [64, \"Hex\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "generate-random-bytes",
+            "args": {
+              "length": 64
+            }
+          },
+          {
+            "op": "to-hex",
+            "args": {
+              "delimiter": "none"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "error: Pseudo-Random Number Generator as an integer",
+      "input": "[{\"op\": \"Pseudo-Random Number Generator\", \"args\": [32, \"Integer\"]}]",
+      "error": {
+        "code": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "error: Derive PBKDF2 key (the passphrase is an argument, not the input)",
+      "input": "[{\"op\": \"Derive PBKDF2 key\", \"args\": [{\"option\": \"UTF8\", \"string\": \"pw\"}, 128, 1, \"SHA1\", {\"option\": \"Hex\", \"string\": \"\"}]}]",
+      "error": {
+        "code": "E_OP_UNKNOWN",
+        "detail": {
+          "operations": ["Derive PBKDF2 key"]
+        }
+      }
     }
   ]
 }

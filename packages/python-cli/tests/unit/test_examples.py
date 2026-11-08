@@ -24,8 +24,10 @@ def example_text(dish: Dish) -> str:
 
 @pytest.mark.parametrize("op", all_operations(), ids=lambda op: op.id)
 def test_examples(op: Operation) -> None:
-    # A jump needs a label in the same step list, so it cannot run as a one-step example.
-    assert bool(op.examples) != (op.id in JUMP_OPS)
+    # A jump needs a label in the same step list, so it cannot run as a one-step example,
+    # and a random op has no fixed output to state (seeded recipe vectors cover it).
+    exempt = op.id in JUMP_OPS or op.parity == "nondeterministic"
+    assert bool(op.examples) != exempt
     for example in op.examples:
         result = run_operation(op.id, dict(example.args), Dish("string", example.input))
         assert example_text(result.dish) == example.output

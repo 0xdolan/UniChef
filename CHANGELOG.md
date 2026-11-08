@@ -25,8 +25,9 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
   - Security: `detect-invisible`, `remove-bidi-controls`, `detect-confusables` and `script-mix-check`.
   - Hashing: MD5, SHA-1, SHA-2, SHA-3, SHAKE, BLAKE2b, BLAKE2s, CRC-32, Adler-32 and HMAC.
   - Crypto: XOR, ROT13, ROT47, Atbash and AES (CBC, CTR, GCM, ECB).
+  - Beta crypto (#7): `vigenere-encode`/`decode`, `pbkdf2` (PBKDF2-HMAC with the HMAC hash list, up to 10 000 000 iterations, `W_INSECURE` below 100 000) and `generate-random-bytes` (seeded by the recipe `seed`, so recipe vectors can check it), with shared vectors and CyberChef import of Vigenère and Pseudo-Random Number Generator.
   - JWT: `jwt-decode`, `jwt-sign` and `jwt-verify` with the HS, RS, PS, ES and EdDSA algorithms.
-  - Every operation except `jump` and `conditional-jump` has examples (81 in all) in both cores and in `spec/ops.json`. Tests in each core run them and check the stated output.
+  - Every operation except `jump`, `conditional-jump` and `generate-random-bytes` has examples (84 in all) in both cores and in `spec/ops.json`. Tests in each core run them and check the stated output.
 - **Python CLI** (`unichef`, `python -m unichef`):
   - The full command tree, help tree and themed output with the exact palette.
   - JSON output that follows the output envelope schema.
