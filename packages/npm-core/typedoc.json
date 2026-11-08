@@ -1,0 +1,12 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "name": "@unichef/core",
+  "entryPoints": ["src/index.ts", "src/ops/registry.ts", "src/unicode/index.ts"],
+  "tsconfig": "tsconfig.json",
+  "out": "../../clients/web/dist/api",
+  "readme": "README.md",
+  "excludePrivate": true,
+  "excludeInternal": true,
+  "treatWarningsAsErrors": true,
+  "githubPages": false
+}

@@ -6,17 +6,19 @@
  */
 
 import { UniChefError } from '../errors.js';
+import type { PlainJson } from '../ops/types.js';
 import MAP from './cyberchef-map.json' with { type: 'json' };
 
-type Plain = null | boolean | number | string | Plain[] | { [key: string]: Plain };
+/** A JSON value as `JSON.parse` returns it: the shape of CyberChef arguments. */
+export type Plain = null | boolean | number | string | Plain[] | { [key: string]: Plain };
 type PlainObject = Record<string, Plain>;
 
 /** One CyberChef step as parsed: `{op, args, disabled?, breakpoint?}`. */
 export interface CyberChefStep {
   readonly op: string;
-  readonly args?: Plain;
-  readonly disabled?: Plain;
-  readonly breakpoint?: Plain;
+  readonly args?: PlainJson;
+  readonly disabled?: PlainJson;
+  readonly breakpoint?: PlainJson;
 }
 
 interface Translator {
@@ -373,7 +375,8 @@ function apply(name: string, index: number, tr: Translator, raw: Plain, step: St
 
 function translate(cc: CyberChefStep, entry: Entry): PlainObject[] {
   const name = cc.op;
-  const values = cc.args ?? [];
+  // Array.isArray widens a readonly array to any[]; the parser builds these mutable anyway.
+  const values = (cc.args ?? []) as Plain;
   if (!Array.isArray(values)) {
     throw new UniChefError('E_RECIPE_SCHEMA', `${name}: "args" must be an array.`);
   }
@@ -398,7 +401,10 @@ function translate(cc: CyberChefStep, entry: Entry): PlainObject[] {
 
 /** Translate CyberChef recipe text into a UniChef recipe document. Unmapped operations raise
  * E_OP_UNKNOWN naming every one of them, so nothing is dropped silently. */
-export function importCyberChef(text: string): { version: 1; steps: PlainObject[] } {
+export function importCyberChef(text: string): {
+  version: 1;
+  steps: Record<string, PlainJson>[];
+} {
   const steps = parseCyberChef(text);
   const unknown = [...new Set(steps.map((s) => s.op).filter((op) => !has(OPERATIONS, op)))].sort();
   if (unknown.length > 0) {

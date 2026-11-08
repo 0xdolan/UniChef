@@ -71,6 +71,8 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
   - The TypeScript core exports the importer (`importCyberChef`, `parseCyberChef`, `cyberChefOperations`), a port of the Python one with the same map.
   - `spec/cyberchef-vectors.json` holds 98 shared import cases, 23 of them errors, which both cores run.
   - The Python importer now accepts only plain decimal numbers in chef format, so `inf` and `1_0` are rejected as they are in TypeScript.
+- **GitHub Pages** (`.github/workflows/pages.yml`): on a push to `main` or a manual run, builds the web app and the `@unichef/core` API reference (TypeDoc, at `api/`) and deploys them to https://0xdolan.github.io/unichef/. `make pages` builds the same site locally. The service worker leaves `api/` alone.
+- The core exports the types its public signatures use (`DishValues`, `BytesEncoding`, `Example`, `NestedRunner`, `PlainJson`, `WarnFn`), so they show in the API reference.
 - **CI** (`.github/`):
   - Lint, typecheck, Python and TypeScript test matrices.
   - A parity job that checks both cores ran every vector case (`scripts/parity-report.py`).

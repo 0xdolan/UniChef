@@ -22,12 +22,13 @@ export {
   type Dish,
   type DishType,
   type DishValue,
+  type DishValues,
   type JsonObject,
   type JsonValue,
   type Table,
 } from './dish/types.js';
 export { canCoerce, coerce, parseInteger, tableToTsv } from './dish/coerce.js';
-export { formatFloat, fromPlain, jsonDumps, jsonLoads, toPlain } from './dish/json.js';
+export { formatFloat, fromPlain, jsonDumps, jsonLoads, toPlain, type WarnFn } from './dish/json.js';
 export { decode as utf8Decode, encode as utf8Encode, scrub } from './dish/utf8.js';
 export { allOperations, getOperation, hasOperation } from './ops/registry.js';
 export {
@@ -38,10 +39,14 @@ export {
   Rng,
   type ArgSpec,
   type ArgValue,
+  type BytesEncoding,
   type Category,
+  type Example,
   type Limits,
+  type NestedRunner,
   type Operation,
   type ParityClass,
+  type PlainJson,
   type Step,
 } from './ops/types.js';
 export { parseRecipe, resolveArgs, type Recipe } from './recipe/validate.js';
