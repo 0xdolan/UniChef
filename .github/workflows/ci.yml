@@ -59,7 +59,7 @@ jobs:
       - name: ruff format --check
         working-directory: ${{ env.PY_DIR }}
         run: uv run --locked ruff format --check .
-      - name: ESLint
+      - name: ESLint, zero warnings (NFR-030, SEC-003)
         run: pnpm -r lint
       - name: Prettier
         run: pnpm fmt:check
@@ -89,7 +89,7 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - name: mypy --strict
+      - name: mypy --strict (NFR-030)
         working-directory: ${{ env.PY_DIR }}
         run: uv run --locked mypy
       - name: tsc --noEmit
@@ -101,7 +101,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-24.04, ubuntu-24.04-arm, macos-latest, windows-latest]
+        # Linux and macOS on x86-64 and arm64, Windows on x86-64 (NFR-021). Windows arm64
+        # waits for cryptography to publish win_arm64 wheels.
+        os:
+          - ubuntu-24.04
+          - ubuntu-24.04-arm
+          - macos-latest
+          - macos-15-intel
+          - windows-latest
         py: ['3.12', '3.13', '3.14']
     defaults:
       run:
@@ -112,7 +119,8 @@ jobs:
         with:
           enable-cache: true
       - run: uv sync --locked --all-groups --python ${{ matrix.py }}
-      - run: uv run --locked pytest
+      - name: pytest with >= 90 % line coverage (NFR-021, NFR-030)
+        run: uv run --locked pytest
       # The budgets are set for a 4-core x86-64 machine, like the hosted Ubuntu runner.
       - name: Performance budgets (NFR-002, NFR-004)
         if: matrix.os == 'ubuntu-24.04'
@@ -133,7 +141,8 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm -r test
+      - name: vitest, core coverage >= 90 % (NFR-022, NFR-030)
+        run: pnpm -r test
       - name: Performance budgets (NFR-002, NFR-004)
         run: pnpm --filter @unichef/core perf
 
@@ -276,7 +285,7 @@ jobs:
       - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter web build
-      - name: Chromium, Firefox and WebKit, with axe checks
+      - name: Chromium, Firefox and WebKit, with axe checks (NFR-020)
         run: pnpm --filter web e2e
       - name: Upload the report
         if: ${{ !cancelled() }}
@@ -302,20 +311,21 @@ jobs:
         run: docker build --target dev -f docker/Dev.Dockerfile .
 
   deb:
-    name: deb (${{ matrix.series }})
+    name: deb (${{ matrix.image }})
     strategy:
       fail-fast: false
       matrix:
-        # Every series in debian/ppa-series.txt (checked against UBUNTU_SERIES by
-        # version-consistency): build the .deb, run lintian and the autopkgtest (PRD §8.5).
-        series: ['24.04', '26.04']
+        # Every Ubuntu series in debian/ppa-series.txt (checked against UBUNTU_SERIES by
+        # version-consistency), plus Debian 13 from the source package (NFR-023): build the
+        # .deb, run lintian and the autopkgtest (PRD §8.5).
+        image: ['ubuntu:24.04', 'ubuntu:26.04', 'debian:trixie']
     runs-on: ubuntu-24.04
-    container: ubuntu:${{ matrix.series }}
+    container: ${{ matrix.image }}
     steps:
       - name: Install git
         run: apt-get update -qq && apt-get install -y -qq --no-install-recommends ca-certificates git
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - name: Build, lintian and autopkgtest with system packages only (REL-010)
+      - name: Build, lintian and autopkgtest with system packages only (REL-010, NFR-023)
         run: scripts/deb/check.sh

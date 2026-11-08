@@ -49,6 +49,15 @@ def test_scan_fail_on(cli: Cli, tree: Path) -> None:
     assert doc["error"]["detail"]["findings"]["rows"]
 
 
+def test_scan_fails_ci_on_bidi_and_invisible(cli: Cli, tree: Path) -> None:
+    """FR-004: `unichef scan --fail-on bidi,invisible src/` exits 6 with JSON findings."""
+    result = cli("scan", "--fail-on", "bidi,invisible", str(tree / "src"), "--format", "json")
+    assert result.code == 6
+    findings = result.json()["error"]["detail"]["findings"]
+    kind = findings["columns"].index("kind")
+    assert {row[kind] for row in findings["rows"]} >= {"bidi", "invisible"}
+
+
 def test_scan_fail_on_table_still_prints(cli: Cli, tree: Path) -> None:
     result = cli("scan", str(tree), "--fail-on", "bidi,invisible", "--format", "table", env=PLAIN)
     assert result.code == 6

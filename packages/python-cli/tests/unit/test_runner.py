@@ -79,6 +79,7 @@ def test_validation_errors(raw: object, code: str) -> None:
 
 
 def test_nesting_depth_limit() -> None:
+    """SEC-005: recursion depth is bounded."""
     steps: list[dict[str, Any]] = [{"op": "to-hex"}]
     for _ in range(7):
         steps = [{"op": "sub-recipe", "args": {"steps": steps}}]
@@ -110,6 +111,7 @@ def test_error_path_in_nested_arg() -> None:
 
 
 def test_step_limit() -> None:
+    """SEC-005: the number of executed steps is bounded."""
     raw = recipe(
         {"op": "label", "args": {"name": "top"}}, {"op": "jump", "args": {"to": "top", "max": 1000}}
     )
@@ -119,6 +121,7 @@ def test_step_limit() -> None:
 
 
 def test_input_and_output_limits() -> None:
+    """SEC-005: input and output sizes are bounded."""
     with pytest.raises(UniChefError) as info:
         bake(parse_recipe(recipe()), Dish.of_bytes(b"abc"), limits=Limits(max_input_size=2))
     assert info.value.code == "E_LIMIT"

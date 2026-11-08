@@ -96,7 +96,7 @@ describe('parsing', () => {
     '\\G',
     '\\N',
     '\\p{bc=L}',
-  ])('does not support %j', (pattern) => {
+  ])('does not support %j (SEC-004)', (pattern) => {
     expect(error(pattern)).toBe('E_REGEX_UNSUPPORTED');
   });
 
@@ -251,7 +251,7 @@ describe('matching', () => {
     for (let i = 0; i < 3 * run.CLOCK_EVERY; i++) expect(test('a')).toBe(true);
   });
 
-  it('raises E_REGEX_TIMEOUT once a search has overrun', () => {
+  it('raises E_REGEX_TIMEOUT once a search has overrun (SEC-004)', () => {
     // A JavaScript search cannot be stopped, so the input is only moderately catastrophic.
     const slow = run.compileRegex('(a|aa)+b');
     const text = 'a'.repeat(30);

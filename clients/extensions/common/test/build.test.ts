@@ -44,7 +44,7 @@ describe('manifests', () => {
     expect(typeof m['version_name']).toBe('string');
   });
 
-  it.each(TARGETS)('%s asks for no page access (FR-007)', (target) => {
+  it.each(TARGETS)('%s asks for no page access (FR-007, SEC-001)', (target) => {
     const m = manifestFor(target);
     expect(m['host_permissions']).toBeUndefined();
     expect(m['content_scripts']).toBeUndefined();

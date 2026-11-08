@@ -3,7 +3,7 @@
 import { makeDish } from '@unichef/core';
 import { describe, expect, it } from 'vitest';
 
-import { InputError, dishText, inputDish } from '../src/lib/format.js';
+import { InputError, dishText, inputDish, visible } from '../src/lib/format.js';
 
 describe('dishText', () => {
   it('shows valid UTF-8 bytes as text and anything else as hex', () => {
@@ -36,5 +36,18 @@ describe('inputDish', () => {
   it('reads Base64', () => {
     expect(inputDish('aGk=', 'base64')).toEqual(makeDish('bytes', new Uint8Array([0x68, 0x69])));
     expect(() => inputDish('a', 'base64')).toThrow(InputError);
+  });
+});
+
+describe('visible (NFR-041)', () => {
+  it('labels bidi controls, invisibles and control characters', () => {
+    expect(visible('a\u202Eb')).toBe('a⟨U+202E⟩b');
+    expect(visible('x\u200By\u0000\t')).toBe('x⟨U+200B⟩y⟨U+0000⟩⟨U+0009⟩');
+    expect(visible('\u00A0\u2028')).toBe('⟨U+00A0⟩⟨U+2028⟩');
+  });
+
+  it('keeps visible text, spaces and RTL letters as they are', () => {
+    expect(visible('hello world مرحبا')).toBe('hello world مرحبا');
+    expect(visible('e\u0301👋')).toBe('e\u0301👋');
   });
 });

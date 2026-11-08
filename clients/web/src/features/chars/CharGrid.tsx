@@ -98,7 +98,7 @@ export function CharGrid({
                 >
                   {/* The name is hidden text, not an aria-label, so it starts with the visible code point (WCAG 2.5.3). */}
                   <a href={charHref(cp)} title={cell?.name}>
-                    <span className={styles.glyph} aria-hidden="true">
+                    <span className={styles.glyph} dir="auto" aria-hidden="true">
                       {cell?.glyph ?? ''}
                     </span>
                     <span className="visually-hidden">U+</span>

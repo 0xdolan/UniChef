@@ -40,7 +40,9 @@ function render(dish: Dish, view: InspectView): ReactNode {
             {rows.map((row, r) => (
               <tr key={r}>
                 {row.map((cell, i) => (
-                  <td key={i}>{String(cell)}</td>
+                  <td key={i} dir="auto">
+                    {String(cell)}
+                  </td>
                 ))}
               </tr>
             ))}

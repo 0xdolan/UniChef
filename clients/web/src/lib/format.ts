@@ -13,6 +13,19 @@ export function codePoint(cp: number): string {
   return `U+${cp.toString(16).toUpperCase().padStart(4, '0')}`;
 }
 
+// Control, format, separator, private-use, unassigned and default-ignorable code points, and
+// white space other than U+0020. The core labels the same classes in its tables.
+const INVISIBLE =
+  /[\p{Cc}\p{Cf}\p{Co}\p{Cn}\p{Zl}\p{Zp}\p{Default_Ignorable_Code_Point}]|(?! )\p{White_Space}|\p{Cs}/gu;
+
+/**
+ * `text` with invisible and control characters replaced by `⟨U+XXXX⟩` labels, for table
+ * cells, so a raw bidi control cannot reorder what is around it (NFR-041).
+ */
+export function visible(text: string): string {
+  return text.replace(INVISIBLE, (ch) => `⟨${codePoint(ch.codePointAt(0) ?? 0)}⟩`);
+}
+
 /** The dish as text: bytes as UTF-8 when valid, otherwise hex. */
 export function dishText(dish: Dish): string {
   switch (dish.type) {

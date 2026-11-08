@@ -64,3 +64,23 @@ test('builds and bakes a recipe with the keyboard only', async ({ page }) => {
   await page.keyboard.type('A');
   await expect(output(page)).toHaveValue('41');
 });
+
+test('NFR-041: table cells isolate bidi text and label control characters', async ({ page }) => {
+  await addOp(page, 'analyse', 'Analyse Characters');
+  await page.getByRole('textbox', { name: 'Input', exact: true }).fill('a\u202Eب');
+  const table = page.getByRole('table').first();
+  await expect(table).toContainText('⟨RIGHT-TO-LEFT OVERRIDE⟩');
+  const cells = table.locator('tbody td:not([colspan])');
+  await expect(cells.first()).toBeVisible();
+  const report = await cells.evaluateAll((tds) =>
+    tds.map((td) => ({
+      dir: td.getAttribute('dir'),
+      bidi: getComputedStyle(td).unicodeBidi,
+      raw: td.textContent.includes('\u202E'),
+    })),
+  );
+  expect(report.length).toBeGreaterThan(0);
+  for (const cell of report) {
+    expect(cell).toEqual({ dir: 'auto', bidi: 'isolate', raw: false });
+  }
+});

@@ -76,7 +76,9 @@ export function OutputTable({
           {items.map((item) => (
             <tr key={item.index} aria-rowindex={item.index + 2}>
               {(table.rows[item.index] ?? []).map((cell, i) => (
-                <td key={i}>{String(cell)}</td>
+                <td key={i} dir="auto">
+                  {String(cell)}
+                </td>
               ))}
             </tr>
           ))}

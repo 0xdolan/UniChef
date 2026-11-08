@@ -17,6 +17,7 @@ import {
 
 import { routeQuery, useHash } from '../../app/router.js';
 import { t } from '../../i18n/index.js';
+import { visible } from '../../lib/format.js';
 import { RegexClient, UcdError, type RegexService } from '../../lib/ucd.js';
 import type { RegexRun } from '../../worker/ucd-protocol.js';
 import styles from './Lab.module.css';
@@ -87,12 +88,12 @@ function MatchTable({ text, run }: { readonly text: string; readonly run: RegexR
               <td>
                 {m.cp[0]}–{m.cp[1]}
               </td>
-              <td className={styles.mono}>
-                {m.at[0] === m.at[1] ? '∅' : text.slice(m.at[0], m.at[1])}
+              <td className={styles.mono} dir="auto">
+                {m.at[0] === m.at[1] ? '∅' : visible(text.slice(m.at[0], m.at[1]))}
               </td>
               {m.groups.map((value, g) => (
-                <td key={g} className={styles.mono}>
-                  {value ?? '—'}
+                <td key={g} className={styles.mono} dir="auto">
+                  {value === null ? '—' : visible(value)}
                 </td>
               ))}
             </tr>

@@ -13,6 +13,13 @@ body,
   margin: 0;
 }
 
+/* NFR-041: every cell is its own bidi island, so RTL text or a control character in one cell
+   cannot reorder its neighbours. Data cells also set dir="auto". */
+td,
+th {
+  unicode-bidi: isolate;
+}
+
 body {
   background: var(--bg);
   color: var(--text);
