@@ -53,4 +53,10 @@ export {
   type BakeResult,
   type StepEvent,
 } from './recipe/run.js';
+export {
+  cyberChefOperations,
+  importCyberChef,
+  parseCyberChef,
+  type CyberChefStep,
+} from './recipe/cyberchef.js';
 export { loadData, setDataSource, type DataSource } from './data/load.js';

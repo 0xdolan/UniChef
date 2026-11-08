@@ -13,6 +13,7 @@ from unichef.core.dish import JsonValue
 from unichef.core.errors import UniChefError
 
 _ESCAPES = {"n": "\n", "t": "\t", "r": "\r", "\\": "\\", "0": "\0"}
+_NUMBER = re.compile(r"[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?")
 _BYTES_OPTIONS = {"Hex": "hex", "UTF8": "utf8", "Base64": "base64", "Latin1": "latin1"}
 
 type Translator = dict[str, Any]
@@ -106,10 +107,9 @@ class _Chef:
         literals: dict[str, JsonValue] = {"true": True, "false": False, "null": None}
         if word in literals:
             return literals[word]
-        try:
-            number = float(word)
-        except ValueError:
-            raise self.fail(f"unexpected {word!r}") from None
+        if not _NUMBER.fullmatch(word):
+            raise self.fail(f"unexpected {word!r}")
+        number = float(word)
         return int(number) if number.is_integer() and "." not in word else number
 
     def word(self) -> str:

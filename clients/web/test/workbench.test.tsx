@@ -202,3 +202,46 @@ describe('share options (SEC-007)', () => {
     expect(useApp.getState().shareSecrets).toBe(true);
   });
 });
+
+describe('CyberChef import (FR-009)', () => {
+  // jsdom has no modal dialogs; open and close just toggle the attribute.
+  beforeEach(() => {
+    Object.assign(HTMLDialogElement.prototype, {
+      showModal(this: HTMLDialogElement) {
+        this.open = true;
+      },
+      close(this: HTMLDialogElement) {
+        this.open = false;
+      },
+    });
+  });
+
+  const paste = (text: string) => {
+    fireEvent.click(screen.getByRole('button', { name: 'Import' }));
+    fireEvent.change(
+      screen.getByLabelText('Paste a CyberChef recipe, as JSON or in chef format.'),
+      {
+        target: { value: text },
+      },
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Import recipe', hidden: true }));
+  };
+
+  it('replaces the recipe with the imported steps', () => {
+    renderWorkbench();
+    paste("To_Hex('Space',0)\nReverse('Character')");
+    expect(useApp.getState().steps.map((s) => s.op)).toEqual(['to-hex', 'reverse']);
+    expect(screen.getByText('Imported the CyberChef recipe (2 steps).')).toBeDefined();
+    expect(document.querySelector('dialog')?.open).toBe(false);
+  });
+
+  it('names the operations it cannot map and keeps the recipe', () => {
+    renderWorkbench();
+    paste('[{"op":"Magic","args":[]}]');
+    const field = screen.getByLabelText('Paste a CyberChef recipe, as JSON or in chef format.');
+    expect(field.getAttribute('aria-invalid')).toBe('true');
+    expect(screen.getByRole('alert', { hidden: true }).textContent).toContain('Magic');
+    expect(useApp.getState().steps).toEqual([]);
+    expect(document.querySelector('dialog')?.open).toBe(true);
+  });
+});

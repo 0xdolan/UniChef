@@ -15,6 +15,7 @@ from unichef.core.recipe import parse_recipe
 from unichef.core.registry import get_operation
 
 MAP = SPEC / "cyberchef-map.json"
+VECTORS = json.loads((SPEC / "cyberchef-vectors.json").read_text(encoding="utf-8"))["cases"]
 
 
 def steps(recipe: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -37,6 +38,20 @@ def test_every_mapped_op_exists() -> None:
     for name, entry in table()["operations"].items():
         if not entry.get("merge"):
             assert get_operation(entry["op"]).id == entry["op"], name
+
+
+@pytest.mark.parametrize("case", VECTORS, ids=[c["name"] for c in VECTORS])
+def test_fr009_shared_vectors(case: dict[str, Any]) -> None:
+    """Both cores import spec/cyberchef-vectors.json the same way (FR-009)."""
+    if "error" in case:
+        with pytest.raises(UniChefError) as info:
+            import_recipe(case["input"])
+        assert info.value.code == case["error"]["code"]
+        assert (info.value.detail or None) == case["error"].get("detail")
+    else:
+        doc = import_recipe(case["input"])
+        assert doc == case["output"]
+        parse_recipe(doc)
 
 
 # -- parsing -------------------------------------------------------------------------------
