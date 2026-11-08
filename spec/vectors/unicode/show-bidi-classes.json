@@ -1,0 +1,503 @@
+{
+  "op": "show-bidi-classes",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "index",
+            "cp",
+            "char",
+            "bidi",
+            "bidi_name",
+            "mirrored"
+          ],
+          "rows": []
+        }
+      }
+    },
+    {
+      "name": "mixed directions",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a‮ب(1"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "index",
+            "cp",
+            "char",
+            "bidi",
+            "bidi_name",
+            "mirrored"
+          ],
+          "rows": [
+            [
+              0,
+              "U+0061",
+              "a",
+              "L",
+              "Left_To_Right",
+              false
+            ],
+            [
+              1,
+              "U+202E",
+              "⟨RIGHT-TO-LEFT OVERRIDE⟩",
+              "RLO",
+              "Right_To_Left_Override",
+              false
+            ],
+            [
+              2,
+              "U+0628",
+              "ب",
+              "AL",
+              "Arabic_Letter",
+              false
+            ],
+            [
+              3,
+              "U+0028",
+              "(",
+              "ON",
+              "Other_Neutral",
+              true
+            ],
+            [
+              4,
+              "U+0031",
+              "1",
+              "EN",
+              "European_Number",
+              false
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "isolates",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "⁧x⁩"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "index",
+            "cp",
+            "char",
+            "bidi",
+            "bidi_name",
+            "mirrored"
+          ],
+          "rows": [
+            [
+              0,
+              "U+2067",
+              "⟨RIGHT-TO-LEFT ISOLATE⟩",
+              "RLI",
+              "Right_To_Left_Isolate",
+              false
+            ],
+            [
+              1,
+              "U+0078",
+              "x",
+              "L",
+              "Left_To_Right",
+              false
+            ],
+            [
+              2,
+              "U+2069",
+              "⟨POP DIRECTIONAL ISOLATE⟩",
+              "PDI",
+              "Pop_Directional_Isolate",
+              false
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "mirrored brackets",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "[«x»]"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "index",
+            "cp",
+            "char",
+            "bidi",
+            "bidi_name",
+            "mirrored"
+          ],
+          "rows": [
+            [
+              0,
+              "U+005B",
+              "[",
+              "ON",
+              "Other_Neutral",
+              true
+            ],
+            [
+              1,
+              "U+00AB",
+              "«",
+              "ON",
+              "Other_Neutral",
+              true
+            ],
+            [
+              2,
+              "U+0078",
+              "x",
+              "L",
+              "Left_To_Right",
+              false
+            ],
+            [
+              3,
+              "U+00BB",
+              "»",
+              "ON",
+              "Other_Neutral",
+              true
+            ],
+            [
+              4,
+              "U+005D",
+              "]",
+              "ON",
+              "Other_Neutral",
+              true
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "hebrew and arabic digits",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "א١۱"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "index",
+            "cp",
+            "char",
+            "bidi",
+            "bidi_name",
+            "mirrored"
+          ],
+          "rows": [
+            [
+              0,
+              "U+05D0",
+              "א",
+              "R",
+              "Right_To_Left",
+              false
+            ],
+            [
+              1,
+              "U+0661",
+              "١",
+              "AN",
+              "Arabic_Number",
+              false
+            ],
+            [
+              2,
+              "U+06F1",
+              "۱",
+              "EN",
+              "European_Number",
+              false
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "separators and whitespace",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "1,2 \n\t"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "index",
+            "cp",
+            "char",
+            "bidi",
+            "bidi_name",
+            "mirrored"
+          ],
+          "rows": [
+            [
+              0,
+              "U+0031",
+              "1",
+              "EN",
+              "European_Number",
+              false
+            ],
+            [
+              1,
+              "U+002C",
+              ",",
+              "CS",
+              "Common_Separator",
+              false
+            ],
+            [
+              2,
+              "U+0032",
+              "2",
+              "EN",
+              "European_Number",
+              false
+            ],
+            [
+              3,
+              "U+0020",
+              "⟨SPACE⟩",
+              "WS",
+              "White_Space",
+              false
+            ],
+            [
+              4,
+              "U+000A",
+              "⟨LINE FEED⟩",
+              "B",
+              "Paragraph_Separator",
+              false
+            ],
+            [
+              5,
+              "U+0009",
+              "⟨CHARACTER TABULATION⟩",
+              "S",
+              "Segment_Separator",
+              false
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "nonspacing mark",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "é"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "index",
+            "cp",
+            "char",
+            "bidi",
+            "bidi_name",
+            "mirrored"
+          ],
+          "rows": [
+            [
+              0,
+              "U+0065",
+              "e",
+              "L",
+              "Left_To_Right",
+              false
+            ],
+            [
+              1,
+              "U+0301",
+              "◌́",
+              "NSM",
+              "Nonspacing_Mark",
+              false
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "boundary neutral",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "​­"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "index",
+            "cp",
+            "char",
+            "bidi",
+            "bidi_name",
+            "mirrored"
+          ],
+          "rows": [
+            [
+              0,
+              "U+200B",
+              "⟨ZERO WIDTH SPACE⟩",
+              "BN",
+              "Boundary_Neutral",
+              false
+            ],
+            [
+              1,
+              "U+00AD",
+              "⟨SOFT HYPHEN⟩",
+              "BN",
+              "Boundary_Neutral",
+              false
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "astral code point",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "😀𞤀"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "index",
+            "cp",
+            "char",
+            "bidi",
+            "bidi_name",
+            "mirrored"
+          ],
+          "rows": [
+            [
+              0,
+              "U+1F600",
+              "😀",
+              "ON",
+              "Other_Neutral",
+              false
+            ],
+            [
+              1,
+              "U+1E900",
+              "𞤀",
+              "R",
+              "Right_To_Left",
+              false
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "terminators",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "$%+-"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "index",
+            "cp",
+            "char",
+            "bidi",
+            "bidi_name",
+            "mirrored"
+          ],
+          "rows": [
+            [
+              0,
+              "U+0024",
+              "$",
+              "ET",
+              "European_Terminator",
+              false
+            ],
+            [
+              1,
+              "U+0025",
+              "%",
+              "ET",
+              "European_Terminator",
+              false
+            ],
+            [
+              2,
+              "U+002B",
+              "+",
+              "ES",
+              "European_Separator",
+              false
+            ],
+            [
+              3,
+              "U+002D",
+              "-",
+              "ES",
+              "European_Separator",
+              false
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "unknown argument",
+      "args": {
+        "mode": "x"
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

@@ -1,0 +1,653 @@
+{
+  "op": "utf8-explain",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": ""
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "offset",
+            "byte",
+            "bits",
+            "role",
+            "cp",
+            "char",
+            "note"
+          ],
+          "rows": []
+        }
+      }
+    },
+    {
+      "name": "ascii and control",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "4100"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "offset",
+            "byte",
+            "bits",
+            "role",
+            "cp",
+            "char",
+            "note"
+          ],
+          "rows": [
+            [
+              0,
+              "41",
+              "01000001",
+              "ASCII",
+              "U+0041",
+              "A",
+              ""
+            ],
+            [
+              1,
+              "00",
+              "00000000",
+              "ASCII",
+              "U+0000",
+              "⟨NULL⟩",
+              ""
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "two and three byte",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "c3a9e282ac"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "offset",
+            "byte",
+            "bits",
+            "role",
+            "cp",
+            "char",
+            "note"
+          ],
+          "rows": [
+            [
+              0,
+              "C3",
+              "11000011",
+              "lead of 2",
+              "U+00E9",
+              "é",
+              ""
+            ],
+            [
+              1,
+              "A9",
+              "10101001",
+              "continuation",
+              "",
+              "",
+              ""
+            ],
+            [
+              2,
+              "E2",
+              "11100010",
+              "lead of 3",
+              "U+20AC",
+              "€",
+              ""
+            ],
+            [
+              3,
+              "82",
+              "10000010",
+              "continuation",
+              "",
+              "",
+              ""
+            ],
+            [
+              4,
+              "AC",
+              "10101100",
+              "continuation",
+              "",
+              "",
+              ""
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "four byte",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "f09f9880"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "offset",
+            "byte",
+            "bits",
+            "role",
+            "cp",
+            "char",
+            "note"
+          ],
+          "rows": [
+            [
+              0,
+              "F0",
+              "11110000",
+              "lead of 4",
+              "U+1F600",
+              "😀",
+              ""
+            ],
+            [
+              1,
+              "9F",
+              "10011111",
+              "continuation",
+              "",
+              "",
+              ""
+            ],
+            [
+              2,
+              "98",
+              "10011000",
+              "continuation",
+              "",
+              "",
+              ""
+            ],
+            [
+              3,
+              "80",
+              "10000000",
+              "continuation",
+              "",
+              "",
+              ""
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "overlong two byte",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "c0af"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "offset",
+            "byte",
+            "bits",
+            "role",
+            "cp",
+            "char",
+            "note"
+          ],
+          "rows": [
+            [
+              0,
+              "C0",
+              "11000000",
+              "invalid",
+              "U+FFFD",
+              "�",
+              "overlong encoding"
+            ],
+            [
+              1,
+              "AF",
+              "10101111",
+              "continuation",
+              "U+FFFD",
+              "�",
+              "unexpected continuation byte"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "overlong three byte",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "e08080"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "offset",
+            "byte",
+            "bits",
+            "role",
+            "cp",
+            "char",
+            "note"
+          ],
+          "rows": [
+            [
+              0,
+              "E0",
+              "11100000",
+              "lead of 3",
+              "U+FFFD",
+              "�",
+              "overlong encoding"
+            ],
+            [
+              1,
+              "80",
+              "10000000",
+              "continuation",
+              "U+FFFD",
+              "�",
+              "unexpected continuation byte"
+            ],
+            [
+              2,
+              "80",
+              "10000000",
+              "continuation",
+              "U+FFFD",
+              "�",
+              "unexpected continuation byte"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "surrogate",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "eda080"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "offset",
+            "byte",
+            "bits",
+            "role",
+            "cp",
+            "char",
+            "note"
+          ],
+          "rows": [
+            [
+              0,
+              "ED",
+              "11101101",
+              "lead of 3",
+              "U+FFFD",
+              "�",
+              "surrogate code point"
+            ],
+            [
+              1,
+              "A0",
+              "10100000",
+              "continuation",
+              "U+FFFD",
+              "�",
+              "unexpected continuation byte"
+            ],
+            [
+              2,
+              "80",
+              "10000000",
+              "continuation",
+              "U+FFFD",
+              "�",
+              "unexpected continuation byte"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "above max",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "f4908080"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "offset",
+            "byte",
+            "bits",
+            "role",
+            "cp",
+            "char",
+            "note"
+          ],
+          "rows": [
+            [
+              0,
+              "F4",
+              "11110100",
+              "lead of 4",
+              "U+FFFD",
+              "�",
+              "above U+10FFFF"
+            ],
+            [
+              1,
+              "90",
+              "10010000",
+              "continuation",
+              "U+FFFD",
+              "�",
+              "unexpected continuation byte"
+            ],
+            [
+              2,
+              "80",
+              "10000000",
+              "continuation",
+              "U+FFFD",
+              "�",
+              "unexpected continuation byte"
+            ],
+            [
+              3,
+              "80",
+              "10000000",
+              "continuation",
+              "U+FFFD",
+              "�",
+              "unexpected continuation byte"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "never used byte",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "f5ff"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "offset",
+            "byte",
+            "bits",
+            "role",
+            "cp",
+            "char",
+            "note"
+          ],
+          "rows": [
+            [
+              0,
+              "F5",
+              "11110101",
+              "invalid",
+              "U+FFFD",
+              "�",
+              "byte never used in UTF-8"
+            ],
+            [
+              1,
+              "FF",
+              "11111111",
+              "invalid",
+              "U+FFFD",
+              "�",
+              "byte never used in UTF-8"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "truncated sequence is one subpart",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "e28241"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "offset",
+            "byte",
+            "bits",
+            "role",
+            "cp",
+            "char",
+            "note"
+          ],
+          "rows": [
+            [
+              0,
+              "E2",
+              "11100010",
+              "lead of 3",
+              "U+FFFD",
+              "�",
+              "incomplete sequence"
+            ],
+            [
+              1,
+              "82",
+              "10000010",
+              "continuation",
+              "",
+              "",
+              ""
+            ],
+            [
+              2,
+              "41",
+              "01000001",
+              "ASCII",
+              "U+0041",
+              "A",
+              ""
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "truncated at end",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "f09f98"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "offset",
+            "byte",
+            "bits",
+            "role",
+            "cp",
+            "char",
+            "note"
+          ],
+          "rows": [
+            [
+              0,
+              "F0",
+              "11110000",
+              "lead of 4",
+              "U+FFFD",
+              "�",
+              "incomplete sequence"
+            ],
+            [
+              1,
+              "9F",
+              "10011111",
+              "continuation",
+              "",
+              "",
+              ""
+            ],
+            [
+              2,
+              "98",
+              "10011000",
+              "continuation",
+              "",
+              "",
+              ""
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "lead then non-continuation",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "c341"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "offset",
+            "byte",
+            "bits",
+            "role",
+            "cp",
+            "char",
+            "note"
+          ],
+          "rows": [
+            [
+              0,
+              "C3",
+              "11000011",
+              "lead of 2",
+              "U+FFFD",
+              "�",
+              "incomplete sequence"
+            ],
+            [
+              1,
+              "41",
+              "01000001",
+              "ASCII",
+              "U+0041",
+              "A",
+              ""
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "BOM",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "efbbbf"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "offset",
+            "byte",
+            "bits",
+            "role",
+            "cp",
+            "char",
+            "note"
+          ],
+          "rows": [
+            [
+              0,
+              "EF",
+              "11101111",
+              "lead of 3",
+              "U+FEFF",
+              "⟨ZERO WIDTH NO-BREAK SPACE⟩",
+              ""
+            ],
+            [
+              1,
+              "BB",
+              "10111011",
+              "continuation",
+              "",
+              "",
+              ""
+            ],
+            [
+              2,
+              "BF",
+              "10111111",
+              "continuation",
+              "",
+              "",
+              ""
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "unknown argument",
+      "args": {
+        "mode": "x"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "61"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

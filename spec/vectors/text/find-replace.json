@@ -242,6 +242,21 @@
       "expected": {
         "error": "E_ARG_INVALID"
       }
+    },
+    {
+      "name": "Bidi_Mirrored property",
+      "args": {
+        "pattern": "\\p{Bidi_Mirrored}",
+        "replacement": "_"
+      },
+      "input": {
+        "type": "string",
+        "text": "f(a) « b ≤ c"
+      },
+      "expected": {
+        "type": "string",
+        "text": "f_a_ _ b _ c"
+      }
     }
   ]
 }

@@ -213,9 +213,12 @@ def build_core(folder: Path, version: str) -> dict[str, Any]:
     upper: dict[str, list[int]] = {}
     lower: dict[str, list[int]] = {}
     title: dict[str, list[int]] = {}
+    mirrored: set[int] = set()
     for lo, hi, f in ud:
         gc[lo : hi + 1] = [f[1]] * (hi - lo + 1)
         ccc[lo : hi + 1] = [int(f[2])] * (hi - lo + 1)
+        if f[8] == "Y":
+            mirrored.update(range(lo, hi + 1))
         if lo != hi:
             continue
         if f[4]:
@@ -289,6 +292,7 @@ def build_core(folder: Path, version: str) -> dict[str, Any]:
                 check(name not in binary or name in seen, f"{name} is defined in two files.")
                 seen.add(name)
                 binary.setdefault(name, set()).update(range(lo, hi + 1))
+    binary["Bidi_Mirrored"] = mirrored  # UnicodeData.txt field 9 (f[8])
     fce = {
         cp
         for lo, hi, f in records(dnp)

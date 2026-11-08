@@ -648,6 +648,58 @@
       ]
     },
     {
+      "id": "filter-by-property",
+      "name": "Filter by Property",
+      "category": "Unicode",
+      "description": "Keep or remove the code points whose property has one of the comma-separated `value`s. Names and aliases match loosely (`L`, `Letter`, `Latn`, `Basic Latin`); a General_Category group such as `L` covers its members.",
+      "input": "string",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "property",
+          "kind": "enum",
+          "default": "general_category",
+          "options": [
+            "general_category",
+            "script",
+            "script_extensions",
+            "block"
+          ]
+        },
+        {
+          "name": "value",
+          "kind": "string",
+          "default": "L"
+        },
+        {
+          "name": "mode",
+          "kind": "enum",
+          "default": "keep",
+          "options": [
+            "keep",
+            "remove"
+          ]
+        }
+      ],
+      "examples": [
+        {
+          "input": "Zoë, 42 € 😀",
+          "args": {},
+          "output": "Zoë"
+        },
+        {
+          "input": "Привет, world",
+          "args": {
+            "property": "script",
+            "value": "Cyrillic, Common",
+            "mode": "keep"
+          },
+          "output": "Привет, "
+        }
+      ]
+    },
+    {
       "id": "find-replace",
       "name": "Find / replace",
       "category": "Text",
@@ -2022,6 +2074,23 @@
       ]
     },
     {
+      "id": "show-bidi-classes",
+      "name": "Show Bidi Classes",
+      "category": "Unicode",
+      "description": "One row per code point with its Bidi_Class (short and long name) and whether it is Bidi_Mirrored. Controls and invisible characters are shown by name.",
+      "input": "string",
+      "output": "table",
+      "parity": "exact",
+      "args": [],
+      "examples": [
+        {
+          "input": "a‮ب(1",
+          "args": {},
+          "output": "index\tcp\tchar\tbidi\tbidi_name\tmirrored\n0\tU+0061\ta\tL\tLeft_To_Right\tfalse\n1\tU+202E\t⟨RIGHT-TO-LEFT OVERRIDE⟩\tRLO\tRight_To_Left_Override\tfalse\n2\tU+0628\tب\tAL\tArabic_Letter\tfalse\n3\tU+0028\t(\tON\tOther_Neutral\ttrue\n4\tU+0031\t1\tEN\tEuropean_Number\tfalse"
+        }
+      ]
+    },
+    {
       "id": "sort-lines",
       "name": "Sort lines",
       "category": "Text",
@@ -2733,6 +2802,23 @@
           "input": "café au lait",
           "args": {},
           "output": "caf%C3%A9%20au%20lait"
+        }
+      ]
+    },
+    {
+      "id": "utf8-explain",
+      "name": "UTF-8 Explain",
+      "category": "Unicode",
+      "description": "One row per byte: its bits, its role in the UTF-8 structure and, on the first byte of each sequence, the code point it encodes. Ill-formed input decodes to U+FFFD by maximal subparts, as everywhere else, and `note` says why.",
+      "input": "bytes",
+      "output": "table",
+      "parity": "exact",
+      "args": [],
+      "examples": [
+        {
+          "input": "é€",
+          "args": {},
+          "output": "offset\tbyte\tbits\trole\tcp\tchar\tnote\n0\tC3\t11000011\tlead of 2\tU+00E9\té\t\n1\tA9\t10101001\tcontinuation\t\t\t\n2\tE2\t11100010\tlead of 3\tU+20AC\t€\t\n3\t82\t10000010\tcontinuation\t\t\t\n4\tAC\t10101100\tcontinuation\t\t\t"
         }
       ]
     },
