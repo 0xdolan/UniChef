@@ -194,6 +194,17 @@ jobs:
       - name: Release tooling tests
         run: uv run --with pytest==9.2.0 pytest scripts -q -p no:cacheprovider
 
+  docs-links:
+    name: docs-links
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Every local link and image in the docs resolves (PRD §9.5)
+        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
+        with:
+          args: --offline --no-progress --include-fragments INTRODUCTION.md README.md
+          fail: true
+
   build:
     name: build
     runs-on: ubuntu-24.04
