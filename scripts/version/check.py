@@ -4,11 +4,13 @@
 # ///
 # SPDX-License-Identifier: GPL-3.0-or-later
 """Fail if any file disagrees with VERSION (PRD §10.3 `ci / version-consistency`, REL-001),
-or if the E2E container image is not the locked @playwright/test version (PRD §11.7).
+or if the E2E container image is not the locked @playwright/test version (PRD §11.7),
+or if debian/ppa-series.txt does not list the UBUNTU_SERIES constant (PRD §8.5).
 
 uv run scripts/version/check.py
 """
 
+import json
 import re
 import sys
 from pathlib import Path
@@ -19,6 +21,20 @@ from versions import VersionError, existing_targets, read_version
 ROOT = Path(__file__).resolve().parents[2]
 LOCK = ROOT / "pnpm-lock.yaml"
 COMPOSE = ROOT / "docker" / "docker-compose.yml"
+CONSTANTS = ROOT / "project.constants.json"
+PPA_SERIES = ROOT / "debian" / "ppa-series.txt"
+
+
+def series_problems() -> list[str]:
+    """debian/ppa-series.txt must list exactly the UBUNTU_SERIES constant, in order."""
+    if not PPA_SERIES.exists():
+        return []
+    want = json.loads(CONSTANTS.read_text(encoding="utf-8"))["UBUNTU_SERIES"]
+    lines = PPA_SERIES.read_text(encoding="utf-8").splitlines()
+    got = [s.strip() for s in lines if s.strip() and not s.lstrip().startswith("#")]
+    if got != want:
+        return [f"debian/ppa-series.txt: {got}, expected UBUNTU_SERIES {want}"]
+    return []
 
 
 def playwright_problems() -> list[str]:
@@ -56,7 +72,7 @@ def main() -> int:
                 problems.append(f"{t.path}: no version found")
             elif found != want:
                 problems.append(f"{t.path}: {found!r}, expected {want!r}")
-    problems += playwright_problems()
+    problems += playwright_problems() + series_problems()
     for p in problems:
         print(f"mismatch: {p}", file=sys.stderr)
     status = "ok" if not problems else f"{len(problems)} problem(s)"

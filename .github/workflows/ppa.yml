@@ -1,0 +1,84 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Upload signed source packages for every series in debian/ppa-series.txt to the Launchpad
+# PPA (PRD §8.5). Launchpad then builds the .debs. Runs on every release tag; re-upload a
+# tag with a higher PPA revision with:
+#   gh workflow run ppa.yml -f ref=v0.1.0-alpha.1 -f rev=2
+# The upload job waits for approval in the ppa-publish environment. One-time setup:
+# docs/debian/ppa.md.
+name: ppa
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Release tag to upload (vX.Y.Z or vX.Y.Z-alpha.N)
+        required: true
+        type: string
+      rev:
+        description: PPA revision (raise it to re-upload the same version)
+        type: string
+        default: '1'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ppa-${{ inputs.ref || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  upload:
+    name: upload
+    runs-on: ubuntu-24.04
+    container: ubuntu:24.04
+    environment: ppa-publish
+    steps:
+      - name: Install the packaging tools
+        env:
+          DEBIAN_FRONTEND: noninteractive
+        run: |
+          apt-get update -qq
+          apt-get install -y -qq --no-install-recommends ca-certificates git gnupg \
+            devscripts dput libdistro-info-perl lintian debhelper dh-python pybuild-plugin-pyproject \
+            python3-all python3-hatchling bash-completion
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+          persist-credentials: false
+      - name: Check the tag
+        env:
+          TAG: ${{ inputs.ref || github.ref_name }}
+          REV: ${{ inputs.rev || '1' }}
+        run: |
+          git config --global --add safe.directory "$PWD"
+          re='^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-(alpha|beta|rc)\.[1-9][0-9]*)?$'
+          if ! [[ "$TAG" =~ $re ]]; then
+            echo "::error::'$TAG' is not vX.Y.Z or vX.Y.Z-(alpha|beta|rc).N."
+            exit 1
+          fi
+          if [[ "$(tr -d '[:space:]' < VERSION)" != "${TAG#v}" ]]; then
+            echo "::error::VERSION does not match $TAG."
+            exit 1
+          fi
+          [[ "$REV" =~ ^[1-9][0-9]*$ ]] || { echo "::error::rev must be a positive integer."; exit 1; }
+      - name: Import the signing key
+        env:
+          PPA_GPG_PRIVATE_KEY: ${{ secrets.PPA_GPG_PRIVATE_KEY }}
+          PPA_GPG_PASSPHRASE: ${{ secrets.PPA_GPG_PASSPHRASE }}
+        run: |
+          umask 077
+          mkdir -p ~/.gnupg
+          printf '%s' "$PPA_GPG_PASSPHRASE" > ~/.gnupg/passphrase
+          printf 'pinentry-mode loopback\npassphrase-file %s\n' ~/.gnupg/passphrase > ~/.gnupg/gpg.conf
+          echo allow-loopback-pinentry > ~/.gnupg/gpg-agent.conf
+          printf '%s\n' "$PPA_GPG_PRIVATE_KEY" | gpg --batch --import
+      - name: Build, sign and upload
+        env:
+          GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+          REV: ${{ inputs.rev || '1' }}
+        run: scripts/deb/ppa-upload.sh --ref HEAD --rev "$REV"
+      - name: Remove the key
+        if: always()
+        run: rm -rf ~/.gnupg

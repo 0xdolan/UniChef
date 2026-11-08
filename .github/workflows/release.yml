@@ -108,6 +108,11 @@ jobs:
           mkdir -p dist/extensions
           cp clients/extensions/common/dist/unichef-chrome-*.zip \
             clients/extensions/common/dist/unichef-firefox-*.zip dist/extensions/
+      - name: Source tarball (the Debian orig, PRD §8.3; debian/watch looks for it)
+        run: |
+          orig=$(scripts/deb/make-orig.sh --ref HEAD --out "$RUNNER_TEMP")
+          mkdir -p dist/source
+          mv "$orig" "dist/source/unichef-$(tr -d '[:space:]' < VERSION).tar.gz"
       - name: SBOM (Python)
         uses: anchore/sbom-action@66cbf4bc1f1c0d2edc94016e65bc221b6bb0ad6c # v0.24.3
         with:
@@ -151,6 +156,7 @@ jobs:
             dist/python/*
             dist/npm/*.tgz
             dist/extensions/*
+            dist/source/*
 
   pypi:
     name: pypi
@@ -253,6 +259,7 @@ jobs:
             dist/python/*
             dist/npm/*.tgz
             dist/extensions/*
+            dist/source/*
             dist/sbom/*
             dist/SHA256SUMS
           fail_on_unmatched_files: true

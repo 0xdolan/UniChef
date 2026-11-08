@@ -116,8 +116,10 @@ build-ext: ## Build the browser extensions into clients/extensions/common/dist/
 
 build: build-py build-npm build-web build-ext ## Build every artefact
 
-deb-check: ## Run the Debian packaging pre-flight checks
-	$(call not_yet,the Debian packaging)
+deb-check: ## Build the .deb, run lintian and autopkgtest in Ubuntu (SERIES=24.04 by default)
+	@if command -v docker > /dev/null; then $(COMPOSE) run --rm deb; \
+	elif [ -n "$(filter ci,$(MAKECMDGOALS))" ]; then echo "make $@: skipped; it needs Docker." >&2; \
+	else echo "make $@: needs Docker (it builds in a clean Ubuntu container)." >&2; exit 2; fi
 
 version: ## Set the project version everywhere: make version V=x.y.z
 	@test -n "$(V)" || { echo "Usage: make version V=x.y.z" >&2; exit 2; }

@@ -71,7 +71,15 @@ def test_manpage() -> None:
     assert "import\\-cyberchef" in page or "import-cyberchef" in page
 
 
-def test_manpage_default_date() -> None:
+def test_manpage_default_date(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv("SOURCE_DATE_EPOCH", raising=False)
+    assert render().startswith(".TH UNICHEF 1 ")
+
+
+def test_manpage_source_date_epoch(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("SOURCE_DATE_EPOCH", "1767225600")
+    assert render().startswith('.TH UNICHEF 1 "2026-01-01"')
+    monkeypatch.setenv("SOURCE_DATE_EPOCH", "not a number")
     assert render().startswith(".TH UNICHEF 1 ")
 
 
