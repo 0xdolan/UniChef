@@ -15,6 +15,7 @@ MODULES = (
     "crypto",
     "jwt",
     "data",
+    "compression",
 )
 
 

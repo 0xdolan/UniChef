@@ -593,6 +593,43 @@ Parses `application/x-www-form-urlencoded` text, following the WHATWG rules:
 | `output` | `object` (default): an object of names to values, in first-seen order. A repeated name collects its values into an array, in order. `pairs`: an array of `[name, value]` arrays that keeps order and repeats. |
 | `plus_as_space` | Default true. |
 
+## Operation arguments (compression category)
+
+`raw-deflate`, `zlib-deflate` and `gzip` take one argument, `level`: an integer from 0 to 9, default 6. Level 0 stores the input in uncompressed blocks of at most 65 535 bytes, and both cores write it the same way, byte for byte. Levels 1 to 9 use the host compressor (zlib in Python, fflate in TypeScript), so the compressed bytes can differ between cores (parity class `roundtrip`). Both cores read what either one writes, and recipe vectors check the round trip.
+
+The decoders are written to give the same result in both cores (parity class `exact`). They follow zlib's inflate rules:
+
+- The stream must be complete, and no bytes may follow it. Trailing data raises `E_DECODE`, as does empty input.
+- Invalid DEFLATE data raises `E_DECODE` with zlib's reason. Examples: a reserved block type, stored block lengths that do not match, an incomplete code set, or a distance before the start of the output.
+- Output larger than the output limit raises `E_LIMIT`. Decoding stops at the limit, so a decompression bomb never expands in full.
+
+### `raw-deflate`, `raw-inflate` (bytes → bytes)
+
+A raw DEFLATE stream (RFC 1951), with no header or checksum.
+
+### `zlib-deflate`, `zlib-inflate` (bytes → bytes)
+
+The zlib format (RFC 1950): two header bytes, DEFLATE data, then an Adler-32 checksum (big-endian).
+
+- **Writing:** CMF is `78` (deflate, 32 KiB window). FLEVEL is set as zlib sets it: 0 for levels 0–1, 1 for 2–5, 2 for 6, and 3 for 7–9.
+- **Reading:** each of these raises `E_DECODE`:
+  - a header check that fails;
+  - a method other than deflate, or a window above 32 KiB;
+  - a preset dictionary (FDICT), which is not supported;
+  - a missing or wrong checksum.
+
+### `gzip`, `gunzip` (bytes → bytes)
+
+The gzip format (RFC 1952).
+
+- **`gzip`:** writes one member with no flags, a zero modification time and OS 255 (unknown), so the output does not depend on when or where it is made. XFL is 2 at level 9, 4 at level 1, and 0 otherwise.
+- **`gunzip`:** reads members one after another and joins their output. It accepts FEXTRA, FNAME and FCOMMENT, and skips their contents. If FHCRC is set, it checks the header CRC (the low 16 bits of the CRC-32 of the header). Each of these raises `E_DECODE`:
+  - a missing gzip header, a method other than deflate, or reserved flags set;
+  - a header that is cut short;
+  - a wrong header CRC, CRC-32 or ISIZE (input length mod 2³²);
+  - anything after the last member that is not another member.
+- **Output limit:** all members share one limit.
+
 ## Regex profile
 
 Patterns use a portable subset of ECMAScript syntax, with the `v` flag's class rules. Both cores parse a pattern with their own parser and expand every class to explicit code-point ranges from the pinned UCD data. Neither core consults its host's Unicode tables or case-folding.

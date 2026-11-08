@@ -614,6 +614,44 @@
         { "to": "algorithm" },
         { "to": "header", "map": { "{}": "", "*": "$" } }
       ]
-    }
+    },
+    "Raw Deflate": {
+      "op": "raw-deflate",
+      "args": [{ "to": "level", "map": { "Dynamic Huffman Coding": 6, "None (Store)": 0 } }]
+    },
+    "Raw Inflate": {
+      "op": "raw-inflate",
+      "args": [
+        { "expect": 0 },
+        { "ignore": true },
+        { "ignore": true },
+        { "ignore": true },
+        { "ignore": true }
+      ]
+    },
+    "Zlib Deflate": {
+      "op": "zlib-deflate",
+      "args": [{ "to": "level", "map": { "Dynamic Huffman Coding": 6, "None (Store)": 0 } }]
+    },
+    "Zlib Inflate": {
+      "op": "zlib-inflate",
+      "args": [
+        { "expect": 0 },
+        { "ignore": true },
+        { "ignore": true },
+        { "ignore": true },
+        { "ignore": true }
+      ]
+    },
+    "Gzip": {
+      "op": "gzip",
+      "args": [
+        { "to": "level", "map": { "Dynamic Huffman Coding": 6, "None (Store)": 0 } },
+        { "expect": "" },
+        { "expect": "" },
+        { "expect": false }
+      ]
+    },
+    "Gunzip": { "op": "gunzip", "args": [] }
   }
 }
