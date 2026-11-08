@@ -15,7 +15,7 @@ New here? [INTRODUCTION.md](INTRODUCTION.md) walks through installing UniChef, t
 
 ## Contributing
 
-The repository follows Gitflow with Conventional Commits. See [CONTRIBUTING.md](CONTRIBUTING.md). Brand rules and logo files are described in [docs/branding/README.md](docs/branding/README.md).
+The repository follows Gitflow with Conventional Commits. See [CONTRIBUTING.md](CONTRIBUTING.md) and the [Code of Conduct](CODE_OF_CONDUCT.md). Report vulnerabilities privately as described in [SECURITY.md](SECURITY.md). Brand rules and logo files are described in [docs/branding/README.md](docs/branding/README.md).
 
 ## Licence
 

@@ -110,8 +110,9 @@ build-web: ## Build the web app into clients/web/dist/ and check its bundle budg
 pages: build-web ## Build the GitHub Pages site: the web app plus the core's API docs in api/
 	pnpm --filter @unichef/core api-docs
 
-build-ext: ## Build the browser extensions into dist/
-	$(call not_yet,the extensions)
+build-ext: ## Build the browser extensions into clients/extensions/common/dist/
+	test -f assets/branding/dist/ext/128.png || uv run scripts/assets/build.py --only ext/
+	pnpm --filter extensions build
 
 build: build-py build-npm build-web build-ext ## Build every artefact
 

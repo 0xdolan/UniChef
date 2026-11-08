@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Release on a version tag (PRD §11.4, §10.3). Artefacts for parts that do not exist yet
-# (web zip, orig tarball, extension zips) are added as those parts land.
+# (web zip, orig tarball, the Safari Xcode project from #45) are added as those parts land.
+# The Chrome (also for Brave and Edge) and Firefox zips are attached here so they can be
+# loaded unpacked; extensions.yml publishes them to the stores.
 name: release
 
 on:
@@ -93,6 +95,19 @@ jobs:
           pnpm --filter @unichef/core build
           mkdir -p dist/npm
           pnpm --filter @unichef/core pack --pack-destination "$PWD/dist/npm"
+      - name: Image tools for the extension icons (rsvg-convert, ImageMagick, oxipng)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends librsvg2-bin imagemagick
+          scripts/assets/install-oxipng.sh "$HOME/.local/bin"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      - name: Extension zips (Chrome, Brave and Edge; Firefox)
+        run: |
+          uv run scripts/assets/build.py --only ext/
+          pnpm --filter extensions build --target chrome --target firefox
+          mkdir -p dist/extensions
+          cp clients/extensions/common/dist/unichef-chrome-*.zip \
+            clients/extensions/common/dist/unichef-firefox-*.zip dist/extensions/
       - name: Source tarball (the Debian orig, PRD §8.3; debian/watch looks for it)
         run: |
           orig=$(scripts/deb/make-orig.sh --ref HEAD --out "$RUNNER_TEMP")
@@ -140,6 +155,7 @@ jobs:
           subject-path: |
             dist/python/*
             dist/npm/*.tgz
+            dist/extensions/*
             dist/source/*
 
   pypi:
@@ -242,6 +258,7 @@ jobs:
           files: |
             dist/python/*
             dist/npm/*.tgz
+            dist/extensions/*
             dist/source/*
             dist/sbom/*
             dist/SHA256SUMS

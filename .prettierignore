@@ -1,6 +1,7 @@
 # Generated, vendored or data files
 pnpm-lock.yaml
 **/dist/
+**/dist-extension/
 **/coverage/
 packages/npm-core/data/
 packages/python-cli/
@@ -9,4 +10,5 @@ spec/ops.json
 data/
 assets/
 .claude/
+clients/extensions/common/build/chrome-manifest.schema.json
 *.md

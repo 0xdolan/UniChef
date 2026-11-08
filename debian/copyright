@@ -19,6 +19,11 @@ Files: data/html/entities.json
 Copyright: WHATWG (Apple, Google, Mozilla, Microsoft)
 License: CC-BY-4.0
 
+Files: CODE_OF_CONDUCT.md
+Copyright: Contributor Covenant contributors
+License: CC-BY-4.0
+Comment: Contributor Covenant 2.1, https://www.contributor-covenant.org/version/2/1/code_of_conduct/
+
 Files: debian/*
 Copyright: 2026 0xdolan
 License: GPL-3+
