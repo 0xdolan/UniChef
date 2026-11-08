@@ -73,10 +73,12 @@ const pwa = VitePWA({
   },
   workbox: {
     globPatterns: ['**/*.{html,js,css,svg,gz}'],
-    globIgnores: ['404.html'],
+    // The TypeDoc pages (pages.yml writes them to api/) are a separate site, not app shell.
+    globIgnores: ['404.html', 'api/**'],
     // ucd-names is the largest file; the default 2 MiB cap would leave it out.
     maximumFileSizeToCacheInBytes: 8 * 1024 * 1024,
     navigateFallback: 'index.html',
+    navigateFallbackDenylist: [/\/api\//],
     cleanupOutdatedCaches: true,
   },
 });

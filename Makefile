@@ -23,7 +23,7 @@ endef
 endif
 
 .PHONY: help bootstrap fmt lint typecheck test-py test-ts test parity e2e ucd ucd-check entities entities-check \
-	ops ops-check assets screenshots build-py build-npm build-web build-ext build deb-check \
+	ops ops-check assets screenshots build-py build-npm build-web pages build-ext build deb-check \
 	version version-check traceability ci docker-ci clean
 
 help: ## List the available targets
@@ -100,6 +100,9 @@ build-npm: ## Build the @unichef/core npm package into dist/
 build-web: ## Build the web app into clients/web/dist/ and check its bundle budgets
 	pnpm --filter web build
 	node scripts/check-bundle.mjs
+
+pages: build-web ## Build the GitHub Pages site: the web app plus the core's API docs in api/
+	pnpm --filter @unichef/core api-docs
 
 build-ext: ## Build the browser extensions into dist/
 	$(call not_yet,the extensions)
