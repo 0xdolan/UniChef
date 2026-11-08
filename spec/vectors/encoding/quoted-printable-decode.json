@@ -1,0 +1,130 @@
+{
+  "op": "quoted-printable-decode",
+  "cases": [
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": ""
+      }
+    },
+    {
+      "name": "escapes and UTF-8",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "caf=C3=A9 =3D 4=E2=82=AC"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "636166c3a9203d2034e282ac"
+      }
+    },
+    {
+      "name": "soft line breaks are removed",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx=\r\nxxxxx"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "7878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878787878"
+      }
+    },
+    {
+      "name": "trailing whitespace is removed, line breaks are kept",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a  \r\nb\t\nc"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "610d0a620a63"
+      }
+    },
+    {
+      "name": "whitespace after a soft break's '='",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a= \nb"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "6162"
+      }
+    },
+    {
+      "name": "lenient accepts lower-case hex and keeps a stray '='",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a=3d=G1=é"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "613d3d47313dc3a9"
+      }
+    },
+    {
+      "name": "strict accepts canonical input",
+      "args": {
+        "strict": true
+      },
+      "input": {
+        "type": "string",
+        "text": "caf=C3=A9=\r\n =3D"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "636166c3a9203d"
+      }
+    },
+    {
+      "name": "error: strict rejects lower-case hex",
+      "args": {
+        "strict": true
+      },
+      "input": {
+        "type": "string",
+        "text": "a=3d"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: strict rejects a stray '='",
+      "args": {
+        "strict": true
+      },
+      "input": {
+        "type": "string",
+        "text": "a=G1"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: strict rejects non-ASCII",
+      "args": {
+        "strict": true
+      },
+      "input": {
+        "type": "string",
+        "text": "café"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    }
+  ]
+}

@@ -184,6 +184,48 @@
         { "to": "strict", "invert": true }
       ]
     },
+    "To Base58": {
+      "op": "to-base58",
+      "args": [
+        {
+          "to": "alphabet",
+          "map": { "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz": "bitcoin" }
+        }
+      ]
+    },
+    "From Base58": {
+      "op": "from-base58",
+      "args": [
+        {
+          "to": "alphabet",
+          "map": { "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz": "bitcoin" }
+        },
+        { "to": "strict", "invert": true }
+      ]
+    },
+    "To Base85": {
+      "op": "to-base85",
+      "args": [
+        {
+          "to": "alphabet",
+          "map": { "!-u": "ascii85", "0-9a-zA-Z.\\-:+=^!/*?&<>()[]{}@%$#": "z85" }
+        },
+        { "to": "delimiters" }
+      ]
+    },
+    "From Base85": {
+      "op": "from-base85",
+      "args": [
+        {
+          "to": "alphabet",
+          "map": { "!-u": "ascii85", "0-9a-zA-Z.\\-:+=^!/*?&<>()[]{}@%$#": "z85" }
+        },
+        { "to": "strict", "invert": true },
+        { "ignore": true }
+      ]
+    },
+    "To Quoted Printable": { "op": "quoted-printable-encode", "args": [] },
+    "From Quoted Printable": { "op": "quoted-printable-decode", "args": [] },
     "URL Encode": {
       "op": "url-encode",
       "args": [{ "to": "mode", "map": { "true": "all", "false": "component" } }]
