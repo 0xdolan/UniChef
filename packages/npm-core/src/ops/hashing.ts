@@ -86,7 +86,7 @@ export const SHA2_SIZES: ReadonlyMap<string, HashFn> = new Map<string, HashFn>([
 ]);
 
 /** Look up an enum argument's value in a table built from the same options. */
-function pick<T>(table: ReadonlyMap<string, T>, args: Args, name: string): T {
+export function pick<T>(table: ReadonlyMap<string, T>, args: Args, name: string): T {
   const value = table.get(args.text(name));
   if (value === undefined) {
     throw new UniChefError('E_INTERNAL', `No table entry for argument ${name}.`);

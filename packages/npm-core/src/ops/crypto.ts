@@ -1,9 +1,12 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-/** Crypto ops (PRD §3.8): XOR, classical ciphers and AES. */
+/** Crypto ops (PRD §3.8): XOR, classical ciphers, AES, PBKDF2 and random bytes. */
 
 import { cbc, ctr, ecb, gcm } from '@noble/ciphers/aes.js';
+import { pbkdf2 as pbkdf2Hash } from '@noble/hashes/pbkdf2.js';
+import { bytesToHex } from '@noble/hashes/utils.js';
 
 import { UniChefError } from '../errors.js';
+import { HMAC_HASHES, pick } from './hashing.js';
 import {
   boolArg,
   bytesArg,
@@ -11,6 +14,7 @@ import {
   defineOp,
   enumArg,
   intArg,
+  stringArg,
   type Args,
   type OpContext,
   type Operation,
@@ -125,6 +129,133 @@ export const atbash = defineOp({
       const base = ch >= 'a' ? 0x61 : 0x41;
       return String.fromCharCode(base + 25 - (ch.charCodeAt(0) - base));
     }),
+});
+
+// ---------------------------------------------------------------------------
+// Vigenère
+
+function vigenere(text: string, args: Args, ctx: OpContext, sign: number): string {
+  const key = args.text('key');
+  if (!key) {
+    throw new UniChefError('E_ARG_INVALID', 'The Vigenère key is empty.');
+  }
+  if (!/^[A-Za-z]+$/.test(key)) {
+    throw new UniChefError('E_ARG_INVALID', 'The Vigenère key must contain only letters A-Z.');
+  }
+  const lower = key.toLowerCase();
+  const shifts = Array.from(lower, (_, i) => sign * (lower.charCodeAt(i) - 0x61));
+  const out: string[] = [];
+  let used = 0;
+  for (let i = 0; i < text.length; i++) {
+    if (i % CHECK_EVERY === 0) {
+      ctx.check();
+    }
+    const ch = text.charAt(i);
+    const base = ch >= 'a' && ch <= 'z' ? 0x61 : ch >= 'A' && ch <= 'Z' ? 0x41 : 0;
+    if (base === 0) {
+      out.push(ch);
+      continue;
+    }
+    const shift = shifts[used % shifts.length] ?? 0;
+    out.push(String.fromCharCode(base + mod(ch.charCodeAt(0) - base + shift, 26)));
+    used++;
+  }
+  return out.join('');
+}
+
+export const vigenereEncode = defineOp({
+  id: 'vigenere-encode',
+  name: 'Vigenère Encode',
+  category: 'Crypto',
+  description:
+    'Shift each ASCII letter forward by the next letter of `key` (A=0, case kept). Other ' +
+    'characters are unchanged and do not use up a key letter.',
+  inputType: 'string',
+  outputType: 'string',
+  examples: [{ input: 'Hello, World!', args: { key: 'key' }, output: 'Rijvs, Uyvjn!' }],
+  args: [stringArg('key')],
+  run: (text, args, ctx) => vigenere(text, args, ctx, 1),
+});
+
+export const vigenereDecode = defineOp({
+  id: 'vigenere-decode',
+  name: 'Vigenère Decode',
+  category: 'Crypto',
+  description: 'Undo `vigenere-encode`: shift each ASCII letter back by the next letter of `key`.',
+  inputType: 'string',
+  outputType: 'string',
+  examples: [{ input: 'Rijvs, Uyvjn!', args: { key: 'key' }, output: 'Hello, World!' }],
+  args: [stringArg('key')],
+  run: (text, args, ctx) => vigenere(text, args, ctx, -1),
+});
+
+// ---------------------------------------------------------------------------
+// PBKDF2 and random bytes
+
+export const PBKDF2_MAX_ITERATIONS = 10_000_000;
+const PBKDF2_WEAK = 100_000;
+const PBKDF2_MAX_LENGTH = 1024;
+export const RANDOM_MAX = 64 * 1024 * 1024;
+/** A multiple of 32, so seeded output does not depend on chunking. */
+const RANDOM_CHUNK = 64 * 1024;
+
+export const pbkdf2 = defineOp({
+  id: 'pbkdf2',
+  name: 'PBKDF2',
+  category: 'Crypto',
+  description:
+    'Derive a `length`-byte key from the input password (PBKDF2-HMAC, RFC 8018) and ' +
+    'return it as hex. Warns W_INSECURE below 100 000 iterations.',
+  inputType: 'bytes',
+  outputType: 'string',
+  examples: [
+    {
+      input: 'password',
+      args: { salt: { encoding: 'utf8', value: 'salt' } },
+      output: '0394a2ede332c9a13eb82e9b24631604c31df978b4e2f0fbd2c549944f9d79a5',
+    },
+  ],
+  args: [
+    enumArg('hash', [...HMAC_HASHES.keys()]),
+    intArg('iterations', PBKDF2_WEAK, 1, PBKDF2_MAX_ITERATIONS),
+    bytesArg('salt'),
+    intArg('length', 32, 1, PBKDF2_MAX_LENGTH),
+  ],
+  run(data, args, ctx) {
+    const iterations = args.int('iterations');
+    if (iterations < PBKDF2_WEAK) {
+      ctx.warn('W_INSECURE', `${iterations} PBKDF2 iterations is too few to slow down guessing.`);
+    }
+    ctx.check();
+    const hash = pick(HMAC_HASHES, args, 'hash');
+    const key = pbkdf2Hash(hash, data, args.data('salt'), {
+      c: iterations,
+      dkLen: args.int('length'),
+    });
+    return bytesToHex(key);
+  },
+});
+
+export const generateRandomBytes = defineOp({
+  id: 'generate-random-bytes',
+  name: 'Generate Random Bytes',
+  category: 'Crypto',
+  description:
+    "Replace the input with `length` random bytes: from the platform's secure random " +
+    'generator, or, when the recipe has a `seed`, from SHA-256 in counter mode.',
+  inputType: 'bytes',
+  outputType: 'bytes',
+  parity: 'nondeterministic',
+  args: [intArg('length', 32, 1, RANDOM_MAX)],
+  run(_data, args, ctx) {
+    const length = args.int('length');
+    const out = new Uint8Array(length);
+    for (let i = 0; i < length; i += RANDOM_CHUNK) {
+      ctx.check();
+      out.set(ctx.rng.randomBytes(Math.min(RANDOM_CHUNK, length - i)), i);
+    }
+    return out;
+  },
 });
 
 // ---------------------------------------------------------------------------
@@ -288,4 +419,15 @@ export const aesDecrypt = defineOp({
   },
 });
 
-export const CRYPTO_OPS: readonly Operation[] = [xor, rot13, rot47, atbash, aesEncrypt, aesDecrypt];
+export const CRYPTO_OPS: readonly Operation[] = [
+  xor,
+  rot13,
+  rot47,
+  atbash,
+  vigenereEncode,
+  vigenereDecode,
+  aesEncrypt,
+  aesDecrypt,
+  pbkdf2,
+  generateRandomBytes,
+];

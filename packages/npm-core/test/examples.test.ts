@@ -28,8 +28,10 @@ function exampleText(dish: Dish): string {
 
 describe('operation examples', () => {
   it.each(allOperations().map((op) => [op.id, op] as const))('%s', async (_id, op) => {
-    // A jump needs a label in the same step list, so it cannot run as a one-step example.
-    expect(op.examples.length > 0).toBe(!JUMP_OPS.has(op.id));
+    // A jump needs a label in the same step list, so it cannot run as a one-step example,
+    // and a random op has no fixed output to state (seeded recipe vectors cover it).
+    const exempt = JUMP_OPS.has(op.id) || op.parity === 'nondeterministic';
+    expect(op.examples.length > 0).toBe(!exempt);
     for (const example of op.examples) {
       const result = await runOperation(op.id, example.args, ofString(example.input));
       expect(exampleText(result.dish)).toBe(example.output);

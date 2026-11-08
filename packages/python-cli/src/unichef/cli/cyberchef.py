@@ -287,8 +287,11 @@ def _translate(cc: dict[str, JsonValue], entry: dict[str, Any]) -> list[dict[str
     if len(values) > len(translators):
         raise _bad(f"{name}: expected at most {len(translators)} argument(s), got {len(values)}.")
     step = _Step(entry["op"], entry.get("set", {}))
-    for index, value in enumerate(values):
-        _apply(name, index, translators[index], value, step)
+    for index, tr in enumerate(translators):
+        if index < len(values):
+            _apply(name, index, tr, values[index], step)
+        elif "default" in tr:  # CyberChef's own default, where it differs from ours
+            _apply(name, index, tr, tr["default"], step)
     if step.flags:
         step.args["flags"] = "".join(sorted(set(step.flags)))
     out: dict[str, Any] = {"op": step.op}

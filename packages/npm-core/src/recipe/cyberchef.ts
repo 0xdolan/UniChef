@@ -35,6 +35,7 @@ interface Translator {
   readonly divide?: number;
   readonly unescape?: boolean;
   readonly invert?: boolean;
+  readonly default?: Plain;
 }
 
 interface Entry {
@@ -387,9 +388,13 @@ function translate(cc: CyberChefStep, entry: Entry): PlainObject[] {
     );
   }
   const step = new StepBuilder(entry.op ?? '', entry.set ?? {});
-  values.forEach((value, index) => {
-    const tr = translators[index];
-    if (tr !== undefined) apply(name, index, tr, value, step);
+  translators.forEach((tr, index) => {
+    if (index < values.length) {
+      apply(name, index, tr, values[index] as Plain, step);
+    } else if (tr.default !== undefined) {
+      // CyberChef's own default, where it differs from ours.
+      apply(name, index, tr, tr.default, step);
+    }
   });
   if (step.flags !== '') step.args['flags'] = [...new Set(step.flags)].sort().join('');
   const out: PlainObject = { op: step.op };

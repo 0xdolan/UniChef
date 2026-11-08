@@ -998,6 +998,25 @@
       ]
     },
     {
+      "id": "generate-random-bytes",
+      "name": "Generate Random Bytes",
+      "category": "Crypto",
+      "description": "Replace the input with `length` random bytes: from the platform's secure random generator, or, when the recipe has a `seed`, from SHA-256 in counter mode.",
+      "input": "bytes",
+      "output": "bytes",
+      "parity": "nondeterministic",
+      "args": [
+        {
+          "name": "length",
+          "kind": "integer",
+          "default": 32,
+          "minimum": 1,
+          "maximum": 67108864
+        }
+      ],
+      "examples": []
+    },
+    {
       "id": "grapheme-split",
       "name": "Grapheme Split",
       "category": "Unicode",
@@ -1423,6 +1442,69 @@
             "form": "NFKC"
           },
           "output": "fi 1 X2"
+        }
+      ]
+    },
+    {
+      "id": "pbkdf2",
+      "name": "PBKDF2",
+      "category": "Crypto",
+      "description": "Derive a `length`-byte key from the input password (PBKDF2-HMAC, RFC 8018) and return it as hex. Warns W_INSECURE below 100 000 iterations.",
+      "input": "bytes",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "hash",
+          "kind": "enum",
+          "default": "sha256",
+          "options": [
+            "sha256",
+            "sha1",
+            "md5",
+            "sha224",
+            "sha384",
+            "sha512",
+            "sha3-256",
+            "sha3-512"
+          ]
+        },
+        {
+          "name": "iterations",
+          "kind": "integer",
+          "default": 100000,
+          "minimum": 1,
+          "maximum": 10000000
+        },
+        {
+          "name": "salt",
+          "kind": "bytes",
+          "default": "",
+          "encodings": [
+            "hex",
+            "utf8",
+            "base64",
+            "latin1"
+          ]
+        },
+        {
+          "name": "length",
+          "kind": "integer",
+          "default": 32,
+          "minimum": 1,
+          "maximum": 1024
+        }
+      ],
+      "examples": [
+        {
+          "input": "password",
+          "args": {
+            "salt": {
+              "encoding": "utf8",
+              "value": "salt"
+            }
+          },
+          "output": "0394a2ede332c9a13eb82e9b24631604c31df978b4e2f0fbd2c549944f9d79a5"
         }
       ]
     },
@@ -2480,6 +2562,56 @@
           "input": "café au lait",
           "args": {},
           "output": "caf%C3%A9%20au%20lait"
+        }
+      ]
+    },
+    {
+      "id": "vigenere-decode",
+      "name": "Vigenère Decode",
+      "category": "Crypto",
+      "description": "Undo `vigenere-encode`: shift each ASCII letter back by the next letter of `key`.",
+      "input": "string",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "key",
+          "kind": "string",
+          "default": ""
+        }
+      ],
+      "examples": [
+        {
+          "input": "Rijvs, Uyvjn!",
+          "args": {
+            "key": "key"
+          },
+          "output": "Hello, World!"
+        }
+      ]
+    },
+    {
+      "id": "vigenere-encode",
+      "name": "Vigenère Encode",
+      "category": "Crypto",
+      "description": "Shift each ASCII letter forward by the next letter of `key` (A=0, case kept). Other characters are unchanged and do not use up a key letter.",
+      "input": "string",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "key",
+          "kind": "string",
+          "default": ""
+        }
+      ],
+      "examples": [
+        {
+          "input": "Hello, World!",
+          "args": {
+            "key": "key"
+          },
+          "output": "Rijvs, Uyvjn!"
         }
       ]
     },

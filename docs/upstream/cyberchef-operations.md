@@ -171,7 +171,7 @@ Rules for the importer:
 | Cetacean Cipher Encode | not planned | — |
 | Cetacean Cipher Decode | not planned | — |
 | Substitute | not planned | — |
-| Derive PBKDF2 key | `pbkdf2` | Beta |
+| Derive PBKDF2 key | `pbkdf2` (not importable: CyberChef takes the passphrase as an argument, UniChef as the input) | Beta |
 | Derive EVP key | not planned | — |
 | Derive HKDF key | not planned | — |
 | Bcrypt | not planned | — |

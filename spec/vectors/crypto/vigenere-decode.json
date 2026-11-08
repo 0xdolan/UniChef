@@ -1,0 +1,156 @@
+{
+  "op": "vigenere-decode",
+  "cases": [
+    {
+      "name": "classic example",
+      "args": {
+        "key": "LEMON"
+      },
+      "input": {
+        "type": "string",
+        "text": "LXFOPVEFRNHR"
+      },
+      "expected": {
+        "type": "string",
+        "text": "ATTACKATDAWN"
+      }
+    },
+    {
+      "name": "case is kept, key case ignored",
+      "args": {
+        "key": "kEy"
+      },
+      "input": {
+        "type": "string",
+        "text": "Rijvs, Uyvjn!"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Hello, World!"
+      }
+    },
+    {
+      "name": "non-letters do not use up a key letter",
+      "args": {
+        "key": "ab"
+      },
+      "input": {
+        "type": "string",
+        "text": "a-b a.b"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a-a a.a"
+      }
+    },
+    {
+      "name": "key a leaves letters unchanged",
+      "args": {
+        "key": "a"
+      },
+      "input": {
+        "type": "string",
+        "text": "The quick brown fox"
+      },
+      "expected": {
+        "type": "string",
+        "text": "The quick brown fox"
+      }
+    },
+    {
+      "name": "key z shifts back by one",
+      "args": {
+        "key": "z"
+      },
+      "input": {
+        "type": "string",
+        "text": "zab WXY"
+      },
+      "expected": {
+        "type": "string",
+        "text": "abc XYZ"
+      }
+    },
+    {
+      "name": "non-ASCII letters and emoji pass through",
+      "args": {
+        "key": "key"
+      },
+      "input": {
+        "type": "string",
+        "text": "medé K İ 😀 jd"
+      },
+      "expected": {
+        "type": "string",
+        "text": "café K İ 😀 zz"
+      }
+    },
+    {
+      "name": "empty input",
+      "args": {
+        "key": "key"
+      },
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "key longer than the text",
+      "args": {
+        "key": "abcdefghijklmnop"
+      },
+      "input": {
+        "type": "string",
+        "text": "abcd"
+      },
+      "expected": {
+        "type": "string",
+        "text": "aaaa"
+      }
+    },
+    {
+      "name": "error: empty key",
+      "args": {
+        "key": ""
+      },
+      "input": {
+        "type": "string",
+        "text": "hello"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "error: digit in key",
+      "args": {
+        "key": "k3y"
+      },
+      "input": {
+        "type": "string",
+        "text": "hello"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "error: non-ASCII letter in key",
+      "args": {
+        "key": "kéy"
+      },
+      "input": {
+        "type": "string",
+        "text": "hello"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

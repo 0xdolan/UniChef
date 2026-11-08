@@ -1,5 +1,5 @@
 {
-  "$comment": "CyberChef operation name -> UniChef op, with one translator per positional CyberChef argument. Read by `unichef recipe import-cyberchef` (PRD §5.3). Translator keys: to (target arg), map (CyberChef value -> ours; '*' is the fallback and '$' stands for the input), ignore, expect, integer, divide, unescape, bytes (a {option,string} toggle), invert, flag (+when), extract (regex whose first group is used).",
+  "$comment": "CyberChef operation name -> UniChef op, with one translator per positional CyberChef argument. Read by `unichef recipe import-cyberchef` (PRD §5.3). Translator keys: to (target arg), map (CyberChef value -> ours; '*' is the fallback and '$' stands for the input), ignore, expect, integer, divide, unescape, bytes (a {option,string} toggle), invert, flag (+when), extract (regex whose first group is used), default (the value used when the CyberChef argument is omitted, for arguments whose CyberChef default differs from ours).",
   "cyberchefVersion": "11.5.0",
   "operations": {
     "To Base64": {
@@ -256,6 +256,21 @@
       ]
     },
     "Atbash Cipher": { "op": "atbash", "args": [] },
+    "Vigenère Encode": { "op": "vigenere-encode", "args": [{ "to": "key" }] },
+    "Vigenère Decode": { "op": "vigenere-decode", "args": [{ "to": "key" }] },
+    "Pseudo-Random Number Generator": {
+      "op": "generate-random-bytes",
+      "args": [
+        { "to": "length", "integer": true },
+        {
+          "map": {
+            "Raw": {},
+            "Hex": { "after": [{ "op": "to-hex", "args": { "delimiter": "none" } }] }
+          },
+          "default": "Hex"
+        }
+      ]
+    },
     "MD5": { "op": "md5", "args": [] },
     "SHA1": { "op": "sha1", "args": [{ "expect": 80 }] },
     "SHA2": {

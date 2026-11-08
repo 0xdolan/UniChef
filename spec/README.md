@@ -401,6 +401,33 @@ Nothing is random: the IV is always an argument, so the output is deterministic.
 
 In GCM, the 16-byte tag is appended to the ciphertext, and decryption takes it from the last 16 bytes. A tag mismatch or bad PKCS#7 padding raises `E_CRYPTO`.
 
+### `vigenere-encode`, `vigenere-decode` (string → string)
+
+- `key` must be one or more ASCII letters; its case is ignored, and `a` is a shift of 0. An empty key, or one with any other character, raises `E_ARG_INVALID`.
+- Encoding shifts each ASCII letter forward by the next key letter, mod 26, and keeps its case. Decoding shifts back.
+- Every other character, including non-ASCII letters such as `é` or the Kelvin sign U+212A, is copied unchanged and does not use up a key letter.
+
+CyberChef also treats a few non-ASCII letters as letters (those whose lower case is ASCII, such as U+212A); UniChef does not.
+
+### `pbkdf2` (bytes → string)
+
+PBKDF2-HMAC (RFC 8018 §5.2). The input is the password and the result is the derived key in lower-case hex.
+
+| Arg | Values |
+|---|---|
+| `hash` | `sha256` (default), `sha1`, `md5`, `sha224`, `sha384`, `sha512`, `sha3-256`, `sha3-512` (the `hmac` list). |
+| `iterations` | 1-10 000 000, default 100 000. Below 100 000 it warns `W_INSECURE` (SEC-006). |
+| `salt` | Bytes; may be empty. |
+| `length` | Derived key length in bytes, 1-1024, default 32. |
+
+The derivation is one library call, so a run can only be cancelled before it starts.
+
+### `generate-random-bytes` (bytes → bytes)
+
+Replaces the input with `length` bytes (1 to 64 MiB, default 32). Parity class `nondeterministic`.
+
+Without a recipe `seed`, the bytes come from the platform's secure random generator (`secrets` in Python, `crypto.getRandomValues` in TypeScript). With a seed, they come from the recipe's seeded stream: SHA-256(seed ‖ counter as 8 big-endian bytes), counter starting at 0, the 32-byte blocks concatenated. Each request for n bytes uses ⌈n/32⌉ blocks and drops the unused tail. The op asks for 64 KiB at a time, so its output equals one request of `length` bytes. The stream continues across steps of the same run, so both cores give the same bytes, which the seeded recipe vectors check.
+
 ### JSON Web Tokens: `jwt-decode`, `jwt-sign`, `jwt-verify`
 
 These ops handle JWS compact tokens (RFC 7515/7519). Algorithms: `HS256/384/512`, `RS256/384/512`, `PS256/384/512`, `ES256/384/512` (P-256, P-384 and P-521; the signature is raw `r‖s`) and `EdDSA` (Ed25519 or Ed448). Encrypted tokens (JWE) are not supported.
