@@ -5,7 +5,7 @@ UniChef never uses the host's Unicode tables. Every Unicode property, name and m
 | Path | What it is |
 |---|---|
 | `ucd.lock.json` | The pinned version, plus the URL and SHA-256 of every source file. |
-| `<version>/` | The raw source files, unmodified, committed so builds work offline. `license.txt` is the Unicode License v3. |
+| `<version>/` | The raw source files, unmodified, committed so builds work offline. `license.txt` is the Unicode License v3. `idna/` holds the UTS #46 files, which come from `<version>/idna/` for 17.0.0 and later, and from `Public/idna/<version>/` before that. |
 
 The pinned version is `UCD_VERSION` in `project.constants.json`. It is currently **18.0.0**, the latest release at the time of writing. The minimum is 16.0.0.
 
@@ -86,3 +86,5 @@ Display labels for unnamed code points (`<control-0000>` and so on) are computed
 | `confusables` | `{cp: [prototype cps]}` from `confusables.txt` (MA). |
 | `idStatus` | `{default: "Restricted", allowed: [start, length, …]}`. |
 | `idType` | `{default: "Not_Character", sets, ranges}`. Each set is a sorted list of identifier types. |
+| `idna` | `{default: "X", values, ranges}` from `idna/IdnaMappingTable.txt` (UTS #46). A value is `"V"` (valid, or deviation: processing is nontransitional), `"I"` (ignored) or the list of cps a character maps to. `"X"` is disallowed. |
+| `joiningType` | `{default: "U", values, ranges}` from `extracted/DerivedJoiningType.txt`, for the CONTEXTJ rules. |

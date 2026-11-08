@@ -60,6 +60,13 @@ export interface Artefacts {
     readonly confusables: Readonly<Record<string, readonly number[]>>;
     readonly idStatus: { readonly allowed: readonly number[] };
     readonly idType: RawSets & { readonly default: string };
+    /** UTS #46 status: "V" valid, "I" ignored, "X" disallowed, or the mapping. */
+    readonly idna: {
+      readonly default: string;
+      readonly values: readonly (string | readonly number[])[];
+      readonly ranges: readonly number[];
+    };
+    readonly joiningType: RawTable;
   };
 }
 

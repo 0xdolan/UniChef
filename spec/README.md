@@ -233,6 +233,46 @@ RFC 2045 §6.7.
 
 `quoted-printable-decode` removes spaces and tabs at the end of each line, and then a final `=` with its line break (a soft break). Other line breaks are kept as LF or CRLF, as written. Without `strict`, `=xx` in lower case is decoded, an `=` that starts no escape is kept as it is, and characters above 7F become their UTF-8 bytes. With `strict`, all three are `E_DECODE`.
 
+### `to-punycode`, `from-punycode` (string → string)
+
+Punycode (RFC 3492) with lower-case digits on output. On input, digits are read in either case, and basic code points keep their case.
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `domain` | boolean | `false` | Work label by label. |
+
+With `domain`, the input is split into labels at U+002E, U+3002, U+FF0E and U+FF61, and the labels are joined with U+002E. `to-punycode` writes each label that has a non-ASCII character as `xn--` plus its Punycode, and `from-punycode` decodes each label that starts with `xn--` in any case. No mapping or checks are applied, and an `@` gets no special treatment; use `idna-to-ascii` for real domain names.
+
+`from-punycode` raises `E_DECODE` for:
+
+- a character that is not a digit;
+- a non-ASCII character before the last `-`;
+- input that ends in the middle of a number;
+- a number above 2³¹−1;
+- a result that would contain a surrogate or a value above 10FFFF.
+
+`to-punycode` raises `E_LIMIT` when a number would pass 2³¹−1, which takes very long input.
+
+### `idna-to-ascii`, `idna-to-unicode` (string → string)
+
+UTS #46 ToASCII and ToUnicode, with nontransitional processing (`ß`, `ς`, ZWJ and ZWNJ are kept). Both use `IdnaMappingTable.txt` and are checked against every line of `IdnaTestV2.txt` in both cores.
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `check_hyphens` | boolean | `true` | No `-` at the start or end of a label, or in its third and fourth positions. When `false`, a label must still not start with `xn--` once decoded. |
+| `check_bidi` | boolean | `true` | The RFC 5893 bidi rule, for every label, in a name with any R, AL or AN character. Also rejects an empty label other than a final one (`X4_2`). |
+| `check_joiners` | boolean | `true` | The RFC 5892 CONTEXTJ rules for ZWNJ and ZWJ. |
+| `use_std3_ascii_rules` | boolean | `true` | ASCII must be `a`–`z`, `0`–`9` or `-` after mapping. |
+| `verify_dns_length` | boolean | `true` | `idna-to-ascii` only. Every label must have 1 to 63 characters, including a final empty label, and the name 1 to 253, not counting a final dot. |
+
+Processing maps each character (valid ones are kept, ignored ones removed, and mapped ones replaced), normalises to NFC, splits at U+002E, and decodes each `xn--` label. Then each label is checked against UTS #46 §4.1. `idna-to-ascii` then writes each non-ASCII label as `xn--` plus Punycode.
+
+Any error raises `E_DECODE`, and nothing is output. The message names the first error and counts the rest. Errors are found in this order:
+
+1. Each label in turn, stopping at its first failure.
+2. Empty labels and the bidi rule.
+3. The DNS lengths.
+
 ## Operation arguments (unicode category)
 
 ### `escape-unicode` (string → string)

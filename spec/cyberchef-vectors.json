@@ -1681,6 +1681,39 @@
       "error": {
         "code": "E_ARG_INVALID"
       }
+    },
+    {
+      "name": "To Punycode as a domain, then From Punycode",
+      "input": "[{\"op\": \"To Punycode\", \"args\": [true]}, {\"op\": \"From Punycode\", \"args\": [true]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-punycode",
+            "args": {
+              "domain": true
+            }
+          },
+          {
+            "op": "from-punycode",
+            "args": {
+              "domain": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Punycode with its default argument",
+      "input": "[{\"op\": \"To Punycode\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-punycode"
+          }
+        ]
+      }
     }
   ]
 }

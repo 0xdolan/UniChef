@@ -92,9 +92,21 @@
       "sha256": "d6b151d2d40ee9b1876d26f417980f45ffae47b6055ccf7203cb31f07a030f94",
       "url": "https://www.unicode.org/Public/18.0.0/ucd/extracted/DerivedGeneralCategory.txt"
     },
+    "extracted/DerivedJoiningType.txt": {
+      "sha256": "e2408ff2c92b175b0f7bf62c989bbb54c7b077528fe31f8d69b96fa09e7d61ed",
+      "url": "https://www.unicode.org/Public/18.0.0/ucd/extracted/DerivedJoiningType.txt"
+    },
     "extracted/DerivedName.txt": {
       "sha256": "ac6cf808ea4ee29323031d5ba9449de13da51398a3f5ce401546d8fceb976df7",
       "url": "https://www.unicode.org/Public/18.0.0/ucd/extracted/DerivedName.txt"
+    },
+    "idna/IdnaMappingTable.txt": {
+      "sha256": "a03b1eb38032268c696406a83f0972d6a815acd2c8d4151d42ec0fda70ffced1",
+      "url": "https://www.unicode.org/Public/18.0.0/idna/IdnaMappingTable.txt"
+    },
+    "idna/IdnaTestV2.txt": {
+      "sha256": "0236b75c5b20dfd857b3b5cf75509887959d6ab00d6c7bda9b7dc3df518c1fde",
+      "url": "https://www.unicode.org/Public/18.0.0/idna/IdnaTestV2.txt"
     },
     "license.txt": {
       "sha256": "e7a93b009565cfce55919a381437ac4db883e9da2126fa28b91d12732bc53d96",

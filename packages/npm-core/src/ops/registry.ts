@@ -11,6 +11,7 @@ import { ENCODING_OPS } from './encoding.js';
 import { FLOW_OPS } from './flow.js';
 import { HASHING_OPS } from './hashing.js';
 import { HTML_OPS } from './html.js';
+import { IDNA_OPS } from './idna.js';
 import { JWT_OPS } from './jwt.js';
 import { SECURITY_OPS } from './security.js';
 import { TEXT_OPS } from './text.js';
@@ -31,6 +32,7 @@ const MODULES: readonly (readonly Operation[])[] = [
   SECURITY_OPS,
   DATA_OPS,
   COMPRESSION_OPS,
+  IDNA_OPS,
 ];
 
 const REGISTRY = new Map<string, Operation>();

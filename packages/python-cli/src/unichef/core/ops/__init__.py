@@ -16,6 +16,7 @@ MODULES = (
     "jwt",
     "data",
     "compression",
+    "idna",
 )
 
 
