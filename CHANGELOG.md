@@ -4,7 +4,13 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
 
 ## [Unreleased]
 
-## [0.1.0-alpha.1] - 2026-11-08
+## [0.1.0-alpha.2] - 2026-11-08
+
+First public pre-release. `v0.1.0-alpha.1` was tagged, but its release workflow failed before publishing anything, and release tags are immutable.
+
+### Fixed
+
+- Release workflow: create `dist/sbom` before the SBOM steps write into it.
 
 ### Added
 

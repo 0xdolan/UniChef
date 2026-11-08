@@ -1,6 +1,6 @@
 {
   "name": "extensions",
-  "version": "0.1.0-alpha.1",
+  "version": "0.1.0-alpha.2",
   "private": true,
   "description": "The UniChef browser extensions (Manifest V3) for Chrome, Edge, Firefox and Safari.",
   "type": "module",

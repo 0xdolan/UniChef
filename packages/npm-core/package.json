@@ -1,6 +1,6 @@
 {
   "name": "@unichef/core",
-  "version": "0.1.0-alpha.1",
+  "version": "0.1.0-alpha.2",
   "description": "Unicode-first data transformation core: recipes, operations and the Unicode engine.",
   "type": "module",
   "license": "GPL-3.0-or-later",
