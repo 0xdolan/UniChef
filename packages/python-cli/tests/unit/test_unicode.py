@@ -251,12 +251,22 @@ def test_folding() -> None:
     assert case.fold_code_point(0x41) == (0x61,)
 
 
+def _known_to_unicode_15(text: str) -> bool:
+    return all(
+        props.get("age", ord(c)) != "NA" and float(str(props.get("age", ord(c)))) <= 15.0
+        for c in text
+    )
+
+
+# A character that existed in 15.0 can still map to a newer one (U+0277 uppercases to
+# U+A7DD from 17.0), so the mappings must be 15.0 characters too.
 _OLD_CHARS = st.characters(
     codec="utf-8",
     categories=("L", "M", "N", "P", "S", "Z"),
 ).filter(
     lambda ch: (
-        props.get("age", ord(ch)) not in {"NA"} and float(str(props.get("age", ord(ch)))) <= 15.0
+        _known_to_unicode_15(ch)
+        and _known_to_unicode_15(case.upper(ch) + case.lower(ch) + case.fold(ch))
     )
 )
 
