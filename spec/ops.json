@@ -433,6 +433,39 @@
       ]
     },
     {
+      "id": "csv-to-json",
+      "name": "CSV to JSON",
+      "category": "Data",
+      "description": "Parse RFC 4180 CSV. With `header`, the first record names the fields of an object per record; otherwise each record is an array. Cells stay strings.",
+      "input": "string",
+      "output": "json",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "delimiter",
+          "kind": "enum",
+          "default": "comma",
+          "options": [
+            "comma",
+            "semicolon",
+            "tab"
+          ]
+        },
+        {
+          "name": "header",
+          "kind": "boolean",
+          "default": true
+        }
+      ],
+      "examples": [
+        {
+          "input": "name,note\r\nZoë,\"say \"\"hi\"\"\"\r\n",
+          "args": {},
+          "output": "[{\"name\":\"Zoë\",\"note\":\"say \\\"hi\\\"\"}]"
+        }
+      ]
+    },
+    {
       "id": "decode-text",
       "name": "Decode Text",
       "category": "Encoding",
@@ -1215,6 +1248,95 @@
       ]
     },
     {
+      "id": "json-beautify",
+      "name": "JSON Beautify",
+      "category": "Data",
+      "description": "Write JSON with one value per line, like `JSON.stringify(v, null, indent)`. `sort_keys` orders object keys by code point.",
+      "input": "json",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "indent",
+          "kind": "enum",
+          "default": "2",
+          "options": [
+            "2",
+            "4",
+            "tab"
+          ]
+        },
+        {
+          "name": "sort_keys",
+          "kind": "boolean",
+          "default": false
+        }
+      ],
+      "examples": [
+        {
+          "input": "{\"b\":[1,2],\"a\":{}}",
+          "args": {},
+          "output": "{\n  \"b\": [\n    1,\n    2\n  ],\n  \"a\": {}\n}"
+        }
+      ]
+    },
+    {
+      "id": "json-minify",
+      "name": "JSON Minify",
+      "category": "Data",
+      "description": "Write JSON with no whitespace, keeping key order.",
+      "input": "json",
+      "output": "string",
+      "parity": "exact",
+      "args": [],
+      "examples": [
+        {
+          "input": "{\n  \"a\": [1, 2.50, \"x\"]\n}",
+          "args": {},
+          "output": "{\"a\":[1,2.5,\"x\"]}"
+        }
+      ]
+    },
+    {
+      "id": "json-to-csv",
+      "name": "JSON to CSV",
+      "category": "Data",
+      "description": "Write an array of objects (with a header row) or an array of arrays as CSV. Every record ends with the line ending.",
+      "input": "json",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "delimiter",
+          "kind": "enum",
+          "default": "comma",
+          "options": [
+            "comma",
+            "semicolon",
+            "tab"
+          ]
+        },
+        {
+          "name": "line_ending",
+          "kind": "enum",
+          "default": "crlf",
+          "options": [
+            "crlf",
+            "lf"
+          ]
+        }
+      ],
+      "examples": [
+        {
+          "input": "[{\"name\":\"Zoë\",\"note\":\"a, b\"},{\"name\":\"Ali\",\"age\":30}]",
+          "args": {
+            "line_ending": "lf"
+          },
+          "output": "name,note,age\nZoë,\"a, b\",\nAli,,30\n"
+        }
+      ]
+    },
+    {
       "id": "jump",
       "name": "Jump",
       "category": "Flow",
@@ -1442,6 +1564,55 @@
             "form": "NFKC"
           },
           "output": "fi 1 X2"
+        }
+      ]
+    },
+    {
+      "id": "parse-query-string",
+      "name": "Parse Query String",
+      "category": "Data",
+      "description": "Split `name=value` pairs on `&` and percent-decode them as UTF-8. A leading `?` is ignored. In `object` output a repeated name collects its values into an array.",
+      "input": "string",
+      "output": "json",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "output",
+          "kind": "enum",
+          "default": "object",
+          "options": [
+            "object",
+            "pairs"
+          ]
+        },
+        {
+          "name": "plus_as_space",
+          "kind": "boolean",
+          "default": true
+        }
+      ],
+      "examples": [
+        {
+          "input": "?q=caf%C3%A9+au+lait&tag=a&tag=b&x",
+          "args": {},
+          "output": "{\"q\":\"café au lait\",\"tag\":[\"a\",\"b\"],\"x\":\"\"}"
+        }
+      ]
+    },
+    {
+      "id": "parse-url",
+      "name": "Parse URL",
+      "category": "Data",
+      "description": "Split a URL into its RFC 3986 parts without decoding or normalising them. An absent part is null; surrounding ASCII whitespace is ignored.",
+      "input": "string",
+      "output": "json",
+      "parity": "exact",
+      "args": [],
+      "examples": [
+        {
+          "input": "https://zoë:pw@example.com:8443/a/b?q=1#top",
+          "args": {},
+          "output": "{\"scheme\":\"https\",\"username\":\"zoë\",\"password\":\"pw\",\"host\":\"example.com\",\"port\":8443,\"path\":\"/a/b\",\"query\":\"q=1\",\"fragment\":\"top\"}"
         }
       ]
     },

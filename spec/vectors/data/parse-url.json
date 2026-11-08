@@ -1,0 +1,249 @@
+{
+  "op": "parse-url",
+  "cases": [
+    {
+      "name": "empty input is an empty relative reference",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "scheme": null,
+          "username": null,
+          "password": null,
+          "host": null,
+          "port": null,
+          "path": "",
+          "query": null,
+          "fragment": null
+        }
+      }
+    },
+    {
+      "name": "all parts; surrounding whitespace ignored",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "  https://zoë:pw@example.com:8443/a/b?q=1#top\n"
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "scheme": "https",
+          "username": "zoë",
+          "password": "pw",
+          "host": "example.com",
+          "port": 8443,
+          "path": "/a/b",
+          "query": "q=1",
+          "fragment": "top"
+        }
+      }
+    },
+    {
+      "name": "no decoding or normalising",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "HTTP://Ex%41mple.COM/%7Euser/../x"
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "scheme": "HTTP",
+          "username": null,
+          "password": null,
+          "host": "Ex%41mple.COM",
+          "port": null,
+          "path": "/%7Euser/../x",
+          "query": null,
+          "fragment": null
+        }
+      }
+    },
+    {
+      "name": "IPv6 host with leading-zero port",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "http://[::1]:080/"
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "scheme": "http",
+          "username": null,
+          "password": null,
+          "host": "[::1]",
+          "port": 80,
+          "path": "/",
+          "query": null,
+          "fragment": null
+        }
+      }
+    },
+    {
+      "name": "userinfo splits at the last @ and first colon",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "ftp://a@b:c:d@h/"
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "scheme": "ftp",
+          "username": "a@b",
+          "password": "c:d",
+          "host": "h",
+          "port": null,
+          "path": "/",
+          "query": null,
+          "fragment": null
+        }
+      }
+    },
+    {
+      "name": "empty port and empty query/fragment are distinct from absent",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "http://h:/p?#"
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "scheme": "http",
+          "username": null,
+          "password": null,
+          "host": "h",
+          "port": null,
+          "path": "/p",
+          "query": "",
+          "fragment": ""
+        }
+      }
+    },
+    {
+      "name": "no authority: mailto",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "mailto:zoë@example.com"
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "scheme": "mailto",
+          "username": null,
+          "password": null,
+          "host": null,
+          "port": null,
+          "path": "zoë@example.com",
+          "query": null,
+          "fragment": null
+        }
+      }
+    },
+    {
+      "name": "relative reference with non-BMP",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "//h/😀?x#y"
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "scheme": null,
+          "username": null,
+          "password": null,
+          "host": "h",
+          "port": null,
+          "path": "/😀",
+          "query": "x",
+          "fragment": "y"
+        }
+      }
+    },
+    {
+      "name": "fragment keeps ? and #",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "/p#a?b#c"
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "scheme": null,
+          "username": null,
+          "password": null,
+          "host": null,
+          "port": null,
+          "path": "/p",
+          "query": null,
+          "fragment": "a?b#c"
+        }
+      }
+    },
+    {
+      "name": "error: port above 65535",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "//h:65536"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: port not a number",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "http://h:8o/"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: scheme starts with a digit",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "1http://h/"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: unclosed IPv6 bracket",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "http://[::1/"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: text after IPv6 bracket",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "http://[::1]x/"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    }
+  ]
+}

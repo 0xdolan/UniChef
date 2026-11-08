@@ -5,6 +5,7 @@ import { UniChefError } from '../errors.js';
 import { pyRepr, type Operation } from './types.js';
 import { CRYPTO_OPS } from './crypto.js';
 import { CODEC_OPS } from './codecs.js';
+import { DATA_OPS } from './data.js';
 import { ENCODING_OPS } from './encoding.js';
 import { FLOW_OPS } from './flow.js';
 import { HASHING_OPS } from './hashing.js';
@@ -27,6 +28,7 @@ const MODULES: readonly (readonly Operation[])[] = [
   JWT_OPS,
   UNICODE_OPS,
   SECURITY_OPS,
+  DATA_OPS,
 ];
 
 const REGISTRY = new Map<string, Operation>();

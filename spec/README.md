@@ -470,6 +470,91 @@ These ops handle JWS compact tokens (RFC 7515/7519). Algorithms: `HS256/384/512`
 
 Time claims (`exp`, `nbf`, `iat`) are never checked, because ops do not read the clock.
 
+## Operation arguments (data category)
+
+The JSON ops take a `json` dish, so a string input is parsed by the usual strict rules (PRD §3.2 rule 5): invalid JSON raises `E_INPUT_TYPE`, a duplicate key warns `W_DUPLICATE_KEY` and the last one wins, and big integers stay exact. Numbers are written as ECMAScript writes them (`2.50` becomes `2.5`, `1e21` becomes `1e+21`), and a float that overflows becomes `null`.
+
+### `json-beautify` (json → string)
+
+Writes one value per line, as `JSON.stringify(value, null, indent)` does. Empty arrays and objects stay `[]` and `{}`. Strings use the compact form's escapes: non-ASCII text stays literal, and controls and lone surrogates become `\uXXXX`.
+
+| Arg | Values |
+|---|---|
+| `indent` | `2` (default), `4` or `tab`. |
+| `sort_keys` | Sort object keys by code point at every level, default false. Code-point order differs from JavaScript's UTF-16 order: U+FFFF sorts before U+1F600. |
+
+### `json-minify` (json → string)
+
+Writes the value with no whitespace, keeping key order.
+
+### `json-to-csv` (json → string)
+
+The input must be an array whose items are all objects or all arrays; anything else raises `E_INPUT_TYPE`. An empty array gives empty output.
+
+- **Objects:** the header row lists every key in first-seen order. A missing key gives an empty cell.
+- **Arrays:** each array is a record, with no header row. Rows may differ in length.
+- **Cells:** `null` is empty, booleans are `true` or `false`, numbers are written as above, and nested arrays or objects are written as compact JSON.
+- **Quoting (RFC 4180):** a field containing the delimiter, `"`, CR or LF is wrapped in quotes, with each `"` doubled. Other fields are not quoted.
+- Every record ends with the line ending, including the last.
+
+| Arg | Values |
+|---|---|
+| `delimiter` | `comma` (default), `semicolon` or `tab`. |
+| `line_ending` | `crlf` (default, as RFC 4180 requires) or `lf`. |
+
+### `csv-to-json` (string → json)
+
+Parses RFC 4180 CSV, with these choices:
+
+- CRLF, LF and a lone CR all end a record. A final line break is optional and does not add a record. A blank line is a record with one empty field.
+- A leading U+FEFF (byte order mark) is dropped.
+- A quoted field may hold the delimiter, line breaks and doubled quotes `""`.
+- Cells stay strings; no number or date guessing.
+
+Each of these raises `E_DECODE`, naming the 1-based record:
+
+- an unclosed quoted field;
+- a `"` inside an unquoted field;
+- text between a closing quote and the next delimiter or line break;
+- with `header`, a record whose field count differs from the header's.
+
+| Arg | Values |
+|---|---|
+| `delimiter` | `comma` (default), `semicolon` or `tab`. |
+| `header` | Default true: the first record names the fields, and each later record becomes an object. A repeated column name warns `W_DUPLICATE_KEY`; the last value wins and takes the last position, as for JSON. Empty input or a header alone gives `[]`. False: each record becomes an array of strings. |
+
+### `parse-url` (string → json)
+
+Splits a URI reference with the RFC 3986 Appendix B pattern and returns an object with the keys `scheme`, `username`, `password`, `host`, `port`, `path`, `query` and `fragment`, in that order. This is not the WHATWG URL parser: nothing is percent-decoded, lower-cased, resolved or IDNA-mapped, so both cores give the same result.
+
+- Leading and trailing ASCII whitespace (space, tab, LF, FF, CR) is removed.
+- An absent part is `null`, which differs from an empty one: `http://h:/p?#` has `port` null but `query` and `fragment` `""`. `path` is always a string.
+- The userinfo is the authority text before its last `@`. `username` is the text before its first `:`, and `password` the rest (null if there is no `:`).
+- A host in `[` `]` (IPv6 or IPvFuture) keeps its brackets. Otherwise the host ends at its first `:`.
+- `port` is an integer, written with any number of leading zeros, from 0 to 65535. An empty port is null.
+
+Errors (`E_DECODE`):
+
+- a scheme that does not start with a letter or has a character other than A-Z, a-z, 0-9, `+`, `-` or `.`;
+- a port with a non-digit, or above 65535;
+- a `[` with no `]`, or text other than `:port` after the `]`.
+
+So `localhost:8080` reads as scheme `localhost` with path `8080`, as RFC 3986 requires. Add `//` to give a host.
+
+### `parse-query-string` (string → json)
+
+Parses `application/x-www-form-urlencoded` text, following the WHATWG rules:
+
+- A leading `?` is dropped. The text is split on `&`, and empty pieces are skipped.
+- Each piece splits at its first `=`. A piece with no `=` has an empty value.
+- With `plus_as_space`, `+` becomes a space before decoding. `%2B` always decodes to `+`.
+- `%XX` escapes are decoded as bytes, and the result is decoded as UTF-8 with U+FFFD for invalid sequences. A `%` not followed by two hex digits stays literal.
+
+| Arg | Values |
+|---|---|
+| `output` | `object` (default): an object of names to values, in first-seen order. A repeated name collects its values into an array, in order. `pairs`: an array of `[name, value]` arrays that keeps order and repeats. |
+| `plus_as_space` | Default true. |
+
 ## Regex profile
 
 Patterns use a portable subset of ECMAScript syntax, with the `v` flag's class rules. Both cores parse a pattern with their own parser and expand every class to explicit code-point ranges from the pinned UCD data. Neither core consults its host's Unicode tables or case-folding.

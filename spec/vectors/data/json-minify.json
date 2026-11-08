@@ -1,0 +1,138 @@
+{
+  "op": "json-minify",
+  "cases": [
+    {
+      "name": "empty object",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": " { } "
+      },
+      "expected": {
+        "type": "string",
+        "text": "{}"
+      }
+    },
+    {
+      "name": "removes whitespace, keeps key order",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "{\n  \"b\": [1, 2.50, \"x\"],\n  \"a\": null\n}"
+      },
+      "expected": {
+        "type": "string",
+        "text": "{\"b\":[1,2.5,\"x\"],\"a\":null}"
+      }
+    },
+    {
+      "name": "non-BMP and non-ASCII stay literal",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "{\"k\": \"Zoë 😀\"}"
+      },
+      "expected": {
+        "type": "string",
+        "text": "{\"k\":\"Zoë 😀\"}"
+      }
+    },
+    {
+      "name": "escaped non-BMP is written literally",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "\"\\ud83d\\ude00\""
+      },
+      "expected": {
+        "type": "string",
+        "text": "\"😀\""
+      }
+    },
+    {
+      "name": "lone surrogate stays escaped",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "\"\\udc00\""
+      },
+      "expected": {
+        "type": "string",
+        "text": "\"\\udc00\""
+      }
+    },
+    {
+      "name": "overflowing float becomes null",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "[1e400]"
+      },
+      "expected": {
+        "type": "string",
+        "text": "[null]"
+      }
+    },
+    {
+      "name": "negative zero integer is 0",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "-0"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0"
+      }
+    },
+    {
+      "name": "big integer stays exact",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "[-98765432109876543210]"
+      },
+      "expected": {
+        "type": "string",
+        "text": "[-98765432109876543210]"
+      }
+    },
+    {
+      "name": "duplicate key warns",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "{\"a\":1,\"b\":2,\"a\":3}"
+      },
+      "expected": {
+        "type": "string",
+        "text": "{\"b\":2,\"a\":3}"
+      },
+      "warnings": [
+        "W_DUPLICATE_KEY"
+      ]
+    },
+    {
+      "name": "error: trailing comma",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "[1,]"
+      },
+      "expected": {
+        "error": "E_INPUT_TYPE"
+      }
+    },
+    {
+      "name": "error: NaN is not JSON",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "NaN"
+      },
+      "expected": {
+        "error": "E_INPUT_TYPE"
+      }
+    }
+  ]
+}

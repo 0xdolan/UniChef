@@ -1,0 +1,160 @@
+{
+  "op": "json-beautify",
+  "cases": [
+    {
+      "name": "empty array",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "[]"
+      },
+      "expected": {
+        "type": "string",
+        "text": "[]"
+      }
+    },
+    {
+      "name": "scalar string with non-BMP",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "\"😀\""
+      },
+      "expected": {
+        "type": "string",
+        "text": "\"😀\""
+      }
+    },
+    {
+      "name": "nested, 2 spaces (default)",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "{\"b\":[1,2],\"a\":{}}"
+      },
+      "expected": {
+        "type": "string",
+        "text": "{\n  \"b\": [\n    1,\n    2\n  ],\n  \"a\": {}\n}"
+      }
+    },
+    {
+      "name": "4 spaces",
+      "args": {
+        "indent": "4"
+      },
+      "input": {
+        "type": "string",
+        "text": "[{\"x\":null}]"
+      },
+      "expected": {
+        "type": "string",
+        "text": "[\n    {\n        \"x\": null\n    }\n]"
+      }
+    },
+    {
+      "name": "tab",
+      "args": {
+        "indent": "tab"
+      },
+      "input": {
+        "type": "string",
+        "text": "{\"a\":[true,false]}"
+      },
+      "expected": {
+        "type": "string",
+        "text": "{\n\t\"a\": [\n\t\ttrue,\n\t\tfalse\n\t]\n}"
+      }
+    },
+    {
+      "name": "sort_keys orders by code point, not UTF-16",
+      "args": {
+        "sort_keys": true
+      },
+      "input": {
+        "type": "string",
+        "text": "{\"b\":1,\"😀\":2,\"\\uffff\":3,\"a\":4,\"B\":5}"
+      },
+      "expected": {
+        "type": "string",
+        "text": "{\n  \"B\": 5,\n  \"a\": 4,\n  \"b\": 1,\n  \"￿\": 3,\n  \"😀\": 2\n}"
+      }
+    },
+    {
+      "name": "sort_keys is recursive",
+      "args": {
+        "sort_keys": true
+      },
+      "input": {
+        "type": "string",
+        "text": "{\"z\":{\"y\":1,\"x\":2}}"
+      },
+      "expected": {
+        "type": "string",
+        "text": "{\n  \"z\": {\n    \"x\": 2,\n    \"y\": 1\n  }\n}"
+      }
+    },
+    {
+      "name": "numbers in ECMAScript form, big integers exact",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "[1.0, 2.50, 1e21, 1e-7, 12345678901234567890]"
+      },
+      "expected": {
+        "type": "string",
+        "text": "[\n  1,\n  2.5,\n  1e+21,\n  1e-7,\n  12345678901234567890\n]"
+      }
+    },
+    {
+      "name": "escapes controls and lone surrogates",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "[\"\\u0001\\n\\ud800\"]"
+      },
+      "expected": {
+        "type": "string",
+        "text": "[\n  \"\\u0001\\n\\ud800\"\n]"
+      }
+    },
+    {
+      "name": "duplicate key: last wins, with a warning",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "{\"a\":1,\"a\":2}"
+      },
+      "expected": {
+        "type": "string",
+        "text": "{\n  \"a\": 2\n}"
+      },
+      "warnings": [
+        "W_DUPLICATE_KEY"
+      ]
+    },
+    {
+      "name": "error: not JSON",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "{'a': 1}"
+      },
+      "expected": {
+        "error": "E_INPUT_TYPE"
+      }
+    },
+    {
+      "name": "error: unknown indent",
+      "args": {
+        "indent": "3"
+      },
+      "input": {
+        "type": "string",
+        "text": "[]"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

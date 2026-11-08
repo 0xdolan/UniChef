@@ -271,6 +271,37 @@
         }
       ]
     },
+    "JSON Beautify": {
+      "op": "json-beautify",
+      "args": [
+        {
+          "to": "indent",
+          "map": { "  ": "2", "    ": "4", "\t": "tab", "\\t": "tab" },
+          "default": "    "
+        },
+        { "to": "sort_keys" },
+        { "ignore": true }
+      ]
+    },
+    "JSON Minify": { "op": "json-minify", "args": [] },
+    "CSV to JSON": {
+      "op": "csv-to-json",
+      "args": [
+        { "to": "delimiter", "map": { ",": "comma", ";": "semicolon", "\t": "tab", "\\t": "tab" } },
+        { "map": { "\\r\\n": {}, "\r\n": {} } },
+        { "to": "header", "map": { "Array of dictionaries": true, "Array of arrays": false } }
+      ]
+    },
+    "JSON to CSV": {
+      "op": "json-to-csv",
+      "args": [
+        { "to": "delimiter", "map": { ",": "comma", ";": "semicolon", "\t": "tab", "\\t": "tab" } },
+        {
+          "to": "line_ending",
+          "map": { "\\r\\n": "crlf", "\r\n": "crlf", "\\n": "lf", "\n": "lf" }
+        }
+      ]
+    },
     "MD5": { "op": "md5", "args": [] },
     "SHA1": { "op": "sha1", "args": [{ "expect": 80 }] },
     "SHA2": {
