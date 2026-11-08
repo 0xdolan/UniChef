@@ -1,20 +1,2 @@
 # Requirement IDs with no test or CI step yet (see scripts/check-traceability.py).
 # Remove an ID when a test name, docstring or workflow step references it.
-FR-003
-FR-004
-GOV-010
-NFR-020
-NFR-021
-NFR-022
-NFR-023
-NFR-030
-NFR-041
-NFR-042
-SEC-001
-SEC-002
-SEC-003
-SEC-004
-SEC-005
-SEC-006
-SEC-008
-SEC-009

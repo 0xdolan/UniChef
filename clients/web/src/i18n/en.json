@@ -12,6 +12,7 @@
   "nav.notFound": "This page does not exist.",
   "nav.home": "Go to the workbench",
   "nav.breadcrumb": "Breadcrumb",
+  "nav.main": "Main",
   "nav.loading": "Loading…",
   "ops.title": "Operations",
   "ops.search": "Search operations",

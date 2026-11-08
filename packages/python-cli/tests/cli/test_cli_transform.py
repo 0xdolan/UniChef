@@ -8,7 +8,7 @@ from typing import Any
 
 import pytest
 
-from conftest import Cli
+from conftest import VECTORS, Cli, load_json
 from unichef.cli.commands.transform import convert_arg, format_recipe
 from unichef.core.errors import UniChefError
 from unichef.core.registry import ArgSpec, get_operation
@@ -334,3 +334,40 @@ def test_regex_unsupported(cli: Cli) -> None:
     result = cli("regex", "(?P<x>a)", "a")
     assert result.code == 1
     assert "E_REGEX_UNSUPPORTED" in result.stderr
+
+
+# -- FR-003: the CLI bakes the shared recipe vectors byte for byte ---------------------------
+
+
+def _recipe_cases() -> list[Any]:
+    cases = []
+    for path in sorted((VECTORS / "_recipes").glob("*.json")):
+        doc = load_json(path)
+        for case in doc["cases"]:
+            types = (case["input"]["type"], case.get("expected", {}).get("type"))
+            # A string with a lone surrogate has no UTF-8 form, so it cannot arrive on stdin.
+            text = case["input"].get("text", "")
+            if text.encode("utf-8", "surrogatepass").decode("utf-8", "replace") != text:
+                continue
+            if types[0] in {"bytes", "string"} and types[1] in {"bytes", "string"}:
+                cases.append(pytest.param(doc["recipe"], case, id=f"{path.stem}:{case['name']}"))
+    return cases
+
+
+def _vector_bytes(raw: dict[str, Any]) -> bytes:
+    return bytes.fromhex(raw["hex"]) if raw["type"] == "bytes" else raw["text"].encode("utf-8")
+
+
+@pytest.mark.parametrize(("recipe_doc", "case"), _recipe_cases())
+def test_bake_matches_recipe_vectors(
+    cli: Cli, tmp_path: Path, recipe_doc: dict[str, Any], case: dict[str, Any]
+) -> None:
+    """FR-003: `unichef bake -r recipe.json < in > out` writes the bytes the vectors expect.
+
+    The TypeScript core runs the same vectors (parity job), so this is also the web app's output.
+    """
+    path = tmp_path / "recipe.json"
+    path.write_text(json.dumps(recipe_doc), encoding="utf-8")
+    result = cli("bake", "-r", str(path), "--format", "raw", stdin=_vector_bytes(case["input"]))
+    assert result.code == 0, result.stderr
+    assert result.stdout == _vector_bytes(case["expected"])

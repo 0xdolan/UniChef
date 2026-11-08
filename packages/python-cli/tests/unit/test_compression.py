@@ -19,6 +19,7 @@ def _raw(data: bytes) -> bytes:
 
 
 def test_inflate_stops_at_the_limit() -> None:
+    """SEC-005: decompression stops at the output cap."""
     bomb = _raw(bytes(1 << 20))
     with pytest.raises(UniChefError) as info:
         _inflate_raw(bomb, 1000, "raw-inflate")
@@ -29,6 +30,7 @@ def test_inflate_stops_at_the_limit() -> None:
 
 
 def test_gunzip_members_share_the_limit() -> None:
+    """SEC-005: concatenated gzip members share one decompression cap."""
     data = gzip.compress(bytes(80), mtime=0) * 2
     ctx = OpContext(limits=Limits(min_output_size=100, output_factor=1))
     with pytest.raises(UniChefError) as info:

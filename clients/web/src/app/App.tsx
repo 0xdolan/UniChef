@@ -94,7 +94,7 @@ export function App(): ReactNode {
       </a>
       <header className={styles.header}>
         <span className={styles.logo}>{t('app.title')}</span>
-        <nav aria-label="Main" className={styles.nav}>
+        <nav aria-label={t('nav.main')} className={styles.nav}>
           {NAV.map(([href, key, sections]) => (
             <a
               key={href}

@@ -14,10 +14,12 @@ sudo apt install unichef
 ```sh
 make deb-check                 # ubuntu:24.04 (noble)
 SERIES=26.04 make deb-check    # ubuntu:26.04 (resolute)
+docker run --rm -v "$PWD:/src:ro" debian:trixie /src/scripts/deb/check.sh   # Debian 13
 ```
 
-The check builds the orig tarball from `HEAD` and builds the binary package in a clean
-container. It then runs lintian (Ubuntu profile, failing on warnings) and the autopkgtest.
+CI also runs it in `debian:trixie`, because Debian 13 must build from the source package
+(NFR-023). The check builds the orig tarball from `HEAD` and builds the binary package in a clean
+container. It then runs lintian (the Ubuntu or Debian profile, failing on warnings) and the autopkgtest.
 CI runs the same check for every series.
 
 `scripts/deb/ppa-upload.sh --dry-run` builds and lints the source packages for every series.
