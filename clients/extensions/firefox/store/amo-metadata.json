@@ -1,0 +1,12 @@
+{
+  "categories": { "firefox": ["web-development", "privacy-security"] },
+  "summary": {
+    "en-US": "Inspect selected text character by character, find invisible and bidi characters, and run UniChef recipes offline."
+  },
+  "description": {
+    "en-US": "UniChef shows what a piece of text is really made of. Select text on any page, right-click and choose \"Inspect with UniChef\" to see every code point with its name, general category and script, and invisible and bidirectional control characters listed first.\n\nThe sidebar also runs UniChef recipes (encode, decode, normalise, escape and more) and has a character browser. Everything runs inside the extension: no text leaves your browser, nothing is collected and the extension asks for no access to the pages you visit.\n\nSource code and issue tracker: https://github.com/0xdolan/unichef"
+  },
+  "homepage": { "en-US": "https://0xdolan.github.io/unichef/" },
+  "support_url": { "en-US": "https://github.com/0xdolan/unichef/issues" },
+  "version": { "license": "GPL-3.0-or-later" }
+}
