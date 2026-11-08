@@ -1,0 +1,23 @@
+{
+  "name": "extensions",
+  "version": "0.1.0-alpha.1",
+  "private": true,
+  "description": "The UniChef browser extensions (Manifest V3) for Chrome, Edge, Firefox and Safari.",
+  "type": "module",
+  "license": "GPL-3.0-or-later",
+  "scripts": {
+    "build": "node build/build.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/chrome": "0.3.6",
+    "@types/node": "24.19.2",
+    "ajv": "8.20.0",
+    "fflate": "0.8.3",
+    "vite": "8.3.5",
+    "vitest": "5.1.0",
+    "web-ext": "10.8.0"
+  }
+}

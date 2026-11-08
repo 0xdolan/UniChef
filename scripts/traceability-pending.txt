@@ -2,7 +2,6 @@
 # Remove an ID when a test name, docstring or workflow step references it.
 FR-003
 FR-004
-FR-007
 GOV-010
 NFR-020
 NFR-021

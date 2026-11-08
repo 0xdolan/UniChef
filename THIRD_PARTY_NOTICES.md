@@ -23,6 +23,13 @@ UniChef is licensed under GPL-3.0-or-later (see `LICENSE`). This file lists thir
 - **Copyright:** Copyright © WHATWG (Apple, Google, Mozilla, Microsoft).
 - **Licence:** Creative Commons Attribution 4.0 International, https://creativecommons.org/licenses/by/4.0/.
 
+## SchemaStore Chrome manifest schema (build check, not shipped)
+
+- **Used in:** `clients/extensions/common/build/chrome-manifest.schema.json` (unmodified). The extension build validates the Chrome and Edge manifests against it; it is not part of any package.
+- **Source:** https://github.com/SchemaStore/schemastore `src/schemas/json/chrome-manifest.json` at commit `1ec8595a0e53d5ae5b81c3888dff2161f5d43100` (SHA-256 `8fc2fe8078ed7c05dce7b6e3e969e160ca3ba20e22e410ab42dc801fcae8492a`).
+- **Copyright:** Copyright SchemaStore contributors.
+- **Licence:** Apache License 2.0, https://www.apache.org/licenses/LICENSE-2.0.
+
 ## Contributor Covenant (Code of Conduct)
 
 - **Used in:** `CODE_OF_CONDUCT.md`. Only the enforcement contact was filled in.

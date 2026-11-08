@@ -12,7 +12,8 @@
     "noPropertyAccessFromIndexSignature": false,
     "paths": {
       "@unichef/core": ["../../packages/npm-core/src/index.ts"],
-      "@unichef/core/*": ["../../packages/npm-core/src/*"]
+      "@unichef/core/*": ["../../packages/npm-core/src/*"],
+      "@ext/*": ["../extensions/common/src/*"]
     }
   },
   "include": [
