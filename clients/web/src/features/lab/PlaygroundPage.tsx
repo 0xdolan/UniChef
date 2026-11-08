@@ -17,7 +17,14 @@ import { useEffect, useId, useMemo, useState, type ReactNode } from 'react';
 import { t } from '../../i18n/index.js';
 import { BAKE_MS, createBakeWorker } from '../../lib/baker.js';
 import { dishText } from '../../lib/format.js';
-import { newStep, recipeDoc, stepsFromDoc, type StepModel } from '../../state/recipe.js';
+import {
+  newStep,
+  recipeDoc,
+  redactSecrets,
+  stepsFromDoc,
+  type StepModel,
+} from '../../state/recipe.js';
+import { useApp } from '../../state/store.js';
 import { BakeClient, type WorkerLike } from '../../worker/client.js';
 import { ArgField } from '../args/ArgField.js';
 import styles from './Lab.module.css';
@@ -100,7 +107,12 @@ function Demo({
   const [step, setStep] = useState(() => newStep(op.id));
   const [input, setInput] = useState(() => op.examples[0]?.input ?? sampleInput(op));
   const output = usePlaygroundBake(step, input, create);
-  const doc = useMemo(() => recipeDoc([step]), [step]);
+  // The link is shareable, so keys and IVs stay out of it unless the user opted in (SEC-007).
+  const shareSecrets = useApp((s) => s.shareSecrets);
+  const doc = useMemo(
+    () => recipeDoc(shareSecrets ? [step] : redactSecrets([step])),
+    [step, shareSecrets],
+  );
   const href = useWorkbenchHref(doc, input);
 
   return (

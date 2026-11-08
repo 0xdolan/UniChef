@@ -208,6 +208,23 @@ describe('playground (FR-030)', () => {
     expect(link.getAttribute('href')).toMatch(/^#\/\?r=[\w-]+&i=[\w-]+$/);
   });
 
+  it('SEC-007: leaves the key out of its workbench link', async () => {
+    const workers = fakeWorkers();
+    window.location.hash = '#/playground/hmac';
+    const { PlaygroundPage } = await import('../src/features/lab/PlaygroundPage.js');
+    const { decodeState } = await import('../src/lib/share.js');
+    render(<PlaygroundPage param="hmac" createWorker={workers.create} />);
+    // The example's key is "secret".
+    fireEvent.click(screen.getByRole('button', { name: /^message → / }));
+    const link = await screen.findByRole('link', { name: 'Open in the workbench' });
+    await waitFor(async () => {
+      const state = await decodeState(link.getAttribute('href') ?? '');
+      expect(JSON.stringify(state?.recipe)).toContain('<redacted>');
+    });
+    const state = await decodeState(link.getAttribute('href') ?? '');
+    expect(JSON.stringify(state?.recipe)).not.toContain('"secret"');
+  });
+
   it('keeps example labels to one short line', async () => {
     const { clip } = await import('../src/features/lab/PlaygroundPage.js');
     expect(clip('Hello')).toBe('Hello');
