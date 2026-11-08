@@ -1,5 +1,7 @@
 # Contributing to UniChef
 
+Everyone taking part follows the [Code of Conduct](CODE_OF_CONDUCT.md). Report security problems privately as described in [SECURITY.md](SECURITY.md), not in issues. Issues and pull requests use the templates in `.github/`.
+
 ## Branches (Gitflow)
 
 | Branch | Cut from | Merges into | Use |
@@ -29,7 +31,7 @@ Use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/): `typ
 - Start every source file with an SPDX header: `# SPDX-License-Identifier: GPL-3.0-or-later` in Python, `// SPDX-License-Identifier: GPL-3.0-or-later` in TypeScript.
 - Do not commit the planning documents (`PRD.md`, `PROMPT.md`, `UniChef-PRD.md`). They are listed in `.gitignore`.
 - Third-party code or data needs an entry in `THIRD_PARTY_NOTICES.md` in the same change.
-- Branding masters under `assets/branding/source/` are append-only. See `docs/branding/README.md`.
+- Files under `assets/branding/source/` and `assets/docs/` are append-only (GOV-020). To change one, add a new versioned file. See `docs/branding/README.md`. The `assets-guard` check fails a pull request that changes or deletes an existing file, unless an owner of `/assets/` in CODEOWNERS adds the `assets-change-approved` label. Regenerating the screenshots with `make screenshots` needs that label.
 
 ## Local setup
 

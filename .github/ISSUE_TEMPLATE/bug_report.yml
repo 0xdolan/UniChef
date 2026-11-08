@@ -1,0 +1,59 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+name: Bug report
+description: Something gives a wrong result, crashes or does not work as documented.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For a security problem, do not file an issue: see [SECURITY.md](https://github.com/0xdolan/unichef/blob/develop/SECURITY.md).
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      options:
+        - Python CLI (unichef)
+        - npm library (@unichef/core)
+        - Web app
+        - Browser extension
+        - Debian or Ubuntu package
+        - Docker image
+        - Other or not sure
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: "`unichef --version`, the npm version, or the version on the web app's About page."
+      placeholder: 0.1.0-alpha.1
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Operating system, and the Python, Node or browser version.
+      placeholder: Ubuntu 24.04, Python 3.12 / Firefox 140
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: The command, or the recipe and input. A shared recipe link works too; leave out any keys you need to keep secret.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual result
+      description: The output or the full error message.
+      render: text
+    validations:
+      required: true

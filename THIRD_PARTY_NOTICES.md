@@ -30,6 +30,13 @@ UniChef is licensed under GPL-3.0-or-later (see `LICENSE`). This file lists thir
 - **Copyright:** Copyright SchemaStore contributors.
 - **Licence:** Apache License 2.0, https://www.apache.org/licenses/LICENSE-2.0.
 
+## Contributor Covenant (Code of Conduct)
+
+- **Used in:** `CODE_OF_CONDUCT.md`. Only the enforcement contact was filled in.
+- **Source:** https://www.contributor-covenant.org/version/2/1/code_of_conduct/ (version 2.1).
+- **Copyright:** Copyright Contributor Covenant contributors.
+- **Licence:** Creative Commons Attribution 4.0 International, https://creativecommons.org/licenses/by/4.0/.
+
 ## Development-only agent skills (not shipped)
 
 These guide AI-assisted UI work. They are not part of any package or build output.

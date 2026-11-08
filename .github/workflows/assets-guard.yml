@@ -1,0 +1,69 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Asset immutability (PRD §9.4, GOV-020): files under assets/branding/source/ and
+# assets/docs/ are append-only. A pull request that changes or deletes one fails unless
+# the label assets-change-approved was added by an owner of /assets/ in CODEOWNERS (read
+# from the base branch, so the pull request cannot change who may approve it).
+name: assets-guard
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: assets-guard-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  assets-guard:
+    name: assets-guard
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      issues: read
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Existing assets are unchanged, or the change is approved
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR: ${{ github.event.pull_request.number }}
+          LABEL: assets-change-approved
+        run: |
+          changed=$(git diff --name-status --no-renames --diff-filter=DMT \
+            "$BASE_SHA...$HEAD_SHA" -- assets/branding/source assets/docs)
+          if [[ -z "$changed" ]]; then
+            echo "No existing file under assets/branding/source/ or assets/docs/ changes."
+            exit 0
+          fi
+          echo "Changed or deleted (M = modified, D = deleted, T = type changed):"
+          echo "$changed"
+
+          labeler=$(gh api --paginate "repos/$GITHUB_REPOSITORY/issues/$PR/events" \
+            --jq ".[] | select(.event == \"labeled\" and .label.name == \"$LABEL\") | .actor.login" \
+            | tail -n 1)
+          labels=$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR/labels" --jq '.[].name')
+          if ! grep -qxF "$LABEL" <<< "$labels"; then
+            echo "::error::Assets are append-only (PRD §9.4). Add a new versioned file instead (unichef-mark.v2.svg), or ask an owner of /assets/ to add the label $LABEL."
+            exit 1
+          fi
+
+          owners=$(git show "$BASE_SHA:.github/CODEOWNERS" \
+            | awk '$1 == "/assets/" { for (i = 2; i <= NF; i++) print $i }' | sed 's/^@//')
+          if [[ -z "$owners" ]]; then
+            echo "::error::CODEOWNERS on the base branch has no /assets/ rule."
+            exit 1
+          fi
+          if grep -qxF "$labeler" <<< "$owners"; then
+            echo "Approved: $LABEL was added by @$labeler, an owner of /assets/."
+            exit 0
+          fi
+          echo "::error::$LABEL was added by @${labeler:-unknown}, who is not an owner of /assets/ in CODEOWNERS ($(paste -sd' ' <<< "$owners"))."
+          exit 1
