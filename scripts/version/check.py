@@ -3,14 +3,42 @@
 # dependencies = []
 # ///
 # SPDX-License-Identifier: GPL-3.0-or-later
-"""Fail if any file disagrees with VERSION (PRD §10.3 `ci / version-consistency`, REL-001).
+"""Fail if any file disagrees with VERSION (PRD §10.3 `ci / version-consistency`, REL-001),
+or if the E2E container image is not the locked @playwright/test version (PRD §11.7).
 
 uv run scripts/version/check.py
 """
 
+import re
 import sys
+from pathlib import Path
 
 from versions import VersionError, existing_targets, read_version
+
+
+ROOT = Path(__file__).resolve().parents[2]
+LOCK = ROOT / "pnpm-lock.yaml"
+COMPOSE = ROOT / "docker" / "docker-compose.yml"
+
+
+def playwright_problems() -> list[str]:
+    """The compose e2e image tag must equal the @playwright/test version in pnpm-lock.yaml."""
+    if not LOCK.exists() or not COMPOSE.exists():
+        return []
+    locked = set(re.findall(r"^  '@playwright/test@([^']+)':$", LOCK.read_text(), re.M))
+    images = set(
+        re.findall(r"mcr\.microsoft\.com/playwright:v([\w.-]+?)-\w+$", COMPOSE.read_text(), re.M)
+    )
+    if not locked and not images:
+        return []
+    if len(locked) != 1:
+        return [f"{LOCK.name}: expected one @playwright/test version, found {sorted(locked)}"]
+    want = locked.pop()
+    return [
+        f"docker/docker-compose.yml: playwright image v{tag}, expected v{want}"
+        for tag in sorted(images or {"(none)"})
+        if tag != want
+    ]
 
 
 def main() -> int:
@@ -28,6 +56,7 @@ def main() -> int:
                 problems.append(f"{t.path}: no version found")
             elif found != want:
                 problems.append(f"{t.path}: {found!r}, expected {want!r}")
+    problems += playwright_problems()
     for p in problems:
         print(f"mismatch: {p}", file=sys.stderr)
     status = "ok" if not problems else f"{len(problems)} problem(s)"

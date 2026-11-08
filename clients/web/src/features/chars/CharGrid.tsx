@@ -96,15 +96,19 @@ export function CharGrid({
                   className={styles.cell}
                   data-gc={cell?.gc}
                 >
-                  <a
-                    href={charHref(cp)}
-                    title={cell?.name}
-                    aria-label={cell === undefined ? label : `${label} ${cell.name}`}
-                  >
+                  {/* The name is hidden text, not an aria-label, so it starts with the visible code point (WCAG 2.5.3). */}
+                  <a href={charHref(cp)} title={cell?.name}>
                     <span className={styles.glyph} aria-hidden="true">
                       {cell?.glyph ?? ''}
                     </span>
+                    <span className="visually-hidden">U+</span>
                     <span className={styles.cp}>{label.slice(2)}</span>
+                    {cell !== undefined && (
+                      <>
+                        {' '}
+                        <span className="visually-hidden">{cell.name}</span>
+                      </>
+                    )}
                   </a>
                 </div>
               );

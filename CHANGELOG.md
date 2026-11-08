@@ -60,6 +60,12 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
   - The playground (`#/playground/<op-id>`) builds a live demo for every operation from its metadata (FR-030), with a link that opens the step in the workbench.
   - A recipe gallery (`#/recipes`) of 12 recipes with sample inputs, each opening in the workbench.
   - The About page (`#/about`) shows the versions, the licence, data notices and every shipped npm package with its licence text, collected at build time.
+- **Web app**, fifth slice:
+  - It installs as a PWA and works offline after the first visit. A Workbox service worker precaches the app shell, the UCD and the entity data, and updates itself on the next visit.
+  - Playwright end-to-end tests in Chromium, Firefox and WebKit cover the workbench, sharing, character lookup and the query language. They also run axe WCAG 2.2 AA checks on every page in both themes, plus an offline run (`make e2e`, the `e2e` CI job in the Playwright image).
+  - Bundle budgets (`scripts/check-bundle.mjs`) run after every web build: initial JS 250 KiB, and the UCD files at 400, 900 and 150 KiB, all gzipped.
+  - Character grid cells name their character with hidden text that starts with the visible code point, so voice control users can say what they see.
+  - `scripts/version/check.py` also checks that the Playwright image in `docker/docker-compose.yml` matches the locked `@playwright/test` version.
 - **CI** (`.github/`):
   - Lint, typecheck, Python and TypeScript test matrices.
   - A parity job that checks both cores ran every vector case (`scripts/parity-report.py`).
