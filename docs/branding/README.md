@@ -27,7 +27,7 @@ Every SVG is plain SVG 1.1 with a `viewBox`. Text is converted to outlines, and 
 
 `unichef-logo.ai` (PRD §9.1) has not been created yet. When a designer creates it, build it by opening `unichef-logo.svg` in Illustrator and following §6.2. Commit it through Git LFS.
 
-Derived PNG, ICO and PDF files are build output (`assets/branding/dist/`, gitignored) and are produced by `scripts/assets/build.py` from these masters (PRD §9.2).
+Derived PNG, ICO and PDF files are build output (`assets/branding/dist/`, gitignored) and are produced by `scripts/assets/build.py` from these masters (PRD §9.2). Run `make assets` to build them (it needs rsvg-convert, ImageMagick and oxipng, which the dev container has); `assets/branding/manifest.json` lists every output and its size. `uv run scripts/assets/build.py --lint` checks the masters, and `make lint` runs it.
 
 Masters are append-only (GOV-020). To change a master, add a versioned file such as `unichef-mark.v2.svg`. Do not edit the existing file.
 
