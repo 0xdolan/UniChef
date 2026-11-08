@@ -72,9 +72,9 @@ const repr = (value: unknown): string =>
 
 // -- chef format ---------------------------------------------------------------------------
 
-const OP_NAME = /[A-Za-z0-9_\-/.+]+?(?=\()/y;
+const OP_NAME = /[A-Za-z0-9_\-/.+]+/y;
 const WORD = /[A-Za-z0-9_$.+-]+/y;
-const NUMBER = /^[+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?$/;
+const NUMBER = /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?$/;
 const HEX4 = /^[0-9a-fA-F]{4}$/;
 const HEX2 = /^[0-9a-fA-F]{2}$/;
 
@@ -113,8 +113,14 @@ class Chef {
   steps(): CyberChefStep[] {
     const out: CyberChefStep[] = [];
     while (this.peek() !== '') {
+      // Greedy then checked, not a lazy lookahead: '(' is not a name character, so it is the
+      // same match without the quadratic backtracking.
+      const start = this.pos;
       const name = this.match(OP_NAME);
-      if (name === null) throw this.fail('expected an operation name');
+      if (name === null || this.text.charAt(this.pos) !== '(') {
+        this.pos = start;
+        throw this.fail('expected an operation name');
+      }
       this.eat('(');
       const args: Plain[] = [];
       while (this.peek() !== ')') {

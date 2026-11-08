@@ -66,4 +66,15 @@ describe('FR-009: CyberChef import', () => {
       { op: 'A', args: [{ k: 'ABq' }] },
     ]);
   });
+
+  // Inputs that made the op-name and number patterns backtrack quadratically (CodeQL
+  // js/polynomial-redos); each must fail in linear time, well inside the test timeout.
+  it.each([
+    ['a long name with no (', '+'.repeat(200_000)],
+    ['a long number with a bad tail', `A(0${'00'.repeat(200_000)}x)`],
+  ])('rejects %s quickly', (_, text) => {
+    expect(() => parseCyberChef(text)).toThrow(
+      expect.objectContaining({ code: 'E_RECIPE_SCHEMA' }),
+    );
+  });
 });

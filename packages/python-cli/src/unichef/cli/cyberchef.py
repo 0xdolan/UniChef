@@ -13,7 +13,7 @@ from unichef.core.dish import JsonValue
 from unichef.core.errors import UniChefError
 
 _ESCAPES = {"n": "\n", "t": "\t", "r": "\r", "\\": "\\", "0": "\0"}
-_NUMBER = re.compile(r"[+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?")
+_NUMBER = re.compile(r"[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?")
 _BYTES_OPTIONS = {"Hex": "hex", "UTF8": "utf8", "Base64": "base64", "Latin1": "latin1"}
 
 type Translator = dict[str, Any]
