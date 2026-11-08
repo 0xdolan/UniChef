@@ -50,16 +50,19 @@ gh workflow run ppa.yml -R 0xdolan/unichef -f ref=v0.1.0-alpha.1 -f rev=2
 ## One-time setup (maintainer)
 
 1. **Launchpad account and key.** Sign the Ubuntu Code of Conduct on your Launchpad profile.
-   Then register the signing key there:
+   The signing key is `5029862C2AFFDBCA` (`Dolan <0xdolan@gmail.com>`, valid until
+   2027-10-27), and it is already active on the profile. For a new key, publish it first and then
+   register it:
 
    ```sh
-   gpg --keyserver keyserver.ubuntu.com --send-keys 7D48F19FB6EB1D9A
-   gpg --fingerprint 7D48F19FB6EB1D9A   # paste the fingerprint at https://launchpad.net/~/+editpgpkeys
+   gpg --keyserver keyserver.ubuntu.com --send-keys <KEY_ID>
+   gpg --fingerprint <KEY_ID>   # paste the fingerprint at https://launchpad.net/~/+editpgpkeys
    ```
 
    Launchpad e-mails you an encrypted message. Decrypt it with `gpg -d` and open the link
    inside it. The key's UID must include `0xdolan@gmail.com`, the `Maintainer` in
-   `debian/control`.
+   `debian/control`. Extend the key's expiry before 2027-10-27 (`gpg --quick-set-expire`),
+   then send it to the key server again.
 
 2. **Create the PPA** at <https://launchpad.net/~0xdolan/+activate-ppa> with the name
    `unichef`.
@@ -76,10 +79,10 @@ gh workflow run ppa.yml -R 0xdolan/unichef -f ref=v0.1.0-alpha.1 -f rev=2
      gh api -X POST repos/0xdolan/unichef/environments/ppa-publish/deployment-branch-policies \
        -f name="${p#*:}" -f type="${p%%:*}"
    done
-   gpg --armor --export-secret-keys 7D48F19FB6EB1D9A \
+   gpg --armor --export-secret-keys 5029862C2AFFDBCA \
      | gh secret set PPA_GPG_PRIVATE_KEY -R 0xdolan/unichef --env ppa-publish
    gh secret set PPA_GPG_PASSPHRASE -R 0xdolan/unichef --env ppa-publish   # prompts
-   gh secret set GPG_KEY_ID -R 0xdolan/unichef --env ppa-publish --body 7D48F19FB6EB1D9A
+   gh secret set GPG_KEY_ID -R 0xdolan/unichef --env ppa-publish --body 5029862C2AFFDBCA
    ```
 
    A signing subkey is safer in CI than the primary key. To use one, export only that
