@@ -27,6 +27,7 @@ tar -xzf "$orig" -C "$work"
 src="$work/unichef-$deb"
 # shellcheck source=/dev/null
 codename=$(. /etc/os-release && echo "$VERSION_CODENAME")
+# shellcheck source=/dev/null
 distro=$(. /etc/os-release && echo "$ID")   # ubuntu or debian: the lintian profile
 "$repo/scripts/deb/prepare-tree.sh" "$src" "$codename"
 # Ubuntu's lintian profile rejects Debian's "unstable"; build for this release instead.

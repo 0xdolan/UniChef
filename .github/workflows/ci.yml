@@ -101,14 +101,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Linux, macOS and Windows on x86-64 and arm64 (NFR-021).
+        # Linux and macOS on x86-64 and arm64, Windows on x86-64 (NFR-021). Windows arm64
+        # waits for cryptography to publish win_arm64 wheels.
         os:
           - ubuntu-24.04
           - ubuntu-24.04-arm
           - macos-latest
           - macos-15-intel
           - windows-latest
-          - windows-11-arm
         py: ['3.12', '3.13', '3.14']
     defaults:
       run:
