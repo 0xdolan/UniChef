@@ -78,6 +78,7 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
   - Base64 is about 4 times faster in TypeScript and about 17 times faster in Python. The 10 MiB chain takes about 0.5 s and 0.3 s, down from 1.7 s and 5.2 s.
   - Name queries (`name~/…/`) over every named code point take about 15–35 ms instead of 440 ms in TypeScript. The regex predicate now reads the clock once per 64 names, since each clock read cost as much as testing a name.
   - In Python they take about 140 ms instead of 215 ms. The predicate passes the regex timeout positionally and keeps the GIL, since the keyword form and the GIL release cost more than searching a short name. The timeout still stops a runaway pattern.
+  - NFR-005: `unichef version` starts in about 20 ms (budget 150 ms). A test checks that `version`, `--help` and the non-Unicode operations never load the UCD, and that a bare `version` skips Rich.
   - The output pane shows a table as virtualised rows instead of tab-separated text, and "Copy output" still copies it as TSV. With 100 000 rows, the output appears in under 1 s (down from 8 s), and the first rows in about 100 ms.
 - The core exports the types its public signatures use (`DishValues`, `BytesEncoding`, `Example`, `NestedRunner`, `PlainJson`, `WarnFn`), so they show in the API reference.
 - **CI** (`.github/`):
