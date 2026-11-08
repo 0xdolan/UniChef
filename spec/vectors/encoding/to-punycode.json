@@ -1,0 +1,181 @@
+{
+  "op": "to-punycode",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "one non-ASCII letter",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "münchen"
+      },
+      "expected": {
+        "type": "string",
+        "text": "mnchen-3ya"
+      }
+    },
+    {
+      "name": "RFC 3492 7.1 (A) Arabic",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "ليهمابتكلموشعربي؟"
+      },
+      "expected": {
+        "type": "string",
+        "text": "egbpdaj6bu4bxfgehfvwxn"
+      }
+    },
+    {
+      "name": "RFC 3492 7.1 (B) Chinese",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "他们为什么不说中文"
+      },
+      "expected": {
+        "type": "string",
+        "text": "ihqwcrb4cv8a8dqg056pqjye"
+      }
+    },
+    {
+      "name": "RFC 3492 7.1 (L) mixed case kept",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "3年B組金八先生"
+      },
+      "expected": {
+        "type": "string",
+        "text": "3B-ww4c5e180e575a65lsy2b"
+      }
+    },
+    {
+      "name": "RFC 3492 7.1 (M) leading hyphen",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "安室奈美恵-with-SUPER-MONKEYS"
+      },
+      "expected": {
+        "type": "string",
+        "text": "-with-SUPER-MONKEYS-pc58ag80a8qai00g7n9n"
+      }
+    },
+    {
+      "name": "RFC 3492 7.1 (R) Japanese",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "そのスピードで"
+      },
+      "expected": {
+        "type": "string",
+        "text": "d9juau41awczczp"
+      }
+    },
+    {
+      "name": "RFC 3492 7.1 (S) ASCII only",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "-> $1.00 <-"
+      },
+      "expected": {
+        "type": "string",
+        "text": "-> $1.00 <--"
+      }
+    },
+    {
+      "name": "astral code point",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "😀"
+      },
+      "expected": {
+        "type": "string",
+        "text": "e28h"
+      }
+    },
+    {
+      "name": "domain mode encodes non-ASCII labels only",
+      "args": {
+        "domain": true
+      },
+      "input": {
+        "type": "string",
+        "text": "bücher.Example"
+      },
+      "expected": {
+        "type": "string",
+        "text": "xn--bcher-kva.Example"
+      }
+    },
+    {
+      "name": "domain mode splits at ideographic full stop",
+      "args": {
+        "domain": true
+      },
+      "input": {
+        "type": "string",
+        "text": "münchen。de"
+      },
+      "expected": {
+        "type": "string",
+        "text": "xn--mnchen-3ya.de"
+      }
+    },
+    {
+      "name": "domain mode keeps empty labels",
+      "args": {
+        "domain": true
+      },
+      "input": {
+        "type": "string",
+        "text": ".ü."
+      },
+      "expected": {
+        "type": "string",
+        "text": ".xn--tda."
+      }
+    },
+    {
+      "name": "error: unknown arg",
+      "args": {
+        "idna": true
+      },
+      "input": {
+        "type": "string",
+        "text": "ü"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "error: domain is not a boolean",
+      "args": {
+        "domain": "yes"
+      },
+      "input": {
+        "type": "string",
+        "text": "ü"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

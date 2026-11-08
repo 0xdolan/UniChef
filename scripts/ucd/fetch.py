@@ -51,10 +51,12 @@ UCD_FILES = (
     "emoji/emoji-data.txt",
     "extracted/DerivedBidiClass.txt",
     "extracted/DerivedGeneralCategory.txt",
+    "extracted/DerivedJoiningType.txt",
     "extracted/DerivedName.txt",
     "NormalizationTest.txt",
 )
 SECURITY_FILES = ("confusables.txt", "IdentifierStatus.txt", "IdentifierType.txt")
+IDNA_FILES = ("IdnaMappingTable.txt", "IdnaTestV2.txt")  # UTS #46
 LICENSE_URL = "https://www.unicode.org/license.txt"
 
 
@@ -73,6 +75,8 @@ def sources(version: str) -> dict[str, str]:
     )
     urls = {name: f"{base}/ucd/{name}" for name in UCD_FILES}
     urls |= {f"security/{name}": f"{sec}/{name}" for name in SECURITY_FILES}
+    idna = f"{base}/idna" if major >= 17 else f"https://www.unicode.org/Public/idna/{version}"
+    urls |= {f"idna/{name}": f"{idna}/{name}" for name in IDNA_FILES}
     urls["license.txt"] = LICENSE_URL
     return urls
 

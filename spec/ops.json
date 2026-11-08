@@ -1083,6 +1083,36 @@
       ]
     },
     {
+      "id": "from-punycode",
+      "name": "From Punycode",
+      "category": "Encoding",
+      "description": "Decode Punycode (RFC 3492). With `domain`, split the input into labels as to-punycode does and decode each label that starts with xn-- (any case).",
+      "input": "string",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "domain",
+          "kind": "boolean",
+          "default": false
+        }
+      ],
+      "examples": [
+        {
+          "input": "mnchen-3ya",
+          "args": {},
+          "output": "münchen"
+        },
+        {
+          "input": "xn--bcher-kva.example",
+          "args": {
+            "domain": true
+          },
+          "output": "bücher.example"
+        }
+      ]
+    },
+    {
       "id": "generate-random-bytes",
       "name": "Generate Random Bytes",
       "category": "Crypto",
@@ -1309,6 +1339,97 @@
           "input": "<p>café</p>",
           "args": {},
           "output": "&lt;p&gt;café&lt;/p&gt;"
+        }
+      ]
+    },
+    {
+      "id": "idna-to-ascii",
+      "name": "IDNA To ASCII",
+      "category": "Encoding",
+      "description": "UTS #46 ToASCII with nontransitional processing: map, normalise to NFC, check every label, and encode non-ASCII labels as xn-- plus Punycode. Any error fails the op with E_DECODE, naming the first error found. `verify_dns_length` requires labels of 1 to 63 characters and a name of 1 to 253 (not counting a final dot).",
+      "input": "string",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "check_hyphens",
+          "kind": "boolean",
+          "default": true
+        },
+        {
+          "name": "check_bidi",
+          "kind": "boolean",
+          "default": true
+        },
+        {
+          "name": "check_joiners",
+          "kind": "boolean",
+          "default": true
+        },
+        {
+          "name": "use_std3_ascii_rules",
+          "kind": "boolean",
+          "default": true
+        },
+        {
+          "name": "verify_dns_length",
+          "kind": "boolean",
+          "default": true
+        }
+      ],
+      "examples": [
+        {
+          "input": "Bücher.Example",
+          "args": {},
+          "output": "xn--bcher-kva.example"
+        },
+        {
+          "input": "faß.de",
+          "args": {},
+          "output": "xn--fa-hia.de"
+        }
+      ]
+    },
+    {
+      "id": "idna-to-unicode",
+      "name": "IDNA To Unicode",
+      "category": "Encoding",
+      "description": "UTS #46 ToUnicode with nontransitional processing: map, normalise to NFC, decode xn-- labels and check every label. Any error fails the op with E_DECODE, naming the first error found.",
+      "input": "string",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "check_hyphens",
+          "kind": "boolean",
+          "default": true
+        },
+        {
+          "name": "check_bidi",
+          "kind": "boolean",
+          "default": true
+        },
+        {
+          "name": "check_joiners",
+          "kind": "boolean",
+          "default": true
+        },
+        {
+          "name": "use_std3_ascii_rules",
+          "kind": "boolean",
+          "default": true
+        }
+      ],
+      "examples": [
+        {
+          "input": "xn--bcher-kva.example",
+          "args": {},
+          "output": "bücher.example"
+        },
+        {
+          "input": "XN--FA-HIA.DE",
+          "args": {},
+          "output": "faß.de"
         }
       ]
     },
@@ -2684,6 +2805,36 @@
           "input": "Hi",
           "args": {},
           "output": "110 151"
+        }
+      ]
+    },
+    {
+      "id": "to-punycode",
+      "name": "To Punycode",
+      "category": "Encoding",
+      "description": "Encode the input with Punycode (RFC 3492). With `domain`, split it into labels at full stops (U+002E, U+3002, U+FF0E, U+FF61), encode each label that has a non-ASCII character as xn-- plus Punycode, and join the labels with U+002E. No mapping or checks are applied; use idna-to-ascii for that.",
+      "input": "string",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "domain",
+          "kind": "boolean",
+          "default": false
+        }
+      ],
+      "examples": [
+        {
+          "input": "münchen",
+          "args": {},
+          "output": "mnchen-3ya"
+        },
+        {
+          "input": "bücher.example",
+          "args": {
+            "domain": true
+          },
+          "output": "xn--bcher-kva.example"
         }
       ]
     },

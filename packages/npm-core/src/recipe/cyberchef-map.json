@@ -652,6 +652,8 @@
         { "expect": false }
       ]
     },
-    "Gunzip": { "op": "gunzip", "args": [] }
+    "Gunzip": { "op": "gunzip", "args": [] },
+    "To Punycode": { "op": "to-punycode", "args": [{ "to": "domain" }] },
+    "From Punycode": { "op": "from-punycode", "args": [{ "to": "domain" }] }
   }
 }

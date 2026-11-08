@@ -441,6 +441,8 @@ def build_security(folder: Path, version: str) -> dict[str, Any]:
         types[lo : hi + 1] = [tuple(sorted(f[0].split()))] * (hi - lo + 1)
     table = enum_table(types, None)
     return {
+        "idna": build_idna(folder),
+        "joiningType": build_joining_type(folder),
         "version": version,
         "confusables": confusables,
         "idStatus": {"default": status_default, "allowed": bool_ranges(allowed)},
@@ -450,6 +452,40 @@ def build_security(folder: Path, version: str) -> dict[str, Any]:
             "ranges": table["ranges"],
         },
     }
+
+
+IDNA_STATUS = {"valid": "V", "deviation": "V", "ignored": "I", "disallowed": "X"}
+
+
+def build_idna(folder: Path) -> dict[str, Any]:
+    """UTS #46 mapping table for nontransitional processing.
+
+    Values are "V" (valid; deviations are valid when nontransitional), "I" (ignored) or a
+    list of code points (mapped). Disallowed code points take the default "X".
+    """
+    status: list[Any] = ["X"] * N_CP
+    for lo, hi, f in records(read(folder, "idna/IdnaMappingTable.txt")):
+        if f[0] == "mapped":
+            check(len(f) > 1 and f[1] != "", f"Mapped entry without a mapping at U+{lo:04X}.")
+            value: Any = tuple(cps(f[1]))
+        else:
+            check(f[0] in IDNA_STATUS, f"Unknown IDNA status {f[0]!r} at U+{lo:04X}.")
+            value = IDNA_STATUS[f[0]]
+        status[lo : hi + 1] = [value] * (hi - lo + 1)
+    table = enum_table(status, "X")
+    table["values"] = [list(v) if isinstance(v, tuple) else v for v in table["values"]]
+    return table
+
+
+def build_joining_type(folder: Path) -> dict[str, Any]:
+    """Joining_Type for the RFC 5892 CONTEXTJ rules (U, the default, is not stored)."""
+    text = read(folder, "extracted/DerivedJoiningType.txt")
+    check(next(f[0] for _, _, f in missing(text)) == "Non_Joining", "Unexpected JT default.")
+    default = "U"
+    values: list[Any] = [default] * N_CP
+    for lo, hi, f in records(text):
+        values[lo : hi + 1] = [f[0]] * (hi - lo + 1)
+    return enum_table(values, default)
 
 
 # --- Output -------------------------------------------------------------------------
