@@ -1,0 +1,16 @@
+{
+  "background": { "service_worker": null, "scripts": ["background.js"], "type": "module" },
+  "permissions": { "$append": ["menus"] },
+  "sidebar_action": {
+    "default_panel": "extension.html#/panel",
+    "default_title": "UniChef",
+    "open_at_install": false
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "unichef@0xdolan.github.io",
+      "strict_min_version": "128.0",
+      "data_collection_permissions": { "required": ["none"] }
+    }
+  }
+}

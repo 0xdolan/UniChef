@@ -61,9 +61,9 @@ def test_write_updates_every_field(tmp_path: Path, monkeypatch: pytest.MonkeyPat
         dest = tmp_path / t.path
         dest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy(t.file, dest)
+    # The real extension manifest is copied above; it must be one of the targets.
     manifest = tmp_path / "clients/extensions/common/manifest.base.json"
-    manifest.parent.mkdir(parents=True)
-    manifest.write_text('{\n  "version": "0",\n  "version_name": "0"\n}\n', encoding="utf-8")
+    assert manifest.exists()
     monkeypatch.setattr(versions, "ROOT", tmp_path)
 
     v = Version.parse("0.5.0-beta.2")

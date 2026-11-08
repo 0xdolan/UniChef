@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Continuous integration (PRD §11.2). Jobs for parts that do not exist yet (extensions,
-# Debian packaging, Safari) are added as those parts land.
+# Continuous integration (PRD §11.2). Jobs for parts that do not exist yet (Debian
+# packaging, the Safari Xcode build) are added as those parts land.
 name: ci
 
 on:
@@ -70,7 +70,7 @@ jobs:
       - name: shellcheck
         run: |
           shopt -s globstar nullglob
-          files=(scripts/**/*.sh)
+          files=(scripts/**/*.sh clients/extensions/**/*.sh)
           if (( ${#files[@]} )); then shellcheck "${files[@]}"; fi
       - name: requirement traceability
         run: uv run scripts/check-traceability.py
@@ -232,6 +232,37 @@ jobs:
         run: pnpm --filter web build
       - name: Bundle budgets (NFR-010)
         run: node scripts/check-bundle.mjs
+
+  extensions:
+    name: extensions
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          enable-cache: true
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: Image tools (rsvg-convert, ImageMagick, oxipng)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends librsvg2-bin imagemagick
+          scripts/assets/install-oxipng.sh "$HOME/.local/bin"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      - run: pnpm install --frozen-lockfile
+      # Only the icons: the store screenshots come from Git LFS, which CI does not fetch.
+      - name: Extension icons
+        run: uv run scripts/assets/build.py --only ext/
+      - name: Chrome, Edge, Firefox and Safari (schema check, web-ext lint)
+        run: pnpm --filter extensions build
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: extensions
+          path: clients/extensions/common/dist/*.zip
+          if-no-files-found: error
 
   e2e:
     name: e2e

@@ -1,0 +1,122 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
+/* The extension page (PRD §7.5): a 360–420 px side panel or a 400 px popup. */
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-width: 320px;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.popup {
+  width: 400px;
+  min-height: 520px;
+  max-height: 600px;
+  overflow: auto;
+}
+
+.tabs {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  gap: 2px;
+  padding: 6px 8px 0;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.tabs a {
+  padding: 8px 10px;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+.tabs a:hover {
+  color: var(--text);
+}
+
+.tabs a[aria-current='page'] {
+  border-bottom-color: var(--primary);
+  color: var(--text);
+}
+
+.tabs a:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: -2px;
+}
+
+.main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--gap);
+  padding: var(--gap);
+  min-width: 0;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.recipe {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  min-width: 0;
+}
+
+.label {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.heading {
+  margin: 8px 0 0;
+  font-size: 0.95rem;
+}
+
+.input {
+  min-height: 96px;
+  resize: vertical;
+}
+
+.tableBox {
+  max-height: 50vh;
+  overflow: auto;
+}
+
+.check {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  font-size: 0.85rem;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.ok {
+  color: var(--ok);
+}
+
+.error {
+  color: var(--error);
+}
+
+.notice {
+  margin: 0;
+  padding: 6px 8px;
+  border: 1px solid var(--warn);
+  border-radius: var(--radius);
+  color: var(--warn);
+  font-size: 0.85rem;
+}
