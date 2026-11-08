@@ -291,7 +291,7 @@ Rules for the importer:
 | Parse UDP | not planned | — |
 | Strip UDP header | not planned | — |
 | Parse SSH Host Key | not planned | — |
-| Parse URI | `parse-url` | Beta |
+| Parse URI | `parse-url` (not importable: CyberChef writes a text table, UniChef returns JSON parts) | Beta |
 | URL Encode | `url-encode` | Alpha |
 | URL Decode | `url-decode` | Alpha |
 | Protobuf Decode | not planned | — |

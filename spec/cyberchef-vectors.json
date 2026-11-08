@@ -1495,6 +1495,117 @@
           "operations": ["Derive PBKDF2 key"]
         }
       }
+    },
+    {
+      "name": "JSON Beautify, defaults (CyberChef indents by 4)",
+      "input": "[{\"op\": \"JSON Beautify\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "json-beautify",
+            "args": {
+              "indent": "4"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "JSON Beautify, tab and sorted keys",
+      "input": "[{\"op\": \"JSON Beautify\", \"args\": [\"\\\\t\", true, true]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "json-beautify",
+            "args": {
+              "indent": "tab",
+              "sort_keys": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "JSON Minify",
+      "input": "[{\"op\": \"JSON Minify\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "json-minify"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CSV to JSON, defaults",
+      "input": "[{\"op\": \"CSV to JSON\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "csv-to-json"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CSV to JSON, semicolons as arrays",
+      "input": "[{\"op\": \"CSV to JSON\", \"args\": [\";\", \"\\\\r\\\\n\", \"Array of arrays\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "csv-to-json",
+            "args": {
+              "delimiter": "semicolon",
+              "header": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "error: CSV to JSON with a custom row delimiter",
+      "input": "[{\"op\": \"CSV to JSON\", \"args\": [\",\", \"|\", \"Array of dictionaries\"]}]",
+      "error": {
+        "code": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "JSON to CSV, tab and LF",
+      "input": "[{\"op\": \"JSON to CSV\", \"args\": [\"\\\\t\", \"\\\\n\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "json-to-csv",
+            "args": {
+              "delimiter": "tab",
+              "line_ending": "lf"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "error: JSON Beautify with a 3-space indent",
+      "input": "[{\"op\": \"JSON Beautify\", \"args\": [\"   \", false, true]}]",
+      "error": {
+        "code": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "error: Parse URI (CyberChef writes a text table)",
+      "input": "[{\"op\": \"Parse URI\", \"args\": []}]",
+      "error": {
+        "code": "E_OP_UNKNOWN",
+        "detail": {
+          "operations": ["Parse URI"]
+        }
+      }
     }
   ]
 }

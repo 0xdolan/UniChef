@@ -14,6 +14,7 @@ MODULES = (
     "hashing",
     "crypto",
     "jwt",
+    "data",
 )
 
 
