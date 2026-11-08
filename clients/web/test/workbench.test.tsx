@@ -181,3 +181,24 @@ describe('Workbench', () => {
     expect(screen.queryByRole('alert')).toBeNull();
   });
 });
+
+describe('share options (SEC-007)', () => {
+  it('offers to include keys and IVs only once the recipe has one', () => {
+    renderWorkbench();
+    const option = () =>
+      screen.queryByRole('checkbox', { name: 'Include keys and IVs in the link' });
+    act(() => {
+      useApp.getState().addStep('hmac');
+    });
+    expect(option()).toBeNull();
+    act(() => {
+      const [step] = useApp.getState().steps;
+      if (step === undefined) throw new Error('no step');
+      useApp
+        .getState()
+        .setSteps([{ ...step, args: { ...step.args, key: { encoding: 'utf8', value: 'k' } } }]);
+    });
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Include keys and IVs in the link' }));
+    expect(useApp.getState().shareSecrets).toBe(true);
+  });
+});

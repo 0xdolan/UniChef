@@ -4,6 +4,7 @@ import { useState, type ReactNode } from 'react';
 
 import { t } from '../../i18n/index.js';
 import { currentFragment } from '../../lib/url-state.js';
+import { hasSecrets } from '../../state/recipe.js';
 import { useApp } from '../../state/store.js';
 import { StepList } from './StepList.js';
 import styles from './Workbench.module.css';
@@ -13,6 +14,8 @@ export function RecipePane({ onBake }: { readonly onBake: () => void }): ReactNo
   const clear = useApp((s) => s.clearRecipe);
   const autoBake = useApp((s) => s.autoBake);
   const setAutoBake = useApp((s) => s.setAutoBake);
+  const shareSecrets = useApp((s) => s.shareSecrets);
+  const setShareSecrets = useApp((s) => s.setShareSecrets);
   const [copied, setCopied] = useState(false);
   const copyLink = async () => {
     const url = new URL(window.location.href);
@@ -53,6 +56,18 @@ export function RecipePane({ onBake }: { readonly onBake: () => void }): ReactNo
           <StepList steps={steps} />
         )}
       </div>
+      {(shareSecrets || hasSecrets(steps)) && (
+        <label className={styles.inline}>
+          <input
+            type="checkbox"
+            checked={shareSecrets}
+            onChange={(e) => {
+              setShareSecrets(e.target.checked);
+            }}
+          />
+          {t('recipe.shareSecrets')}
+        </label>
+      )}
       <div className={styles.paneFoot}>
         <label className={styles.inline}>
           <input

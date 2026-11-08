@@ -41,7 +41,7 @@ def _crypto(message: str) -> UniChefError:
     "Crypto",
     "bytes",
     "bytes",
-    (bytes_arg("key"), enum_arg("scheme", ("standard", "rolling"))),
+    (bytes_arg("key", secret=True), enum_arg("scheme", ("standard", "rolling"))),
     examples=(Example("hello", {"key": {"encoding": "hex", "value": "20"}}, "HELLO"),),
 )
 def xor(data: bytes, args: Args, ctx: OpContext) -> bytes:
@@ -135,9 +135,9 @@ def atbash(text: str, _args: Args, _ctx: OpContext) -> str:
 
 AES_MODES = ("cbc", "ctr", "gcm", "ecb")
 AES_ARGS = (
-    bytes_arg("key"),
+    bytes_arg("key", secret=True),
     enum_arg("mode", AES_MODES),
-    bytes_arg("iv"),
+    bytes_arg("iv", secret=True),
     enum_arg("padding", ("pkcs7", "none")),
     bytes_arg("aad"),
 )

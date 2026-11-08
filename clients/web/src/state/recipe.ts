@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 /** The editable recipe: plain JSON args plus a stable `uid` per step for React keys. */
 
-import { getOperation, parseRecipe, type ArgSpec } from '@unichef/core';
+import { getOperation, hasOperation, parseRecipe, type ArgSpec } from '@unichef/core';
 
 import type { RecipeDoc } from '../worker/protocol.js';
 
@@ -44,6 +44,45 @@ export function newStep(op: string): StepModel {
 
 export const isSteps = (value: RawArg | undefined): value is readonly StepModel[] =>
   Array.isArray(value);
+
+/** What a shared link holds in place of a key or IV (SEC-007). */
+export const REDACTED = '<redacted>';
+
+/** A recipe document may give a bytes argument as a bare string. */
+const secretText = (value: RawArg): string =>
+  typeof value === 'string' ? value : (value as BytesArg).value;
+
+/** Every key and IV value in `steps`, at any depth. */
+function secretValues(steps: readonly StepModel[]): string[] {
+  return steps.flatMap((step) =>
+    getOperation(step.op).args.flatMap((spec) => {
+      const value = step.args[spec.name];
+      if (value === undefined) return [];
+      if (isSteps(value)) return secretValues(value);
+      return spec.kind === 'bytes' && spec.secret === true ? [secretText(value)] : [];
+    }),
+  );
+}
+
+export const hasSecrets = (steps: readonly StepModel[]): boolean =>
+  secretValues(steps).some((value) => value !== '');
+
+/** `steps` with each non-empty key and IV replaced by `REDACTED`. */
+export function redactSecrets(steps: readonly StepModel[]): readonly StepModel[] {
+  return steps.map((step) => {
+    const args: Record<string, RawArg> = { ...step.args };
+    for (const spec of getOperation(step.op).args) {
+      const value = args[spec.name];
+      if (value === undefined) continue;
+      if (isSteps(value)) args[spec.name] = redactSecrets(value);
+      else if (spec.kind === 'bytes' && spec.secret === true && secretText(value) !== '') {
+        args[spec.name] =
+          typeof value === 'string' ? REDACTED : { ...(value as BytesArg), value: REDACTED };
+      }
+    }
+    return { ...step, args };
+  });
+}
 
 /** Apply `fn` to the step list that holds `uid`, at any depth. */
 export function updateList(
@@ -147,6 +186,44 @@ function stepFromDoc(raw: Json): StepModel {
     ...(typeof raw.label === 'string' ? { label: raw.label } : {}),
     ...(typeof raw.comment === 'string' ? { comment: raw.comment } : {}),
   };
+}
+
+/**
+ * `doc` with each redacted key and IV emptied, so that it validates, and whether it had
+ * any. `doc` is still unvalidated, so anything unexpected is left for `parseRecipe`.
+ */
+export function clearRedacted(doc: unknown): { doc: unknown; redacted: boolean } {
+  let redacted = false;
+  const clear = (value: unknown): unknown => {
+    if (value === REDACTED) {
+      redacted = true;
+      return '';
+    }
+    if (typeof value === 'object' && value !== null && (value as Json).value === REDACTED) {
+      redacted = true;
+      return { ...(value as Json), value: '' };
+    }
+    return value;
+  };
+  const walk = (steps: unknown): unknown => {
+    if (!Array.isArray(steps)) return steps;
+    return steps.map((raw: unknown) => {
+      const step = raw as Json | null;
+      if (typeof step !== 'object' || step === null) return raw;
+      if (typeof step.op !== 'string' || !hasOperation(step.op)) return raw;
+      if (typeof step.args !== 'object' || step.args === null) return raw;
+      const args: Record<string, unknown> = { ...(step.args as Json) };
+      for (const spec of getOperation(step.op).args) {
+        if (spec.kind === 'steps') args[spec.name] = walk(args[spec.name]);
+        else if (spec.kind === 'bytes' && spec.secret === true) {
+          args[spec.name] = clear(args[spec.name]);
+        }
+      }
+      return { ...step, args };
+    });
+  };
+  if (typeof doc !== 'object' || doc === null) return { doc, redacted };
+  return { doc: { ...(doc as Json), steps: walk((doc as Json).steps) }, redacted };
 }
 
 /**

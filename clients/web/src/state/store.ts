@@ -87,6 +87,9 @@ interface UiSlice {
 interface SettingsSlice {
   autoBake: boolean;
   setAutoBake: (on: boolean) => void;
+  /** Keep keys and IVs in the URL; off by default and never remembered (SEC-007). */
+  shareSecrets: boolean;
+  setShareSecrets: (on: boolean) => void;
 }
 
 export type AppState = RecipeSlice & InputSlice & BakeSlice & UiSlice & SettingsSlice;
@@ -186,5 +189,9 @@ export const useApp = create<AppState>()((set) => ({
   autoBake: true,
   setAutoBake: (autoBake) => {
     set({ autoBake });
+  },
+  shareSecrets: false,
+  setShareSecrets: (shareSecrets) => {
+    set({ shareSecrets });
   },
 }));

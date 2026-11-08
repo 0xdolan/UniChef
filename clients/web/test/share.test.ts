@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-/** URL state (FR-008): the fragment codec and loading shared links (SEC-010). */
+/** URL state (FR-008): the fragment codec, loading shared links (SEC-010) and secrets (SEC-007). */
 
 import { beforeEach, describe, expect, it } from 'vitest';
 
@@ -11,7 +11,7 @@ import {
   toBase64Url,
 } from '../src/lib/share.js';
 import { REVIEW_STEPS, currentFragment, loadFromHash } from '../src/lib/url-state.js';
-import { newStep, recipeDoc } from '../src/state/recipe.js';
+import { REDACTED, newStep, recipeDoc, type StepModel } from '../src/state/recipe.js';
 import { useApp } from '../src/state/store.js';
 
 const initial = useApp.getState();
@@ -105,5 +105,51 @@ describe('shared links', () => {
     useApp.getState().setInput('short');
     expect(await currentFragment()).toContain('&i=');
     expect(useApp.getState().notice).toBeNull();
+  });
+});
+
+describe('keys and IVs in links (SEC-007)', () => {
+  const hex = (value: string) => ({ encoding: 'hex', value });
+  const withArgs = (op: string, args: StepModel['args']): StepModel => {
+    const step = newStep(op);
+    return { ...step, args: { ...step.args, ...args } };
+  };
+  const secretSteps = () => [
+    withArgs('aes-encrypt', { key: hex('00'.repeat(16)), iv: hex(''), aad: hex('ab') }),
+    withArgs('subsection', { pattern: '.+', steps: [withArgs('hmac', { key: hex('6b6579') })] }),
+  ];
+  const sharedArgs = async () => {
+    const state = await decodeState(await currentFragment());
+    const steps = (state?.recipe as { steps: { args: Record<string, unknown> }[] }).steps;
+    const nested = steps[1]?.args.steps as { args: Record<string, unknown> }[];
+    return { aes: steps[0]?.args, hmac: nested[0]?.args };
+  };
+
+  it('redacts non-empty keys and IVs at any depth by default', async () => {
+    useApp.getState().setSteps(secretSteps());
+    const { aes, hmac } = await sharedArgs();
+    expect(aes).toMatchObject({ key: hex(REDACTED), iv: hex(''), aad: hex('ab') });
+    expect(hmac).toMatchObject({ key: hex(REDACTED) });
+    expect(useApp.getState().steps[0]?.args.key).toEqual(hex('00'.repeat(16)));
+  });
+
+  it('keeps them when the user opts in', async () => {
+    useApp.getState().setSteps(secretSteps());
+    useApp.getState().setShareSecrets(true);
+    const { aes, hmac } = await sharedArgs();
+    expect(aes).toMatchObject({ key: hex('00'.repeat(16)) });
+    expect(hmac).toMatchObject({ key: hex('6b6579') });
+  });
+
+  it('opens a redacted link with the keys empty, auto-bake off and a warning', async () => {
+    useApp.getState().setSteps(secretSteps());
+    const fragment = await currentFragment();
+    useApp.setState(initial, true);
+    await loadFromHash(fragment);
+    const s = useApp.getState();
+    expect(s.steps[0]?.args.key).toEqual(hex(''));
+    expect(s.steps[0]?.args.aad).toEqual(hex('ab'));
+    expect(s.autoBake).toBe(false);
+    expect(s.notice).toMatchObject({ key: 'share.redacted', tone: 'warn' });
   });
 });

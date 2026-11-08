@@ -314,7 +314,7 @@ def jwt_decode(text: str, _args: Args, ctx: OpContext) -> JsonValue:
     "string",
     (
         enum_arg("algorithm", (*ALGORITHMS, "none")),
-        bytes_arg("key", encodings=("utf8", "hex", "base64", "latin1")),
+        bytes_arg("key", encodings=("utf8", "hex", "base64", "latin1"), secret=True),
         string_arg("header", multiline=True),
     ),
     parity="roundtrip",
@@ -367,7 +367,7 @@ def jwt_sign(payload: JsonValue, args: Args, ctx: OpContext) -> str:
     "json",
     (
         enum_arg("algorithm", ALGORITHMS),
-        bytes_arg("key", encodings=("utf8", "hex", "base64", "latin1")),
+        bytes_arg("key", encodings=("utf8", "hex", "base64", "latin1"), secret=True),
     ),
     examples=(
         Example(

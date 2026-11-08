@@ -35,6 +35,8 @@ def arg_entry(spec: ArgSpec) -> dict[str, Any]:
             out["maximum"] = spec.maximum
     if spec.kind == "bytes":
         out["encodings"] = list(spec.encodings)
+        if spec.secret:
+            out["secret"] = True
     if spec.kind == "regex":
         out["flags"] = spec.flags
     if spec.kind == "string" and spec.multiline:
