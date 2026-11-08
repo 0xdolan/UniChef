@@ -11,6 +11,8 @@ A Unicode-aware data workbench: a recipe pipeline of text and encoding operation
 
 The project is in early development.
 
+New here? [INTRODUCTION.md](INTRODUCTION.md) walks through installing UniChef, the CLI, the web app and recipes, with screenshots. The web app runs at <https://0xdolan.github.io/unichef/>.
+
 ## Contributing
 
 The repository follows Gitflow with Conventional Commits. See [CONTRIBUTING.md](CONTRIBUTING.md). Brand rules and logo files are described in [docs/branding/README.md](docs/branding/README.md).

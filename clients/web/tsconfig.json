@@ -15,5 +15,14 @@
       "@unichef/core/*": ["../../packages/npm-core/src/*"]
     }
   },
-  "include": ["src", "test", "e2e", "playwright.config.ts", "vite.config.ts", "vite.licenses.ts"]
+  "include": [
+    "src",
+    "test",
+    "e2e",
+    "screenshots",
+    "playwright.config.ts",
+    "playwright.screenshots.config.ts",
+    "vite.config.ts",
+    "vite.licenses.ts"
+  ]
 }
