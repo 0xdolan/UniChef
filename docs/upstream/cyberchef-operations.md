@@ -176,9 +176,9 @@ Rules for the importer:
 | Derive HKDF key | not planned | — |
 | Bcrypt | not planned | — |
 | Scrypt | not planned | — |
-| JWT Sign | not planned | — |
-| JWT Verify | not planned | — |
-| JWT Decode | not planned | — |
+| JWT Sign | `jwt-sign` | Beta |
+| JWT Verify | `jwt-verify` (not importable: CyberChef accepts whatever algorithm the token names, UniChef requires a fixed one) | Beta |
+| JWT Decode | `jwt-decode` | Beta |
 | Citrix CTX1 Encode | not planned | — |
 | Citrix CTX1 Decode | not planned | — |
 | AES Key Wrap | not planned | — |
@@ -330,7 +330,7 @@ Rules for the importer:
 | CyberChef op | UniChef op id | Milestone |
 |---|---|---|
 | Diff | not planned | — |
-| Remove whitespace | `trim (partial)` | Alpha |
+| Remove whitespace | `trim` (not importable: CyberChef removes whitespace everywhere, `trim` only at the ends) | Alpha |
 | Remove null bytes | not planned | — |
 | Remove ANSI Escape Codes | not planned | — |
 | To Upper case | `unicode-case (upper)` | Alpha |
@@ -498,7 +498,7 @@ Rules for the importer:
 | Fletcher-64 Checksum | not planned | — |
 | Adler-32 Checksum | `adler32` | Alpha |
 | Luhn Checksum | not planned | — |
-| CRC Checksum | `crc32 (CRC-32 variant only)` | Alpha |
+| CRC Checksum | `crc32` (the CRC-32 algorithm only; the importer also accepts the older `CRC-32 Checksum` name) | Alpha |
 | TCP/IP Checksum | not planned | — |
 | XOR Checksum | not planned | — |
 | Parity Bit | not planned | — |
