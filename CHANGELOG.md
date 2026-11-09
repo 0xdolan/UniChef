@@ -111,6 +111,7 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
 - UCD pipeline: `scripts/ucd/fetch.py` and `build.py`, the Unicode 18.0.0 source files and the three compiled data files.
 - Shared spec: recipe, output and vector schemas, the error catalogue, and vectors for ten encoding ops.
 - Repository scaffold: project constants, `VERSION`, licence and notices, and the Makefile skeleton.
+- **Release QA checklist:** `docs/release/qa-checklist.md` lists the manual checks for each release candidate: the extensions in Chrome, Brave, Edge and Firefox, the web app, and every CLI install channel.
 
 ### Changed
 
