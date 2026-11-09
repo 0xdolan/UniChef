@@ -367,6 +367,18 @@
     },
     "Adler-32 Checksum": { "op": "adler32", "args": [] },
     "CRC-32 Checksum": { "op": "crc32", "args": [] },
+    "CRC Checksum": {
+      "op": "crc32",
+      "args": [
+        { "expect": "CRC-32" },
+        { "ignore": true },
+        { "ignore": true },
+        { "ignore": true },
+        { "ignore": true },
+        { "ignore": true },
+        { "ignore": true }
+      ]
+    },
     "AES Encrypt": {
       "op": "aes-encrypt",
       "args": [
