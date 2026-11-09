@@ -101,14 +101,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Linux and macOS on x86-64 and arm64, Windows on x86-64 (NFR-021). Windows arm64
-        # waits for cryptography to publish win_arm64 wheels.
+        # Linux, macOS and Windows on x86-64 and arm64 (NFR-021).
         os:
           - ubuntu-24.04
           - ubuntu-24.04-arm
           - macos-latest
           - macos-15-intel
           - windows-latest
+          - windows-11-arm
         py: ['3.12', '3.13', '3.14']
     defaults:
       run:
@@ -118,6 +118,39 @@ jobs:
       - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
         with:
           enable-cache: true
+      # cryptography publishes no Windows arm64 wheels since 46.0.4, so uv builds it from
+      # source. That needs Rust and an arm64 OpenSSL (vcpkg, cached). Intel macOS also builds
+      # from source, with the Rust and Homebrew OpenSSL already on the runner.
+      - name: Cache the arm64 OpenSSL
+        if: matrix.os == 'windows-11-arm'
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: C:\vcpkg-openssl
+          key: openssl-arm64-windows-static-md-v1
+      - name: Rust and OpenSSL for the cryptography source build
+        if: matrix.os == 'windows-11-arm'
+        shell: pwsh
+        working-directory: .
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if (-not (Get-Command cargo -ErrorAction SilentlyContinue)) {
+            Invoke-WebRequest https://static.rust-lang.org/rustup/dist/aarch64-pc-windows-msvc/rustup-init.exe -OutFile rustup-init.exe
+            .\rustup-init.exe -y --profile minimal --default-toolchain stable
+            "$env:USERPROFILE\.cargo\bin" | Out-File -Append -Encoding utf8 $env:GITHUB_PATH
+          }
+          $ssl = 'C:\vcpkg-openssl\installed\arm64-windows-static-md'
+          if (-not (Test-Path "$ssl\include\openssl\ssl.h")) {
+            $vcpkg = $env:VCPKG_INSTALLATION_ROOT
+            if (-not $vcpkg) {
+              git clone --depth 1 https://github.com/microsoft/vcpkg C:\vcpkg
+              C:\vcpkg\bootstrap-vcpkg.bat -disableMetrics
+              $vcpkg = 'C:\vcpkg'
+            }
+            & "$vcpkg\vcpkg.exe" install openssl:arm64-windows-static-md --x-install-root=C:\vcpkg-openssl\installed
+            if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          }
+          "OPENSSL_DIR=$ssl" | Out-File -Append -Encoding utf8 $env:GITHUB_ENV
+          "OPENSSL_STATIC=1" | Out-File -Append -Encoding utf8 $env:GITHUB_ENV
       - run: uv sync --locked --all-groups --python ${{ matrix.py }}
       - name: pytest with >= 90 % line coverage (NFR-021, NFR-030)
         run: uv run --locked pytest
