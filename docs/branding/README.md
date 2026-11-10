@@ -29,6 +29,21 @@ Every SVG is plain SVG 1.1 with a `viewBox`. Text is converted to outlines, and 
 
 Derived PNG, ICO and PDF files are build output (`assets/branding/dist/`, gitignored) and are produced by `scripts/assets/build.py` from these masters (PRD §9.2). Run `make assets` to build them (it needs rsvg-convert, ImageMagick and oxipng, which the dev container has); `assets/branding/manifest.json` lists every output and its size. `uv run scripts/assets/build.py --lint` checks the masters, and `make lint` runs it.
 
+Where the brand appears:
+
+| Place | Asset | Built from |
+|---|---|---|
+| Web app header | `unichef-logo.svg` on dark, `unichef-logo-light.svg` on light, swapped with the theme | The masters, bundled as-is |
+| Browser tab | `icon.svg` (the mark), plus `favicon.ico` at 16, 32 and 48 px | `dist/web/` |
+| Home screen (PWA) | `icon-192.png`, `icon-512.png`, `icon-maskable-512.png`, and the SVG and maskable SVG | `dist/web/` |
+| iOS home screen | `apple-touch-icon.png` (180 px, on `#0F1020`) | `dist/web/` |
+| Link previews (Open Graph, X) | `og-image.png` (1200 × 630) | `dist/web/` |
+| Repository social preview | `social-preview.png` (1280 × 640). Upload it under GitHub **Settings → General → Social preview**; there is no API for it. | `dist/github/` |
+| Browser extensions and stores | `16.png` to `128.png`, plus the store tiles | `dist/ext/`, `dist/store/` |
+| README and docs | `<picture>` with the dark and light lockups | The masters |
+
+The Pages workflow and the `e2e` CI job run `build.py --only web/`, and the web build fails if an icon is missing.
+
 Masters are append-only (GOV-020). To change a master, add a versioned file such as `unichef-mark.v2.svg`. Do not edit the existing file.
 
 ## 3. Colours

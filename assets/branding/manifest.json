@@ -15,6 +15,7 @@
     { "out": "web/icon-512.png", "kind": "png", "source": "mark", "size": [512, 512] },
     { "out": "web/icon-maskable-512.png", "kind": "png", "source": "maskable", "size": [512, 512] },
     { "out": "web/og-image.png", "kind": "png", "source": "logo", "size": [1200, 630], "box": [840, 232], "fill": true },
+    { "out": "github/social-preview.png", "kind": "png", "source": "logo", "size": [1280, 640], "box": [896, 248], "fill": true },
     { "out": "ext/16.png", "kind": "png", "source": "mark16", "size": [16, 16] },
     { "out": "ext/32.png", "kind": "png", "source": "mark", "size": [32, 32] },
     { "out": "ext/48.png", "kind": "png", "source": "mark", "size": [48, 48] },

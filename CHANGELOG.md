@@ -77,6 +77,14 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
   - The TypeScript core exports the importer (`importCyberChef`, `parseCyberChef`, `cyberChefOperations`), a port of the Python one with the same map.
   - `spec/cyberchef-vectors.json` holds 98 shared import cases, 23 of them errors, which both cores run.
   - The Python importer now accepts only plain decimal numbers in chef format, so `inf` and `1_0` are rejected as they are in TypeScript.
+- **Web app, phones and brand** (NFR-043):
+  - The header shows the UniChef lockup from the branding masters, in the dark or light colour set to match the theme, and links to the workbench.
+  - Below 900 px the navigation folds behind a **Menu** button with 44 px rows, the page scrolls as a whole, and the Workbench stacks Input and Output in one column. The header respects the notch and home-indicator safe areas.
+  - On touch screens, links, summaries, checkboxes and radios are at least 24 × 24 px (WCAG 2.5.8), and form fields are at least 16 px so iOS does not zoom on focus.
+  - The PWA manifest adds 192 and 512 px PNG icons, a maskable PNG, `id`, `lang`, `dir` and categories. The page adds a `favicon.ico`, an Apple touch icon, a `theme-color` for each scheme, and Open Graph and Twitter card tags with a 1200 × 630 preview image.
+  - `mobile-chrome` (Pixel 7) and `mobile-safari` (iPhone 15) Playwright projects check every route for sideways scrolling and small targets, plus the menu, the stacked Workbench and the manifest icons.
+  - The Pages workflow and the `e2e` CI job build the PNG icons from the masters, and the build fails if they are missing (`UNICHEF_REQUIRE_ICONS=1`).
+  - `assets/branding/manifest.json` adds `github/social-preview.png` (1280 × 640) for the repository's social preview.
 - **GitHub Pages** (`.github/workflows/pages.yml`): on a push to `main` or a manual run, builds the web app and the `@unichef/core` API reference (TypeDoc, at `api/`) and deploys them to https://0xdolan.github.io/unichef/. `make pages` builds the same site locally. The service worker leaves `api/` alone.
 - **Performance budgets** (PRD §13.1), checked in CI:
   - NFR-001 and NFR-003 run in Playwright (Chromium) against the production build: first paint and interactivity on throttled "Fast 4G", and `analyse-characters` on 100 000 code points.

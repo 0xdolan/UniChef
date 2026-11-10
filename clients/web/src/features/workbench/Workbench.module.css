@@ -69,6 +69,16 @@
   .scroll {
     max-height: 50vh;
   }
+
+  /* One column: each pane takes the height of its content, and the page scrolls. */
+  .io {
+    grid-template-rows: none;
+  }
+
+  .text {
+    min-height: 160px;
+    resize: vertical;
+  }
 }
 
 .control {

@@ -51,3 +51,33 @@ button {
   clip-path: inset(50%);
   white-space: nowrap;
 }
+
+/* iOS zooms into any focused field set below 16px. On touch screens every field is at least
+   16px, which overrides the smaller sizes that component styles set for mouse use. */
+@media (pointer: coarse) {
+  input,
+  select,
+  textarea {
+    font-size: max(16px, 1em) !important;
+  }
+
+  /* WCAG 2.5.8: targets at least 24 × 24 px. Links inside running text are exempt. */
+  a:not(p a),
+  summary {
+    display: inline-block;
+    min-width: 24px;
+    min-height: 24px;
+    line-height: 24px;
+  }
+
+  summary {
+    display: list-item;
+  }
+
+  input[type='checkbox'],
+  input[type='radio'] {
+    flex: none;
+    width: 24px;
+    height: 24px;
+  }
+}

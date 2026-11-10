@@ -13,6 +13,8 @@
   "nav.home": "Go to the workbench",
   "nav.breadcrumb": "Breadcrumb",
   "nav.main": "Main",
+  "nav.menu": "Menu",
+  "nav.brand": "UniChef, go to the workbench",
   "nav.loading": "Loading…",
   "ops.title": "Operations",
   "ops.search": "Search operations",

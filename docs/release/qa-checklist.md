@@ -102,7 +102,12 @@ Use the Pages build: <https://0xdolan.github.io/unichef/>.
 - [ ] Turn the network off after the first load and reload the page. The app still works (it is
       offline-capable).
 - [ ] The Network tab shows requests only to `0xdolan.github.io`.
-- [ ] Test at phone width (devtools device mode, 375 px). Nothing scrolls sideways.
+- [ ] On a real phone (Android Chrome and iOS Safari), open the site. The header shows the logo
+      and a **Menu** button, the menu opens and closes, and nothing scrolls sideways. Tapping a
+      field does not zoom the page. The `mobile-chrome` and `mobile-safari` e2e projects already
+      check this in CI; this step covers what emulation misses.
+- [ ] Install it (Android: **Install app**; iOS: Share → **Add to Home Screen**). The home screen
+      shows the UniChef icon with no white border, and the app opens without browser chrome.
 - [ ] Light and dark themes both pass a contrast check (Lighthouse accessibility score of 95 or
       more).
 

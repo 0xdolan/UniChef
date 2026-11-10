@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import { lazy, Suspense, type ReactNode } from 'react';
+import { lazy, Suspense, useEffect, useId, useState, type ReactNode } from 'react';
 
 import { Workbench } from '../features/workbench/Workbench.js';
 import { t, type MessageKey } from '../i18n/index.js';
 import styles from './App.module.css';
+import { Brand } from './Brand.js';
 import { useRoute } from './router.js';
 
 // The character pages load on first visit, so the workbench's bundle stays small.
@@ -87,14 +88,37 @@ export function App(): ReactNode {
   // `/blocks/Basic_Latin` → section `blocks`, param `Basic_Latin`.
   const [, section = '', ...rest] = route.split('/');
   const param = decode(rest.join('/'));
+  // Narrow screens fold the nav behind a menu button; it closes again on every navigation.
+  const [menuOpen, setMenuOpen] = useState(false);
+  const navId = useId();
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [route]);
   return (
     <div className={styles.app}>
       <a className={styles.skip} href="#main">
         {t('app.skip')}
       </a>
       <header className={styles.header}>
-        <span className={styles.logo}>{t('app.title')}</span>
-        <nav aria-label={t('nav.main')} className={styles.nav}>
+        <Brand />
+        <button
+          type="button"
+          className={styles.menuButton}
+          aria-expanded={menuOpen}
+          aria-controls={navId}
+          onClick={() => {
+            setMenuOpen((open) => !open);
+          }}
+        >
+          <span aria-hidden="true" className={styles.menuIcon} />
+          {t('nav.menu')}
+        </button>
+        <nav
+          id={navId}
+          aria-label={t('nav.main')}
+          className={styles.nav}
+          data-open={menuOpen || undefined}
+        >
           {NAV.map(([href, key, sections]) => (
             <a
               key={href}
