@@ -4,7 +4,10 @@ Manual QA for each release candidate, as the M3 exit criteria require (PRD §15)
 the RC's tracking issue and tick each item. Any failure becomes an issue. A `priority:high`
 failure blocks the release.
 
-Test the artefacts attached to the GitHub Release for the RC, not a local build. If there is no
+CI and the `verify-release` job have already checked everything a machine can (see
+[process.md](process.md) §1), including that every artefact is attached, checksummed and
+attested. This list covers the rest. Test the artefacts attached to the GitHub Release for the
+RC, not a local build. If there is no
 release yet, `make build-ext` writes the same zips to `clients/extensions/common/dist/`.
 
 Test string, pasted where a step says *sample*:

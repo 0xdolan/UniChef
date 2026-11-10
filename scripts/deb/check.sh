@@ -9,7 +9,17 @@
 #
 # Runs as root inside the container. The repository is mounted read-only; everything is
 # built in a temporary directory.
+#
+# With --out DIR (release.yml), the package is versioned for the container's series the way
+# the PPA does it (<version>-1~<codename>1), and the tested .deb is copied to DIR.
 set -euo pipefail
+
+out=""
+if [[ "${1:-}" == --out ]]; then
+  out="${2:?--out needs a directory}"
+  mkdir -p "$out"
+  out="$(cd "$out" && pwd)"
+fi
 
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -qq
@@ -32,6 +42,14 @@ distro=$(. /etc/os-release && echo "$ID")   # ubuntu or debian: the lintian prof
 "$repo/scripts/deb/prepare-tree.sh" "$src" "$codename"
 # Ubuntu's lintian profile rejects Debian's "unstable"; build for this release instead.
 sed -i "1s/) [a-z-]*;/) $codename;/" "$src/debian/changelog"
+if [[ -n "$out" ]]; then
+  # The maintainer from debian/control signs the entry, as in ppa-upload.sh.
+  maintainer=$(sed -n 's/^Maintainer: //p' "$src/debian/control")
+  email="${maintainer##*<}"
+  (cd "$src" && DEBFULLNAME="${maintainer% <*}" DEBEMAIL="${email%>}" \
+    dch -b --newversion "$deb-1~${codename}1" --distribution "$codename" \
+    --force-distribution "Release build for $codename.")
+fi
 
 cd "$src"
 mk-build-deps --install --remove \
@@ -40,4 +58,5 @@ dpkg-buildpackage -us -uc
 cd "$work"
 lintian --profile "$distro" --fail-on error,warning --info "$work"/unichef_*.changes
 autopkgtest "$work"/unichef_*_all.deb "$src" -- null
+[[ -z "$out" ]] || cp "$work"/unichef_*_all.deb "$out/"
 echo "deb-check: ok"

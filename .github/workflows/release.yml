@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Release on a version tag (PRD §11.4, §10.3). Artefacts for parts that do not exist yet
-# (web zip, orig tarball, the Safari Xcode project from #45) are added as those parts land.
+# Release on a version tag (PRD §11.4, §10.3). The Safari Xcode project (#45) is added when
+# it lands. docs/release/process.md lists every artefact and where it is published.
 # The Chrome (also for Brave and Edge) and Firefox zips are attached here so they can be
 # loaded unpacked; extensions.yml publishes them to the stores.
 name: release
@@ -72,9 +72,35 @@ jobs:
       - name: Every file agrees with VERSION (REL-001)
         run: uv run scripts/version/check.py
 
+  # The same build, lintian and autopkgtest as the ci.yml deb job, versioned per series as
+  # the PPA versions it. Launchpad builds the PPA's own .debs from the source upload.
+  deb:
+    name: deb (${{ matrix.image }})
+    needs: verify
+    strategy:
+      matrix:
+        image: ['ubuntu:24.04', 'ubuntu:26.04', 'debian:trixie']
+    runs-on: ubuntu-24.04
+    container: ${{ matrix.image }}
+    steps:
+      - name: Install git
+        run: apt-get update -qq && apt-get install -y -qq --no-install-recommends ca-certificates git
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Build, lintian and autopkgtest
+        run: scripts/deb/check.sh --out "$RUNNER_TEMP/deb"
+      - id: name
+        env:
+          IMAGE: ${{ matrix.image }}
+        run: echo "slug=${IMAGE//[:.]/-}" >> "$GITHUB_OUTPUT"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: deb-${{ steps.name.outputs.slug }}
+          path: ${{ runner.temp }}/deb/*.deb
+          if-no-files-found: error
+
   build-all:
     name: build-all
-    needs: verify
+    needs: [verify, deb]
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -108,6 +134,24 @@ jobs:
           mkdir -p dist/extensions
           cp clients/extensions/common/dist/unichef-chrome-*.zip \
             clients/extensions/common/dist/unichef-firefox-*.zip dist/extensions/
+      # The Pages site as a zip, for offline or self-hosted use. It is built for the /unichef/
+      # path, so serve it there.
+      - name: Web app zip
+        env:
+          UNICHEF_REQUIRE_ICONS: '1'
+        run: |
+          uv run scripts/assets/build.py --only web/
+          pnpm --filter web build
+          node scripts/check-bundle.mjs
+          mkdir -p dist/web
+          zip="$PWD/dist/web/unichef-web-$(tr -d '[:space:]' < VERSION).zip"
+          (cd clients/web/dist && zip -qrX "$zip" .)
+      - name: Debian packages
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: deb-*
+          path: dist/deb
+          merge-multiple: true
       - name: Source tarball (the Debian orig, PRD §8.3; debian/watch looks for it)
         run: |
           orig=$(scripts/deb/make-orig.sh --ref HEAD --out "$RUNNER_TEMP")
@@ -160,6 +204,8 @@ jobs:
             dist/npm/*.tgz
             dist/extensions/*
             dist/source/*
+            dist/web/*
+            dist/deb/*
 
   pypi:
     name: pypi
@@ -211,6 +257,8 @@ jobs:
     runs-on: ubuntu-24.04
     permissions:
       packages: write
+      id-token: write
+      attestations: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
@@ -225,6 +273,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ github.token }}
       - name: Build and push the runtime image
+        id: image
         env:
           VERSION: ${{ needs.verify.outputs.version }}
           PRERELEASE: ${{ needs.verify.outputs.prerelease }}
@@ -232,7 +281,14 @@ jobs:
           tags=(-t "ghcr.io/0xdolan/unichef:$VERSION")
           [[ "$PRERELEASE" == false ]] && tags+=(-t ghcr.io/0xdolan/unichef:latest)
           docker buildx build --platform linux/amd64,linux/arm64 --target runtime --push \
+            --provenance=mode=max --sbom=true --metadata-file "$RUNNER_TEMP/meta.json" \
             "${tags[@]}" -f docker/Dev.Dockerfile .
+          echo "digest=$(jq -r '."containerimage.digest"' "$RUNNER_TEMP/meta.json")" >> "$GITHUB_OUTPUT"
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-name: ghcr.io/0xdolan/unichef
+          subject-digest: ${{ steps.image.outputs.digest }}
+          push-to-registry: true
 
   github-release:
     name: github-release
@@ -263,6 +319,21 @@ jobs:
             dist/npm/*.tgz
             dist/extensions/*
             dist/source/*
+            dist/web/*
+            dist/deb/*
             dist/sbom/*
             dist/SHA256SUMS
           fail_on_unmatched_files: true
+
+  # The release as users get it: assets, checksums, attestations and registries.
+  verify-release:
+    name: verify-release
+    needs: [verify, github-release]
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: scripts/release/verify.sh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ needs.verify.outputs.version }}
+        run: scripts/release/verify.sh "$VERSION"

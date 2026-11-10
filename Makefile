@@ -24,7 +24,7 @@ endif
 
 .PHONY: help bootstrap fmt lint typecheck test-py test-ts test perf parity e2e ucd ucd-check entities entities-check \
 	ops ops-check assets screenshots build-py build-npm build-web pages build-ext build deb-check \
-	version version-check traceability ci docker-ci clean
+	version version-check release-verify traceability ci docker-ci clean
 
 help: ## List the available targets
 	@awk 'BEGIN {FS = ":.*## "; printf "Usage: make <target>\n\nTargets:\n"} \
@@ -124,6 +124,10 @@ deb-check: ## Build the .deb, run lintian and autopkgtest in Ubuntu (SERIES=24.0
 version: ## Set the project version everywhere: make version V=x.y.z
 	@test -n "$(V)" || { echo "Usage: make version V=x.y.z" >&2; exit 2; }
 	uv run scripts/version/sync.py "$(V)"
+
+release-verify: ## Check a published release: assets, SHA256SUMS, attestations, registries (V=x.y.z)
+	@test -n "$(V)" || { echo "Usage: make release-verify V=x.y.z" >&2; exit 2; }
+	scripts/release/verify.sh "$(V)"
 
 version-check: ## Fail if any file disagrees with VERSION; run the release tooling tests
 	uv run scripts/version/check.py
