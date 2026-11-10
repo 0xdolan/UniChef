@@ -296,8 +296,16 @@ jobs:
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
       - run: pnpm install --frozen-lockfile
       # Only the icons: the store screenshots come from Git LFS, which CI does not fetch.
-      - name: Extension icons
-        run: uv run scripts/assets/build.py --only ext/
+      - name: Extension and web icons
+        run: |
+          uv run scripts/assets/build.py --only ext/
+          uv run scripts/assets/build.py --only web/
+      # The e2e container cannot install the image tools, so it takes the web icons from here.
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: web-icons
+          path: assets/branding/dist/web/
+          if-no-files-found: error
       - name: Chrome, Edge, Firefox and Safari (schema check, web-ext lint)
         run: pnpm --filter extensions build
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -308,6 +316,7 @@ jobs:
 
   e2e:
     name: e2e
+    needs: extensions
     runs-on: ubuntu-24.04
     # The image tag matches @playwright/test in pnpm-lock.yaml (scripts/version/check.py).
     container:
@@ -317,8 +326,14 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
       - run: pnpm install --frozen-lockfile
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: web-icons
+          path: assets/branding/dist/web/
       - run: pnpm --filter web build
-      - name: Chromium, Firefox and WebKit, with axe checks (NFR-020)
+        env:
+          UNICHEF_REQUIRE_ICONS: '1'
+      - name: Chromium, Firefox and WebKit on desktop and phones, with axe checks (NFR-020, NFR-043)
         run: pnpm --filter web e2e
       - name: Upload the report
         if: ${{ !cancelled() }}

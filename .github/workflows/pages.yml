@@ -26,9 +26,20 @@ jobs:
         with:
           node-version: 24
           cache: pnpm
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+      - name: Image tools (rsvg-convert, ImageMagick, oxipng)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends librsvg2-bin imagemagick
+          scripts/assets/install-oxipng.sh "$HOME/.local/bin"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
       - run: pnpm install --frozen-lockfile
+      - name: Favicons, PWA icons and the link-preview image (PRD §9.2)
+        run: uv run scripts/assets/build.py --only web/
       - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
       - name: Web app (base /unichef/)
+        env:
+          UNICHEF_REQUIRE_ICONS: '1'
         run: pnpm --filter web build
       - name: Bundle budgets (NFR-010)
         run: node scripts/check-bundle.mjs

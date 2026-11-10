@@ -15,7 +15,9 @@
   display: flex;
   align-items: center;
   gap: 24px;
-  padding: 8px var(--gap);
+  padding: 8px max(var(--gap), env(safe-area-inset-right)) 8px
+    max(var(--gap), env(safe-area-inset-left));
+  padding-top: max(8px, env(safe-area-inset-top));
   border-bottom: 1px solid var(--border);
   background: var(--surface);
 }
@@ -30,10 +32,48 @@
   font-weight: 600;
 }
 
-.logo {
-  color: var(--primary);
-  font-weight: 700;
-  font-size: 16px;
+/* The lockup is artwork, never live text (docs/branding/README.md §4). Each colour set
+   shows on the background it was drawn for (§5). */
+.brand {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  min-height: 44px;
+}
+
+.brand img {
+  height: 28px;
+  width: auto;
+}
+
+.logoDark {
+  display: block;
+}
+
+.logoLight {
+  display: none;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) .logoDark {
+    display: none;
+  }
+
+  :root:not([data-theme='dark']) .logoLight {
+    display: block;
+  }
+}
+
+:root[data-theme='light'] .logoDark {
+  display: none;
+}
+
+:root[data-theme='light'] .logoLight {
+  display: block;
+}
+
+.menuButton {
+  display: none;
 }
 
 .skip {
@@ -62,4 +102,97 @@
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
+}
+
+/* Narrow screens: the page scrolls as a whole, and the nav folds behind a menu button with
+   touch-sized rows (WCAG 2.5.8). */
+@media (width < 900px) {
+  .app {
+    height: auto;
+    min-height: 100%;
+  }
+
+  .app > main {
+    flex: none;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .header {
+    flex-wrap: wrap;
+    gap: 8px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .menuButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-inline-start: auto;
+    min-height: 44px;
+    padding: 0 12px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  .menuButton:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+
+  .menuIcon,
+  .menuIcon::before,
+  .menuIcon::after {
+    display: block;
+    width: 16px;
+    height: 2px;
+    background: currentcolor;
+    border-radius: 1px;
+  }
+
+  .menuIcon {
+    position: relative;
+  }
+
+  .menuIcon::before,
+  .menuIcon::after {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+  }
+
+  .menuIcon::before {
+    top: -5px;
+  }
+
+  .menuIcon::after {
+    top: 5px;
+  }
+
+  .nav {
+    display: none;
+    flex-basis: 100%;
+    flex-direction: column;
+    gap: 0;
+    padding-bottom: 4px;
+  }
+
+  .nav[data-open] {
+    display: flex;
+  }
+
+  .nav a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 8px;
+    border-radius: var(--radius);
+  }
+
+  .nav a[aria-current='page'] {
+    background: var(--surface-2);
+    box-shadow: inset 3px 0 0 var(--primary);
+  }
 }
