@@ -85,6 +85,11 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
   - `mobile-chrome` (Pixel 7) and `mobile-safari` (iPhone 15) Playwright projects check every route for sideways scrolling and small targets, plus the menu, the stacked Workbench and the manifest icons.
   - The Pages workflow and the `e2e` CI job build the PNG icons from the masters, and the build fails if they are missing (`UNICHEF_REQUIRE_ICONS=1`).
   - `assets/branding/manifest.json` adds `github/social-preview.png` (1280 × 640) for the repository's social preview.
+- **Release completeness** (`docs/release/process.md`):
+  - Every release attaches `.deb` packages for noble, resolute and trixie (`unichef_<v>-1~<series>1_all.deb`, built after lintian and autopkgtest pass with `scripts/deb/check.sh --out`) and the web app as `unichef-web-<v>.zip`. Both are attested and listed in `SHA256SUMS`.
+  - The container image gets BuildKit SBOM and provenance, plus a GitHub build provenance attestation pushed to GHCR.
+  - `scripts/release/verify.sh` (`make release-verify V=…`, and the `verify-release` job after each release) checks that every asset is attached, the checksums match, every artefact and the image are attested, and PyPI, npm and GHCR serve the version.
+  - `docs/release/process.md` lists the gates, every artefact and the release steps. CONTRIBUTING.md gains test and release rules, and the `release-qa` skill and `CLAUDE.md` give coding agents the same rules.
 - **GitHub Pages** (`.github/workflows/pages.yml`): on a push to `main` or a manual run, builds the web app and the `@unichef/core` API reference (TypeDoc, at `api/`) and deploys them to https://0xdolan.github.io/unichef/. `make pages` builds the same site locally. The service worker leaves `api/` alone.
 - **Performance budgets** (PRD §13.1), checked in CI:
   - NFR-001 and NFR-003 run in Playwright (Chromium) against the production build: first paint and interactivity on throttled "Fast 4G", and `analyse-characters` on 100 000 code points.

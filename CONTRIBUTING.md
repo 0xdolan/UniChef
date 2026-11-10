@@ -36,3 +36,14 @@ Use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/): `typ
 ## Local setup
 
 `make help` lists the developer commands. They need GNU Make 4 and bash. On Windows, use WSL2 or run `make docker-ci`.
+
+## Tests and quality gates
+
+- Every change ships with a test that CI runs. Name the test after the PRD requirement it proves (`FR-001: …`, `NFR-043: …`). `make traceability` fails if a requirement has no test.
+- Web UI changes must keep the desktop and phone e2e projects green: no sideways scrolling at phone width, touch targets of at least 24 × 24 px, form fields of at least 16 px on touch screens, and no serious axe findings in either theme.
+- Use only the brand assets from `assets/branding/source/` and the colour tokens in `clients/web/src/styles/tokens.css`. The name is shown as the outlined lockup, never as live text in a webfont.
+- Add a manual QA item to `docs/release/qa-checklist.md` only for something a machine cannot check, such as a real device or a store dialog.
+
+## Releases
+
+[docs/release/process.md](docs/release/process.md) describes the gates, every artefact a release must ship, and the steps from `release/X.Y.Z` to a signed tag. `make release-verify V=X.Y.Z` checks a published release.
