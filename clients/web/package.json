@@ -1,6 +1,6 @@
 {
   "name": "web",
-  "version": "0.1.0-alpha.1",
+  "version": "1.0.0-rc.1",
   "private": true,
   "description": "The UniChef web app: workbench, character browser and regex lab, offline.",
   "type": "module",
