@@ -6,6 +6,8 @@ import { UCD_VERSION } from '@unichef/core/unicode/index.js';
 import type { ReactNode } from 'react';
 import licences from 'virtual:licenses';
 
+import constants from '../../../../../project.constants.json';
+
 import { t } from '../../i18n/index.js';
 import styles from './Lab.module.css';
 
@@ -25,7 +27,7 @@ export const DATA_NOTICES = [
   },
 ] as const;
 
-const REPO = 'https://github.com/0xdolan/UniChef';
+const REPO = constants.REPO_URL;
 
 export function AboutPage(): ReactNode {
   return (

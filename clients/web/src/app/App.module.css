@@ -196,3 +196,45 @@
     box-shadow: inset 3px 0 0 var(--primary);
   }
 }
+
+/* The credit line (FR-011). It wraps on narrow screens; each link keeps a 24 px target. */
+.footer {
+  flex: none;
+  padding: 4px max(var(--gap), env(safe-area-inset-right)) max(4px, env(safe-area-inset-bottom))
+    max(var(--gap), env(safe-area-inset-left));
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+
+.footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  column-gap: 8px;
+}
+
+.footer nav > * {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+  min-height: 24px;
+}
+
+.footer a {
+  color: var(--muted);
+  text-underline-offset: 2px;
+}
+
+.footer a:hover,
+.footer a:focus-visible {
+  color: var(--text);
+}
+
+.heart {
+  width: 1em;
+  height: 1em;
+  fill: var(--error);
+}

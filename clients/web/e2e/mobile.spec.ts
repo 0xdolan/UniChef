@@ -61,7 +61,7 @@ for (const route of ROUTES) {
 test('NFR-043: the menu button opens the nav, navigates and closes', async ({ page }) => {
   await open(page, '#/');
   const menu = page.getByRole('button', { name: 'Menu' });
-  const nav = page.getByRole('navigation').first();
+  const nav = page.getByRole('navigation', { name: 'Main', includeHidden: true });
   await expect(menu).toHaveAttribute('aria-expanded', 'false');
   await expect(nav).toBeHidden();
   const header = await page.locator('header').boundingBox();
@@ -95,6 +95,18 @@ test('NFR-043: the Workbench stacks its panes and fields do not trigger zoom', a
     ),
   );
   expect(Math.min(...sizes)).toBeGreaterThanOrEqual(16);
+  // The step's move, disable and remove buttons only exist once a step is added.
+  expect(await smallTargets(page)).toEqual([]);
+});
+
+test('NFR-043: the credit footer wraps inside the screen and stays reachable', async ({ page }) => {
+  await open(page, '#/about');
+  const footer = page.getByRole('contentinfo');
+  await footer.scrollIntoViewIfNeeded();
+  await expect(footer.getByRole('link', { name: /^v\d/ })).toBeVisible();
+  const box = await footer.boundingBox();
+  const width = page.viewportSize()?.width ?? 0;
+  expect(box && box.x >= 0 && box.x + box.width <= width).toBeTruthy();
 });
 
 test('NFR-043: the install metadata and every manifest icon resolve', async ({ page, request }) => {

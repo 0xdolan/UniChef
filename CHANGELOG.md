@@ -129,6 +129,7 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
 - Shared spec: recipe, output and vector schemas, the error catalogue, and vectors for ten encoding ops.
 - Repository scaffold: project constants, `VERSION`, licence and notices, and the Makefile skeleton.
 - **Release QA checklist:** `docs/release/qa-checklist.md` lists the manual checks for each release candidate: the extensions in Chrome, Brave, Edge and Firefox, the web app, and every CLI install channel.
+- **Credit footer (FR-011):** every web app page, including GitHub Pages, ends with "Made with ♥ by 0xdolan · Source · Docs · Site · vX.Y.Z". The links come from `project.constants.json`, and the version is the one the app was built from.
 
 ### Changed
 
@@ -140,4 +141,5 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
 
 ### Fixed
 
+- **Phone layout (NFR-043):** the recipe step's move, disable and remove buttons were 21–23 px on phones. They are now 40 px, and the step header wraps so a long operation name keeps its own line. The mobile e2e suite now checks step controls and the footer.
 - **Extension landmarks (NFR-040):** the Characters tabs no longer nest the web page's `<main id="main">` inside the panel's own, so each tab has one main landmark and one `#main`. The `extension` e2e project now runs an axe WCAG 2.2 AA scan of every tab.
