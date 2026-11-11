@@ -12,7 +12,7 @@ const AUTHOR = new URL(constants.REPO_URL).pathname.split('/')[1] ?? '';
 export const FOOTER_LINKS = {
   author: `https://github.com/${AUTHOR}`,
   source: constants.REPO_URL,
-  docs: `${constants.REPO_URL}/blob/HEAD/INTRODUCTION.md`,
+  docs: '#/docs',
   site: constants.PAGES_URL,
   version: `${constants.REPO_URL}/releases/tag/v${VERSION}`,
 } as const;
@@ -46,9 +46,7 @@ export function Footer(): ReactNode {
           {t('footer.source')}
         </a>
         <Sep />
-        <a href={FOOTER_LINKS.docs} rel="noreferrer">
-          {t('footer.docs')}
-        </a>
+        <a href={FOOTER_LINKS.docs}>{t('footer.docs')}</a>
         <Sep />
         <a href={FOOTER_LINKS.site}>{t('footer.site')}</a>
         <Sep />

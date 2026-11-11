@@ -32,6 +32,9 @@ const PlaygroundPage = lazy(() =>
 const RecipesPage = lazy(() =>
   import('../features/recipes/RecipesPage.js').then((m) => ({ default: m.RecipesPage })),
 );
+const DocsPage = lazy(() =>
+  import('../features/docs/DocsPage.js').then((m) => ({ default: m.DocsPage })),
+);
 const AboutPage = lazy(() =>
   import('../features/lab/AboutPage.js').then((m) => ({ default: m.AboutPage })),
 );
@@ -44,6 +47,7 @@ const NAV: readonly (readonly [string, MessageKey, readonly string[]])[] = [
   ['#/regex', 'nav.regex', ['regex']],
   ['#/playground', 'nav.playground', ['playground']],
   ['#/recipes', 'nav.recipes', ['recipes']],
+  ['#/docs', 'nav.docs', ['docs']],
   ['#/about', 'nav.about', ['about']],
 ];
 
@@ -73,6 +77,8 @@ function Page({ section, param }: { readonly section: string; readonly param: st
       return <PlaygroundPage param={param} />;
     case 'recipes':
       return <RecipesPage />;
+    case 'docs':
+      return <DocsPage param={param} />;
     case 'about':
       return <AboutPage />;
     default:

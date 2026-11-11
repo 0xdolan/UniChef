@@ -21,7 +21,7 @@ describe('Footer', () => {
     const href = (name: string) => nav.getByRole('link', { name }).getAttribute('href');
     expect(href('0xdolan')).toBe('https://github.com/0xdolan');
     expect(href('Source')).toBe(constants.REPO_URL);
-    expect(href('Docs')).toBe(`${constants.REPO_URL}/blob/HEAD/INTRODUCTION.md`);
+    expect(href('Docs')).toBe('#/docs');
     expect(href('Site')).toBe(constants.PAGES_URL);
     expect(href(`v${VERSION}`)).toBe(`${constants.REPO_URL}/releases/tag/v${VERSION}`);
   });

@@ -49,7 +49,7 @@ milestone or issue, and each item is done when its tests are green in CI.
 | 0 | Credit footer and phone fixes (FR-011, NFR-043) | PR #66 |
 | 1 | Brand lockup check in every header; the app reloads into a new release and says so | next |
 | 2 | Positioning: README, introduction, About, repo description and topics, package metadata | next |
-| 3 | Docs system: `docs/reference/` pages built from `spec/ops.json` plus written explanations, concept guides in `docs/learn/`, in-app `#/learn/<op>` route, "How it works" links on every operation | next |
+| 3 | Docs system: `docs/reference/` pages built from `spec/ops.json` plus written explanations, concept guides in `docs/learn/`, in-app `#/docs` reader, a "How it works" link on every recipe step (FR-013, FR-014) | done |
 | 4 | Marketing kit: social card, store tiles, launch copy, refreshed screenshots, first-run tour | after 3 |
 | 5 | CyberChef parity milestones 1.1 to 2.0 (below) | after 1.0.0 |
 
@@ -61,14 +61,16 @@ milestone or issue, and each item is done when its tests are green in CI.
   snippets, breadcrumb, table of contents and previous/next links from `spec/ops.json`,
   between marker comments. `--check` fails CI when an operation has no page or a page is
   stale.
-- **In the app.** At build time the Markdown becomes HTML (a dev dependency, nothing at
-  runtime, nothing loaded from other sites, CSP unchanged). `#/learn` shows the table of
-  contents, and `#/learn/<id>` shows one page. The operation list, each recipe step and the
-  footer's Docs link point there.
-- **Requirements.** These need new PRD IDs, and each ID gets a test:
-  - every operation has a page and it is current;
-  - every page's links resolve;
-  - every operation in the app links to its page.
+- **In the app.** At build time `clients/web/vite.docs.ts` parses each page with marked (a
+  dev dependency) into plain data that React renders, so there is no Markdown parser and no
+  raw HTML at runtime, nothing is loaded from other sites, and the CSP is unchanged. Each
+  page is its own lazy chunk, precached for offline use. `#/docs` shows the table of
+  contents and `#/docs/<path>` one page. Each recipe step's `?` button and the footer's Docs
+  link point there; the extension opens the same pages on the Pages site.
+- **Requirements.** FR-013: every operation has a page, it is current and its links and
+  examples work (`pytest scripts`, `test_docs_links.py`). FR-014: the reader converts every
+  page, every reader link resolves and every operation links to its page
+  (`clients/web/test/docs.test.tsx`).
 
 ## CyberChef parity
 

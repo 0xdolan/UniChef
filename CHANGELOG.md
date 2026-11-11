@@ -132,6 +132,8 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
 - **Credit footer (FR-011):** every web app page, including GitHub Pages, ends with "Made with ♥ by 0xdolan · Source · Docs · Site · vX.Y.Z". The links come from `project.constants.json`, and the version is the one the app was built from.
 - **Always current (FR-012):** the web app reloads into a new release on the first visit after a deploy, instead of serving the copy the service worker cached, and a status line names the version it updated to.
 - **Roadmap:** `docs/roadmap.md` restates the project scope (a cybersecurity and Unicode workbench) and plans the docs system, the marketing kit and milestones 1.1 to 2.0 for the CyberChef operations that 1.0 does not cover.
+- **Documentation (FR-013):** `docs/` has twelve concept guides in `docs/learn/` and a reference page for every operation in `docs/reference/ops/`. Each page explains how the operation works with a worked example, has security notes where they matter, links to the standards, and gives tested examples, a link that opens the example in the web app, and CLI, Python and TypeScript usage. `docs/README.md` is the full table of contents, and every page has previous and next links. `make docs` (`scripts/docs/build.py`) updates the generated parts, and `pytest scripts` fails when they drift or a link breaks.
+- **Docs in the web app (FR-014):** `#/docs` shows the same documentation inside the app, offline too, with links between pages kept in the app and example links opening the workbench. Each recipe step has a `?` button that opens its operation's page, and the footer's Docs link goes there. Pages are converted at build time, so the app renders no raw HTML.
 
 ### Changed
 

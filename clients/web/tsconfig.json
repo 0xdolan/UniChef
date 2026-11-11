@@ -24,6 +24,7 @@
     "playwright.config.ts",
     "playwright.screenshots.config.ts",
     "vite.config.ts",
+    "vite.docs.ts",
     "vite.licenses.ts"
   ]
 }

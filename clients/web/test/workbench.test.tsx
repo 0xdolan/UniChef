@@ -50,6 +50,14 @@ describe('Workbench', () => {
     expect(screen.getByLabelText('Padding')).toHaveProperty('checked', true);
   });
 
+  it('FR-014: links each step to its operation reference page', () => {
+    renderWorkbench();
+    fireEvent.click(screen.getByRole('button', { name: 'Add To Base64 to the recipe' }));
+    const link = screen.getByRole('link', { name: 'How To Base64 works' });
+    expect(link.getAttribute('href')).toBe('#/docs/reference/ops/to-base64');
+    expect(link.getAttribute('target')).toBeNull();
+  });
+
   it('auto-bakes the recipe and input after the debounce and shows the output', () => {
     const { worker } = renderWorkbench();
     fireEvent.click(screen.getByRole('button', { name: 'Add To Hex to the recipe' }));

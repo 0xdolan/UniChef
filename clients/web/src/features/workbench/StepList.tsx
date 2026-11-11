@@ -27,6 +27,7 @@ import { allOperations, getOperation } from '@unichef/core';
 import { useId, useMemo, type ReactNode } from 'react';
 
 import { t } from '../../i18n/index.js';
+import { DOCS_ELSEWHERE, opDocsHref } from '../docs/links.js';
 import { sizeLabel } from '../../lib/format.js';
 import { newStep, type StepModel } from '../../state/recipe.js';
 import { pathKey, useApp } from '../../state/store.js';
@@ -142,6 +143,15 @@ function StepCard({
         </button>
         <StepBadge stepKey={key} />
         <span className={styles.stepActions}>
+          <a
+            className={styles.icon}
+            href={opDocsHref(op.id)}
+            aria-label={t('recipe.docs', { name: op.name })}
+            title={t('recipe.docs', { name: op.name })}
+            {...(DOCS_ELSEWHERE ? { target: '_blank', rel: 'noreferrer' } : {})}
+          >
+            ?
+          </a>
           <button
             type="button"
             className={styles.icon}

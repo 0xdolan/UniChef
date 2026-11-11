@@ -8,12 +8,13 @@ import type { Plugin } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 import { defineConfig } from 'vitest/config';
 
+import { docs } from './vite.docs.js';
 import { licences } from './vite.licenses.js';
 
 const core = fileURLToPath(new URL('../../packages/npm-core/src/', import.meta.url));
 const constants = JSON.parse(
   readFileSync(new URL('../../project.constants.json', import.meta.url), 'utf8'),
-) as { PAGES_URL: string };
+) as { PAGES_URL: string; REPO_URL: string };
 
 // GitHub Pages cannot send headers, so the policy is a meta tag. Dev mode injects
 // <style> elements for hot reload, so the tag is added to production builds only.
@@ -159,6 +160,11 @@ export default defineConfig(({ mode }) => {
       csp(),
       ...(extension ? [] : [icons(), pwa]),
       licences(fileURLToPath(new URL('package.json', import.meta.url))),
+      docs({
+        root: fileURLToPath(new URL('../../', import.meta.url)),
+        repoUrl: constants.REPO_URL,
+        pagesUrl: constants.PAGES_URL,
+      }),
     ],
     // Build against the core's sources, so the app needs no separate core build step.
     resolve: {
