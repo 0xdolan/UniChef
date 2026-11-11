@@ -4,7 +4,7 @@
     "description": "The extension's name in the browser and the stores."
   },
   "extDescription": {
-    "message": "Inspect selected text character by character, find invisible and bidi characters, and run UniChef recipes offline.",
+    "message": "Encode, decode, hash and inspect selected text offline. Finds invisible, bidi and look-alike characters. Cybersecurity + Unicode.",
     "description": "The store and extension-page description (132 characters at most)."
   },
   "menuInspect": {

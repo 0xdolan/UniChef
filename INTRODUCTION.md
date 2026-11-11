@@ -15,7 +15,7 @@
 
 ## What is UniChef
 
-UniChef is a workbench for Unicode text and encoded data. You chain operations into a **recipe**: decode Base64, normalise to NFC, reveal invisible characters, hash the bytes, and so on. You run it on some input and see what each step produced. It also gives you a character database and security checks for invisible, bidi and confusable characters.
+UniChef is a cybersecurity and Unicode workbench. You chain operations into a **recipe**: decode Base64, gunzip, decrypt AES, decode a JWT, hash the bytes, normalise to NFC, reveal invisible characters, and so on. You run it on some input and see what each step produced. It also gives you a character database and security checks for invisible, bidi and confusable characters: the tricks behind Trojan Source, homoglyph domains and hidden text.
 
 The same operations ship as a Python library and CLI, a TypeScript library and an offline web app. Both cores read the same pinned Unicode Character Database (Unicode 18.0.0) and pass the same test vectors, so a recipe gives the same output in a terminal as in a browser.
 

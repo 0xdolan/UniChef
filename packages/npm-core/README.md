@@ -1,6 +1,6 @@
 # @unichef/core
 
-The UniChef core for JavaScript and TypeScript: Unicode character analysis and deterministic data-transformation recipes, for Node.js 22+ and browsers.
+The UniChef core for JavaScript and TypeScript, for Node.js 22+ and browsers: a cybersecurity and Unicode workbench. It runs deterministic recipes of encoding, hashing, crypto, compression and text operations, and has a Unicode engine with invisible, bidi and confusable checks.
 
 UniChef computes every Unicode result from its own copy of the Unicode Character Database, so the output does not depend on the JavaScript engine that runs it. It produces the same results as the Python core, checked against shared test vectors.
 
