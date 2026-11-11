@@ -2,7 +2,7 @@
 
 `.github/workflows/extensions.yml` publishes to the **Chrome Web Store** (also used by Brave and Edge) and **addons.mozilla.org**. A stable tag `vX.Y.Z` publishes to both. A pre-release tag only builds, and you publish it by hand. Both publish jobs wait for a maintainer to approve them in the `store-publish` environment.
 
-The release workflow attaches `unichef-chrome-<version>.zip` and `unichef-firefox-<version>.zip` to every GitHub Release. People who don't use the stores can load these unpacked. Safari will be distributed the same way once the Xcode project exists (#45). It won't be in the App Store.
+The release workflow attaches `unichef-chrome-<version>.zip` and `unichef-firefox-<version>.zip` to every GitHub Release. People who don't use the stores can load these unpacked. Each release also attaches `unichef-safari-xcode-<version>.zip`, the Safari Xcode project generated from that release's build. Safari is not in the App Store.
 
 ## One-time setup
 
@@ -84,3 +84,11 @@ Each store reviews every version. The job ends once a version is submitted, so c
 - **Edge:** open the Chrome Web Store listing and choose **Allow extensions from other stores**.
 - **Unpacked (Chrome, Brave, Edge):** unzip `unichef-chrome-<version>.zip`. Open `chrome://extensions` and turn on **Developer mode**. Choose **Load unpacked** and select the unzipped folder.
 - **Firefox, temporary install:** open `about:debugging#/runtime/this-firefox` and choose **Load Temporary Add-on**. Select `manifest.json` in the unzipped `unichef-firefox-<version>.zip`. Release Firefox accepts only signed add-ons for a permanent install, so use the AMO listing for that.
+- **Safari (macOS, Xcode 15 or later):**
+  1. Unzip `unichef-safari-xcode-<version>.zip` and open `UniChef/UniChef.xcodeproj` in Xcode.
+  2. Under **Signing & Capabilities**, pick your team for both the app and the extension targets. A free Apple ID works for local use.
+  3. Choose the **UniChef (macOS)** scheme and **Run**. This installs the app that contains the extension.
+  4. In Safari, open **Settings → Advanced** and turn on **Show features for web developers**. Then choose **Develop → Allow Unsigned Extensions**. Safari turns this off each time it quits.
+  5. Open **Settings → Extensions** and turn on UniChef.
+
+  To build it yourself instead, run `clients/extensions/safari/generate-xcode.sh` on a Mac. It writes the project to `clients/extensions/safari/UniChef/`, which git ignores.

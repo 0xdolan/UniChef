@@ -37,7 +37,7 @@ browser, and run the whole list in Brave, Edge and Firefox.
 | Brave | `brave://extensions`, then the same steps and zip as Chrome |
 | Edge | `edge://extensions` → Developer mode → **Load unpacked** → the unzipped `unichef-edge-<v>.zip` |
 | Firefox (128 or later) | `about:debugging#/runtime/this-firefox` → **Load Temporary Add-on** → `manifest.json` in the unzipped `unichef-firefox-<v>.zip` |
-| Safari | Deferred until the Xcode project exists (#45) |
+| Safari (17 or later, on a Mac) | Unzip `unichef-safari-xcode-<v>.zip`, then follow the Safari steps in [docs/extensions/publishing.md](../extensions/publishing.md#installing-without-a-store). Safari opens a popup instead of a side panel. |
 
 ### 1.1 Install
 
