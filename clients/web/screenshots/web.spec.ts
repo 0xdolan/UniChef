@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-/** The web tour at 1280×800, 1x and 2x, light and dark (PRD §9.3). */
+/** The web app at 1280×800 and on a 390×844 phone, 1x and 2x, light and dark (PRD §9.3). */
 import { expect, test, type Page } from '@playwright/test';
 
 import { SCALES, shotPath, THEMES } from './paths';
@@ -48,6 +48,59 @@ const SHOTS: Record<string, (page: Page) => Promise<void>> = {
     await page.goto('./#/recipes');
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
   },
+  async docs(page) {
+    await page.goto('./#/docs/reference/ops/to-base64');
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+  },
+  async tour(page) {
+    await firstVisit(page);
+  },
+};
+
+/** The first-run tour (FR-015): forget that it was seen, then open the bare workbench. */
+async function firstVisit(page: Page) {
+  await page.goto('./#/');
+  await page.evaluate(() => {
+    localStorage.removeItem('unichef.tour');
+  });
+  await page.reload();
+  await expect(page.getByRole('dialog', { name: 'Welcome to UniChef' })).toBeVisible();
+}
+
+/** Phone shots: name -> drive the page. */
+const PHONE: Record<string, (page: Page) => Promise<void>> = {
+  async workbench(page) {
+    await page.goto('./#/');
+    await addOp(page, 'base64', 'To Base64');
+    await input(page).fill('UniChef ✓ café');
+    await expect(output(page)).not.toHaveValue('');
+    await page.getByRole('searchbox', { name: 'Search operations' }).fill('');
+    // Show the recipe and its output rather than the operation list above them.
+    await page.evaluate(() => {
+      (document.activeElement as HTMLElement | null)?.blur();
+    });
+    await page.getByRole('heading', { name: 'Recipe' }).evaluate((h) => {
+      h.scrollIntoView({ block: 'start' });
+      // Clear the sticky header.
+      window.scrollBy(0, -((document.querySelector('header')?.offsetHeight ?? 0) + 24));
+    });
+  },
+  async menu(page) {
+    await page.goto('./#/');
+    await page.getByRole('button', { name: 'Menu' }).click();
+    await expect(page.getByRole('navigation', { name: 'Main' })).toBeVisible();
+  },
+  async char(page) {
+    await page.goto('./#/char/U+202E');
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('RIGHT-TO-LEFT OVERRIDE');
+  },
+  async docs(page) {
+    await page.goto('./#/docs/learn/unicode-security');
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+  },
+  async tour(page) {
+    await firstVisit(page);
+  },
 };
 
 for (const theme of THEMES) {
@@ -63,6 +116,30 @@ for (const theme of THEMES) {
           await drive(page);
           await page.screenshot({
             path: shotPath('web', theme, scale, name),
+            animations: 'disabled',
+            caret: 'hide',
+          });
+        });
+      }
+    });
+  }
+}
+
+for (const theme of THEMES) {
+  for (const scale of SCALES) {
+    test.describe(`phone ${theme} ${String(scale)}x`, () => {
+      test.use({
+        colorScheme: theme,
+        deviceScaleFactor: scale,
+        viewport: { width: 390, height: 844 },
+        isMobile: true,
+        hasTouch: true,
+      });
+      for (const [name, drive] of Object.entries(PHONE)) {
+        test(name, async ({ page }) => {
+          await drive(page);
+          await page.screenshot({
+            path: shotPath('phone', theme, scale, name),
             animations: 'disabled',
             caret: 'hide',
           });
