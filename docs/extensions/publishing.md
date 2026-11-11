@@ -1,8 +1,8 @@
 # Publishing the browser extensions
 
-`.github/workflows/extensions.yml` publishes to the **Chrome Web Store** (also used by Brave and Edge) and **addons.mozilla.org**. A stable tag `vX.Y.Z` publishes to both. A pre-release tag only builds, and you publish it by hand. Both publish jobs wait for a maintainer to approve them in the `store-publish` environment.
+`.github/workflows/extensions.yml` publishes to the **Chrome Web Store** (also used by Brave), **Microsoft Edge Add-ons** and **addons.mozilla.org**. A stable tag `vX.Y.Z` publishes to all three. A pre-release tag only builds, and you publish it by hand. Every publish job waits for a maintainer to approve it in the `store-publish` environment. The Edge job is skipped until the `EDGE_PRODUCT_ID` variable is set.
 
-The release workflow attaches `unichef-chrome-<version>.zip` and `unichef-firefox-<version>.zip` to every GitHub Release. People who don't use the stores can load these unpacked. Each release also attaches `unichef-safari-xcode-<version>.zip`, the Safari Xcode project generated from that release's build. Safari is not in the App Store.
+The release workflow attaches `unichef-chrome-<version>.zip`, `unichef-edge-<version>.zip` and `unichef-firefox-<version>.zip` to every GitHub Release. People who don't use the stores can load these unpacked. Each release also attaches `unichef-safari-xcode-<version>.zip`, the Safari Xcode project generated from that release's build. Safari is not in the App Store.
 
 ## One-time setup
 
@@ -61,12 +61,29 @@ The first run creates the listing from `clients/extensions/firefox/store/amo-met
 
 3. After the first submission, add the screenshots from `assets/branding/dist/store/` on the listing's **Edit Product Page**.
 
+### 4. Microsoft Edge Add-ons
+
+The API can't create a product. The first submission is done in Partner Center.
+
+1. Register as a Microsoft Edge developer at <https://partner.microsoft.com/dashboard/microsoftedge/overview> (free).
+2. Choose **Create new extension** and upload `unichef-edge-<version>.zip` (`make build-ext`, or from a GitHub Release).
+3. Fill in **Properties**, **Availability** and **Store listings** from `clients/extensions/edge/store/listing.md`, then **Publish**.
+4. Copy the **Product ID** from the extension's **Overview** page.
+5. Go to **Publish API** and choose **Create API credentials**. Note the **Client ID** and the **API key**. The key expires after 72 days; create a new one and update the secret before then.
+6. Store them:
+
+   ```sh
+   gh secret set EDGE_CLIENT_ID -R 0xdolan/unichef --env store-publish   # paste the Client ID
+   gh secret set EDGE_API_KEY -R 0xdolan/unichef --env store-publish     # paste the API key
+   gh variable set EDGE_PRODUCT_ID -R 0xdolan/unichef --body '<product id>'
+   ```
+
 ## Publishing a release
 
 A stable tag publishes on its own. To publish a pre-release, or to retry a store run, start the workflow by hand:
 
 ```sh
-gh workflow run extensions.yml -R 0xdolan/unichef -f ref=v0.1.0-alpha.1            # both stores
+gh workflow run extensions.yml -R 0xdolan/unichef -f ref=v0.1.0-alpha.1            # every store
 gh workflow run extensions.yml -R 0xdolan/unichef -f ref=v0.1.0-alpha.1 -f store=firefox
 gh workflow run extensions.yml -R 0xdolan/unichef -f ref=v0.1.0-alpha.1 -f staged=true
 gh run watch -R 0xdolan/unichef "$(gh run list -R 0xdolan/unichef -w extensions.yml -L1 --json databaseId -q '.[0].databaseId')"
@@ -81,8 +98,9 @@ Each store reviews every version. The job ends once a version is submitted, so c
 ## Installing without a store
 
 - **Brave:** install from the Chrome Web Store.
-- **Edge:** open the Chrome Web Store listing and choose **Allow extensions from other stores**.
-- **Unpacked (Chrome, Brave, Edge):** unzip `unichef-chrome-<version>.zip`. Open `chrome://extensions` and turn on **Developer mode**. Choose **Load unpacked** and select the unzipped folder.
+- **Edge:** install from Edge Add-ons. Until that listing exists, open the Chrome Web Store listing and choose **Allow extensions from other stores**.
+- **Unpacked (Chrome, Brave):** unzip `unichef-chrome-<version>.zip`. Open `chrome://extensions` and turn on **Developer mode**. Choose **Load unpacked** and select the unzipped folder.
+- **Unpacked (Edge):** unzip `unichef-edge-<version>.zip`. Open `edge://extensions`, turn on **Developer mode**, choose **Load unpacked** and select the unzipped folder.
 - **Firefox, temporary install:** open `about:debugging#/runtime/this-firefox` and choose **Load Temporary Add-on**. Select `manifest.json` in the unzipped `unichef-firefox-<version>.zip`. Release Firefox accepts only signed add-ons for a permanent install, so use the AMO listing for that.
 - **Safari (macOS, Xcode 15 or later):**
   1. Unzip `unichef-safari-xcode-<version>.zip` and open `UniChef/UniChef.xcodeproj` in Xcode.

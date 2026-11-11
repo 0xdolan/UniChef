@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-import { mkdtempSync, mkdirSync, rmSync, utimesSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, readFileSync, rmSync, utimesSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -111,5 +111,27 @@ describe('lintProblems', () => {
       warnings: [...allowed, warn('UNSAFE_VAR_ASSIGNMENT')],
     });
     expect(extra).toHaveLength(3);
+  });
+});
+
+describe('store listings', () => {
+  const read = (path: string): unknown =>
+    JSON.parse(readFileSync(new URL(path, import.meta.url), 'utf8'));
+
+  it('lists only screenshots that the branding manifest produces (PRD §7.6)', () => {
+    const shots = read('../../chrome/store/screenshots.json') as {
+      size: number[];
+      screenshots: { file: string; caption: string }[];
+    };
+    const branding = read('../../../../assets/branding/manifest.json') as {
+      outputs: { kind: string; names?: string[]; size?: number[] }[];
+    };
+    const spec = branding.outputs.find((o) => o.kind === 'screenshot');
+    expect(spec).toBeDefined();
+    expect(shots.size).toEqual(spec?.size);
+    expect(shots.screenshots.map((s) => s.file).sort()).toEqual(
+      spec?.names?.map((n) => `screenshot-${n}.png`).sort(),
+    );
+    for (const s of shots.screenshots) expect(s.caption.length).toBeLessThanOrEqual(132);
   });
 });
