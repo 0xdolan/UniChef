@@ -6,6 +6,7 @@ import { Workbench } from '../features/workbench/Workbench.js';
 import { t, type MessageKey } from '../i18n/index.js';
 import styles from './App.module.css';
 import { Brand } from './Brand.js';
+import { Footer } from './Footer.js';
 import { useRoute } from './router.js';
 
 // The character pages load on first visit, so the workbench's bundle stays small.
@@ -139,6 +140,7 @@ export function App(): ReactNode {
       >
         <Page section={section} param={param} />
       </Suspense>
+      <Footer />
     </div>
   );
 }

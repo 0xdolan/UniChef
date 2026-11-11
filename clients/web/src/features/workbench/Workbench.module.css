@@ -111,6 +111,11 @@
 }
 
 .icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  min-height: 24px;
   padding: 0 6px;
   background: transparent;
   border-color: transparent;
@@ -460,4 +465,29 @@
   margin: 0;
   color: var(--error);
   overflow-wrap: anywhere;
+}
+
+/* Touch screens: step controls get 40 px targets, and the header wraps so a long operation
+   name keeps its own line instead of being squeezed by the buttons (NFR-043). */
+@media (width < 900px) {
+  .icon {
+    min-width: 40px;
+    min-height: 40px;
+  }
+
+  .stepHead {
+    flex-wrap: wrap;
+    row-gap: 0;
+  }
+
+  .stepName {
+    flex: 1 1 8em;
+    min-width: 0;
+    min-height: 40px;
+    overflow-wrap: anywhere;
+  }
+
+  .stepActions {
+    margin-inline-start: auto;
+  }
 }
