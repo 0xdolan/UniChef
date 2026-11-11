@@ -13,7 +13,7 @@ import constants from '../../../project.constants.json';
 import { DocsPage } from '../src/features/docs/DocsPage.js';
 import { opDocsHref } from '../src/features/docs/links.js';
 import type { Block, DocPage, Inline } from '../src/features/docs/tree.js';
-import { convert, listPages, rewriteHref, routeKey } from '../vite.docs.js';
+import { convert, listPages, literal, rewriteHref, routeKey } from '../vite.docs.js';
 
 afterEach(cleanup);
 
@@ -94,6 +94,13 @@ describe('docs conversion (FR-014)', () => {
       },
     ]);
     expect(() => convert('![logo](a.png)', ctx('README.md'))).toThrow(/cannot show inline image/);
+  });
+
+  it('FR-014: escapes generated module literals', () => {
+    const value = { v: '</script>\u2028a/b' };
+    const code = literal(value);
+    expect(code).not.toMatch(/[<>/\u2028\u2029]/);
+    expect(JSON.parse(code)).toEqual(value);
   });
 
   it('FR-014: converts every page, and every reader link has a page', () => {

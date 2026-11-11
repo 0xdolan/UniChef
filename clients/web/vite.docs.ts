@@ -197,11 +197,27 @@ export function convert(markdown: string, ctx: Context): DocPage {
   return { title: h1 && 'c' in h1 ? plain(h1.c as Inline[]) : '', blocks: tree };
 }
 
+/** Docs file names the reader accepts; anything else fails the build. */
+const SAFE_FILE = /^[a-z0-9][a-z0-9._/-]*\.md$/i;
+
+/**
+ * A value as a JavaScript literal for generated module code: JSON with the characters that
+ * could end a script or a line escaped (CodeQL js/bad-code-sanitization).
+ */
+export function literal(value: unknown): string {
+  return JSON.stringify(value).replace(
+    /[<>/\u2028\u2029]/g,
+    (c) => `\\u${c.charCodeAt(0).toString(16).padStart(4, '0')}`,
+  );
+}
+
 export function listPages(docs: string): string[] {
   const out: string[] = [];
   const walk = (rel: string) => {
     const abs = join(docs, rel);
     if (rel.endsWith('.md')) {
+      if (!SAFE_FILE.test(rel) || rel.includes('..'))
+        throw new Error(`docs/${rel}: unsafe file name`);
       out.push(rel);
       return;
     }
@@ -225,7 +241,7 @@ export function docs(options: { root: string; repoUrl: string; pagesUrl: string 
         const files = listPages(docsDir);
         for (const f of files) this.addWatchFile(join(docsDir, f));
         const entries = files.map(
-          (f) => `  ${JSON.stringify(routeKey(f))}: () => import(${JSON.stringify(PAGE + f)}),`,
+          (f) => `  ${literal(routeKey(f))}: () => import(${literal(PAGE + f)}),`,
         );
         return `export const pages = {\n${entries.join('\n')}\n};\n`;
       }
@@ -236,7 +252,7 @@ export function docs(options: { root: string; repoUrl: string; pagesUrl: string 
       const path = join(docsDir, file);
       this.addWatchFile(path);
       const ctx = { ...options, docs: docsDir, pages, file };
-      return `export default ${JSON.stringify(convert(readFileSync(path, 'utf8'), ctx))};\n`;
+      return `export default ${literal(convert(readFileSync(path, 'utf8'), ctx))};\n`;
     },
   };
 }
