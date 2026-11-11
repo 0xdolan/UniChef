@@ -22,6 +22,8 @@ UniChef branding must never use a chef's hat, the CyberChef name or logo, GCHQ m
 | `unichef-mark-mono.svg` | One-colour icon: Safari pinned tab, embossing, stamps | Any |
 | `unichef-mark-maskable.svg` | Icon at 80 % inside a solid `#0F1020` square, for PWA maskable icons | Built in |
 | `unichef-mark-16.svg` | Pixel-fitted icon for 16 px only (favicon) | Dark |
+| `unichef-banner.svg` | Lockup over the tagline "The cybersecurity and Unicode workbench", for social cards and store tiles | Dark |
+| `unichef-banner-light.svg` | Lockup over the tagline | Light |
 
 Every SVG is plain SVG 1.1 with a `viewBox`. Text is converted to outlines, and the files contain no fonts, scripts, `foreignObject`, raster images or external references. Inside each file the elements carry stable ids: `mark`, `mark-u`, `mark-dots`, `wordmark`, `wordmark-uni`, `wordmark-chef` and `background`. Illustrator and Inkscape import top-level groups by these names.
 
@@ -37,8 +39,8 @@ Where the brand appears:
 | Browser tab | `icon.svg` (the mark), plus `favicon.ico` at 16, 32 and 48 px | `dist/web/` |
 | Home screen (PWA) | `icon-192.png`, `icon-512.png`, `icon-maskable-512.png`, and the SVG and maskable SVG | `dist/web/` |
 | iOS home screen | `apple-touch-icon.png` (180 px, on `#0F1020`) | `dist/web/` |
-| Link previews (Open Graph, X) | `og-image.png` (1200 × 630) | `dist/web/` |
-| Repository social preview | `social-preview.png` (1280 × 640). Upload it under GitHub **Settings → General → Social preview**; there is no API for it. | `dist/github/` |
+| Link previews (Open Graph, X) | `og-image.png` (1200 × 630), the banner on `#0F1020` | `dist/web/` |
+| Repository social preview | `social-preview.png` (1280 × 640), the banner on `#0F1020`. Upload it under GitHub **Settings → General → Social preview**; there is no API for it. | `dist/github/` |
 | Browser extensions and stores | `16.png` to `128.png`, plus the store tiles | `dist/ext/`, `dist/store/` |
 | README and docs | `<picture>` with the dark and light lockups | The masters |
 
@@ -98,6 +100,7 @@ No CMYK or Pantone values are defined yet. They depend on the printer's profile.
 | Use | Typeface | Settings |
 |---|---|---|
 | Wordmark (outlined, never live text) | [Bricolage Grotesque](https://github.com/ateliertriay/bricolage), variable font, version 1.001 | Weight 700, width 100, optical size 48, tracking −0.02 em (−20 in Illustrator), kerning on, no ligatures |
+| Tagline (banner only, outlined) | Bricolage Grotesque, as above | Weight 500, width 100, optical size 24, no tracking. Scaled so it is exactly as wide as the lockup, and set 240 units below the mark |
 
 Bricolage Grotesque is licensed under the SIL Open Font License 1.1. Copyright 2022 The Bricolage Grotesque Project Authors. The logo contains outlines only, not the font software, so no font files are shipped. The font file used is `ofl/bricolagegrotesque/BricolageGrotesque[opsz,wdth,wght].ttf` from [google/fonts](https://github.com/google/fonts/tree/main/ofl/bricolagegrotesque).
 
@@ -216,6 +219,8 @@ inkscape assets/branding/source/unichef-mark.svg --export-type=png -w 512 -h 512
        python scripts/assets/make_masters.py \
        --font "BricolageGrotesque[opsz,wdth,wght].ttf" --out assets/branding/source
    ```
+
+   Masters are append-only, so to add a new master pass `--only <file name>…` and the script writes just those files. Run without `--only` into a scratch folder to check that the existing masters come out byte-identical.
 
 Because masters are append-only, write to a scratch directory first, compare, and add the result under a versioned name if anything changed.
 
