@@ -9,6 +9,7 @@ import licences from 'virtual:licenses';
 import constants from '../../../../../project.constants.json';
 
 import { t } from '../../i18n/index.js';
+import { useApp } from '../../state/store.js';
 import styles from './Lab.module.css';
 
 /** Data the app ships, as listed in THIRD_PARTY_NOTICES.md. */
@@ -30,6 +31,7 @@ export const DATA_NOTICES = [
 const REPO = constants.REPO_URL;
 
 export function AboutPage(): ReactNode {
+  const openTour = useApp((s) => s.setTourOpen);
   return (
     <main id="main" className={styles.page}>
       <h1 className={styles.title}>{t('about.title')}</h1>
@@ -53,6 +55,17 @@ export function AboutPage(): ReactNode {
         </dd>
       </dl>
       <p className={styles.muted}>{t('about.offline')}</p>
+      <p>
+        <button
+          type="button"
+          className={styles.button}
+          onClick={() => {
+            openTour(true);
+          }}
+        >
+          {t('about.tour')}
+        </button>
+      </p>
 
       <h2 className={styles.subtitle}>{t('about.data')}</h2>
       <ul>

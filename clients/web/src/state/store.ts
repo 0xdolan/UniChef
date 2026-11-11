@@ -82,6 +82,9 @@ interface UiSlice {
   select: (key: string | null) => void;
   notice: Notice | null;
   setNotice: (notice: Notice | null) => void;
+  /** The first-run tour dialog (FR-015). */
+  tourOpen: boolean;
+  setTourOpen: (open: boolean) => void;
 }
 
 interface SettingsSlice {
@@ -184,6 +187,10 @@ export const useApp = create<AppState>()((set) => ({
   notice: null,
   setNotice: (notice) => {
     set({ notice });
+  },
+  tourOpen: false,
+  setTourOpen: (tourOpen) => {
+    set({ tourOpen });
   },
 
   autoBake: true,
