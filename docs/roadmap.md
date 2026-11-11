@@ -50,7 +50,7 @@ milestone or issue, and each item is done when its tests are green in CI.
 | 1 | Brand lockup check in every header; the app reloads into a new release and says so (FR-012) | done |
 | 2 | Positioning: README, introduction, About, repo description and topics, package metadata | done |
 | 3 | Docs system: `docs/reference/` pages built from `spec/ops.json` plus written explanations, concept guides in `docs/learn/`, in-app `#/docs` reader, a "How it works" link on every recipe step (FR-013, FR-014) | done |
-| 4 | Marketing kit: social card, store tiles, launch copy, refreshed screenshots, first-run tour (FR-015) | in progress |
+| 4 | Marketing kit: social card, store tiles, launch copy, refreshed screenshots, first-run tour (FR-015) | done |
 | 5 | CyberChef parity milestones 1.1 to 2.0 (below) | after 1.0.0 |
 
 ### Phase 3 design
