@@ -20,7 +20,20 @@ export default defineConfig({
   forbidOnly: CI,
   retries: CI ? 1 : 0,
   reporter: CI ? [['list'], ['junit', { outputFile: '../../reports/e2e.xml' }]] : 'list',
-  use: { baseURL: URL_BASE, trace: 'on-first-retry' },
+  use: {
+    baseURL: URL_BASE,
+    trace: 'on-first-retry',
+    // The first-run tour (FR-015) counts as seen; e2e/tour.spec.ts starts from empty storage.
+    storageState: {
+      cookies: [],
+      origins: [
+        {
+          origin: `http://localhost:${PORT}`,
+          localStorage: [{ name: 'unichef.tour', value: '1' }],
+        },
+      ],
+    },
+  },
   // `make e2e` builds first; the tests run against what ships.
   webServer: {
     command: `pnpm exec vite preview --port ${PORT} --strictPort`,

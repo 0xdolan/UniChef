@@ -4,7 +4,7 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
 
 ## [Unreleased]
 
-## [1.0.0-rc.1] - 2026-11-10
+## [1.0.0-rc.1] - 2026-11-11
 
 ### Added
 
@@ -131,9 +131,17 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
 - Shared spec: recipe, output and vector schemas, the error catalogue, and vectors for ten encoding ops.
 - Repository scaffold: project constants, `VERSION`, licence and notices, and the Makefile skeleton.
 - **Release QA checklist:** `docs/release/qa-checklist.md` lists the manual checks for each release candidate: the extensions in Chrome, Brave, Edge and Firefox, the web app, and every CLI install channel.
+- **Credit footer (FR-011):** every web app page, including GitHub Pages, ends with "Made with ♥ by 0xdolan · Source · Docs · Site · vX.Y.Z". The links come from `project.constants.json`, and the version is the one the app was built from.
+- **Always current (FR-012):** the web app reloads into a new release on the first visit after a deploy, instead of serving the copy the service worker cached, and a status line names the version it updated to.
+- **Roadmap:** `docs/roadmap.md` restates the project scope (a cybersecurity and Unicode workbench) and plans the docs system, the marketing kit and milestones 1.1 to 2.0 for the CyberChef operations that 1.0 does not cover.
+- **Documentation (FR-013):** `docs/` has twelve concept guides in `docs/learn/` and a reference page for every operation in `docs/reference/ops/`. Each page explains how the operation works with a worked example, has security notes where they matter, links to the standards, and gives tested examples, a link that opens the example in the web app, and CLI, Python and TypeScript usage. `docs/README.md` is the full table of contents, and every page has previous and next links. `make docs` (`scripts/docs/build.py`) updates the generated parts, and `pytest scripts` fails when they drift or a link breaks.
+- **Docs in the web app (FR-014):** `#/docs` shows the same documentation inside the app, offline too, with links between pages kept in the app and example links opening the workbench. Each recipe step has a `?` button that opens its operation's page, and the footer's Docs link goes there. Pages are converted at build time, so the app renders no raw HTML.
+- **Marketing kit:** the social card, the repository social preview and the Chrome Web Store tiles show a new banner master, the lockup over the tagline "The cybersecurity and Unicode workbench", outlined in the brand font by `scripts/assets/make_masters.py` (new `--only` flag, so existing masters are never rewritten). `make screenshots` adds docs and tour shots and a 390 × 844 phone set. `docs/marketing/launch.md` has launch copy for X, Bluesky, Mastodon, LinkedIn, Hacker News and Reddit, with hashtags.
+- **First-run tour (FR-015):** the first visit to the web app opens a five-step introduction: what UniChef is, building a recipe, inspecting steps, seeing every character, and sharing and working offline. It can be skipped, works by keyboard, never opens on a shared link, and About has a button that opens it again.
 
 ### Changed
 
+- **Positioning:** UniChef is described as a cybersecurity and Unicode workbench everywhere: the README (rewritten with a feature table and install channels), the introduction, the About page, the web app's meta and manifest description, the CLI help tagline, PyPI and npm descriptions and keywords, the Debian description, the extension description and the Chrome, Edge and Firefox store listings.
 - **Requirement traceability closed:** every functional, non-functional, security and governance requirement now has a test or CI step that names it, and `scripts/traceability-pending.txt` is empty. New checks: a CLI `bake` run over the shared recipe vectors (FR-003); `scan --fail-on` in CI (FR-004); no network or dynamic-code use in either core (SEC-001, SEC-003); regex timeouts and rejected constructs (SEC-004); `W_INSECURE` for ECB, MD5, SHA-1 and weak PBKDF2 (SEC-006); same-origin requests and `connect-src 'self'` in the web app (SEC-001, SEC-002); SHA-pinned actions, frozen installs, Dependabot, CodeQL and attested trusted publishing (SEC-008); and the `SECURITY.md` policy (SEC-009).
 - **Bidi-safe tables (NFR-041):** web table cells use `dir="auto"` and `unicode-bidi: isolate`, and regex matches show control and invisible characters as `⟨NAME⟩` labels.
 - **Platforms:** Python tests also run on macOS x86-64 and Windows arm64 (NFR-021). Both build cryptography from source, which no longer ships wheels for them; CI installs Rust and a vcpkg OpenSSL on Windows arm64. The `deb` job also builds, lints and autopkgtests in `debian:trixie`, and `scripts/deb/check.sh` picks the lintian profile from the container (NFR-023).
@@ -142,4 +150,5 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
 
 ### Fixed
 
+- **Phone layout (NFR-043):** the recipe step's move, disable and remove buttons were 21–23 px on phones. They are now 40 px, and the step header wraps so a long operation name keeps its own line. The mobile e2e suite now checks step controls and the footer.
 - **Extension landmarks (NFR-040):** the Characters tabs no longer nest the web page's `<main id="main">` inside the panel's own, so each tab has one main landmark and one `#main`. The `extension` e2e project now runs an axe WCAG 2.2 AA scan of every tab.

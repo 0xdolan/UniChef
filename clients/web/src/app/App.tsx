@@ -6,6 +6,9 @@ import { Workbench } from '../features/workbench/Workbench.js';
 import { t, type MessageKey } from '../i18n/index.js';
 import styles from './App.module.css';
 import { Brand } from './Brand.js';
+import { Footer } from './Footer.js';
+import { Tour } from './Tour.js';
+import { UpdateNotice } from './UpdateNotice.js';
 import { useRoute } from './router.js';
 
 // The character pages load on first visit, so the workbench's bundle stays small.
@@ -30,6 +33,9 @@ const PlaygroundPage = lazy(() =>
 const RecipesPage = lazy(() =>
   import('../features/recipes/RecipesPage.js').then((m) => ({ default: m.RecipesPage })),
 );
+const DocsPage = lazy(() =>
+  import('../features/docs/DocsPage.js').then((m) => ({ default: m.DocsPage })),
+);
 const AboutPage = lazy(() =>
   import('../features/lab/AboutPage.js').then((m) => ({ default: m.AboutPage })),
 );
@@ -42,6 +48,7 @@ const NAV: readonly (readonly [string, MessageKey, readonly string[]])[] = [
   ['#/regex', 'nav.regex', ['regex']],
   ['#/playground', 'nav.playground', ['playground']],
   ['#/recipes', 'nav.recipes', ['recipes']],
+  ['#/docs', 'nav.docs', ['docs']],
   ['#/about', 'nav.about', ['about']],
 ];
 
@@ -71,6 +78,8 @@ function Page({ section, param }: { readonly section: string; readonly param: st
       return <PlaygroundPage param={param} />;
     case 'recipes':
       return <RecipesPage />;
+    case 'docs':
+      return <DocsPage param={param} />;
     case 'about':
       return <AboutPage />;
     default:
@@ -139,6 +148,9 @@ export function App(): ReactNode {
       >
         <Page section={section} param={param} />
       </Suspense>
+      <UpdateNotice />
+      <Tour />
+      <Footer />
     </div>
   );
 }

@@ -1,7 +1,22 @@
 {
   "name": "@unichef/core",
   "version": "1.0.0-rc.1",
-  "description": "Unicode-first data transformation core: recipes, operations and the Unicode engine.",
+  "description": "Cybersecurity and Unicode workbench core: encoding, hashing, crypto and compression recipes, plus a Unicode engine with invisible, bidi and confusable checks.",
+  "keywords": [
+    "cybersecurity",
+    "unicode",
+    "cyberchef",
+    "encoding",
+    "decoding",
+    "hashing",
+    "cryptography",
+    "base64",
+    "security",
+    "homoglyph",
+    "confusables",
+    "bidi",
+    "trojan-source"
+  ],
   "type": "module",
   "license": "GPL-3.0-or-later",
   "repository": {

@@ -9,6 +9,8 @@ from typing import TYPE_CHECKING, NoReturn
 
 from unichef.core.errors import UniChefError
 
+TAGLINE = "Cybersecurity and Unicode workbench: encode, decode, hash, encrypt and inspect data."
+
 if TYPE_CHECKING:
     from unichef.cli.session import Session
 
@@ -179,7 +181,7 @@ def build_parser() -> tuple[UniChefParser, list[Command]]:
     parents: list[UniChefParser] = [global_options()]
     root = UniChefParser(
         prog="unichef",
-        description="Unicode character analysis and deterministic data-transformation recipes.",
+        description=TAGLINE,
         parents=parents,
     )
     root.add_argument("--version", action="store_true", default=False, help="Show the version.")
