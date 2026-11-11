@@ -1,6 +1,6 @@
 {
   "name": "@unichef/core",
-  "version": "1.0.0-rc.1",
+  "version": "1.0.0-rc.2",
   "description": "Cybersecurity and Unicode workbench core: encoding, hashing, crypto and compression recipes, plus a Unicode engine with invisible, bidi and confusable checks.",
   "keywords": [
     "cybersecurity",
