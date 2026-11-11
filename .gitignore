@@ -38,3 +38,4 @@ reports/
 .claude/worktrees/
 test-results/
 playwright-report/
+/clients/extensions/safari/UniChef/

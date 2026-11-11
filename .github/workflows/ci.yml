@@ -318,6 +318,31 @@ jobs:
           name: extension-chrome-unpacked
           path: clients/extensions/common/dist/chrome/
           if-no-files-found: error
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: extension-safari-unpacked
+          path: clients/extensions/common/dist/safari/
+          if-no-files-found: error
+
+  # The Safari Xcode project is generated from this build and must build unsigned (PRD §7.7).
+  safari:
+    name: safari (Xcode, unsigned)
+    needs: extensions
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: extension-safari-unpacked
+          path: clients/extensions/common/dist/safari/
+      - name: Generate the Xcode project and build it for macOS, unsigned (FR-007, NFR-020)
+        run: |
+          xcodebuild -version
+          clients/extensions/safari/generate-xcode.sh --no-build --out "$RUNNER_TEMP/xcode"
+          xcodebuild -quiet -project "$RUNNER_TEMP/xcode/UniChef/UniChef.xcodeproj" \
+            -scheme "UniChef (macOS)" -configuration Release \
+            -derivedDataPath "$RUNNER_TEMP/derived" CODE_SIGNING_ALLOWED=NO build
+          test -d "$RUNNER_TEMP/derived/Build/Products/Release/UniChef.app"
 
   e2e:
     name: e2e

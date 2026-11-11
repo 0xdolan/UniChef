@@ -24,7 +24,7 @@ The same operations ship as a Python library and CLI, a TypeScript library and a
   <img src="assets/docs/screenshots/web/light/1x/workbench.png" srcset="assets/docs/screenshots/web/light/1x/workbench.png 1x, assets/docs/screenshots/web/light/2x/workbench.png 2x" width="800" height="500" alt="The UniChef workbench: an operation list on the left, a two-step recipe (Normalize, then To Base64) in the middle, and the input and Base64 output on the right.">
 </picture>
 
-UniChef is in alpha (0.1.0-alpha.1). Operations and recipe files may still change before 1.0.
+UniChef is in pre-release ahead of 1.0.0. Operations and recipe files may still change before 1.0.
 
 ## Install
 
@@ -32,12 +32,18 @@ UniChef is in alpha (0.1.0-alpha.1). Operations and recipe files may still chang
 | --- | --- | --- |
 | Python CLI and library | `pipx install "git+https://github.com/0xdolan/unichef.git#subdirectory=packages/python-cli"` | Available from source |
 | | `uv tool install "git+https://github.com/0xdolan/unichef.git#subdirectory=packages/python-cli"` | Available from source |
-| | `pip install unichef` / `pipx install unichef` / `uv tool install unichef` | Planned (first PyPI release) |
-| Ubuntu (noble, resolute) | `sudo add-apt-repository ppa:0xdolan/unichef && sudo apt install unichef` | Planned |
-| TypeScript library | `npm install @unichef/core` | Planned (first npm release) |
+| | `pipx install unichef` / `uv tool install unichef` / `pip install unichef` | Available on PyPI (pre-releases until 1.0) |
+| Ubuntu (noble, resolute) | `sudo add-apt-repository ppa:0xdolan/unichef && sudo apt install unichef` | Available |
+| Debian (trixie) and Ubuntu, offline | `sudo apt install ./unichef_<version>-1~<series>1_all.deb` from a [GitHub Release](https://github.com/0xdolan/unichef/releases) | From 1.0.0-rc.1 |
+| TypeScript library | `npm install @unichef/core` | Available on npm |
+| Container | `docker run --rm -i ghcr.io/0xdolan/unichef:<version> op to-hex <<< "hi"` | Available |
 | Web app | <https://0xdolan.github.io/unichef/>. Installable, and works offline after the first visit. | Available |
-| Chrome, Edge, Firefox | Store listings | Planned (M3) |
-| Safari | Build locally with Xcode from `clients/extensions/` | Planned (M3) |
+| Chrome, Brave | Chrome Web Store listing, or load `unichef-chrome-<version>.zip` from a GitHub Release unpacked | Store listing from 1.0.0; the zip is available |
+| Edge | Edge Add-ons listing, or load `unichef-edge-<version>.zip` unpacked | Store listing from 1.0.0; the zip from 1.0.0-rc.1 |
+| Firefox | addons.mozilla.org listing, or load `unichef-firefox-<version>.zip` as a temporary add-on | Store listing from 1.0.0; the zip is available |
+| Safari (macOS) | Build `unichef-safari-xcode-<version>.zip` from a GitHub Release in Xcode. It is not in the App Store. | From 1.0.0-rc.1 |
+
+[docs/extensions/publishing.md](docs/extensions/publishing.md#installing-without-a-store) has the steps for loading each extension without a store.
 
 The CLI needs Python 3.12 or later. Check the install with:
 
@@ -178,7 +184,25 @@ Click a step's name to see the output of that step alone in the **Inspector**, a
 
 ## Browser extension
 
-The Chrome, Edge, Firefox and Safari extensions are planned for milestone M3. They will let you send selected text on any page to a recipe and inspect characters on hover. This section will gain a tour and screenshots when they ship.
+The UniChef extension for Chrome, Brave, Edge, Firefox and Safari brings the inspector, a quick recipe and the character browser to any web page. It has no access to the pages you visit: it sees only the text you choose to send it, and that text never leaves your browser.
+
+1. **Select text and right-click.** Choose **Inspect with UniChef**. Chrome, Brave and Edge open the side panel, Firefox opens the sidebar and Safari opens the popup (or shows a badge on the toolbar button; click it).
+2. **Inspect.** The panel lists every invisible and bidirectional control character first, then one row per code point with its name. In the example below, a right-to-left override (U+202E) after `Pay` reverses `gnp.exe`, so the text reads as `Payexe.png`. Turn on **Show all columns** for the category and script. A selection longer than the limit in Settings (100 000 characters by default) is cut at a whole character, and the panel says so.
+
+   <picture>
+     <source media="(prefers-color-scheme: dark)" srcset="assets/docs/screenshots/extension/dark/1x/panel.png 1x, assets/docs/screenshots/extension/dark/2x/panel.png 2x">
+     <img src="assets/docs/screenshots/extension/light/1x/panel.png" srcset="assets/docs/screenshots/extension/light/1x/panel.png 1x, assets/docs/screenshots/extension/light/2x/panel.png 2x" width="400" height="720" alt="The extension's Inspect tab: three invisible characters (a right-to-left override, a pop directional formatting and a zero width space) listed above a table of 24 code points.">
+   </picture>
+
+3. **Recipe.** Run any UniChef operation on the selection or on text you type, with the same operations and results as the web app and the CLI. **Import** converts a CyberChef recipe.
+
+   <picture>
+     <source media="(prefers-color-scheme: dark)" srcset="assets/docs/screenshots/extension/dark/1x/recipe.png 1x, assets/docs/screenshots/extension/dark/2x/recipe.png 2x">
+     <img src="assets/docs/screenshots/extension/light/1x/recipe.png" srcset="assets/docs/screenshots/extension/light/1x/recipe.png 1x, assets/docs/screenshots/extension/light/2x/recipe.png 2x" width="400" height="720" alt="The extension's Recipe tab: the input café ✓, a To Hex step with space delimiter and lower case, and the output 63 61 66 c3 a9 20 e2 9c 93.">
+   </picture>
+
+4. **Characters.** Search and browse the Unicode character database offline, as in the web app's Characters page.
+5. **Settings.** Choose the theme, the tab the panel opens on and the longest selection. Chrome, Brave and Edge sync them with your browser profile.
 
 ## Recipes
 
