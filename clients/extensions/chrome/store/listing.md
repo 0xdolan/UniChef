@@ -1,6 +1,6 @@
 # Chrome Web Store listing
 
-Paste these into the Developer Dashboard. Brave and Edge users install from the Chrome Web Store too, so there is no separate Edge listing.
+Paste these into the Developer Dashboard. Brave users install from the Chrome Web Store too. Edge has its own listing in `../../edge/store/listing.md`.
 
 ## Store listing
 
@@ -20,7 +20,7 @@ Paste these into the Developer Dashboard. Brave and Edge users install from the 
   - Store icon: `assets/branding/dist/ext/128.png`
   - Small promo tile (440×280): `chrome-promo-small.png`
   - Marquee (1400×560): `chrome-marquee.png`
-  - Screenshots (1280×800): `screenshot-inspector.png`, `screenshot-recipes.png`, `screenshot-chars.png`, `screenshot-regex.png`, `screenshot-workbench.png`
+  - Screenshots (1280×800): upload them in the order and with the captions in `screenshots.json`.
 - **Homepage:** https://0xdolan.github.io/unichef/
 - **Support:** https://github.com/0xdolan/unichef/issues
 
