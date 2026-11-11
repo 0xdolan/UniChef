@@ -1,0 +1,37 @@
+{
+  "$comment": "Derivation matrix (PRD §9.2). scripts/assets/build.py writes every output to assets/branding/dist/. Sizes are pixels; 'box' fits the source inside it, keeping its aspect ratio, and centres it; 'fill' paints 'background' behind it, otherwise the padding is transparent.",
+  "sources": {
+    "mark": "source/unichef-mark.svg",
+    "mark16": "source/unichef-mark-16.svg",
+    "maskable": "source/unichef-mark-maskable.svg",
+    "logo": "source/unichef-logo.svg",
+    "banner": "source/unichef-banner.svg"
+  },
+  "background": "#0F1020",
+  "outputs": [
+    { "out": "web/favicon.ico", "kind": "ico", "sources": { "16": "mark16", "32": "mark", "48": "mark" } },
+    { "out": "web/favicon.svg", "kind": "svg", "source": "mark" },
+    { "out": "web/apple-touch-icon.png", "kind": "png", "source": "mark", "size": [180, 180], "box": [140, 140], "fill": true },
+    { "out": "web/icon-192.png", "kind": "png", "source": "mark", "size": [192, 192] },
+    { "out": "web/icon-512.png", "kind": "png", "source": "mark", "size": [512, 512] },
+    { "out": "web/icon-maskable-512.png", "kind": "png", "source": "maskable", "size": [512, 512] },
+    { "out": "web/og-image.png", "kind": "png", "source": "banner", "size": [1200, 630], "box": [900, 352], "fill": true },
+    { "out": "github/social-preview.png", "kind": "png", "source": "banner", "size": [1280, 640], "box": [960, 375], "fill": true },
+    { "out": "ext/16.png", "kind": "png", "source": "mark16", "size": [16, 16] },
+    { "out": "ext/32.png", "kind": "png", "source": "mark", "size": [32, 32] },
+    { "out": "ext/48.png", "kind": "png", "source": "mark", "size": [48, 48] },
+    { "out": "ext/96.png", "kind": "png", "source": "mark", "size": [96, 96] },
+    { "out": "ext/128.png", "kind": "png", "source": "mark", "size": [128, 128] },
+    { "out": "store/chrome-promo-small.png", "kind": "png", "source": "banner", "size": [440, 280], "box": [380, 149], "fill": true },
+    { "out": "store/chrome-marquee.png", "kind": "png", "source": "banner", "size": [1400, 560], "box": [1000, 391], "fill": true },
+    { "out": "store/edge-logo-300.png", "kind": "png", "source": "mark", "size": [300, 300], "box": [240, 240] },
+    {
+      "out": "store/screenshot-{name}.png",
+      "kind": "screenshot",
+      "from": "../docs/screenshots/web/dark/1x",
+      "names": ["workbench", "inspector", "chars", "regex", "recipes"],
+      "size": [1280, 800]
+    },
+    { "out": "print/unichef-logo-rgb.pdf", "kind": "pdf", "source": "logo" }
+  ]
+}

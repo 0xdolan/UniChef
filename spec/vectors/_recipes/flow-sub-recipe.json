@@ -1,0 +1,20 @@
+{
+  "recipe": {
+    "version": 1,
+    "name": "Sub-recipe",
+    "description": "A sub-recipe groups steps. It keeps the dish type and honours disabled steps inside it.",
+    "steps": [
+      { "op": "sub-recipe", "args": { "steps": [
+        { "op": "encode-text", "args": { "encoding": "utf-16be" } },
+        { "op": "to-base64", "args": {}, "disabled": true },
+        { "op": "to-hex", "args": { "delimiter": "none" } }
+      ] } },
+      { "op": "sub-recipe", "args": { "steps": [] }, "comment": "An empty group passes the dish through." }
+    ]
+  },
+  "cases": [
+    { "name": "empty", "input": { "type": "string", "text": "" }, "expected": { "type": "string", "text": "" } },
+    { "name": "ascii", "input": { "type": "string", "text": "Hi" }, "expected": { "type": "string", "text": "00480069" } },
+    { "name": "non-BMP", "input": { "type": "string", "text": "😀" }, "expected": { "type": "string", "text": "d83dde00" } }
+  ]
+}

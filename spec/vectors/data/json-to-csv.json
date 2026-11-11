@@ -1,0 +1,152 @@
+{
+  "op": "json-to-csv",
+  "cases": [
+    {
+      "name": "empty array",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "[]"
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "objects: header from keys in first-seen order",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "[{\"name\":\"Zoë\",\"note\":\"a, b\"},{\"name\":\"Ali\",\"age\":30}]"
+      },
+      "expected": {
+        "type": "string",
+        "text": "name,note,age\r\nZoë,\"a, b\",\r\nAli,,30\r\n"
+      }
+    },
+    {
+      "name": "arrays: no header, ragged rows kept",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "[[1,2],[3],[]]"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1,2\r\n3\r\n\r\n"
+      }
+    },
+    {
+      "name": "quotes, CR and LF are quoted; quotes doubled",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "[[\"say \\\"hi\\\"\",\"a\\nb\",\"c\\rd\",\"plain\"]]"
+      },
+      "expected": {
+        "type": "string",
+        "text": "\"say \"\"hi\"\"\",\"a\nb\",\"c\rd\",plain\r\n"
+      }
+    },
+    {
+      "name": "cell types: null, booleans, numbers, nested JSON",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "[[null,true,false,2.50,1e21,12345678901234567890,{\"a\":[1]}]]"
+      },
+      "expected": {
+        "type": "string",
+        "text": ",true,false,2.5,1e+21,12345678901234567890,\"{\"\"a\"\":[1]}\"\r\n"
+      }
+    },
+    {
+      "name": "non-BMP text",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "[{\"😀\":\"🎉\"}]"
+      },
+      "expected": {
+        "type": "string",
+        "text": "😀\r\n🎉\r\n"
+      }
+    },
+    {
+      "name": "semicolon delimiter quotes semicolons, not commas",
+      "args": {
+        "delimiter": "semicolon"
+      },
+      "input": {
+        "type": "string",
+        "text": "[[\"a;b\",\"c,d\"]]"
+      },
+      "expected": {
+        "type": "string",
+        "text": "\"a;b\";c,d\r\n"
+      }
+    },
+    {
+      "name": "tab delimiter, LF line ending",
+      "args": {
+        "delimiter": "tab",
+        "line_ending": "lf"
+      },
+      "input": {
+        "type": "string",
+        "text": "[{\"a\":\"x\\ty\",\"b\":1}]"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a\tb\n\"x\ty\"\t1\n"
+      }
+    },
+    {
+      "name": "error: top-level object",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "{\"a\":1}"
+      },
+      "expected": {
+        "error": "E_INPUT_TYPE"
+      }
+    },
+    {
+      "name": "error: array of scalars",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "[1,2]"
+      },
+      "expected": {
+        "error": "E_INPUT_TYPE"
+      }
+    },
+    {
+      "name": "error: objects mixed with arrays",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "[{},[]]"
+      },
+      "expected": {
+        "error": "E_INPUT_TYPE"
+      }
+    },
+    {
+      "name": "error: unknown delimiter",
+      "args": {
+        "delimiter": "pipe"
+      },
+      "input": {
+        "type": "string",
+        "text": "[]"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

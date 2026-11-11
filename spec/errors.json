@@ -1,0 +1,74 @@
+{
+  "$schema": "./errors.schema.json",
+  "version": 1,
+  "errors": [
+    { "code": "E_USAGE", "exit": 2, "meaning": "CLI usage error." },
+    {
+      "code": "E_INPUT_IO",
+      "exit": 3,
+      "meaning": "Input cannot be read or output cannot be written."
+    },
+    {
+      "code": "E_INPUT_TYPE",
+      "exit": 1,
+      "meaning": "The dish cannot be coerced to the operation's input type."
+    },
+    {
+      "code": "E_ARG_INVALID",
+      "exit": 1,
+      "meaning": "An argument is missing, has the wrong type, is out of range or has an unknown name."
+    },
+    {
+      "code": "E_DECODE",
+      "exit": 1,
+      "meaning": "Input is malformed for a decoder, or cannot be represented by an encoder in strict mode."
+    },
+    {
+      "code": "E_CRYPTO",
+      "exit": 1,
+      "meaning": "A key or IV has the wrong length, or authentication failed."
+    },
+    {
+      "code": "E_REGEX_UNSUPPORTED",
+      "exit": 1,
+      "meaning": "The regex uses a construct outside the portable profile."
+    },
+    { "code": "E_REGEX_TIMEOUT", "exit": 5, "meaning": "A regex call exceeded its timeout." },
+    { "code": "E_LIMIT", "exit": 1, "meaning": "A size, depth or step limit was exceeded." },
+    {
+      "code": "E_RECIPE_SCHEMA",
+      "exit": 4,
+      "meaning": "The recipe fails schema or semantic validation."
+    },
+    {
+      "code": "E_OP_UNKNOWN",
+      "exit": 4,
+      "meaning": "The operation id is unknown, including unmapped CyberChef operations on import."
+    },
+    { "code": "E_CANCELLED", "exit": 130, "meaning": "The user cancelled the run." },
+    {
+      "code": "E_SCAN_FINDINGS",
+      "exit": 6,
+      "meaning": "scan --fail-on matched at least one finding."
+    },
+    {
+      "code": "E_INTERNAL",
+      "exit": 70,
+      "meaning": "Internal bug. The message asks the user to report it and includes version information."
+    }
+  ],
+  "warnings": [
+    {
+      "code": "W_DUPLICATE_KEY",
+      "meaning": "A JSON object had a duplicate key; the last value was kept."
+    },
+    {
+      "code": "W_JUMP_LIMIT",
+      "meaning": "A jump reached its max count; execution continued past it."
+    },
+    {
+      "code": "W_INSECURE",
+      "meaning": "A cryptographic choice is insecure (for example ECB mode or low PBKDF2 iterations)."
+    }
+  ]
+}

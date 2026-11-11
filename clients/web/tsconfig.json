@@ -1,0 +1,30 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "types": ["vite/client", "node"],
+    "noEmit": true,
+    "declaration": false,
+    "declarationMap": false,
+    // CSS Modules are typed as index signatures; `styles.pane` reads better than `styles['pane']`.
+    "noPropertyAccessFromIndexSignature": false,
+    "paths": {
+      "@unichef/core": ["../../packages/npm-core/src/index.ts"],
+      "@unichef/core/*": ["../../packages/npm-core/src/*"],
+      "@ext/*": ["../extensions/common/src/*"]
+    }
+  },
+  "include": [
+    "src",
+    "test",
+    "e2e",
+    "screenshots",
+    "playwright.config.ts",
+    "playwright.screenshots.config.ts",
+    "vite.config.ts",
+    "vite.docs.ts",
+    "vite.licenses.ts"
+  ]
+}

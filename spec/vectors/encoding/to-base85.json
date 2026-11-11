@@ -1,0 +1,135 @@
+{
+  "op": "to-base85",
+  "cases": [
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "ascii85 'Hello World!'",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "48656c6c6f20576f726c6421"
+      },
+      "expected": {
+        "type": "string",
+        "text": "87cURD]i,\"Ebo80"
+      }
+    },
+    {
+      "name": "ascii85 partial final group",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "48656c6c6f"
+      },
+      "expected": {
+        "type": "string",
+        "text": "87cURDZ"
+      }
+    },
+    {
+      "name": "ascii85 'z' for a whole zero group only",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "00000000000000"
+      },
+      "expected": {
+        "type": "string",
+        "text": "z!!!!"
+      }
+    },
+    {
+      "name": "ascii85 with delimiters",
+      "args": {
+        "delimiters": true
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "48656c6c6f"
+      },
+      "expected": {
+        "type": "string",
+        "text": "<~87cURDZ~>"
+      }
+    },
+    {
+      "name": "ascii85 all 0xff",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "ffffffff"
+      },
+      "expected": {
+        "type": "string",
+        "text": "s8W-!"
+      }
+    },
+    {
+      "name": "z85 spec example",
+      "args": {
+        "alphabet": "z85"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "864fd26fb559f75b"
+      },
+      "expected": {
+        "type": "string",
+        "text": "HelloWorld"
+      }
+    },
+    {
+      "name": "z85 has no 'z' shortcut",
+      "args": {
+        "alphabet": "z85"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "00000000"
+      },
+      "expected": {
+        "type": "string",
+        "text": "00000"
+      }
+    },
+    {
+      "name": "z85 partial final group",
+      "args": {
+        "alphabet": "z85"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "48656c6c6f"
+      },
+      "expected": {
+        "type": "string",
+        "text": "nm=QNzV"
+      }
+    },
+    {
+      "name": "error: z85 has no delimiters",
+      "args": {
+        "alphabet": "z85",
+        "delimiters": true
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "00"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

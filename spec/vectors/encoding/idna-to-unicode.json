@@ -1,0 +1,177 @@
+{
+  "op": "idna-to-unicode",
+  "cases": [
+    {
+      "name": "ASCII lowercased",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Example.COM"
+      },
+      "expected": {
+        "type": "string",
+        "text": "example.com"
+      }
+    },
+    {
+      "name": "xn-- label decoded",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "xn--bcher-kva.example"
+      },
+      "expected": {
+        "type": "string",
+        "text": "bücher.example"
+      }
+    },
+    {
+      "name": "uppercase prefix",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "XN--FA-HIA.DE"
+      },
+      "expected": {
+        "type": "string",
+        "text": "faß.de"
+      }
+    },
+    {
+      "name": "Unicode input mapped",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Bücher.Example"
+      },
+      "expected": {
+        "type": "string",
+        "text": "bücher.example"
+      }
+    },
+    {
+      "name": "trailing dot kept",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "example.com."
+      },
+      "expected": {
+        "type": "string",
+        "text": "example.com."
+      }
+    },
+    {
+      "name": "ideographic full stop",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a。b"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a.b"
+      }
+    },
+    {
+      "name": "Arabic domain",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "xn--mgbh0fb.xn--kgbechtv"
+      },
+      "expected": {
+        "type": "string",
+        "text": "مثال.إختبار"
+      }
+    },
+    {
+      "name": "empty label",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a..b"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "empty label allowed without check_bidi",
+      "args": {
+        "check_bidi": false
+      },
+      "input": {
+        "type": "string",
+        "text": "a..b"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a..b"
+      }
+    },
+    {
+      "name": "invalid Punycode label",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "xn--a-z.com"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "decoded label not in NFC",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "xn--a-xbb.com"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "hyphen at the end",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "abc-.com"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "decoded label starting with xn-- rejected without check_hyphens",
+      "args": {
+        "check_hyphens": false
+      },
+      "input": {
+        "type": "string",
+        "text": "xn--xn---3ra.com"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "all checks off",
+      "args": {
+        "check_hyphens": false,
+        "check_bidi": false,
+        "check_joiners": false,
+        "use_std3_ascii_rules": false
+      },
+      "input": {
+        "type": "string",
+        "text": "a_b..c"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a_b..c"
+      }
+    }
+  ]
+}

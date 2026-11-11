@@ -1,0 +1,257 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.app > main {
+  flex: 1;
+  min-height: 0;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 8px max(var(--gap), env(safe-area-inset-right)) 8px
+    max(var(--gap), env(safe-area-inset-left));
+  padding-top: max(8px, env(safe-area-inset-top));
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.header a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.header a[aria-current='page'] {
+  color: var(--text);
+  font-weight: 600;
+}
+
+/* The lockup is artwork, never live text (docs/branding/README.md §4). Each colour set
+   shows on the background it was drawn for (§5). */
+.brand {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  min-height: 44px;
+}
+
+.brand img {
+  height: 28px;
+  width: auto;
+}
+
+.logoDark {
+  display: block;
+}
+
+.logoLight {
+  display: none;
+}
+
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) .logoDark {
+    display: none;
+  }
+
+  :root:not([data-theme='dark']) .logoLight {
+    display: block;
+  }
+}
+
+:root[data-theme='light'] .logoDark {
+  display: none;
+}
+
+:root[data-theme='light'] .logoLight {
+  display: block;
+}
+
+.menuButton {
+  display: none;
+}
+
+.skip {
+  position: absolute;
+  inset-inline-start: 8px;
+  top: -40px;
+  padding: 6px 10px;
+  background: var(--primary);
+  color: var(--on-primary);
+  border-radius: var(--radius);
+}
+
+.skip:focus {
+  top: 8px;
+}
+
+.notFound {
+  padding: 32px;
+}
+
+.notFound a {
+  color: var(--primary);
+}
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+/* Narrow screens: the page scrolls as a whole, and the nav folds behind a menu button with
+   touch-sized rows (WCAG 2.5.8). */
+@media (width < 900px) {
+  .app {
+    height: auto;
+    min-height: 100%;
+  }
+
+  .app > main {
+    flex: none;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .header {
+    flex-wrap: wrap;
+    gap: 8px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .menuButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-inline-start: auto;
+    min-height: 44px;
+    padding: 0 12px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  .menuButton:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+
+  .menuIcon,
+  .menuIcon::before,
+  .menuIcon::after {
+    display: block;
+    width: 16px;
+    height: 2px;
+    background: currentcolor;
+    border-radius: 1px;
+  }
+
+  .menuIcon {
+    position: relative;
+  }
+
+  .menuIcon::before,
+  .menuIcon::after {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+  }
+
+  .menuIcon::before {
+    top: -5px;
+  }
+
+  .menuIcon::after {
+    top: 5px;
+  }
+
+  .nav {
+    display: none;
+    flex-basis: 100%;
+    flex-direction: column;
+    gap: 0;
+    padding-bottom: 4px;
+  }
+
+  .nav[data-open] {
+    display: flex;
+  }
+
+  .nav a {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 8px;
+    border-radius: var(--radius);
+  }
+
+  .nav a[aria-current='page'] {
+    background: var(--surface-2);
+    box-shadow: inset 3px 0 0 var(--primary);
+  }
+}
+
+/* The credit line (FR-011). It wraps on narrow screens; each link keeps a 24 px target. */
+.footer {
+  flex: none;
+  padding: 4px max(var(--gap), env(safe-area-inset-right)) max(4px, env(safe-area-inset-bottom))
+    max(var(--gap), env(safe-area-inset-left));
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+
+.footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  column-gap: 8px;
+}
+
+.footer nav > * {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+  min-height: 24px;
+}
+
+.footer a {
+  color: var(--muted);
+  text-underline-offset: 2px;
+}
+
+.footer a:hover,
+.footer a:focus-visible {
+  color: var(--text);
+}
+
+.heart {
+  width: 1em;
+  height: 1em;
+  fill: var(--error);
+}
+
+.update {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px 12px;
+  padding: 4px var(--gap);
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.update button {
+  min-height: 32px;
+}

@@ -1,0 +1,334 @@
+{
+  "op": "idna-to-ascii",
+  "cases": [
+    {
+      "name": "ASCII lowercased",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Example.COM"
+      },
+      "expected": {
+        "type": "string",
+        "text": "example.com"
+      }
+    },
+    {
+      "name": "non-ASCII label",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Bücher.example"
+      },
+      "expected": {
+        "type": "string",
+        "text": "xn--bcher-kva.example"
+      }
+    },
+    {
+      "name": "sharp s is kept (nontransitional)",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "faß.de"
+      },
+      "expected": {
+        "type": "string",
+        "text": "xn--fa-hia.de"
+      }
+    },
+    {
+      "name": "final sigma is kept",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "ς.gr"
+      },
+      "expected": {
+        "type": "string",
+        "text": "xn--3xa.gr"
+      }
+    },
+    {
+      "name": "soft hyphen is ignored",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "ex­ample.com"
+      },
+      "expected": {
+        "type": "string",
+        "text": "example.com"
+      }
+    },
+    {
+      "name": "fullwidth full stop is a separator",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a．b"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a.b"
+      }
+    },
+    {
+      "name": "NFKC-style mapping",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "ﬃ.com"
+      },
+      "expected": {
+        "type": "string",
+        "text": "ffi.com"
+      }
+    },
+    {
+      "name": "existing xn-- label is checked and kept",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "xn--bcher-kva.example"
+      },
+      "expected": {
+        "type": "string",
+        "text": "xn--bcher-kva.example"
+      }
+    },
+    {
+      "name": "ZWNJ after a virama",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "क्‌"
+      },
+      "expected": {
+        "type": "string",
+        "text": "xn--11b6iv14e"
+      }
+    },
+    {
+      "name": "hyphen in positions 3 and 4",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "ab--c.com"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "hyphen in positions 3 and 4 allowed without check_hyphens",
+      "args": {
+        "check_hyphens": false
+      },
+      "input": {
+        "type": "string",
+        "text": "ab--c.com"
+      },
+      "expected": {
+        "type": "string",
+        "text": "ab--c.com"
+      }
+    },
+    {
+      "name": "underscore fails STD3 rules",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a_b.com"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "underscore allowed without STD3 rules",
+      "args": {
+        "use_std3_ascii_rules": false
+      },
+      "input": {
+        "type": "string",
+        "text": "a_b.com"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a_b.com"
+      }
+    },
+    {
+      "name": "disallowed code point",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a⒈.com"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "label starts with a combining mark",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "́a.com"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "ZWJ without a virama",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a‍b"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "ZWJ allowed without check_joiners",
+      "args": {
+        "check_joiners": false
+      },
+      "input": {
+        "type": "string",
+        "text": "a‍b"
+      },
+      "expected": {
+        "type": "string",
+        "text": "xn--ab-m1t"
+      }
+    },
+    {
+      "name": "bidi rule broken",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a.بa"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "bidi rule not checked",
+      "args": {
+        "check_bidi": false
+      },
+      "input": {
+        "type": "string",
+        "text": "a.بa"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a.xn--a-0mc"
+      }
+    },
+    {
+      "name": "Arabic label",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "بي.com"
+      },
+      "expected": {
+        "type": "string",
+        "text": "xn--ngb2e.com"
+      }
+    },
+    {
+      "name": "invalid Punycode label",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "xn--a-z.com"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "Punycode label that decodes to ASCII",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "xn--abc-.com"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "trailing dot fails DNS length",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "example.com."
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "trailing dot allowed without verify_dns_length",
+      "args": {
+        "verify_dns_length": false
+      },
+      "input": {
+        "type": "string",
+        "text": "example.com."
+      },
+      "expected": {
+        "type": "string",
+        "text": "example.com."
+      }
+    },
+    {
+      "name": "label longer than 63",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.com"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "all checks off",
+      "args": {
+        "check_hyphens": false,
+        "check_bidi": false,
+        "check_joiners": false,
+        "use_std3_ascii_rules": false,
+        "verify_dns_length": false
+      },
+      "input": {
+        "type": "string",
+        "text": "-a_b-.com"
+      },
+      "expected": {
+        "type": "string",
+        "text": "-a_b-.com"
+      }
+    }
+  ]
+}

@@ -1,0 +1,225 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: var(--gap) max(var(--gap), 16px);
+  overflow: auto;
+}
+
+.title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.subtitle {
+  margin: 12px 0 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.page a {
+  color: var(--primary);
+}
+
+.muted {
+  margin: 0;
+  color: var(--muted);
+}
+
+.error {
+  margin: 0;
+  color: var(--error);
+}
+
+.searchLabel {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.search {
+  max-width: 640px;
+  padding: 6px 8px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  /* `<=` must read as typed, not as a ligature. */
+  font-variant-ligatures: none;
+}
+
+.status {
+  min-height: 1.5em;
+}
+
+.example {
+  display: inline-block;
+  margin: 2px 6px 2px 0;
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+}
+
+.toolbar > [role='status'] {
+  margin-inline-start: 12px;
+}
+
+/* The grid scrolls on its own, so the page keeps its search box in view. */
+.scroller {
+  flex: 1;
+  min-height: 240px;
+  overflow: auto;
+  contain: strict;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.grid {
+  position: relative;
+  width: 100%;
+}
+
+.row {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  display: flex;
+}
+
+.cell {
+  width: 76px;
+  height: 84px;
+  flex: none;
+}
+
+.cell a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 100%;
+  margin: 2px;
+  border-radius: var(--radius);
+  color: var(--text);
+  text-decoration: none;
+  transition: background var(--transition);
+}
+
+.cell a:hover,
+.cell a:focus-visible {
+  background: var(--surface-2);
+}
+
+.cell[data-gc='Cn'] a,
+.cell[data-gc='Cs'] a,
+.cell[data-gc='Co'] a {
+  opacity: 0.4;
+}
+
+.glyph {
+  font-size: 26px;
+  line-height: 1.2;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.cp,
+.cpText {
+  font-family: var(--font-mono);
+  color: var(--cp);
+}
+
+.cp {
+  font-size: 11px;
+}
+
+.pager {
+  display: flex;
+  gap: 16px;
+}
+
+.charHead {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.bigGlyph {
+  min-width: 96px;
+  padding: 8px 16px;
+  font-size: 64px;
+  line-height: 1.2;
+  text-align: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 8px 16px;
+  margin: 0;
+}
+
+.fields dt {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.fields dd {
+  margin: 0;
+  font-family: var(--font-mono);
+  overflow-wrap: anywhere;
+}
+
+.plain {
+  margin: 0;
+  padding-inline-start: 20px;
+}
+
+.table {
+  align-self: flex-start;
+  border-collapse: collapse;
+  max-width: 100%;
+}
+
+.table th,
+.table td {
+  padding: 4px 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: start;
+}
+
+.table code {
+  font-family: var(--font-mono);
+}
+
+.number {
+  font-variant-numeric: tabular-nums;
+  text-align: end;
+}
+
+.button {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  padding: 2px 10px;
+}

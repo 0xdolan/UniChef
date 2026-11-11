@@ -1,0 +1,114 @@
+{
+  "op": "atbash",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "lower case",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "abcxyz"
+      },
+      "expected": {
+        "type": "string",
+        "text": "zyxcba"
+      }
+    },
+    {
+      "name": "upper case",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "ABCXYZ"
+      },
+      "expected": {
+        "type": "string",
+        "text": "ZYXCBA"
+      }
+    },
+    {
+      "name": "classic",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Hello, World!"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Svool, Dliow!"
+      }
+    },
+    {
+      "name": "self-inverse",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Svool, Dliow!"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Hello, World!"
+      }
+    },
+    {
+      "name": "digits unchanged",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a1b2"
+      },
+      "expected": {
+        "type": "string",
+        "text": "z1y2"
+      }
+    },
+    {
+      "name": "middle letters",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "MN"
+      },
+      "expected": {
+        "type": "string",
+        "text": "NM"
+      }
+    },
+    {
+      "name": "non-ASCII unchanged",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "é"
+      },
+      "expected": {
+        "type": "string",
+        "text": "é"
+      }
+    },
+    {
+      "name": "unknown argument",
+      "args": {
+        "amount": 1
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

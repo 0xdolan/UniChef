@@ -1,0 +1,66 @@
+{
+  "recipe": {
+    "version": 1,
+    "name": "Conditional jump, inverted",
+    "description": "Skip the removal of # signs unless the text starts with one.",
+    "steps": [
+      {
+        "op": "conditional-jump",
+        "args": {
+          "pattern": "^#",
+          "invert": true,
+          "to": "end"
+        }
+      },
+      {
+        "op": "find-replace",
+        "args": {
+          "pattern": "#",
+          "replacement": "",
+          "literal": true
+        }
+      },
+      {
+        "op": "label",
+        "args": {
+          "name": "end"
+        }
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "starts with #",
+      "input": {
+        "type": "string",
+        "text": "#x#"
+      },
+      "expected": {
+        "type": "string",
+        "text": "x"
+      }
+    },
+    {
+      "name": "does not start with #",
+      "input": {
+        "type": "string",
+        "text": "x#"
+      },
+      "expected": {
+        "type": "string",
+        "text": "x#"
+      }
+    },
+    {
+      "name": "empty",
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    }
+  ]
+}

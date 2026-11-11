@@ -1,0 +1,116 @@
+{
+  "op": "from-octal",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": ""
+      }
+    },
+    {
+      "name": "auto, space",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "110 151"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "4869"
+      }
+    },
+    {
+      "name": "auto, short tokens",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "7 10 377"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "0708ff"
+      }
+    },
+    {
+      "name": "auto, separators",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "1;2,3:4\n5"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "0102030405"
+      }
+    },
+    {
+      "name": "colon",
+      "args": {
+        "delimiter": "colon"
+      },
+      "input": {
+        "type": "string",
+        "text": "101:102"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "4142"
+      }
+    },
+    {
+      "name": "none, groups of three",
+      "args": {
+        "delimiter": "none"
+      },
+      "input": {
+        "type": "string",
+        "text": "377007"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "ff07"
+      }
+    },
+    {
+      "name": "above 377",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "400"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "digit 8",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "18"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "none, ragged length",
+      "args": {
+        "delimiter": "none"
+      },
+      "input": {
+        "type": "string",
+        "text": "3770"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    }
+  ]
+}

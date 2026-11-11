@@ -1,0 +1,152 @@
+{
+  "op": "script-mix-check",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": "ASCII-Only"
+      }
+    },
+    {
+      "name": "ASCII identifier",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "hello"
+      },
+      "expected": {
+        "type": "string",
+        "text": "ASCII-Only"
+      }
+    },
+    {
+      "name": "Latin with accent",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "café"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Single Script"
+      }
+    },
+    {
+      "name": "Cyrillic only",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "привет"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Single Script"
+      }
+    },
+    {
+      "name": "Latin + Han + Hiragana",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "abc中あ"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Highly Restrictive"
+      }
+    },
+    {
+      "name": "Latin + Hangul",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "abc한"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Highly Restrictive"
+      }
+    },
+    {
+      "name": "Latin + Arabic",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "abcا"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Moderately Restrictive"
+      }
+    },
+    {
+      "name": "Latin + Cyrillic",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "pаypal"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Minimally Restrictive"
+      }
+    },
+    {
+      "name": "Restricted script",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "abcᚠ"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Unrestricted"
+      }
+    },
+    {
+      "name": "space is outside the profile",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "hello world"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Unrestricted"
+      }
+    },
+    {
+      "name": "profile off",
+      "args": {
+        "profile": false
+      },
+      "input": {
+        "type": "string",
+        "text": "hello world"
+      },
+      "expected": {
+        "type": "string",
+        "text": "ASCII-Only"
+      }
+    },
+    {
+      "name": "profile must be boolean",
+      "args": {
+        "profile": "no"
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

@@ -1,0 +1,140 @@
+{
+  "op": "from-base32",
+  "cases": [
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": ""
+      }
+    },
+    {
+      "name": "ascii",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "MZXW6YTBOI======"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "666f6f626172"
+      }
+    },
+    {
+      "name": "non-BMP U+1F600",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "6CPZRAA="
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "f09f9880"
+      }
+    },
+    {
+      "name": "non-strict is case-insensitive and ignores junk",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "mzxw 6ytb\noi"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "666f6f626172"
+      }
+    },
+    {
+      "name": "hex alphabet",
+      "args": {
+        "alphabet": "hex"
+      },
+      "input": {
+        "type": "string",
+        "text": "CPNMUOJ1E8======"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "666f6f626172"
+      }
+    },
+    {
+      "name": "strict accepts canonical input",
+      "args": {
+        "strict": true
+      },
+      "input": {
+        "type": "string",
+        "text": "MZXQ===="
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "666f"
+      }
+    },
+    {
+      "name": "error: strict rejects lowercase",
+      "args": {
+        "strict": true
+      },
+      "input": {
+        "type": "string",
+        "text": "mzxq===="
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: strict rejects missing padding",
+      "args": {
+        "strict": true
+      },
+      "input": {
+        "type": "string",
+        "text": "MZXQ"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: invalid tail length 1",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "MZXW6YTBO"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: invalid tail length 3",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "MZX"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: invalid tail length 6",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "MZXW6Y"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    }
+  ]
+}

@@ -1,0 +1,231 @@
+{
+  "op": "csv-to-json",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "json",
+        "value": []
+      }
+    },
+    {
+      "name": "header only",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a,b\r\n"
+      },
+      "expected": {
+        "type": "json",
+        "value": []
+      }
+    },
+    {
+      "name": "RFC 4180 quoting: delimiter, doubled quote, line break",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "name,note\r\nZoë,\"say \"\"hi\"\", then\r\nbye\"\r\n"
+      },
+      "expected": {
+        "type": "json",
+        "value": [
+          {
+            "name": "Zoë",
+            "note": "say \"hi\", then\r\nbye"
+          }
+        ]
+      }
+    },
+    {
+      "name": "LF, CR and CRLF all end records; no final line break needed",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a,b\n1,2\r3,4\r\n5,"
+      },
+      "expected": {
+        "type": "json",
+        "value": [
+          {
+            "a": "1",
+            "b": "2"
+          },
+          {
+            "a": "3",
+            "b": "4"
+          },
+          {
+            "a": "5",
+            "b": ""
+          }
+        ]
+      }
+    },
+    {
+      "name": "leading BOM is dropped",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "﻿a\r\n1"
+      },
+      "expected": {
+        "type": "json",
+        "value": [
+          {
+            "a": "1"
+          }
+        ]
+      }
+    },
+    {
+      "name": "non-BMP cells stay strings",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "😀,n\r\n🎉,007"
+      },
+      "expected": {
+        "type": "json",
+        "value": [
+          {
+            "😀": "🎉",
+            "n": "007"
+          }
+        ]
+      }
+    },
+    {
+      "name": "no header: arrays, ragged rows, blank record",
+      "args": {
+        "header": false
+      },
+      "input": {
+        "type": "string",
+        "text": "x,\n\n\"q\""
+      },
+      "expected": {
+        "type": "json",
+        "value": [
+          [
+            "x",
+            ""
+          ],
+          [
+            ""
+          ],
+          [
+            "q"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "semicolon delimiter",
+      "args": {
+        "delimiter": "semicolon"
+      },
+      "input": {
+        "type": "string",
+        "text": "a;b\n\"1;2\";3"
+      },
+      "expected": {
+        "type": "json",
+        "value": [
+          {
+            "a": "1;2",
+            "b": "3"
+          }
+        ]
+      }
+    },
+    {
+      "name": "tab delimiter",
+      "args": {
+        "delimiter": "tab"
+      },
+      "input": {
+        "type": "string",
+        "text": "a\tb\nc d\te"
+      },
+      "expected": {
+        "type": "json",
+        "value": [
+          {
+            "a": "c d",
+            "b": "e"
+          }
+        ]
+      }
+    },
+    {
+      "name": "repeated column: last value wins, with a warning",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a,b,a\n1,2,3"
+      },
+      "expected": {
+        "type": "json",
+        "value": [
+          {
+            "b": "2",
+            "a": "3"
+          }
+        ]
+      },
+      "warnings": [
+        "W_DUPLICATE_KEY"
+      ]
+    },
+    {
+      "name": "error: unclosed quote",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a\n\"xy"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: quote inside an unquoted field",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a\nx\"y"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: text after a closing quote",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a\n\"x\"y"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: record length differs from header",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a,b\n1"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    }
+  ]
+}

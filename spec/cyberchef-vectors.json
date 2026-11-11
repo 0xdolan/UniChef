@@ -1,0 +1,1738 @@
+{
+  "$comment": "CyberChef recipe import cases (FR-009, PRD §5.3) for both cores. Each case gives the recipe text and either the UniChef recipe it imports as or the error code (and detail). Generated from the Python importer; review changes by hand.",
+  "cases": [
+    {
+      "name": "To Base64, defaults",
+      "input": "[{\"op\": \"To Base64\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-base64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "From Base64, defaults",
+      "input": "[{\"op\": \"From Base64\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "from-base64"
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Hex, defaults",
+      "input": "[{\"op\": \"To Hex\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-hex"
+          }
+        ]
+      }
+    },
+    {
+      "name": "From Hex, defaults",
+      "input": "[{\"op\": \"From Hex\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "from-hex"
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Decimal, defaults",
+      "input": "[{\"op\": \"To Decimal\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-decimal"
+          }
+        ]
+      }
+    },
+    {
+      "name": "From Decimal, defaults",
+      "input": "[{\"op\": \"From Decimal\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "from-decimal"
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Binary, defaults",
+      "input": "[{\"op\": \"To Binary\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-binary"
+          }
+        ]
+      }
+    },
+    {
+      "name": "From Binary, defaults",
+      "input": "[{\"op\": \"From Binary\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "from-binary"
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Octal, defaults",
+      "input": "[{\"op\": \"To Octal\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-octal"
+          }
+        ]
+      }
+    },
+    {
+      "name": "From Octal, defaults",
+      "input": "[{\"op\": \"From Octal\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "from-octal"
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Base32, defaults",
+      "input": "[{\"op\": \"To Base32\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-base32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "From Base32, defaults",
+      "input": "[{\"op\": \"From Base32\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "from-base32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "URL Encode, defaults",
+      "input": "[{\"op\": \"URL Encode\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "url-encode"
+          }
+        ]
+      }
+    },
+    {
+      "name": "URL Decode, defaults",
+      "input": "[{\"op\": \"URL Decode\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "url-decode"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ROT13, defaults",
+      "input": "[{\"op\": \"ROT13\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "rot13"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ROT47, defaults",
+      "input": "[{\"op\": \"ROT47\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "rot47"
+          }
+        ]
+      }
+    },
+    {
+      "name": "XOR, defaults",
+      "input": "[{\"op\": \"XOR\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "xor"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Atbash Cipher, defaults",
+      "input": "[{\"op\": \"Atbash Cipher\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "atbash"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MD5, defaults",
+      "input": "[{\"op\": \"MD5\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "md5"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SHA1, defaults",
+      "input": "[{\"op\": \"SHA1\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "sha1"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SHA2, defaults",
+      "input": "[{\"op\": \"SHA2\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "sha2"
+          }
+        ]
+      }
+    },
+    {
+      "name": "SHA3, defaults",
+      "input": "[{\"op\": \"SHA3\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "sha3"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Shake, defaults",
+      "input": "[{\"op\": \"Shake\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "shake"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BLAKE2b, defaults",
+      "input": "[{\"op\": \"BLAKE2b\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "blake2b"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BLAKE2s, defaults",
+      "input": "[{\"op\": \"BLAKE2s\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "blake2s"
+          }
+        ]
+      }
+    },
+    {
+      "name": "HMAC, defaults",
+      "input": "[{\"op\": \"HMAC\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "hmac"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Adler-32 Checksum, defaults",
+      "input": "[{\"op\": \"Adler-32 Checksum\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "adler32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CRC Checksum (CyberChef 10+), CRC-32",
+      "input": "[{\"op\": \"CRC Checksum\", \"args\": [\"CRC-32\", \"0\", \"0\", \"0\", false, false, \"0\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "crc32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CRC Checksum, another algorithm",
+      "input": "[{\"op\": \"CRC Checksum\", \"args\": [\"CRC-16/ARC\"]}]",
+      "error": {
+        "code": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "CRC-32 Checksum, defaults",
+      "input": "[{\"op\": \"CRC-32 Checksum\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "crc32"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AES Encrypt, defaults",
+      "input": "[{\"op\": \"AES Encrypt\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "aes-encrypt"
+          }
+        ]
+      }
+    },
+    {
+      "name": "AES Decrypt, defaults",
+      "input": "[{\"op\": \"AES Decrypt\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "aes-decrypt"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Encode text, defaults",
+      "input": "[{\"op\": \"Encode text\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "encode-text"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Decode text, defaults",
+      "input": "[{\"op\": \"Decode text\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "decode-text"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Normalise Unicode, defaults",
+      "input": "[{\"op\": \"Normalise Unicode\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "normalize"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Escape Unicode Characters, defaults",
+      "input": "[{\"op\": \"Escape Unicode Characters\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "escape-unicode"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Unescape Unicode Characters, defaults",
+      "input": "[{\"op\": \"Unescape Unicode Characters\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "unescape-unicode"
+          }
+        ]
+      }
+    },
+    {
+      "name": "To HTML Entity, defaults",
+      "input": "[{\"op\": \"To HTML Entity\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "html-entity-encode"
+          }
+        ]
+      }
+    },
+    {
+      "name": "From HTML Entity, defaults",
+      "input": "[{\"op\": \"From HTML Entity\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "html-entity-decode"
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Upper case, defaults",
+      "input": "[{\"op\": \"To Upper case\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "unicode-case",
+            "args": {
+              "mode": "upper"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Lower case, defaults",
+      "input": "[{\"op\": \"To Lower case\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "unicode-case",
+            "args": {
+              "mode": "lower"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Remove Diacritics, defaults",
+      "input": "[{\"op\": \"Remove Diacritics\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "strip-diacritics"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Reverse, defaults",
+      "input": "[{\"op\": \"Reverse\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "reverse"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Sort, defaults",
+      "input": "[{\"op\": \"Sort\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "sort-lines"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Unique, defaults",
+      "input": "[{\"op\": \"Unique\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "unique-lines"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Split, defaults",
+      "input": "[{\"op\": \"Split\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "split"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Head, defaults",
+      "input": "[{\"op\": \"Head\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "head"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Tail, defaults",
+      "input": "[{\"op\": \"Tail\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "tail"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Find / Replace, defaults",
+      "input": "[{\"op\": \"Find / Replace\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "find-replace"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Regular expression, defaults",
+      "input": "[{\"op\": \"Regular expression\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "regex-extract"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Label, defaults",
+      "input": "[{\"op\": \"Label\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "label"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Jump, to a label",
+      "input": "[{\"op\": \"Label\", \"args\": [\"top\"]}, {\"op\": \"Jump\", \"args\": [\"top\", 3]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "label",
+            "args": {
+              "name": "top"
+            }
+          },
+          {
+            "op": "jump",
+            "args": {
+              "to": "top",
+              "max": 3
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Conditional Jump, to a label",
+      "input": "[{\"op\": \"Label\", \"args\": [\"top\"]}, {\"op\": \"Conditional Jump\", \"args\": [\"x\", false, \"top\", 3]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "label",
+            "args": {
+              "name": "top"
+            }
+          },
+          {
+            "op": "conditional-jump",
+            "args": {
+              "pattern": "x",
+              "invert": false,
+              "to": "top",
+              "max": 3
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Comment, defaults",
+      "input": "[{\"op\": \"Comment\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "comment"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Fork, defaults",
+      "input": "[{\"op\": \"Fork\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "fork",
+            "args": {
+              "steps": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Subsection, defaults",
+      "input": "[{\"op\": \"Subsection\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "subsection",
+            "args": {
+              "steps": []
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "JWT Decode, defaults",
+      "input": "[{\"op\": \"JWT Decode\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "jwt-decode"
+          }
+        ]
+      }
+    },
+    {
+      "name": "JWT Sign, defaults",
+      "input": "[{\"op\": \"JWT Sign\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "jwt-sign"
+          }
+        ]
+      }
+    },
+    {
+      "name": "map",
+      "input": "[{\"op\": \"To Base64\", \"args\": [\"A-Za-z0-9-_\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-base64",
+            "args": {
+              "alphabet": "url"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "map fallback",
+      "input": "[{\"op\": \"To Base64\", \"args\": [\"abc\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-base64",
+            "args": {
+              "alphabet": "custom",
+              "custom": "abc"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "map without equivalent",
+      "input": "[{\"op\": \"To Hex\", \"args\": [\"Tab\"]}]",
+      "error": {
+        "code": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "expect and ignore",
+      "input": "[{\"op\": \"SHA2\", \"args\": [\"256\", 64]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "sha2",
+            "args": {
+              "size": "256"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "expect mismatch",
+      "input": "[{\"op\": \"Head\", \"args\": [\"Comma\", 3]}]",
+      "error": {
+        "code": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "integer from a string",
+      "input": "[{\"op\": \"Head\", \"args\": [\"Line feed\", \"4\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "head",
+            "args": {
+              "count": 4
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "integer from a float",
+      "input": "[{\"op\": \"Head\", \"args\": [\"Line feed\", 4.7]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "head",
+            "args": {
+              "count": 4
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "divide",
+      "input": "[{\"op\": \"BLAKE2b\", \"args\": [\"256\", \"Hex\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "blake2b",
+            "args": {
+              "size": 32
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "divide remainder",
+      "input": "[{\"op\": \"BLAKE2b\", \"args\": [\"250\"]}]",
+      "error": {
+        "code": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "not a number",
+      "input": "[{\"op\": \"Head\", \"args\": [\"Line feed\", \"lots\"]}]",
+      "error": {
+        "code": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "invert",
+      "input": "[{\"op\": \"From Base32\", \"args\": [\"A-Z2-7=\", true]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "from-base32",
+            "args": {
+              "alphabet": "rfc4648",
+              "strict": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "unescape",
+      "input": "[{\"op\": \"Split\", \"args\": [\"\\\\t\", \"\\\\n\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "split",
+            "args": {
+              "delimiter": "\t",
+              "join": "\n"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "bytes toggle",
+      "input": "[{\"op\": \"XOR\", \"args\": [{\"option\": \"Hex\", \"string\": \"0a\"}, \"Standard\", false]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "xor",
+            "args": {
+              "key": {
+                "encoding": "hex",
+                "value": "0a"
+              },
+              "scheme": "standard"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "fixed bytes encoding",
+      "input": "[{\"op\": \"JWT Sign\", \"args\": [\"secret\", \"HS256\", \"{}\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "jwt-sign",
+            "args": {
+              "key": {
+                "encoding": "utf8",
+                "value": "secret"
+              },
+              "algorithm": "HS256",
+              "header": ""
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "unsupported key format",
+      "input": "[{\"op\": \"XOR\", \"args\": [{\"option\": \"Decimal\", \"string\": \"1\"}]}]",
+      "error": {
+        "code": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "bytes not a toggle",
+      "input": "[{\"op\": \"XOR\", \"args\": [\"plain\"]}]",
+      "error": {
+        "code": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "before, after and set",
+      "input": "[{\"op\": \"AES Encrypt\", \"args\": [{\"option\": \"Hex\", \"string\": \"00000000000000000000000000000000\"}, {\"option\": \"Hex\", \"string\": \"00000000000000000000000000000000\"}, \"CBC/NoPadding\", \"Hex\", \"Hex\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "from-hex",
+            "args": {
+              "delimiter": "auto"
+            }
+          },
+          {
+            "op": "aes-encrypt",
+            "args": {
+              "key": {
+                "encoding": "hex",
+                "value": "00000000000000000000000000000000"
+              },
+              "iv": {
+                "encoding": "hex",
+                "value": "00000000000000000000000000000000"
+              },
+              "mode": "cbc",
+              "padding": "none"
+            }
+          },
+          {
+            "op": "to-hex",
+            "args": {
+              "delimiter": "none"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "find regex with flags",
+      "input": "[{\"op\": \"Find / Replace\", \"args\": [{\"option\": \"Regex\", \"string\": \"a+\"}, \"b\", true, true, false, true]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "find-replace",
+            "args": {
+              "literal": false,
+              "pattern": "a+",
+              "replacement": "b",
+              "global": true,
+              "flags": "is"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "find extended",
+      "input": "[{\"op\": \"Find / Replace\", \"args\": [{\"option\": \"Extended (\\\\n, \\\\t, \\\\x...)\", \"string\": \"\\\\t\"}, \"\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "find-replace",
+            "args": {
+              "literal": true,
+              "pattern": "\t",
+              "replacement": ""
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "find simple",
+      "input": "[{\"op\": \"Find / Replace\", \"args\": [{\"option\": \"Simple string\", \"string\": \".\"}, \"\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "find-replace",
+            "args": {
+              "literal": true,
+              "pattern": ".",
+              "replacement": ""
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "find not a toggle",
+      "input": "[{\"op\": \"Find / Replace\", \"args\": [\"a\"]}]",
+      "error": {
+        "code": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "extract",
+      "input": "[{\"op\": \"Encode text\", \"args\": [\"UTF-16LE (1200)\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "encode-text",
+            "args": {
+              "encoding": "utf-16le"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "too many args",
+      "input": "[{\"op\": \"MD5\", \"args\": [1]}]",
+      "error": {
+        "code": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "args not an array",
+      "input": "[{\"op\":\"MD5\",\"args\":{}}]",
+      "error": {
+        "code": "E_RECIPE_SCHEMA"
+      }
+    },
+    {
+      "name": "unknown operations",
+      "input": "[{\"op\":\"Magic\",\"args\":[]},{\"op\":\"Bzip2 Decompress\",\"args\":[]},{\"op\":\"Magic\"}]",
+      "error": {
+        "code": "E_OP_UNKNOWN",
+        "detail": {
+          "operations": ["Bzip2 Decompress", "Magic"]
+        }
+      }
+    },
+    {
+      "name": "scopes and merge",
+      "input": "[{\"op\": \"Fork\", \"args\": [\"\\\\n\", \"\\\\n\", false]}, {\"op\": \"MD5\", \"args\": []}, {\"op\": \"Merge\", \"args\": []}, {\"op\": \"To Upper case\", \"args\": [\"All\"], \"disabled\": true, \"breakpoint\": true}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "fork",
+            "args": {
+              "split": "\n",
+              "merge": "\n",
+              "steps": [
+                {
+                  "op": "md5"
+                }
+              ]
+            }
+          },
+          {
+            "op": "unicode-case",
+            "args": {
+              "mode": "upper"
+            },
+            "disabled": true,
+            "breakpoint": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "nested scopes",
+      "input": "[{\"op\": \"Fork\", \"args\": []}, {\"op\": \"Subsection\", \"args\": [\"a\"]}, {\"op\": \"MD5\"}, {\"op\": \"Merge\"}, {\"op\": \"SHA1\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "fork",
+            "args": {
+              "steps": [
+                {
+                  "op": "subsection",
+                  "args": {
+                    "pattern": "a",
+                    "steps": [
+                      {
+                        "op": "md5"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "op": "sha1"
+          }
+        ]
+      }
+    },
+    {
+      "name": "chef format",
+      "input": "To_Hex('Space',0)/disabled\nFind_/_Replace({'option':'Regex','string':'a\\u0041\\x42'},\"b\\n\",true,false,true,false)/breakpoint XOR({'option':'Hex','string':'01'},'Standard',false)",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-hex",
+            "args": {
+              "delimiter": "space"
+            },
+            "disabled": true
+          },
+          {
+            "op": "find-replace",
+            "args": {
+              "literal": false,
+              "pattern": "aAB",
+              "replacement": "b\n",
+              "global": true,
+              "flags": "m"
+            },
+            "breakpoint": true
+          },
+          {
+            "op": "xor",
+            "args": {
+              "key": {
+                "encoding": "hex",
+                "value": "01"
+              },
+              "scheme": "standard"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "chef numbers",
+      "input": "Head('Line feed',1e1) Tail('Line feed',+3)",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "head",
+            "args": {
+              "count": 10
+            }
+          },
+          {
+            "op": "tail",
+            "args": {
+              "count": 3
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "chef bare words",
+      "input": "To_Base64(A-Za-z0-9-_)",
+      "error": {
+        "code": "E_RECIPE_SCHEMA"
+      }
+    },
+    {
+      "name": "parse error 1",
+      "input": "",
+      "error": {
+        "code": "E_RECIPE_SCHEMA"
+      }
+    },
+    {
+      "name": "parse error 2",
+      "input": "   ",
+      "error": {
+        "code": "E_RECIPE_SCHEMA"
+      }
+    },
+    {
+      "name": "parse error 3",
+      "input": "[1]",
+      "error": {
+        "code": "E_RECIPE_SCHEMA"
+      }
+    },
+    {
+      "name": "parse error 4",
+      "input": "[{\"args\":[]}]",
+      "error": {
+        "code": "E_RECIPE_SCHEMA"
+      }
+    },
+    {
+      "name": "parse error 5",
+      "input": "{\"op\":\"MD5\"}",
+      "error": {
+        "code": "E_RECIPE_SCHEMA"
+      }
+    },
+    {
+      "name": "parse error 6",
+      "input": "MD5",
+      "error": {
+        "code": "E_RECIPE_SCHEMA"
+      }
+    },
+    {
+      "name": "parse error 7",
+      "input": "MD5(",
+      "error": {
+        "code": "E_RECIPE_SCHEMA"
+      }
+    },
+    {
+      "name": "parse error 8",
+      "input": "MD5('x",
+      "error": {
+        "code": "E_RECIPE_SCHEMA"
+      }
+    },
+    {
+      "name": "parse error 9",
+      "input": "MD5(@)",
+      "error": {
+        "code": "E_RECIPE_SCHEMA"
+      }
+    },
+    {
+      "name": "parse error 10",
+      "input": "[",
+      "error": {
+        "code": "E_RECIPE_SCHEMA"
+      }
+    },
+    {
+      "name": "parse error 11",
+      "input": "Head('Line feed',inf)",
+      "error": {
+        "code": "E_RECIPE_SCHEMA"
+      }
+    },
+    {
+      "name": "parse error 12",
+      "input": "Head('Line feed',1_0)",
+      "error": {
+        "code": "E_RECIPE_SCHEMA"
+      }
+    },
+    {
+      "name": "To Base58, defaults",
+      "input": "[{\"op\": \"To Base58\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-base58"
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Base58, bitcoin",
+      "input": "[{\"op\": \"To Base58\", \"args\": [\"123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-base58",
+            "args": {
+              "alphabet": "bitcoin"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "From Base58, keeps non-alphabet characters (strict)",
+      "input": "[{\"op\": \"From Base58\", \"args\": [\"123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz\", false]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "from-base58",
+            "args": {
+              "alphabet": "bitcoin",
+              "strict": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Base85, Z85",
+      "input": "[{\"op\": \"To Base85\", \"args\": [\"0-9a-zA-Z.\\\\-:+=^!/*?&<>()[]{}@%$#\", false]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-base85",
+            "args": {
+              "alphabet": "z85",
+              "delimiters": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Base85, with delimiters",
+      "input": "[{\"op\": \"To Base85\", \"args\": [\"!-u\", true]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-base85",
+            "args": {
+              "alphabet": "ascii85",
+              "delimiters": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "From Base85, defaults",
+      "input": "[{\"op\": \"From Base85\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "from-base85"
+          }
+        ]
+      }
+    },
+    {
+      "name": "From Base85, Z85 without zero-group char",
+      "input": "[{\"op\": \"From Base85\", \"args\": [\"0-9a-zA-Z.\\\\-:+=^!/*?&<>()[]{}@%$#\", true, \"\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "from-base85",
+            "args": {
+              "alphabet": "z85",
+              "strict": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Quoted Printable",
+      "input": "[{\"op\": \"To Quoted Printable\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "quoted-printable-encode"
+          }
+        ]
+      }
+    },
+    {
+      "name": "From Quoted Printable",
+      "input": "[{\"op\": \"From Quoted Printable\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "quoted-printable-decode"
+          }
+        ]
+      }
+    },
+    {
+      "name": "error: To Base58 with the Ripple alphabet",
+      "input": "[{\"op\": \"To Base58\", \"args\": [\"rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz\"]}]",
+      "error": {
+        "code": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "error: From Base85 with the IPv6 alphabet",
+      "input": "[{\"op\": \"From Base85\", \"args\": [\"0-9A-Za-z!#$%&()*+\\\\-;<=>?@^_`{|}~\", true, \"\"]}]",
+      "error": {
+        "code": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "Vigenère Encode",
+      "input": "[{\"op\": \"Vigenère Encode\", \"args\": [\"LEMON\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "vigenere-encode",
+            "args": {
+              "key": "LEMON"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Vigenère Decode",
+      "input": "[{\"op\": \"Vigenère Decode\", \"args\": [\"lemon\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "vigenere-decode",
+            "args": {
+              "key": "lemon"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Pseudo-Random Number Generator, defaults",
+      "input": "[{\"op\": \"Pseudo-Random Number Generator\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "generate-random-bytes"
+          },
+          {
+            "op": "to-hex",
+            "args": {
+              "delimiter": "none"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Pseudo-Random Number Generator, raw",
+      "input": "[{\"op\": \"Pseudo-Random Number Generator\", \"args\": [16, \"Raw\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "generate-random-bytes",
+            "args": {
+              "length": 16
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Pseudo-Random Number Generator, hex",
+      "input": "[{\"op\": \"Pseudo-Random Number Generator\", \"args\": [64, \"Hex\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "generate-random-bytes",
+            "args": {
+              "length": 64
+            }
+          },
+          {
+            "op": "to-hex",
+            "args": {
+              "delimiter": "none"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "error: Pseudo-Random Number Generator as an integer",
+      "input": "[{\"op\": \"Pseudo-Random Number Generator\", \"args\": [32, \"Integer\"]}]",
+      "error": {
+        "code": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "error: Derive PBKDF2 key (the passphrase is an argument, not the input)",
+      "input": "[{\"op\": \"Derive PBKDF2 key\", \"args\": [{\"option\": \"UTF8\", \"string\": \"pw\"}, 128, 1, \"SHA1\", {\"option\": \"Hex\", \"string\": \"\"}]}]",
+      "error": {
+        "code": "E_OP_UNKNOWN",
+        "detail": {
+          "operations": ["Derive PBKDF2 key"]
+        }
+      }
+    },
+    {
+      "name": "JSON Beautify, defaults (CyberChef indents by 4)",
+      "input": "[{\"op\": \"JSON Beautify\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "json-beautify",
+            "args": {
+              "indent": "4"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "JSON Beautify, tab and sorted keys",
+      "input": "[{\"op\": \"JSON Beautify\", \"args\": [\"\\\\t\", true, true]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "json-beautify",
+            "args": {
+              "indent": "tab",
+              "sort_keys": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "JSON Minify",
+      "input": "[{\"op\": \"JSON Minify\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "json-minify"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CSV to JSON, defaults",
+      "input": "[{\"op\": \"CSV to JSON\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "csv-to-json"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CSV to JSON, semicolons as arrays",
+      "input": "[{\"op\": \"CSV to JSON\", \"args\": [\";\", \"\\\\r\\\\n\", \"Array of arrays\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "csv-to-json",
+            "args": {
+              "delimiter": "semicolon",
+              "header": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "error: CSV to JSON with a custom row delimiter",
+      "input": "[{\"op\": \"CSV to JSON\", \"args\": [\",\", \"|\", \"Array of dictionaries\"]}]",
+      "error": {
+        "code": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "JSON to CSV, tab and LF",
+      "input": "[{\"op\": \"JSON to CSV\", \"args\": [\"\\\\t\", \"\\\\n\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "json-to-csv",
+            "args": {
+              "delimiter": "tab",
+              "line_ending": "lf"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "error: JSON Beautify with a 3-space indent",
+      "input": "[{\"op\": \"JSON Beautify\", \"args\": [\"   \", false, true]}]",
+      "error": {
+        "code": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "error: Parse URI (CyberChef writes a text table)",
+      "input": "[{\"op\": \"Parse URI\", \"args\": []}]",
+      "error": {
+        "code": "E_OP_UNKNOWN",
+        "detail": {
+          "operations": ["Parse URI"]
+        }
+      }
+    },
+    {
+      "name": "Raw Deflate then Raw Inflate, defaults",
+      "input": "[{\"op\": \"Raw Deflate\", \"args\": [\"Dynamic Huffman Coding\"]}, {\"op\": \"Raw Inflate\", \"args\": [0, 0, \"Adaptive\", false, false]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "raw-deflate",
+            "args": {
+              "level": 6
+            }
+          },
+          {
+            "op": "raw-inflate"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Zlib Deflate stored, Zlib Inflate",
+      "input": "[{\"op\": \"Zlib Deflate\", \"args\": [\"None (Store)\"]}, {\"op\": \"Zlib Inflate\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "zlib-deflate",
+            "args": {
+              "level": 0
+            }
+          },
+          {
+            "op": "zlib-inflate"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Gzip and Gunzip",
+      "input": "[{\"op\": \"Gzip\", \"args\": [\"Dynamic Huffman Coding\", \"\", \"\", false]}, {\"op\": \"Gunzip\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "gzip",
+            "args": {
+              "level": 6
+            }
+          },
+          {
+            "op": "gunzip"
+          }
+        ]
+      }
+    },
+    {
+      "name": "error: Raw Deflate with fixed Huffman coding",
+      "input": "[{\"op\": \"Raw Deflate\", \"args\": [\"Fixed Huffman Coding\"]}]",
+      "error": {
+        "code": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "error: Gzip with a file name",
+      "input": "[{\"op\": \"Gzip\", \"args\": [\"Dynamic Huffman Coding\", \"a.txt\", \"\", false]}]",
+      "error": {
+        "code": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "error: Zlib Inflate from a start index",
+      "input": "[{\"op\": \"Zlib Inflate\", \"args\": [2, 0, \"Adaptive\", false, false]}]",
+      "error": {
+        "code": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "To Punycode as a domain, then From Punycode",
+      "input": "[{\"op\": \"To Punycode\", \"args\": [true]}, {\"op\": \"From Punycode\", \"args\": [true]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-punycode",
+            "args": {
+              "domain": true
+            }
+          },
+          {
+            "op": "from-punycode",
+            "args": {
+              "domain": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Punycode with its default argument",
+      "input": "[{\"op\": \"To Punycode\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-punycode"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,134 @@
+{
+  "op": "to-base32",
+  "cases": [
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "ascii 'f'",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "66"
+      },
+      "expected": {
+        "type": "string",
+        "text": "MY======"
+      }
+    },
+    {
+      "name": "ascii 'foobar'",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "666f6f626172"
+      },
+      "expected": {
+        "type": "string",
+        "text": "MZXW6YTBOI======"
+      }
+    },
+    {
+      "name": "non-BMP U+1F600",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "f09f9880"
+      },
+      "expected": {
+        "type": "string",
+        "text": "6CPZRAA="
+      }
+    },
+    {
+      "name": "binary edge bytes",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "00ff"
+      },
+      "expected": {
+        "type": "string",
+        "text": "AD7Q===="
+      }
+    },
+    {
+      "name": "hex alphabet",
+      "args": {
+        "alphabet": "hex"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "666f6f626172"
+      },
+      "expected": {
+        "type": "string",
+        "text": "CPNMUOJ1E8======"
+      }
+    },
+    {
+      "name": "no padding",
+      "args": {
+        "padding": false
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "666f"
+      },
+      "expected": {
+        "type": "string",
+        "text": "MZXQ"
+      }
+    },
+    {
+      "name": "hex alphabet, no padding",
+      "args": {
+        "alphabet": "hex",
+        "padding": false
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "66"
+      },
+      "expected": {
+        "type": "string",
+        "text": "CO"
+      }
+    },
+    {
+      "name": "error: unknown alphabet",
+      "args": {
+        "alphabet": "crockford"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "00"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "error: padding not boolean",
+      "args": {
+        "padding": "yes"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "00"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "name": "Make a URL slug",
+  "description": "Strip diacritics, lower-case, and join the remaining letters and digits with hyphens.",
+  "steps": [
+    {
+      "op": "strip-diacritics"
+    },
+    {
+      "op": "unicode-case",
+      "args": {
+        "mode": "lower"
+      }
+    },
+    {
+      "op": "find-replace",
+      "args": {
+        "pattern": "[^\\p{L}\\p{N}]+",
+        "replacement": "-"
+      }
+    },
+    {
+      "op": "find-replace",
+      "args": {
+        "pattern": "^-|-$",
+        "replacement": ""
+      }
+    }
+  ]
+}

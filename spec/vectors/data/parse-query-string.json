@@ -1,0 +1,167 @@
+{
+  "op": "parse-query-string",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "json",
+        "value": {}
+      }
+    },
+    {
+      "name": "leading ? dropped, + is space, UTF-8 escapes",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "?q=caf%C3%A9+au+lait"
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "q": "café au lait"
+        }
+      }
+    },
+    {
+      "name": "repeated names collect into an array",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "tag=a&tag=b&tag=c&x=1"
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "tag": [
+            "a",
+            "b",
+            "c"
+          ],
+          "x": "1"
+        }
+      }
+    },
+    {
+      "name": "missing = gives an empty value; empty pieces skipped",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "&&a&b=&=c"
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "a": "",
+          "b": "",
+          "": "c"
+        }
+      }
+    },
+    {
+      "name": "only the first = splits",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "k=a=b"
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "k": "a=b"
+        }
+      }
+    },
+    {
+      "name": "malformed escapes stay literal; bad UTF-8 becomes U+FFFD",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a=%zz%4&b=%E2%82&c=100%"
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "a": "%zz%4",
+          "b": "�",
+          "c": "100%"
+        }
+      }
+    },
+    {
+      "name": "non-BMP literal and escaped",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "e=😀&f=%F0%9F%8E%89"
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "e": "😀",
+          "f": "🎉"
+        }
+      }
+    },
+    {
+      "name": "pairs output keeps order and repeats",
+      "args": {
+        "output": "pairs"
+      },
+      "input": {
+        "type": "string",
+        "text": "b=1&a=2&b=3"
+      },
+      "expected": {
+        "type": "json",
+        "value": [
+          [
+            "b",
+            "1"
+          ],
+          [
+            "a",
+            "2"
+          ],
+          [
+            "b",
+            "3"
+          ]
+        ]
+      }
+    },
+    {
+      "name": "plus_as_space off keeps +; %2B is always +",
+      "args": {
+        "plus_as_space": false
+      },
+      "input": {
+        "type": "string",
+        "text": "a+b=c%2B"
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "a+b": "c+"
+        }
+      }
+    },
+    {
+      "name": "error: unknown output",
+      "args": {
+        "output": "list"
+      },
+      "input": {
+        "type": "string",
+        "text": "a=1"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

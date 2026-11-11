@@ -1,0 +1,17 @@
+Description: Drop the Python 3.14 classifier for noble
+ Noble's python3-trove-classifiers predates "Programming Language :: Python :: 3.14",
+ and hatchling refuses to build with a classifier it does not know.
+Author: 0xdolan <0xdolan@gmail.com>
+Forwarded: not-needed
+Last-Update: 2026-11-08
+
+--- a/packages/python-cli/pyproject.toml
++++ b/packages/python-cli/pyproject.toml
+@@ -21,7 +21,6 @@
+   "Programming Language :: Python :: 3 :: Only",
+   "Programming Language :: Python :: 3.12",
+   "Programming Language :: Python :: 3.13",
+-  "Programming Language :: Python :: 3.14",
+   "Topic :: Security",
+   "Topic :: Text Processing",
+   "Typing :: Typed",

@@ -1,0 +1,493 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
+
+.workbench {
+  display: grid;
+  grid-template-columns: minmax(200px, 1fr) minmax(280px, 1.4fr) minmax(320px, 2fr);
+  gap: var(--gap);
+  padding: var(--gap);
+  height: 100%;
+  min-height: 0;
+}
+
+.workbench:has(> .notice) {
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+@media (width < 900px) {
+  .workbench {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+}
+
+.io {
+  display: grid;
+  grid-template-rows: 1fr 1fr 1fr;
+  gap: var(--gap);
+  min-height: 0;
+}
+
+.pane {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 0;
+  padding: var(--gap);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.paneHead,
+.paneFoot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.paneFoot {
+  justify-content: space-between;
+}
+
+.paneTitle {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.paneHead > .paneTitle {
+  flex: 1;
+}
+
+.scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+@media (width < 900px) {
+  .scroll {
+    max-height: 50vh;
+  }
+
+  /* One column: each pane takes the height of its content, and the page scrolls. */
+  .io {
+    grid-template-rows: none;
+  }
+
+  .text {
+    min-height: 160px;
+    resize: vertical;
+  }
+}
+
+.control {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 4px 6px;
+}
+
+.button,
+.primary,
+.icon {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  padding: 4px 10px;
+  transition: background var(--transition);
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.primary {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--on-primary);
+  font-weight: 600;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  min-height: 24px;
+  padding: 0 6px;
+  background: transparent;
+  border-color: transparent;
+  color: var(--muted);
+}
+
+.icon:hover,
+.icon[aria-pressed='true'] {
+  color: var(--text);
+  background: var(--surface-2);
+}
+
+.inline {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.empty {
+  color: var(--muted);
+  margin: 4px 0;
+}
+
+.category {
+  margin: 10px 0 4px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ops,
+.steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.op {
+  display: block;
+  width: 100%;
+  padding: 3px 6px;
+  text-align: start;
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+}
+
+.op:hover {
+  background: var(--surface-2);
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.step {
+  border: 1px solid var(--border);
+  border-inline-start: 3px solid var(--primary);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  padding: 6px 8px;
+}
+
+.step[data-disabled] {
+  opacity: 0.55;
+  border-inline-start-color: var(--muted);
+}
+
+.stepHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.stepIndex {
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.stepName {
+  flex: 1;
+}
+
+.stepActions {
+  display: flex;
+}
+
+.args {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.text {
+  flex: 1;
+  min-height: 120px;
+  resize: none;
+  padding: 8px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+.badge {
+  color: var(--cp);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.status {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.status[data-status='done'] {
+  color: var(--ok);
+}
+
+.status[data-status='error'] {
+  color: var(--error);
+}
+
+.warnings {
+  margin: 0;
+  padding-inline-start: 18px;
+  color: var(--warn);
+  font-size: 13px;
+}
+
+.notice {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px var(--gap);
+  border: 1px solid var(--border);
+  border-inline-start: 3px solid var(--primary);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.notice p {
+  flex: 1;
+  margin: 0;
+}
+
+.notice[data-tone='warn'] {
+  border-inline-start-color: var(--warn);
+}
+
+.notice[data-tone='error'] {
+  border-inline-start-color: var(--error);
+}
+
+.handle {
+  cursor: grab;
+  touch-action: none;
+}
+
+.step[data-dragging] {
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 30%);
+}
+
+.step[data-selected] {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+.step[data-failed] {
+  border-color: var(--error);
+  border-inline-start-color: var(--error);
+}
+
+.step[data-skipped] {
+  opacity: 0.5;
+}
+
+.stepName {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  text-align: start;
+  cursor: pointer;
+}
+
+.stepName:hover,
+.stepName[aria-pressed='true'] {
+  color: var(--primary);
+}
+
+.badge[data-stale] {
+  opacity: 0.5;
+}
+
+.stepError,
+.stepNote,
+.note {
+  margin: 4px 0 0;
+  font-size: 13px;
+}
+
+.stepError {
+  color: var(--error);
+}
+
+.stepNote,
+.note {
+  color: var(--muted);
+}
+
+.segmented {
+  display: flex;
+  flex: 1;
+  gap: 12px;
+}
+
+.segmented label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dump {
+  margin: 0;
+  padding: 8px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.dump[data-view='hex'] {
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.diff {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.diff > div {
+  min-width: 0;
+}
+
+.diffTitle {
+  margin: 0;
+  padding: 4px 8px 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.tableWrap {
+  overflow: auto;
+}
+
+.outputTable {
+  flex: 1;
+  min-height: 120px;
+  overflow: auto;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+/* Separate borders: collapsed ones leave a gap above a sticky header. Each cell draws its
+ * right and bottom edges, so rows are exactly 22px, as the virtualiser assumes. */
+.outputTable .table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.outputTable td,
+.outputTable th {
+  border-width: 0 1px 1px 0;
+  height: 22px;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.outputTable thead th {
+  position: sticky;
+  top: 0;
+  background: var(--surface);
+}
+
+.table {
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.table th,
+.table td {
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  text-align: start;
+}
+
+.dialog {
+  width: min(560px, calc(100vw - 32px));
+  padding: 0;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.dialog::backdrop {
+  background: rgb(0 0 0 / 50%);
+}
+
+.dialogBody {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px;
+}
+
+.dialogText {
+  font-family: var(--font-mono);
+  resize: vertical;
+  padding: 6px 8px;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.dialogError {
+  margin: 0;
+  color: var(--error);
+  overflow-wrap: anywhere;
+}
+
+/* Touch screens: step controls get 40 px targets, and the header wraps so a long operation
+   name keeps its own line instead of being squeezed by the buttons (NFR-043). */
+@media (width < 900px) {
+  .icon {
+    min-width: 40px;
+    min-height: 40px;
+  }
+
+  .stepHead {
+    flex-wrap: wrap;
+    row-gap: 0;
+  }
+
+  .stepName {
+    flex: 1 1 8em;
+    min-width: 0;
+    min-height: 40px;
+    overflow-wrap: anywhere;
+  }
+
+  .stepActions {
+    margin-inline-start: auto;
+  }
+}

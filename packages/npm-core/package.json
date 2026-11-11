@@ -1,0 +1,77 @@
+{
+  "name": "@unichef/core",
+  "version": "1.0.0-rc.2",
+  "description": "Cybersecurity and Unicode workbench core: encoding, hashing, crypto and compression recipes, plus a Unicode engine with invisible, bidi and confusable checks.",
+  "keywords": [
+    "cybersecurity",
+    "unicode",
+    "cyberchef",
+    "encoding",
+    "decoding",
+    "hashing",
+    "cryptography",
+    "base64",
+    "security",
+    "homoglyph",
+    "confusables",
+    "bidi",
+    "trojan-source"
+  ],
+  "type": "module",
+  "license": "GPL-3.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/0xdolan/unichef.git",
+    "directory": "packages/npm-core"
+  },
+  "homepage": "https://0xdolan.github.io/unichef/",
+  "engines": {
+    "node": ">=22"
+  },
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./ops": {
+      "types": "./dist/ops/registry.d.ts",
+      "import": "./dist/ops/registry.js"
+    },
+    "./unicode": {
+      "types": "./dist/unicode/index.d.ts",
+      "import": "./dist/unicode/index.js"
+    },
+    "./data/*": "./data/*"
+  },
+  "files": [
+    "dist",
+    "data",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "api-docs": "typedoc",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint . --max-warnings 0",
+    "test": "vitest run --coverage",
+    "perf": "vitest run --config vitest.perf.config.ts"
+  },
+  "dependencies": {
+    "@noble/ciphers": "2.4.0",
+    "@noble/hashes": "2.4.0",
+    "fflate": "0.8.3"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "@vitest/coverage-v8": "5.1.0",
+    "fast-check": "4.10.2",
+    "typedoc": "0.28.20",
+    "vitest": "5.1.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  }
+}

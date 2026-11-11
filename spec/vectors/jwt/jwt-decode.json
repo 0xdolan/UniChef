@@ -1,0 +1,227 @@
+{
+  "op": "jwt-decode",
+  "cases": [
+    {
+      "name": "RFC 7515 A.1",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "eyJ0eXAiOiJKV1QiLA0KICJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ.dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk"
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "header": {
+            "typ": "JWT",
+            "alg": "HS256"
+          },
+          "payload": {
+            "iss": "joe",
+            "exp": 1300819380,
+            "http://example.com/is_root": true
+          },
+          "signature": "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk"
+        }
+      }
+    },
+    {
+      "name": "HS256 token",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30"
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "header": {
+            "alg": "HS256",
+            "typ": "JWT"
+          },
+          "payload": {
+            "sub": "1234567890",
+            "name": "John Doe",
+            "admin": true,
+            "iat": 1516239022
+          },
+          "signature": "KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30"
+        }
+      }
+    },
+    {
+      "name": "surrounding whitespace ignored",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": " eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30\n"
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "header": {
+            "alg": "HS256",
+            "typ": "JWT"
+          },
+          "payload": {
+            "sub": "1234567890",
+            "name": "John Doe",
+            "admin": true,
+            "iat": 1516239022
+          },
+          "signature": "KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30"
+        }
+      }
+    },
+    {
+      "name": "unsigned token",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "eyJhbGciOiJub25lIn0.eyJhIjoxfQ."
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "header": {
+            "alg": "none"
+          },
+          "payload": {
+            "a": 1
+          },
+          "signature": ""
+        }
+      }
+    },
+    {
+      "name": "non-ASCII claim",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "eyJhbGciOiJub25lIn0.eyJuYW1lIjoiWm_DqyDwn5iAIn0."
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "header": {
+            "alg": "none"
+          },
+          "payload": {
+            "name": "Zoë 😀"
+          },
+          "signature": ""
+        }
+      }
+    },
+    {
+      "name": "duplicate claim warns",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "eyJhbGciOiJub25lIn0.eyJhIjoxLCJhIjoyfQ."
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "header": {
+            "alg": "none"
+          },
+          "payload": {
+            "a": 2
+          },
+          "signature": ""
+        }
+      },
+      "warnings": [
+        "W_DUPLICATE_KEY"
+      ]
+    },
+    {
+      "name": "two segments",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "eyJhbGciOiJub25lIn0.e30"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "JWE is not supported",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a.b.c.d.e"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "padding is rejected",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "eyJhbGciOiJub25lIn0=.e30."
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "standard base64 is rejected",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "eyJhbGciOiJub25lIn0.eyJhIjoiPz8+In0=."
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "non-zero trailing bits",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "eyJhbGciOiJub25lIn0.e31."
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "header not JSON",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "YWxn.e30."
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "payload not an object",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "eyJhbGciOiJub25lIn0.WzFd."
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "payload not UTF-8",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "eyJhbGciOiJub25lIn0.eyJhIjoi_yJ9."
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    }
+  ]
+}

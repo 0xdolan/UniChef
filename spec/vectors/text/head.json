@@ -1,0 +1,128 @@
+{
+  "op": "head",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "default 10 lines",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "1\n2\n3"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1\n2\n3"
+      }
+    },
+    {
+      "name": "keeps the final LF",
+      "args": {
+        "count": 2
+      },
+      "input": {
+        "type": "string",
+        "text": "1\n2\n3\n"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1\n2\n"
+      }
+    },
+    {
+      "name": "no final LF",
+      "args": {
+        "count": 2
+      },
+      "input": {
+        "type": "string",
+        "text": "1\n2\n3"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1\n2"
+      }
+    },
+    {
+      "name": "count 0",
+      "args": {
+        "count": 0
+      },
+      "input": {
+        "type": "string",
+        "text": "1\n2"
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "graphemes",
+      "args": {
+        "count": 2,
+        "unit": "graphemes"
+      },
+      "input": {
+        "type": "string",
+        "text": "éab"
+      },
+      "expected": {
+        "type": "string",
+        "text": "éa"
+      }
+    },
+    {
+      "name": "code points",
+      "args": {
+        "count": 2,
+        "unit": "code-points"
+      },
+      "input": {
+        "type": "string",
+        "text": "éab"
+      },
+      "expected": {
+        "type": "string",
+        "text": "é"
+      }
+    },
+    {
+      "name": "count equals line count",
+      "args": {
+        "count": 2
+      },
+      "input": {
+        "type": "string",
+        "text": "1\n2"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1\n2"
+      }
+    },
+    {
+      "name": "negative count",
+      "args": {
+        "count": -1
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

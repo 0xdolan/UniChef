@@ -1,0 +1,105 @@
+{
+  "op": "from-base58",
+  "cases": [
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": ""
+      }
+    },
+    {
+      "name": "bitcoin 'Hello World!'",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "2NEpo7TZRRrLZSi2U"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "48656c6c6f20576f726c6421"
+      }
+    },
+    {
+      "name": "leading '1' become zero bytes",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "11233QC4"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "0000287fb4cd"
+      }
+    },
+    {
+      "name": "all '1'",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "111"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "000000"
+      }
+    },
+    {
+      "name": "flickr alphabet",
+      "args": {
+        "alphabet": "flickr"
+      },
+      "input": {
+        "type": "string",
+        "text": "2nePN7syqqRkyrH2t"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "48656c6c6f20576f726c6421"
+      }
+    },
+    {
+      "name": "lenient skips spaces, newlines and non-digits like 0OIl",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": " 2NEpo7TZ\nRRrL0OIlZSi2U ☕"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "48656c6c6f20576f726c6421"
+      }
+    },
+    {
+      "name": "error: strict rejects a space",
+      "args": {
+        "strict": true
+      },
+      "input": {
+        "type": "string",
+        "text": "2NEpo 7TZRRrLZSi2U"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: strict rejects 0",
+      "args": {
+        "strict": true
+      },
+      "input": {
+        "type": "string",
+        "text": "0"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    }
+  ]
+}

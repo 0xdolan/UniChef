@@ -1,0 +1,46 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Local CI parity (PRD §11.7): docker compose -f docker/docker-compose.yml run --rm ci
+name: unichef
+x-dev: &dev
+  build: { context: .., dockerfile: docker/Dev.Dockerfile, target: dev }
+  volumes:
+    ['..:/workspace', 'uv-cache:/home/dev/.cache/uv', 'pnpm-store:/home/dev/.local/share/pnpm']
+  # The host's node_modules would point at the host's pnpm store; give the container its own.
+  tmpfs: &node-modules
+    - /workspace/node_modules:uid=1000,gid=1000,exec
+    - /workspace/packages/npm-core/node_modules:uid=1000,gid=1000,exec
+    - /workspace/clients/web/node_modules:uid=1000,gid=1000,exec
+  working_dir: /workspace
+  # Install the locked dependencies into the container's own environments, then run the command.
+  entrypoint:
+    - bash
+    - -c
+    - pnpm install --frozen-lockfile && (cd packages/python-cli && uv sync --locked --all-groups) && exec "$$@"
+    - setup
+services:
+  lint: { <<: *dev, command: make lint typecheck }
+  test-py: { <<: *dev, command: make test-py }
+  test-ts: { <<: *dev, command: make test-ts }
+  parity: { <<: *dev, command: make parity }
+  build: { <<: *dev, command: make build }
+  assets: { <<: *dev, command: make assets }
+  # Debian pre-flight (PRD §8.5) in a clean Ubuntu: SERIES=26.04 for another release.
+  deb:
+    image: ubuntu:${SERIES:-24.04}
+    volumes: ['..:/src:ro']
+    working_dir: /src
+    command: scripts/deb/check.sh
+  e2e:
+    # Must match the @playwright/test version in pnpm-lock.yaml (scripts/version/check.py).
+    image: mcr.microsoft.com/playwright:v1.64.1-noble
+    volumes: ['..:/workspace']
+    tmpfs: *node-modules
+    working_dir: /workspace
+    # The image has no corepack, so install the pnpm that package.json pins.
+    command: >-
+      sh -c 'npm i -g "$$(node -p "require(\"./package.json\").packageManager.split(\"+\")[0]")" &&
+      pnpm i --frozen-lockfile && pnpm --filter web build && pnpm --filter web e2e'
+  ci:
+    <<: *dev
+    command: make ci
+volumes: { uv-cache: {}, pnpm-store: {} }

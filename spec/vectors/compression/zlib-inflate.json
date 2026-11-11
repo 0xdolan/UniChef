@@ -1,0 +1,141 @@
+{
+  "op": "zlib-inflate",
+  "cases": [
+    {
+      "name": "zlib level 6",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "789c8bca3fbc5aa138b1b25821233527275f07855254f8307f468342141dd50000fad1384d"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "5a6fc3ab20736179732068656c6c6f2c2068656c6c6f2c2068656c6c6f2120f09f9880205a6fc3ab20736179732068656c6c6f2c2068656c6c6f2c2068656c6c6f2120f09f9880205a6fc3ab20736179732068656c6c6f2c2068656c6c6f2c2068656c6c6f2120f09f9880205a6fc3ab20736179732068656c6c6f2c2068656c6c6f2c2068656c6c6f2120f09f988020"
+      }
+    },
+    {
+      "name": "zlib level 1, binary",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "7801010001fffe000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9fa0a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4b5b6b7b8b9babbbcbdbebfc0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedfe0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfeffadf67f81"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f202122232425262728292a2b2c2d2e2f303132333435363738393a3b3c3d3e3f404142434445464748494a4b4c4d4e4f505152535455565758595a5b5c5d5e5f606162636465666768696a6b6c6d6e6f707172737475767778797a7b7c7d7e7f808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9fa0a1a2a3a4a5a6a7a8a9aaabacadaeafb0b1b2b3b4b5b6b7b8b9babbbcbdbebfc0c1c2c3c4c5c6c7c8c9cacbcccdcecfd0d1d2d3d4d5d6d7d8d9dadbdcdddedfe0e1e2e3e4e5e6e7e8e9eaebecedeeeff0f1f2f3f4f5f6f7f8f9fafbfcfdfeff"
+      }
+    },
+    {
+      "name": "fflate level 9 with UniChef framing",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "78da8bca3fbc5aa138b1b25821233527275f07855254f8307f4683023dd50000fad1384d"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "5a6fc3ab20736179732068656c6c6f2c2068656c6c6f2c2068656c6c6f2120f09f9880205a6fc3ab20736179732068656c6c6f2c2068656c6c6f2c2068656c6c6f2120f09f9880205a6fc3ab20736179732068656c6c6f2c2068656c6c6f2c2068656c6c6f2120f09f9880205a6fc3ab20736179732068656c6c6f2c2068656c6c6f2c2068656c6c6f2120f09f988020"
+      }
+    },
+    {
+      "name": "empty input stream",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "789c030000000001"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": ""
+      }
+    },
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": ""
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "header check fails",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "789d8bca3fbc5aa138b1b25821233527275f07855254f8307f468342141dd50000fad1384d"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "unknown method",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "79188bca3fbc5aa138b1b25821233527275f07855254f8307f468342141dd50000fad1384d"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "window larger than 32 KiB",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "881c8bca3fbc5aa138b1b25821233527275f07855254f8307f468342141dd50000fad1384d"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "preset dictionary",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "78bb8bca3fbc5aa138b1b25821233527275f07855254f8307f468342141dd50000fad1384d"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "Adler-32 mismatch",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "789c8bca3fbc5aa138b1b25821233527275f07855254f8307f468342141dd50000fad1384c"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "checksum missing",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "789c8bca3fbc5aa138b1b25821233527275f07855254f8307f468342141dd50000"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "trailing byte",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "789c8bca3fbc5aa138b1b25821233527275f07855254f8307f468342141dd50000fad1384d00"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    }
+  ]
+}

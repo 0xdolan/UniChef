@@ -1,0 +1,35 @@
+{
+  "recipe": {
+    "version": 1,
+    "name": "Seeded random bytes",
+    "description": "With a recipe seed, generate-random-bytes is SHA-256 in counter mode, so both cores agree.",
+    "seed": "000102030405060708090a0b0c0d0e0f",
+    "steps": [
+      {
+        "op": "generate-random-bytes",
+        "args": {
+          "length": 40
+        }
+      },
+      {
+        "op": "to-hex",
+        "args": {
+          "delimiter": "none"
+        }
+      }
+    ]
+  },
+  "cases": [
+    {
+      "name": "Seeded random bytes",
+      "input": {
+        "type": "string",
+        "text": "the input is ignored"
+      },
+      "expected": {
+        "type": "string",
+        "text": "818638ad150c9042a99f4e43bfd0f1b48bc7691645acb2cf9bc774869cd62b09112ac280cda01f4c"
+      }
+    }
+  ]
+}

@@ -1,0 +1,413 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Continuous integration (PRD §11.2). Jobs for parts that do not exist yet (the Safari
+# Xcode build) are added as those parts land.
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [develop, main, 'release/**', 'hotfix/**']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  PY_DIR: packages/python-cli
+
+jobs:
+  source-branch:
+    name: source-branch
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check the branch name and source branch (GOV-001)
+        env:
+          HEAD: ${{ github.head_ref }}
+          BASE: ${{ github.base_ref }}
+        run: |
+          re='^(feature|bugfix|docs|chore)/[a-z0-9][a-z0-9._-]{1,60}$|^(release|hotfix)/[0-9]+\.[0-9]+\.[0-9]+(-(alpha|beta|rc)\.[0-9]+)?$'
+          if ! [[ "$HEAD" =~ $re ]]; then
+            echo "::error::Branch '$HEAD' does not match the branch-name rule (PRD §10.1)."
+            exit 1
+          fi
+          if [[ "$BASE" == main && ! "$HEAD" =~ ^(release|hotfix)/ ]]; then
+            echo "::error::Only release/* and hotfix/* branches may target main."
+            exit 1
+          fi
+
+  lint:
+    name: lint
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          enable-cache: true
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: ruff check
+        working-directory: ${{ env.PY_DIR }}
+        run: uv run --locked ruff check .
+      - name: ruff format --check
+        working-directory: ${{ env.PY_DIR }}
+        run: uv run --locked ruff format --check .
+      - name: ESLint, zero warnings (NFR-030, SEC-003)
+        run: pnpm -r lint
+      - name: Prettier
+        run: pnpm fmt:check
+      - name: SVG masters (PRD §9.1)
+        run: uv run scripts/assets/build.py --lint
+      - name: actionlint
+        run: uvx --from actionlint-py==1.7.12.25 actionlint
+      - name: shellcheck
+        run: |
+          shopt -s globstar nullglob
+          files=(scripts/**/*.sh clients/extensions/**/*.sh)
+          if (( ${#files[@]} )); then shellcheck "${files[@]}"; fi
+      - name: requirement traceability
+        run: uv run scripts/check-traceability.py
+
+  typecheck:
+    name: typecheck
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          enable-cache: true
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: mypy --strict (NFR-030)
+        working-directory: ${{ env.PY_DIR }}
+        run: uv run --locked mypy
+      - name: tsc --noEmit
+        run: pnpm -r typecheck
+
+  test-py:
+    name: test-py (${{ matrix.os }}, ${{ matrix.py }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # Linux, macOS and Windows on x86-64 and arm64 (NFR-021).
+        os:
+          - ubuntu-24.04
+          - ubuntu-24.04-arm
+          - macos-latest
+          - macos-15-intel
+          - windows-latest
+          - windows-11-arm
+        py: ['3.12', '3.13', '3.14']
+    defaults:
+      run:
+        working-directory: ${{ env.PY_DIR }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          enable-cache: true
+      # cryptography publishes no Windows arm64 wheels since 46.0.4, so uv builds it from
+      # source. That needs Rust and an arm64 OpenSSL (vcpkg, cached). Intel macOS also builds
+      # from source, with the Rust and Homebrew OpenSSL already on the runner.
+      - name: Cache the arm64 OpenSSL
+        if: matrix.os == 'windows-11-arm'
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: C:\vcpkg-openssl
+          key: openssl-arm64-windows-static-md-v1
+      - name: Rust and OpenSSL for the cryptography source build
+        if: matrix.os == 'windows-11-arm'
+        shell: pwsh
+        working-directory: .
+        run: |
+          $ErrorActionPreference = 'Stop'
+          if (-not (Get-Command cargo -ErrorAction SilentlyContinue)) {
+            Invoke-WebRequest https://static.rust-lang.org/rustup/dist/aarch64-pc-windows-msvc/rustup-init.exe -OutFile rustup-init.exe
+            .\rustup-init.exe -y --profile minimal --default-toolchain stable
+            "$env:USERPROFILE\.cargo\bin" | Out-File -Append -Encoding utf8 $env:GITHUB_PATH
+          }
+          $ssl = 'C:\vcpkg-openssl\installed\arm64-windows-static-md'
+          if (-not (Test-Path "$ssl\include\openssl\ssl.h")) {
+            $vcpkg = $env:VCPKG_INSTALLATION_ROOT
+            if (-not $vcpkg) {
+              git clone --depth 1 https://github.com/microsoft/vcpkg C:\vcpkg
+              C:\vcpkg\bootstrap-vcpkg.bat -disableMetrics
+              $vcpkg = 'C:\vcpkg'
+            }
+            & "$vcpkg\vcpkg.exe" install openssl:arm64-windows-static-md --x-install-root=C:\vcpkg-openssl\installed
+            if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          }
+          "OPENSSL_DIR=$ssl" | Out-File -Append -Encoding utf8 $env:GITHUB_ENV
+          "OPENSSL_STATIC=1" | Out-File -Append -Encoding utf8 $env:GITHUB_ENV
+      - run: uv sync --locked --all-groups --python ${{ matrix.py }}
+      - name: pytest with >= 90 % line coverage (NFR-021, NFR-030)
+        run: uv run --locked pytest
+      # The budgets are set for a 4-core x86-64 machine, like the hosted Ubuntu runner.
+      - name: Performance budgets (NFR-002, NFR-004)
+        if: matrix.os == 'ubuntu-24.04'
+        run: uv run --locked pytest tests/perf -m perf --no-cov
+
+  test-ts:
+    name: test-ts (node ${{ matrix.node }})
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [22, 24]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ matrix.node }}
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: vitest, core coverage >= 90 % (NFR-022, NFR-030)
+        run: pnpm -r test
+      - name: Performance budgets (NFR-002, NFR-004)
+        run: pnpm --filter @unichef/core perf
+
+  parity:
+    name: parity
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          enable-cache: true
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Python vectors
+        working-directory: ${{ env.PY_DIR }}
+        run: uv run --locked pytest tests/parity --no-cov --junitxml=../../reports/py-parity.xml
+      - name: TypeScript vectors
+        working-directory: packages/npm-core
+        run: pnpm exec vitest run test/parity --reporter=default --reporter=junit --outputFile.junit=../../reports/ts-parity.xml
+      - name: Cross-check executed cases (FR-010)
+        run: uv run scripts/parity-report.py reports/py-parity.xml reports/ts-parity.xml
+      - if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: parity-reports
+          path: reports/
+
+  data-drift:
+    name: data-drift
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          enable-cache: true
+      - name: UCD artefacts match data/ucd
+        run: |
+          uv run scripts/ucd/fetch.py --offline
+          uv run scripts/ucd/build.py --check
+      - name: HTML entity artefact matches data/html
+        run: uv run scripts/html/build.py --check
+      - name: spec/ops.json matches the operation registry
+        run: uv run --project packages/python-cli --locked python scripts/spec/ops.py --check
+      - run: git diff --exit-code
+
+  version-consistency:
+    name: version-consistency
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          enable-cache: true
+      - name: Every file agrees with VERSION (REL-001)
+        run: uv run scripts/version/check.py
+      - name: Release tooling tests
+        run: uv run --with pytest==9.2.0 pytest scripts -q -p no:cacheprovider
+
+  docs-links:
+    name: docs-links
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Every local link and image in the docs resolves (PRD §9.5)
+        uses: lycheeverse/lychee-action@e7477775783ea5526144ba13e8db5eec57747ce8 # v2.9.0
+        with:
+          args: --offline --no-progress --include-fragments INTRODUCTION.md README.md
+          fail: true
+
+  build:
+    name: build
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          enable-cache: true
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Python sdist and wheel
+        working-directory: ${{ env.PY_DIR }}
+        run: |
+          uv build --out-dir ../../dist/python
+          uvx twine check --strict ../../dist/python/*
+      - name: '@unichef/core'
+        run: pnpm --filter @unichef/core build
+      - name: Web app
+        run: pnpm --filter web build
+      - name: Bundle budgets (NFR-010)
+        run: node scripts/check-bundle.mjs
+
+  extensions:
+    name: extensions
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+        with:
+          enable-cache: true
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+          cache: pnpm
+      - name: Image tools (rsvg-convert, ImageMagick, oxipng)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends librsvg2-bin imagemagick
+          scripts/assets/install-oxipng.sh "$HOME/.local/bin"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      - run: pnpm install --frozen-lockfile
+      # Only the icons: the store screenshots come from Git LFS, which CI does not fetch.
+      - name: Extension and web icons
+        run: |
+          uv run scripts/assets/build.py --only ext/
+          uv run scripts/assets/build.py --only web/
+      # The e2e container cannot install the image tools, so it takes the web icons from here.
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: web-icons
+          path: assets/branding/dist/web/
+          if-no-files-found: error
+      - name: Chrome, Edge, Firefox and Safari (schema check, web-ext lint)
+        run: pnpm --filter extensions build
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: extensions
+          path: clients/extensions/common/dist/*.zip
+          if-no-files-found: error
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: extension-chrome-unpacked
+          path: clients/extensions/common/dist/chrome/
+          if-no-files-found: error
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: extension-safari-unpacked
+          path: clients/extensions/common/dist/safari/
+          if-no-files-found: error
+
+  # The Safari Xcode project is generated from this build and must build unsigned (PRD §7.7).
+  safari:
+    name: safari (Xcode, unsigned)
+    needs: extensions
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: extension-safari-unpacked
+          path: clients/extensions/common/dist/safari/
+      - name: Generate the Xcode project and build it for macOS, unsigned (FR-007, NFR-020)
+        run: |
+          xcodebuild -version
+          clients/extensions/safari/generate-xcode.sh --no-build --out "$RUNNER_TEMP/xcode"
+          xcodebuild -quiet -project "$RUNNER_TEMP/xcode/UniChef/UniChef.xcodeproj" \
+            -scheme "UniChef (macOS)" -configuration Release \
+            -derivedDataPath "$RUNNER_TEMP/derived" CODE_SIGNING_ALLOWED=NO build
+          test -d "$RUNNER_TEMP/derived/Build/Products/Release/UniChef.app"
+
+  e2e:
+    name: e2e
+    needs: extensions
+    runs-on: ubuntu-24.04
+    # The image tag matches @playwright/test in pnpm-lock.yaml (scripts/version/check.py).
+    container:
+      image: mcr.microsoft.com/playwright:v1.64.1-noble
+      options: --user 1001
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+      - run: pnpm install --frozen-lockfile
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: web-icons
+          path: assets/branding/dist/web/
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: extension-chrome-unpacked
+          path: clients/extensions/common/dist/chrome/
+      - run: pnpm --filter web build
+        env:
+          UNICHEF_REQUIRE_ICONS: '1'
+      - name: Chromium, Firefox and WebKit on desktop and phones, with axe checks, and the Chrome extension (NFR-020, NFR-043, FR-007, SEC-001)
+        run: pnpm --filter web e2e
+      - name: Upload the report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: e2e-report
+          path: |
+            reports/e2e.xml
+            clients/web/test-results/
+          if-no-files-found: ignore
+
+  docker:
+    name: docker (${{ matrix.os }})
+    strategy:
+      fail-fast: false
+      matrix:
+        # Native runners per architecture instead of QEMU emulation (PRD §11.2).
+        os: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Build the dev image (no push)
+        run: docker build --target dev -f docker/Dev.Dockerfile .
+
+  deb:
+    name: deb (${{ matrix.image }})
+    strategy:
+      fail-fast: false
+      matrix:
+        # Every Ubuntu series in debian/ppa-series.txt (checked against UBUNTU_SERIES by
+        # version-consistency), plus Debian 13 from the source package (NFR-023): build the
+        # .deb, run lintian and the autopkgtest (PRD §8.5).
+        image: ['ubuntu:24.04', 'ubuntu:26.04', 'debian:trixie']
+    runs-on: ubuntu-24.04
+    container: ${{ matrix.image }}
+    steps:
+      - name: Install git
+        run: apt-get update -qq && apt-get install -y -qq --no-install-recommends ca-certificates git
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Build, lintian and autopkgtest with system packages only (REL-010, NFR-023)
+        run: scripts/deb/check.sh

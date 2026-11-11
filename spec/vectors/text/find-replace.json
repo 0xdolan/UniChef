@@ -1,0 +1,262 @@
+{
+  "op": "find-replace",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {
+        "pattern": "a",
+        "replacement": "b"
+      },
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "digits, global",
+      "args": {
+        "pattern": "\\d+",
+        "replacement": "#"
+      },
+      "input": {
+        "type": "string",
+        "text": "a1b22c333"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a#b#c#"
+      }
+    },
+    {
+      "name": "first match only",
+      "args": {
+        "pattern": "\\d+",
+        "replacement": "#",
+        "global": false
+      },
+      "input": {
+        "type": "string",
+        "text": "a1b22c333"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a#b22c333"
+      }
+    },
+    {
+      "name": "empty matches are replaced, JS stepping",
+      "args": {
+        "pattern": "x*",
+        "replacement": "-"
+      },
+      "input": {
+        "type": "string",
+        "text": "abc"
+      },
+      "expected": {
+        "type": "string",
+        "text": "-a-b-c-"
+      }
+    },
+    {
+      "name": "numbered groups and $&",
+      "args": {
+        "pattern": "(\\d+)-(\\d+)",
+        "replacement": "$2-$1 $&"
+      },
+      "input": {
+        "type": "string",
+        "text": "12-34 5-6"
+      },
+      "expected": {
+        "type": "string",
+        "text": "34-12 12-34 6-5 5-6"
+      }
+    },
+    {
+      "name": "named groups",
+      "args": {
+        "pattern": "(?<m>\\d\\d)/(?<y>\\d{4})",
+        "replacement": "$<y>-$<m>"
+      },
+      "input": {
+        "type": "string",
+        "text": "05/2024"
+      },
+      "expected": {
+        "type": "string",
+        "text": "2024-05"
+      }
+    },
+    {
+      "name": "$$ and references to missing groups stay literal",
+      "args": {
+        "pattern": "a",
+        "replacement": "$$ $9 $x $"
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "type": "string",
+        "text": "$ $9 $x $"
+      }
+    },
+    {
+      "name": "literal mode ignores regex and $ syntax",
+      "args": {
+        "pattern": ".",
+        "replacement": "$&",
+        "literal": true
+      },
+      "input": {
+        "type": "string",
+        "text": "a.b.c"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a$&b$&c"
+      }
+    },
+    {
+      "name": "flag i uses simple case folding (Kelvin sign)",
+      "args": {
+        "pattern": "k",
+        "flags": "i",
+        "replacement": "x"
+      },
+      "input": {
+        "type": "string",
+        "text": "kKK"
+      },
+      "expected": {
+        "type": "string",
+        "text": "xxx"
+      }
+    },
+    {
+      "name": "astral code point escape",
+      "args": {
+        "pattern": "\\u{1F600}",
+        "replacement": ":)"
+      },
+      "input": {
+        "type": "string",
+        "text": "a😀b"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a:)b"
+      }
+    },
+    {
+      "name": "multiline ^",
+      "args": {
+        "pattern": "^",
+        "flags": "m",
+        "replacement": "> "
+      },
+      "input": {
+        "type": "string",
+        "text": "a\nb c"
+      },
+      "expected": {
+        "type": "string",
+        "text": "> a\n> b > c"
+      }
+    },
+    {
+      "name": "dot excludes line terminators without s",
+      "args": {
+        "pattern": ".",
+        "replacement": "_"
+      },
+      "input": {
+        "type": "string",
+        "text": "a\r b"
+      },
+      "expected": {
+        "type": "string",
+        "text": "_\r _"
+      }
+    },
+    {
+      "name": "malformed pattern",
+      "args": {
+        "pattern": "(",
+        "replacement": ""
+      },
+      "input": {
+        "type": "string",
+        "text": "x"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "possessive quantifier is outside the profile",
+      "args": {
+        "pattern": "a++",
+        "replacement": ""
+      },
+      "input": {
+        "type": "string",
+        "text": "x"
+      },
+      "expected": {
+        "error": "E_REGEX_UNSUPPORTED"
+      }
+    },
+    {
+      "name": "unknown flag",
+      "args": {
+        "pattern": "a",
+        "flags": "g",
+        "replacement": ""
+      },
+      "input": {
+        "type": "string",
+        "text": "x"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "empty literal pattern",
+      "args": {
+        "pattern": "",
+        "replacement": "x",
+        "literal": true
+      },
+      "input": {
+        "type": "string",
+        "text": "x"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "Bidi_Mirrored property",
+      "args": {
+        "pattern": "\\p{Bidi_Mirrored}",
+        "replacement": "_"
+      },
+      "input": {
+        "type": "string",
+        "text": "f(a) « b ≤ c"
+      },
+      "expected": {
+        "type": "string",
+        "text": "f_a_ _ b _ c"
+      }
+    }
+  ]
+}

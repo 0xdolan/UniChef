@@ -1,0 +1,122 @@
+{
+  "op": "sha3",
+  "cases": [
+    {
+      "name": "default is 256",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "616263"
+      },
+      "expected": {
+        "type": "string",
+        "text": "3a985da74fe225b2045c172d6bd390bd855f086e3e9d525b46bfe24511431532"
+      }
+    },
+    {
+      "name": "empty 256",
+      "args": {
+        "size": "256"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": "a7ffc6f8bf1ed76651c14756a061d662f580ff4de43b49fa82d80a4b80f8434a"
+      }
+    },
+    {
+      "name": "224",
+      "args": {
+        "size": "224"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "616263"
+      },
+      "expected": {
+        "type": "string",
+        "text": "e642824c3f8cf24ad09234ee7d3c766fc9a3a5168d0c94ad73b46fdf"
+      }
+    },
+    {
+      "name": "384",
+      "args": {
+        "size": "384"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "616263"
+      },
+      "expected": {
+        "type": "string",
+        "text": "ec01498288516fc926459f58e2c6ad8df9b473cb0fc08c2596da7cf0e49be4b298d88cea927ac7f539f1edf228376d25"
+      }
+    },
+    {
+      "name": "512",
+      "args": {
+        "size": "512"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "616263"
+      },
+      "expected": {
+        "type": "string",
+        "text": "b751850b1a57168a5693cd924b6b096e08f621827444f70d884f5d0240d2712e10e116e9192af3c91a7ec57647e3934057340b4cf408d5a56592f8274eec53f0"
+      }
+    },
+    {
+      "name": "rate boundary 136",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "61616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161"
+      },
+      "expected": {
+        "type": "string",
+        "text": "3fc5559f14db8e453a0a3091edbd2bc25e11528d81c66fa570a4efdcc2695ee1"
+      }
+    },
+    {
+      "name": "rate boundary 135",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161"
+      },
+      "expected": {
+        "type": "string",
+        "text": "8094bb53c44cfb1e67b7c30447f9a1c33696d2463ecc1d9c92538913392843c9"
+      }
+    },
+    {
+      "name": "string input is UTF-8",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "é"
+      },
+      "expected": {
+        "type": "string",
+        "text": "9e9bf67e95b10ed4ce3fa9481ac0158a0e71ad67bf7904855258f161fb9dd648"
+      }
+    },
+    {
+      "name": "unknown size",
+      "args": {
+        "size": "128"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "616263"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

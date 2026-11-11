@@ -1,0 +1,209 @@
+{
+  "op": "from-punycode",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "one non-ASCII letter",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "mnchen-3ya"
+      },
+      "expected": {
+        "type": "string",
+        "text": "münchen"
+      }
+    },
+    {
+      "name": "RFC 3492 7.1 (A) Arabic",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "egbpdaj6bu4bxfgehfvwxn"
+      },
+      "expected": {
+        "type": "string",
+        "text": "ليهمابتكلموشعربي؟"
+      }
+    },
+    {
+      "name": "RFC 3492 7.1 (B) Chinese",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "ihqwcrb4cv8a8dqg056pqjye"
+      },
+      "expected": {
+        "type": "string",
+        "text": "他们为什么不说中文"
+      }
+    },
+    {
+      "name": "RFC 3492 7.1 (L) mixed case kept",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "3B-ww4c5e180e575a65lsy2b"
+      },
+      "expected": {
+        "type": "string",
+        "text": "3年B組金八先生"
+      }
+    },
+    {
+      "name": "RFC 3492 7.1 (M) leading hyphen",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "-with-SUPER-MONKEYS-pc58ag80a8qai00g7n9n"
+      },
+      "expected": {
+        "type": "string",
+        "text": "安室奈美恵-with-SUPER-MONKEYS"
+      }
+    },
+    {
+      "name": "RFC 3492 7.1 (R) Japanese",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "d9juau41awczczp"
+      },
+      "expected": {
+        "type": "string",
+        "text": "そのスピードで"
+      }
+    },
+    {
+      "name": "RFC 3492 7.1 (S) ASCII only",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "-> $1.00 <--"
+      },
+      "expected": {
+        "type": "string",
+        "text": "-> $1.00 <-"
+      }
+    },
+    {
+      "name": "digits are case-insensitive",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "MNCHEN-3YA"
+      },
+      "expected": {
+        "type": "string",
+        "text": "MüNCHEN"
+      }
+    },
+    {
+      "name": "domain mode decodes xn-- labels in any case",
+      "args": {
+        "domain": true
+      },
+      "input": {
+        "type": "string",
+        "text": "XN--bcher-kva.example"
+      },
+      "expected": {
+        "type": "string",
+        "text": "bücher.example"
+      }
+    },
+    {
+      "name": "domain mode leaves other labels",
+      "args": {
+        "domain": true
+      },
+      "input": {
+        "type": "string",
+        "text": "bcher-kva.example"
+      },
+      "expected": {
+        "type": "string",
+        "text": "bcher-kva.example"
+      }
+    },
+    {
+      "name": "not a Punycode digit",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "abc-d_e"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "non-ASCII before the delimiter",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "ü-abc"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "ends in the middle of a number",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a-z"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "number too large",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "99999999999"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "decodes to a surrogate",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "ib9b"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "domain mode bad label",
+      "args": {
+        "domain": true
+      },
+      "input": {
+        "type": "string",
+        "text": "xn--a-z.b"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    }
+  ]
+}

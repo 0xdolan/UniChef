@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/0xdolan/unichef/security/advisories/new
+    about: Report it privately, not as a public issue.
+  - name: How to use UniChef
+    url: https://github.com/0xdolan/unichef/blob/develop/INTRODUCTION.md
+    about: Install, the CLI, the web app and recipes, with examples.

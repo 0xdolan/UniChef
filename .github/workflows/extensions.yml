@@ -1,0 +1,231 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Publish the browser extensions to the Chrome Web Store (also Brave), Microsoft Edge
+# Add-ons and addons.mozilla.org (PRD §7.6). Safari is not published: each GitHub Release
+# attaches its Xcode project (release.yml).
+#
+# A stable tag (vX.Y.Z) publishes to every store. Pre-release tags only build; publish one
+# by hand with:
+#   gh workflow run extensions.yml -f ref=v0.1.0-alpha.1 [-f store=chrome] [-f staged=true]
+# Every publish job waits for approval in the store-publish environment. Edge is skipped
+# until the EDGE_PRODUCT_ID variable is set. One-time setup: docs/extensions/publishing.md.
+name: extensions
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Release tag to publish (vX.Y.Z or vX.Y.Z-alpha.N)
+        required: true
+        type: string
+      store:
+        description: Which store
+        type: choice
+        options: [all, chrome, edge, firefox]
+        default: all
+      staged:
+        description: 'Chrome: after review, wait for you to press Publish in the dashboard'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: extensions-${{ inputs.ref || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-24.04
+    outputs:
+      version: ${{ steps.plan.outputs.version }}
+      chrome: ${{ steps.plan.outputs.chrome }}
+      edge: ${{ steps.plan.outputs.edge }}
+      firefox: ${{ steps.plan.outputs.firefox }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+      - name: Which stores
+        id: plan
+        env:
+          EVENT: ${{ github.event_name }}
+          TAG: ${{ inputs.ref || github.ref_name }}
+          STORE: ${{ inputs.store || 'all' }}
+          EDGE_PRODUCT_ID: ${{ vars.EDGE_PRODUCT_ID }}
+        run: |
+          re='^v(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-(alpha|beta|rc)\.[1-9][0-9]*)?$'
+          if ! [[ "$TAG" =~ $re ]]; then
+            echo "::error::'$TAG' is not vX.Y.Z or vX.Y.Z-(alpha|beta|rc).N."
+            exit 1
+          fi
+          git fetch --depth=1 --no-tags origin "+refs/tags/$TAG:refs/tags/$TAG" 2>/dev/null || true
+          if [[ "$(git rev-parse --verify -q "refs/tags/$TAG^{commit}")" != "$(git rev-parse HEAD)" ]]; then
+            echo "::error::'$TAG' is not a tag in this repository."
+            exit 1
+          fi
+          version="${TAG#v}"
+          chrome=false edge=false firefox=false
+          if [[ "$EVENT" == workflow_dispatch || "$version" != *-* ]]; then
+            [[ "$STORE" == all || "$STORE" == chrome ]] && chrome=true
+            [[ "$STORE" == all || "$STORE" == edge ]] && edge=true
+            [[ "$STORE" == all || "$STORE" == firefox ]] && firefox=true
+          fi
+          if [[ "$edge" == true && -z "$EDGE_PRODUCT_ID" ]]; then
+            echo "::notice::Skipping Edge Add-ons: the EDGE_PRODUCT_ID variable is not set."
+            edge=false
+          fi
+          {
+            echo "version=$version"
+            echo "chrome=$chrome"
+            echo "edge=$edge"
+            echo "firefox=$firefox"
+          } >> "$GITHUB_OUTPUT"
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      - name: Image tools (rsvg-convert, ImageMagick, oxipng)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends librsvg2-bin imagemagick
+          scripts/assets/install-oxipng.sh "$HOME/.local/bin"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      - run: pnpm install --frozen-lockfile
+      - name: Chrome, Edge and Firefox packages
+        run: |
+          uv run scripts/assets/build.py --only ext/
+          pnpm --filter extensions build --target chrome --target edge --target firefox
+      - name: The packages carry the tag's version
+        working-directory: clients/extensions/common/dist
+        env:
+          VERSION: ${{ steps.plan.outputs.version }}
+        run: |
+          for t in chrome edge firefox; do
+            got=$(jq -r '.version_name // .version' "$t/manifest.json")
+            [[ "$got" == "$VERSION" ]] || { echo "::error::$t is $got, not $VERSION."; exit 1; }
+          done
+      # AMO reviewers rebuild from this (firefox/store/amo-source-readme.md).
+      - name: Source archive
+        env:
+          VERSION: ${{ steps.plan.outputs.version }}
+        run: |
+          git archive --format=zip --prefix="unichef-$VERSION/" \
+            -o "clients/extensions/common/dist/unichef-source-$VERSION.zip" HEAD
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: extensions
+          path: |
+            clients/extensions/common/dist/firefox/
+            clients/extensions/common/dist/*.zip
+          if-no-files-found: error
+
+  chrome:
+    name: chrome web store
+    needs: build
+    if: needs.build.outputs.chrome == 'true'
+    runs-on: ubuntu-24.04
+    environment:
+      name: store-publish
+      url: https://chromewebstore.google.com/detail/${{ vars.CWS_EXTENSION_ID }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      - run: pnpm install --frozen-lockfile --filter extensions
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: extensions
+          path: clients/extensions/common/dist
+      - name: Upload and submit for review
+        working-directory: clients/extensions/common
+        env:
+          CWS_SERVICE_ACCOUNT: ${{ secrets.CWS_SERVICE_ACCOUNT }}
+          CWS_PUBLISHER_ID: ${{ vars.CWS_PUBLISHER_ID }}
+          CWS_EXTENSION_ID: ${{ vars.CWS_EXTENSION_ID }}
+          VERSION: ${{ needs.build.outputs.version }}
+          STAGED: ${{ inputs.staged }}
+        run: |
+          args=(--zip "dist/unichef-chrome-$VERSION.zip")
+          [[ "$STAGED" == true ]] && args+=(--staged)
+          node build/cws.ts "${args[@]}"
+
+  edge:
+    name: edge add-ons
+    needs: build
+    if: needs.build.outputs.edge == 'true'
+    runs-on: ubuntu-24.04
+    environment:
+      name: store-publish
+      url: https://microsoftedge.microsoft.com/addons/detail/${{ vars.EDGE_PRODUCT_ID }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      - run: pnpm install --frozen-lockfile --filter extensions
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: extensions
+          path: clients/extensions/common/dist
+      - name: Upload and submit for certification
+        working-directory: clients/extensions/common
+        env:
+          EDGE_CLIENT_ID: ${{ secrets.EDGE_CLIENT_ID }}
+          EDGE_API_KEY: ${{ secrets.EDGE_API_KEY }}
+          EDGE_PRODUCT_ID: ${{ vars.EDGE_PRODUCT_ID }}
+          VERSION: ${{ needs.build.outputs.version }}
+        run: |
+          node build/edge.ts --zip "dist/unichef-edge-$VERSION.zip" \
+            --notes "UniChef $VERSION: https://github.com/0xdolan/unichef/releases/tag/v$VERSION"
+
+  firefox:
+    name: addons.mozilla.org
+    needs: build
+    if: needs.build.outputs.firefox == 'true'
+    runs-on: ubuntu-24.04
+    environment:
+      name: store-publish
+      url: https://addons.mozilla.org/firefox/addon/unichef/
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      - run: pnpm install --frozen-lockfile --filter extensions
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: extensions
+          path: clients/extensions/common/dist
+      # Submits without waiting for review (--approval-timeout 0). The first run creates the
+      # listing from amo-metadata.json; later runs add a version and refresh the listing.
+      - name: Submit to the listed channel
+        working-directory: clients/extensions/common
+        env:
+          AMO_JWT_ISSUER: ${{ secrets.AMO_JWT_ISSUER }}
+          AMO_JWT_SECRET: ${{ secrets.AMO_JWT_SECRET }}
+          VERSION: ${{ needs.build.outputs.version }}
+        run: |
+          node_modules/.bin/web-ext sign --no-input \
+            --source-dir dist/firefox \
+            --artifacts-dir "$RUNNER_TEMP/web-ext" \
+            --channel listed \
+            --amo-metadata ../firefox/store/amo-metadata.json \
+            --upload-source-code "dist/unichef-source-$VERSION.zip" \
+            --approval-timeout 0 \
+            --api-key "$AMO_JWT_ISSUER" \
+            --api-secret "$AMO_JWT_SECRET"

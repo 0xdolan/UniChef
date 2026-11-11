@@ -1,0 +1,193 @@
+{
+  "op": "from-base85",
+  "cases": [
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": ""
+      }
+    },
+    {
+      "name": "ascii85 'Hello World!'",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "87cURD]i,\"Ebo80"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "48656c6c6f20576f726c6421"
+      }
+    },
+    {
+      "name": "ascii85 partial final group",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "87cURDZ"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "48656c6c6f"
+      }
+    },
+    {
+      "name": "ascii85 'z' group",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "z!!!!"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "00000000000000"
+      }
+    },
+    {
+      "name": "ascii85 delimiters and whitespace",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": " <~87cU\nRDZ~>\n"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "48656c6c6f"
+      }
+    },
+    {
+      "name": "z85 spec example",
+      "args": {
+        "alphabet": "z85"
+      },
+      "input": {
+        "type": "string",
+        "text": "HelloWorld"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "864fd26fb559f75b"
+      }
+    },
+    {
+      "name": "z85 partial final group",
+      "args": {
+        "alphabet": "z85"
+      },
+      "input": {
+        "type": "string",
+        "text": "nm=QNzV"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "48656c6c6f"
+      }
+    },
+    {
+      "name": "z85 skips characters outside its alphabet",
+      "args": {
+        "alphabet": "z85"
+      },
+      "input": {
+        "type": "string",
+        "text": "Hello World\n"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "864fd26fb559f75b"
+      }
+    },
+    {
+      "name": "strict accepts canonical input with delimiters",
+      "args": {
+        "strict": true
+      },
+      "input": {
+        "type": "string",
+        "text": "<~87cURDZ~>"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "48656c6c6f"
+      }
+    },
+    {
+      "name": "error: 'z' inside a group",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "87zURDZ"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: one final character",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "87cURD"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: group out of range",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "s8W-\""
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: strict rejects whitespace",
+      "args": {
+        "strict": true
+      },
+      "input": {
+        "type": "string",
+        "text": "87cU RDZ"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: strict rejects a zero group without 'z'",
+      "args": {
+        "strict": true
+      },
+      "input": {
+        "type": "string",
+        "text": "!!!!!"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: strict rejects a non-canonical final group",
+      "args": {
+        "strict": true
+      },
+      "input": {
+        "type": "string",
+        "text": "87cURDY"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    }
+  ]
+}

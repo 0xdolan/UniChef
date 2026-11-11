@@ -1,0 +1,154 @@
+{
+  "op": "escape-unicode",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "ASCII is kept",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "abc 123"
+      },
+      "expected": {
+        "type": "string",
+        "text": "abc 123"
+      }
+    },
+    {
+      "name": "non-ascii, surrogate pair",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "aé😀"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a\\u00E9\\uD83D\\uDE00"
+      }
+    },
+    {
+      "name": "braces",
+      "args": {
+        "format": "backslash-u-braces"
+      },
+      "input": {
+        "type": "string",
+        "text": "é😀"
+      },
+      "expected": {
+        "type": "string",
+        "text": "\\u{E9}\\u{1F600}"
+      }
+    },
+    {
+      "name": "eight digits",
+      "args": {
+        "format": "backslash-big-u"
+      },
+      "input": {
+        "type": "string",
+        "text": "é😀"
+      },
+      "expected": {
+        "type": "string",
+        "text": "\\U000000E9\\U0001F600"
+      }
+    },
+    {
+      "name": "U+ notation, all",
+      "args": {
+        "format": "u-plus",
+        "scope": "all"
+      },
+      "input": {
+        "type": "string",
+        "text": "A😀"
+      },
+      "expected": {
+        "type": "string",
+        "text": "U+0041U+1F600"
+      }
+    },
+    {
+      "name": "HTML hex",
+      "args": {
+        "format": "html-hex"
+      },
+      "input": {
+        "type": "string",
+        "text": "<é>"
+      },
+      "expected": {
+        "type": "string",
+        "text": "<&#xE9;>"
+      }
+    },
+    {
+      "name": "HTML decimal",
+      "args": {
+        "format": "html-decimal"
+      },
+      "input": {
+        "type": "string",
+        "text": "é😀"
+      },
+      "expected": {
+        "type": "string",
+        "text": "&#233;&#128512;"
+      }
+    },
+    {
+      "name": "percent-u",
+      "args": {
+        "format": "percent-u"
+      },
+      "input": {
+        "type": "string",
+        "text": "é😀"
+      },
+      "expected": {
+        "type": "string",
+        "text": "%u00E9%uD83D%uDE00"
+      }
+    },
+    {
+      "name": "non-printable only",
+      "args": {
+        "format": "backslash-u-braces",
+        "scope": "non-printable"
+      },
+      "input": {
+        "type": "string",
+        "text": "a b​\t é"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a b\\u{200B}\\u{9}\\u{A0}é"
+      }
+    },
+    {
+      "name": "unknown format",
+      "args": {
+        "format": "octal"
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

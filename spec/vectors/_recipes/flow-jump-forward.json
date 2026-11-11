@@ -1,0 +1,16 @@
+{
+  "recipe": {
+    "version": 1,
+    "name": "Forward jump",
+    "description": "A forward jump skips a step. Labels, comments and jumps keep the dish type.",
+    "steps": [
+      { "op": "jump", "args": { "to": "end" } },
+      { "op": "to-hex", "args": {} },
+      { "op": "label", "args": { "name": "end" }, "label": "finish" }
+    ]
+  },
+  "cases": [
+    { "name": "bytes stay bytes", "input": { "type": "bytes", "hex": "00ff" }, "expected": { "type": "bytes", "hex": "00ff" } },
+    { "name": "string stays string", "input": { "type": "string", "text": "😀" }, "expected": { "type": "string", "text": "😀" } }
+  ]
+}

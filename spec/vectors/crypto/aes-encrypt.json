@@ -1,0 +1,362 @@
+{
+  "op": "aes-encrypt",
+  "cases": [
+    {
+      "name": "SP 800-38A CBC, no padding",
+      "args": {
+        "key": {
+          "encoding": "hex",
+          "value": "2b7e151628aed2a6abf7158809cf4f3c"
+        },
+        "mode": "cbc",
+        "iv": {
+          "encoding": "hex",
+          "value": "000102030405060708090a0b0c0d0e0f"
+        },
+        "padding": "none"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e51"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "7649abac8119b246cee98e9b12e9197d5086cb9b507219ee95db113a917678b2"
+      }
+    },
+    {
+      "name": "CBC is the default mode",
+      "args": {
+        "key": {
+          "encoding": "hex",
+          "value": "2b7e151628aed2a6abf7158809cf4f3c"
+        },
+        "iv": {
+          "encoding": "hex",
+          "value": "000102030405060708090a0b0c0d0e0f"
+        },
+        "padding": "none"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "6bc1bee22e409f96e93d7e117393172a"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "7649abac8119b246cee98e9b12e9197d"
+      }
+    },
+    {
+      "name": "CBC PKCS#7 adds a full block",
+      "args": {
+        "key": {
+          "encoding": "hex",
+          "value": "2b7e151628aed2a6abf7158809cf4f3c"
+        },
+        "mode": "cbc",
+        "iv": {
+          "encoding": "hex",
+          "value": "000102030405060708090a0b0c0d0e0f"
+        }
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "6bc1bee22e409f96e93d7e117393172a"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "7649abac8119b246cee98e9b12e9197d8964e0b149c10b7b682e6e39aaeb731c"
+      }
+    },
+    {
+      "name": "SP 800-38A ECB",
+      "args": {
+        "key": {
+          "encoding": "hex",
+          "value": "2b7e151628aed2a6abf7158809cf4f3c"
+        },
+        "mode": "ecb",
+        "padding": "none"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e51"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "3ad77bb40d7a3660a89ecaf32466ef97f5d3d58503b9699de785895a96fdbaaf"
+      },
+      "warnings": [
+        "W_INSECURE"
+      ]
+    },
+    {
+      "name": "SP 800-38A CTR",
+      "args": {
+        "key": {
+          "encoding": "hex",
+          "value": "2b7e151628aed2a6abf7158809cf4f3c"
+        },
+        "mode": "ctr",
+        "iv": {
+          "encoding": "hex",
+          "value": "f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff"
+        }
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "6bc1bee22e409f96e93d7e117393172aae2d8a571e03ac9c9eb76fac45af8e51"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "874d6191b620e3261bef6864990db6ce9806f66b7970fdff8617187bb9fffdff"
+      }
+    },
+    {
+      "name": "CTR partial block",
+      "args": {
+        "key": {
+          "encoding": "hex",
+          "value": "2b7e151628aed2a6abf7158809cf4f3c"
+        },
+        "mode": "ctr",
+        "iv": {
+          "encoding": "hex",
+          "value": "f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff"
+        }
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "6bc1bee22e409f96e93d"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "874d6191b620e3261bef"
+      }
+    },
+    {
+      "name": "SP 800-38A CBC AES-256",
+      "args": {
+        "key": {
+          "encoding": "hex",
+          "value": "603deb1015ca71be2b73aef0857d77811f352c073b6108d72d9810a30914dff4"
+        },
+        "mode": "cbc",
+        "iv": {
+          "encoding": "hex",
+          "value": "000102030405060708090a0b0c0d0e0f"
+        },
+        "padding": "none"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "6bc1bee22e409f96e93d7e117393172a"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "f58c4c04d6e5f1ba779eabfb5f7bfbd6"
+      }
+    },
+    {
+      "name": "GCM test case 1",
+      "args": {
+        "key": {
+          "encoding": "hex",
+          "value": "00000000000000000000000000000000"
+        },
+        "mode": "gcm",
+        "iv": {
+          "encoding": "hex",
+          "value": "000000000000000000000000"
+        }
+      },
+      "input": {
+        "type": "bytes",
+        "hex": ""
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "58e2fccefa7e3061367f1d57a4e7455a"
+      }
+    },
+    {
+      "name": "GCM test case 2",
+      "args": {
+        "key": {
+          "encoding": "hex",
+          "value": "00000000000000000000000000000000"
+        },
+        "mode": "gcm",
+        "iv": {
+          "encoding": "hex",
+          "value": "000000000000000000000000"
+        }
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "00000000000000000000000000000000"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "0388dace60b6a392f328c2b971b2fe78ab6e47d42cec13bdf53a67b21257bddf"
+      }
+    },
+    {
+      "name": "GCM test case 4 with AAD",
+      "args": {
+        "key": {
+          "encoding": "hex",
+          "value": "feffe9928665731c6d6a8f9467308308"
+        },
+        "mode": "gcm",
+        "iv": {
+          "encoding": "hex",
+          "value": "cafebabefacedbaddecaf888"
+        },
+        "aad": {
+          "encoding": "hex",
+          "value": "feedfacedeadbeeffeedfacedeadbeefabaddad2"
+        }
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "d9313225f88406e5a55909c5aff5269a86a7a9531534f7da2e4c303d8a318a721c3c0c95956809532fcf0e2449a6b525b16aedf5aa0de657ba637b39"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "42831ec2217774244b7221b784d0d49ce3aa212f2c02a4e035c17e2329aca12e21d514b25466931c7d8f6a5aac84aa051ba30b396a0aac973d58e0915bc94fbc3221a5db94fae95ae7121a47"
+      }
+    },
+    {
+      "name": "bad key length",
+      "args": {
+        "key": {
+          "encoding": "hex",
+          "value": "000000000000000000000000000000"
+        },
+        "mode": "cbc",
+        "iv": {
+          "encoding": "hex",
+          "value": "000102030405060708090a0b0c0d0e0f"
+        }
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "6bc1bee22e409f96e93d7e117393172a"
+      },
+      "expected": {
+        "error": "E_CRYPTO"
+      }
+    },
+    {
+      "name": "bad IV length",
+      "args": {
+        "key": {
+          "encoding": "hex",
+          "value": "2b7e151628aed2a6abf7158809cf4f3c"
+        },
+        "mode": "cbc",
+        "iv": {
+          "encoding": "hex",
+          "value": "0000000000000000"
+        }
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "6bc1bee22e409f96e93d7e117393172a"
+      },
+      "expected": {
+        "error": "E_CRYPTO"
+      }
+    },
+    {
+      "name": "GCM nonce too short",
+      "args": {
+        "key": {
+          "encoding": "hex",
+          "value": "2b7e151628aed2a6abf7158809cf4f3c"
+        },
+        "mode": "gcm",
+        "iv": {
+          "encoding": "hex",
+          "value": "00000000"
+        }
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "6bc1bee22e409f96e93d7e117393172a"
+      },
+      "expected": {
+        "error": "E_CRYPTO"
+      }
+    },
+    {
+      "name": "no padding needs whole blocks",
+      "args": {
+        "key": {
+          "encoding": "hex",
+          "value": "2b7e151628aed2a6abf7158809cf4f3c"
+        },
+        "mode": "cbc",
+        "iv": {
+          "encoding": "hex",
+          "value": "000102030405060708090a0b0c0d0e0f"
+        },
+        "padding": "none"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "00"
+      },
+      "expected": {
+        "error": "E_CRYPTO"
+      }
+    },
+    {
+      "name": "AAD outside GCM",
+      "args": {
+        "key": {
+          "encoding": "hex",
+          "value": "2b7e151628aed2a6abf7158809cf4f3c"
+        },
+        "mode": "cbc",
+        "iv": {
+          "encoding": "hex",
+          "value": "000102030405060708090a0b0c0d0e0f"
+        },
+        "aad": {
+          "encoding": "hex",
+          "value": "00"
+        }
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "6bc1bee22e409f96e93d7e117393172a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "unknown mode",
+      "args": {
+        "key": {
+          "encoding": "hex",
+          "value": "2b7e151628aed2a6abf7158809cf4f3c"
+        },
+        "mode": "ofb",
+        "iv": {
+          "encoding": "hex",
+          "value": "000102030405060708090a0b0c0d0e0f"
+        }
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "6bc1bee22e409f96e93d7e117393172a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

@@ -1,0 +1,104 @@
+{
+  "op": "to-base58",
+  "cases": [
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "bitcoin 'Hello World!'",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "48656c6c6f20576f726c6421"
+      },
+      "expected": {
+        "type": "string",
+        "text": "2NEpo7TZRRrLZSi2U"
+      }
+    },
+    {
+      "name": "leading zero bytes become '1'",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "0000287fb4cd"
+      },
+      "expected": {
+        "type": "string",
+        "text": "11233QC4"
+      }
+    },
+    {
+      "name": "all zero bytes",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "000000"
+      },
+      "expected": {
+        "type": "string",
+        "text": "111"
+      }
+    },
+    {
+      "name": "bitcoin known answer 'The quick brown fox…'",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "54686520717569636b2062726f776e20666f78206a756d7073206f76657220746865206c617a7920646f672e"
+      },
+      "expected": {
+        "type": "string",
+        "text": "USm3fpXnKG5EUBx2ndxBDMPVciP5hGey2Jh4NDv6gmeo1LkMeiKrLJUUBk6Z"
+      }
+    },
+    {
+      "name": "flickr alphabet",
+      "args": {
+        "alphabet": "flickr"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "48656c6c6f20576f726c6421"
+      },
+      "expected": {
+        "type": "string",
+        "text": "2nePN7syqqRkyrH2t"
+      }
+    },
+    {
+      "name": "single 0xff",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "ff"
+      },
+      "expected": {
+        "type": "string",
+        "text": "5Q"
+      }
+    },
+    {
+      "name": "error: unknown alphabet",
+      "args": {
+        "alphabet": "ripple"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "00"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

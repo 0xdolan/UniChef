@@ -1,0 +1,152 @@
+{
+  "op": "count",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "integer",
+        "value": 0
+      }
+    },
+    {
+      "name": "code points by default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "é😀\n"
+      },
+      "expected": {
+        "type": "integer",
+        "value": 4
+      }
+    },
+    {
+      "name": "bytes",
+      "args": {
+        "unit": "bytes"
+      },
+      "input": {
+        "type": "string",
+        "text": "é😀\n"
+      },
+      "expected": {
+        "type": "integer",
+        "value": 8
+      }
+    },
+    {
+      "name": "UTF-16 units",
+      "args": {
+        "unit": "utf16-units"
+      },
+      "input": {
+        "type": "string",
+        "text": "é😀\n"
+      },
+      "expected": {
+        "type": "integer",
+        "value": 5
+      }
+    },
+    {
+      "name": "graphemes",
+      "args": {
+        "unit": "graphemes"
+      },
+      "input": {
+        "type": "string",
+        "text": "é😀\n"
+      },
+      "expected": {
+        "type": "integer",
+        "value": 3
+      }
+    },
+    {
+      "name": "lines, final LF",
+      "args": {
+        "unit": "lines"
+      },
+      "input": {
+        "type": "string",
+        "text": "a\nb\n"
+      },
+      "expected": {
+        "type": "integer",
+        "value": 2
+      }
+    },
+    {
+      "name": "lines, no final LF",
+      "args": {
+        "unit": "lines"
+      },
+      "input": {
+        "type": "string",
+        "text": "a\n\nb"
+      },
+      "expected": {
+        "type": "integer",
+        "value": 3
+      }
+    },
+    {
+      "name": "lines, empty",
+      "args": {
+        "unit": "lines"
+      },
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "integer",
+        "value": 0
+      }
+    },
+    {
+      "name": "ill-formed UTF-8",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "61ff62"
+      },
+      "expected": {
+        "type": "integer",
+        "value": 3
+      }
+    },
+    {
+      "name": "raw bytes",
+      "args": {
+        "unit": "bytes"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "61ff62"
+      },
+      "expected": {
+        "type": "integer",
+        "value": 3
+      }
+    },
+    {
+      "name": "unknown unit",
+      "args": {
+        "unit": "words"
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

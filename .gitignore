@@ -13,7 +13,10 @@ __pycache__/
 .coverage
 htmlcov/
 dist/
+dist-extension/
 build/
+# The extension build scripts are source.
+!clients/extensions/common/build/
 *.egg-info/
 
 # Node / TypeScript
@@ -31,3 +34,8 @@ assets/branding/dist/
 .DS_Store
 Thumbs.db
 .claude/settings.local.json
+reports/
+.claude/worktrees/
+test-results/
+playwright-report/
+/clients/extensions/safari/UniChef/

@@ -1,0 +1,178 @@
+{
+  "op": "html-entity-decode",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "named",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "&lt;p&gt; &amp; &quot;&apos;"
+      },
+      "expected": {
+        "type": "string",
+        "text": "<p> & \"'"
+      }
+    },
+    {
+      "name": "legacy names without a semicolon",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "&copy 2026 &AMP"
+      },
+      "expected": {
+        "type": "string",
+        "text": "© 2026 &"
+      }
+    },
+    {
+      "name": "longest prefix match",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "&notit; &notin;"
+      },
+      "expected": {
+        "type": "string",
+        "text": "¬it; ∉"
+      }
+    },
+    {
+      "name": "two-code-point entity",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "&nvlt;&NotEqualTilde;"
+      },
+      "expected": {
+        "type": "string",
+        "text": "<⃒≂̸"
+      }
+    },
+    {
+      "name": "numeric, decimal and hex, semicolon optional",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "&#65;&#x42;&#X43&#68"
+      },
+      "expected": {
+        "type": "string",
+        "text": "ABCD"
+      }
+    },
+    {
+      "name": "windows-1252 remap",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "&#128;&#x9F;&#x81;"
+      },
+      "expected": {
+        "type": "string",
+        "text": "€Ÿ"
+      }
+    },
+    {
+      "name": "invalid code points",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "&#0;&#xD800;&#x110000;&#99999999999999999999;"
+      },
+      "expected": {
+        "type": "string",
+        "text": "����"
+      }
+    },
+    {
+      "name": "astral",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "&#x1F600;&Aopf;"
+      },
+      "expected": {
+        "type": "string",
+        "text": "😀𝔸"
+      }
+    },
+    {
+      "name": "unmatched ampersands stay",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a & b &# &#x; &bogus; &"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a & b &# &#x; &bogus; &"
+      }
+    },
+    {
+      "name": "strict accepts proper references",
+      "args": {
+        "strict": true
+      },
+      "input": {
+        "type": "string",
+        "text": "&lt;&#65;&#x42;"
+      },
+      "expected": {
+        "type": "string",
+        "text": "<AB"
+      }
+    },
+    {
+      "name": "strict, missing semicolon",
+      "args": {
+        "strict": true
+      },
+      "input": {
+        "type": "string",
+        "text": "&copy 2026"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "strict, unknown name",
+      "args": {
+        "strict": true
+      },
+      "input": {
+        "type": "string",
+        "text": "&bogus;"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "strict, invalid code point",
+      "args": {
+        "strict": true
+      },
+      "input": {
+        "type": "string",
+        "text": "&#0;"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    }
+  ]
+}

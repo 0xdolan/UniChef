@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "name": "Reveal invisible characters",
+  "description": "List zero-width, format and other invisible characters with their positions and names.",
+  "steps": [
+    {
+      "op": "detect-invisible"
+    }
+  ]
+}

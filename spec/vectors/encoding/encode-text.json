@@ -1,0 +1,206 @@
+{
+  "op": "encode-text",
+  "cases": [
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": ""
+      }
+    },
+    {
+      "name": "ascii, utf-8 default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Hi"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "4869"
+      }
+    },
+    {
+      "name": "non-BMP utf-8",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "😀"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "f09f9880"
+      }
+    },
+    {
+      "name": "non-BMP utf-16le surrogate pair",
+      "args": {
+        "encoding": "utf-16le"
+      },
+      "input": {
+        "type": "string",
+        "text": "😀"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "3dd800de"
+      }
+    },
+    {
+      "name": "utf-16be",
+      "args": {
+        "encoding": "utf-16be"
+      },
+      "input": {
+        "type": "string",
+        "text": "Aé"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "004100e9"
+      }
+    },
+    {
+      "name": "utf-32le",
+      "args": {
+        "encoding": "utf-32le"
+      },
+      "input": {
+        "type": "string",
+        "text": "A😀"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "4100000000f60100"
+      }
+    },
+    {
+      "name": "utf-32be",
+      "args": {
+        "encoding": "utf-32be"
+      },
+      "input": {
+        "type": "string",
+        "text": "A"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "00000041"
+      }
+    },
+    {
+      "name": "iso-8859-1",
+      "args": {
+        "encoding": "iso-8859-1"
+      },
+      "input": {
+        "type": "string",
+        "text": "café"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "636166e9"
+      }
+    },
+    {
+      "name": "iso-8859-1 replaces unmappable with ?",
+      "args": {
+        "encoding": "iso-8859-1"
+      },
+      "input": {
+        "type": "string",
+        "text": "€1"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "3f31"
+      }
+    },
+    {
+      "name": "windows-1252 maps euro to 80",
+      "args": {
+        "encoding": "windows-1252"
+      },
+      "input": {
+        "type": "string",
+        "text": "€‚"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "8082"
+      }
+    },
+    {
+      "name": "windows-1252 WHATWG C1 passthrough",
+      "args": {
+        "encoding": "windows-1252"
+      },
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "819d"
+      }
+    },
+    {
+      "name": "ascii replaces non-ASCII with ?",
+      "args": {
+        "encoding": "ascii"
+      },
+      "input": {
+        "type": "string",
+        "text": "né"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "6e3f"
+      }
+    },
+    {
+      "name": "lone surrogate becomes U+FFFD",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a\udc00b"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "61efbfbd62"
+      }
+    },
+    {
+      "name": "error: strict unmappable",
+      "args": {
+        "encoding": "ascii",
+        "errors": "strict"
+      },
+      "input": {
+        "type": "string",
+        "text": "né"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: unknown encoding",
+      "args": {
+        "encoding": "ebcdic"
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

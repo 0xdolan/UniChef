@@ -1,0 +1,247 @@
+{
+  "op": "detect-confusables",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "index",
+            "cp",
+            "name",
+            "prototype"
+          ],
+          "rows": []
+        }
+      }
+    },
+    {
+      "name": "no mappings",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "abc"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "index",
+            "cp",
+            "name",
+            "prototype"
+          ],
+          "rows": []
+        }
+      }
+    },
+    {
+      "name": "Cyrillic a",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "pаy"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "index",
+            "cp",
+            "name",
+            "prototype"
+          ],
+          "rows": [
+            [
+              1,
+              "U+0430",
+              "CYRILLIC SMALL LETTER A",
+              "U+0061"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "digit one maps to letter l",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "1l"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "index",
+            "cp",
+            "name",
+            "prototype"
+          ],
+          "rows": [
+            [
+              0,
+              "U+0031",
+              "DIGIT ONE",
+              "U+006C"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "multi-code-point prototype",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "㎒"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "index",
+            "cp",
+            "name",
+            "prototype"
+          ],
+          "rows": [
+            [
+              0,
+              "U+3392",
+              "SQUARE MHZ",
+              "U+004D U+0048 U+007A"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "reference: homoglyph",
+      "args": {
+        "reference": "paypal"
+      },
+      "input": {
+        "type": "string",
+        "text": "pаypаl"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "input-skeleton",
+            "reference-skeleton",
+            "confusable"
+          ],
+          "rows": [
+            [
+              "0070 0061 0079 0070 0061 006C",
+              "0070 0061 0079 0070 0061 006C",
+              "true"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "reference: digit for letter",
+      "args": {
+        "reference": "paypal"
+      },
+      "input": {
+        "type": "string",
+        "text": "paypa1"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "input-skeleton",
+            "reference-skeleton",
+            "confusable"
+          ],
+          "rows": [
+            [
+              "0070 0061 0079 0070 0061 006C",
+              "0070 0061 0079 0070 0061 006C",
+              "true"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "reference: different",
+      "args": {
+        "reference": "google"
+      },
+      "input": {
+        "type": "string",
+        "text": "paypal"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "input-skeleton",
+            "reference-skeleton",
+            "confusable"
+          ],
+          "rows": [
+            [
+              "0070 0061 0079 0070 0061 006C",
+              "0067 006F 006F 0067 006C 0065",
+              "false"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "reference: decomposed matches precomposed",
+      "args": {
+        "reference": "é"
+      },
+      "input": {
+        "type": "string",
+        "text": "é"
+      },
+      "expected": {
+        "type": "table",
+        "value": {
+          "columns": [
+            "input-skeleton",
+            "reference-skeleton",
+            "confusable"
+          ],
+          "rows": [
+            [
+              "0065 0301",
+              "0065 0301",
+              "true"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "name": "reference must be a string",
+      "args": {
+        "reference": 1
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

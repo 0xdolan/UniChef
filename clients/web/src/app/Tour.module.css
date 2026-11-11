@@ -1,0 +1,83 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
+/* The first-run tour (FR-015): a native modal dialog, sized for phones up. */
+
+.tour {
+  width: min(480px, calc(100vw - 32px));
+  padding: 0;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.tour::backdrop {
+  background: rgb(0 0 0 / 50%);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 20px;
+}
+
+.body p {
+  margin: 0;
+}
+
+.count {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.25rem;
+}
+
+.foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.button,
+.primary,
+.link {
+  min-height: 32px;
+  padding: 4px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.primary {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--on-primary);
+  font-weight: 600;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  border-color: transparent;
+  background: transparent;
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+@media (pointer: coarse) {
+  .button,
+  .primary,
+  .link {
+    min-height: 40px;
+  }
+}

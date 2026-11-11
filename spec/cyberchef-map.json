@@ -1,0 +1,671 @@
+{
+  "$comment": "CyberChef operation name -> UniChef op, with one translator per positional CyberChef argument. Read by `unichef recipe import-cyberchef` (PRD §5.3). Translator keys: to (target arg), map (CyberChef value -> ours; '*' is the fallback and '$' stands for the input), ignore, expect, integer, divide, unescape, bytes (a {option,string} toggle), invert, flag (+when), extract (regex whose first group is used), default (the value used when the CyberChef argument is omitted, for arguments whose CyberChef default differs from ours).",
+  "cyberchefVersion": "11.5.0",
+  "operations": {
+    "To Base64": {
+      "op": "to-base64",
+      "args": [
+        {
+          "to": "alphabet",
+          "map": {
+            "A-Za-z0-9+/=": "standard",
+            "A-Za-z0-9-_": "url",
+            "A-Za-z0-9-_=": "url",
+            "*": { "value": "custom", "set": { "custom": "$" } }
+          }
+        }
+      ]
+    },
+    "From Base64": {
+      "op": "from-base64",
+      "args": [
+        {
+          "to": "alphabet",
+          "map": {
+            "A-Za-z0-9+/=": "standard",
+            "A-Za-z0-9-_": "url",
+            "A-Za-z0-9-_=": "url",
+            "*": { "value": "custom", "set": { "custom": "$" } }
+          }
+        },
+        { "ignore": true },
+        { "to": "strict" }
+      ]
+    },
+    "To Hex": {
+      "op": "to-hex",
+      "args": [
+        {
+          "to": "delimiter",
+          "map": {
+            "None": "none",
+            "Space": "space",
+            "Comma": "comma",
+            "Colon": "colon",
+            "Line feed": "newline",
+            "CRLF": "newline",
+            "0x": "0x",
+            "0x with comma": "0x",
+            "\\x": "\\x"
+          }
+        },
+        { "expect": 0 }
+      ]
+    },
+    "From Hex": {
+      "op": "from-hex",
+      "args": [
+        {
+          "to": "delimiter",
+          "map": {
+            "Auto": "auto",
+            "None": "none",
+            "Space": "space",
+            "Comma": "comma",
+            "Colon": "colon",
+            "Line feed": "newline",
+            "CRLF": "newline",
+            "0x": "0x",
+            "0x with comma": "0x",
+            "\\x": "\\x"
+          }
+        }
+      ]
+    },
+    "To Decimal": {
+      "op": "to-decimal",
+      "args": [
+        {
+          "to": "delimiter",
+          "map": {
+            "Space": "space",
+            "Comma": "comma",
+            "Colon": "colon",
+            "Line feed": "newline",
+            "CRLF": "newline"
+          }
+        },
+        { "expect": false }
+      ]
+    },
+    "From Decimal": {
+      "op": "from-decimal",
+      "args": [
+        {
+          "to": "delimiter",
+          "map": {
+            "Auto": "auto",
+            "Space": "space",
+            "Comma": "comma",
+            "Colon": "colon",
+            "Line feed": "newline",
+            "CRLF": "newline"
+          }
+        },
+        { "expect": false }
+      ]
+    },
+    "To Binary": {
+      "op": "to-binary",
+      "args": [
+        {
+          "to": "delimiter",
+          "map": {
+            "None": "none",
+            "Space": "space",
+            "Comma": "comma",
+            "Colon": "colon",
+            "Line feed": "newline",
+            "CRLF": "newline"
+          }
+        },
+        { "expect": 8 }
+      ]
+    },
+    "From Binary": {
+      "op": "from-binary",
+      "args": [
+        {
+          "to": "delimiter",
+          "map": {
+            "Auto": "auto",
+            "None": "none",
+            "Space": "space",
+            "Comma": "comma",
+            "Colon": "colon",
+            "Line feed": "newline",
+            "CRLF": "newline"
+          }
+        },
+        { "expect": 8 }
+      ]
+    },
+    "To Octal": {
+      "op": "to-octal",
+      "args": [
+        {
+          "to": "delimiter",
+          "map": {
+            "None": "none",
+            "Space": "space",
+            "Comma": "comma",
+            "Colon": "colon",
+            "Line feed": "newline",
+            "CRLF": "newline"
+          }
+        }
+      ]
+    },
+    "From Octal": {
+      "op": "from-octal",
+      "args": [
+        {
+          "to": "delimiter",
+          "map": {
+            "Auto": "auto",
+            "None": "none",
+            "Space": "space",
+            "Comma": "comma",
+            "Colon": "colon",
+            "Line feed": "newline",
+            "CRLF": "newline"
+          }
+        }
+      ]
+    },
+    "To Base32": {
+      "op": "to-base32",
+      "args": [{ "to": "alphabet", "map": { "A-Z2-7=": "rfc4648", "0-9A-V=": "hex" } }]
+    },
+    "From Base32": {
+      "op": "from-base32",
+      "args": [
+        { "to": "alphabet", "map": { "A-Z2-7=": "rfc4648", "0-9A-V=": "hex" } },
+        { "to": "strict", "invert": true }
+      ]
+    },
+    "To Base58": {
+      "op": "to-base58",
+      "args": [
+        {
+          "to": "alphabet",
+          "map": { "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz": "bitcoin" }
+        }
+      ]
+    },
+    "From Base58": {
+      "op": "from-base58",
+      "args": [
+        {
+          "to": "alphabet",
+          "map": { "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz": "bitcoin" }
+        },
+        { "to": "strict", "invert": true }
+      ]
+    },
+    "To Base85": {
+      "op": "to-base85",
+      "args": [
+        {
+          "to": "alphabet",
+          "map": { "!-u": "ascii85", "0-9a-zA-Z.\\-:+=^!/*?&<>()[]{}@%$#": "z85" }
+        },
+        { "to": "delimiters" }
+      ]
+    },
+    "From Base85": {
+      "op": "from-base85",
+      "args": [
+        {
+          "to": "alphabet",
+          "map": { "!-u": "ascii85", "0-9a-zA-Z.\\-:+=^!/*?&<>()[]{}@%$#": "z85" }
+        },
+        { "to": "strict", "invert": true },
+        { "ignore": true }
+      ]
+    },
+    "To Quoted Printable": { "op": "quoted-printable-encode", "args": [] },
+    "From Quoted Printable": { "op": "quoted-printable-decode", "args": [] },
+    "URL Encode": {
+      "op": "url-encode",
+      "args": [{ "to": "mode", "map": { "true": "all", "false": "component" } }]
+    },
+    "URL Decode": {
+      "op": "url-decode",
+      "args": [{ "to": "plus-as-space" }]
+    },
+    "ROT13": {
+      "op": "rot13",
+      "args": [
+        { "expect": true },
+        { "expect": true },
+        { "to": "digits" },
+        { "to": "amount", "integer": true }
+      ]
+    },
+    "ROT47": {
+      "op": "rot47",
+      "args": [{ "to": "amount", "integer": true }]
+    },
+    "XOR": {
+      "op": "xor",
+      "args": [
+        { "to": "key", "bytes": true },
+        { "to": "scheme", "map": { "Standard": "standard" } },
+        { "expect": false }
+      ]
+    },
+    "Atbash Cipher": { "op": "atbash", "args": [] },
+    "Vigenère Encode": { "op": "vigenere-encode", "args": [{ "to": "key" }] },
+    "Vigenère Decode": { "op": "vigenere-decode", "args": [{ "to": "key" }] },
+    "Pseudo-Random Number Generator": {
+      "op": "generate-random-bytes",
+      "args": [
+        { "to": "length", "integer": true },
+        {
+          "map": {
+            "Raw": {},
+            "Hex": { "after": [{ "op": "to-hex", "args": { "delimiter": "none" } }] }
+          },
+          "default": "Hex"
+        }
+      ]
+    },
+    "JSON Beautify": {
+      "op": "json-beautify",
+      "args": [
+        {
+          "to": "indent",
+          "map": { "  ": "2", "    ": "4", "\t": "tab", "\\t": "tab" },
+          "default": "    "
+        },
+        { "to": "sort_keys" },
+        { "ignore": true }
+      ]
+    },
+    "JSON Minify": { "op": "json-minify", "args": [] },
+    "CSV to JSON": {
+      "op": "csv-to-json",
+      "args": [
+        { "to": "delimiter", "map": { ",": "comma", ";": "semicolon", "\t": "tab", "\\t": "tab" } },
+        { "map": { "\\r\\n": {}, "\r\n": {} } },
+        { "to": "header", "map": { "Array of dictionaries": true, "Array of arrays": false } }
+      ]
+    },
+    "JSON to CSV": {
+      "op": "json-to-csv",
+      "args": [
+        { "to": "delimiter", "map": { ",": "comma", ";": "semicolon", "\t": "tab", "\\t": "tab" } },
+        {
+          "to": "line_ending",
+          "map": { "\\r\\n": "crlf", "\r\n": "crlf", "\\n": "lf", "\n": "lf" }
+        }
+      ]
+    },
+    "MD5": { "op": "md5", "args": [] },
+    "SHA1": { "op": "sha1", "args": [{ "expect": 80 }] },
+    "SHA2": {
+      "op": "sha2",
+      "args": [
+        {
+          "to": "size",
+          "map": {
+            "224": "224",
+            "256": "256",
+            "384": "384",
+            "512": "512",
+            "512/224": "512-224",
+            "512/256": "512-256"
+          }
+        },
+        { "ignore": true }
+      ]
+    },
+    "SHA3": {
+      "op": "sha3",
+      "args": [{ "to": "size", "map": { "224": "224", "256": "256", "384": "384", "512": "512" } }]
+    },
+    "Shake": {
+      "op": "shake",
+      "args": [
+        { "to": "size", "map": { "128": "128", "256": "256" } },
+        { "to": "length", "integer": true, "divide": 8 }
+      ]
+    },
+    "BLAKE2b": {
+      "op": "blake2b",
+      "args": [
+        { "to": "size", "integer": true, "divide": 8 },
+        { "expect": "Hex" },
+        { "to": "key", "bytes": true }
+      ]
+    },
+    "BLAKE2s": {
+      "op": "blake2s",
+      "args": [
+        { "to": "size", "integer": true, "divide": 8 },
+        { "expect": "Hex" },
+        { "to": "key", "bytes": true }
+      ]
+    },
+    "HMAC": {
+      "op": "hmac",
+      "args": [
+        { "to": "key", "bytes": true },
+        {
+          "to": "hash",
+          "map": {
+            "MD5": "md5",
+            "SHA1": "sha1",
+            "SHA224": "sha224",
+            "SHA256": "sha256",
+            "SHA384": "sha384",
+            "SHA512": "sha512"
+          }
+        }
+      ]
+    },
+    "Adler-32 Checksum": { "op": "adler32", "args": [] },
+    "CRC-32 Checksum": { "op": "crc32", "args": [] },
+    "CRC Checksum": {
+      "op": "crc32",
+      "args": [
+        { "expect": "CRC-32" },
+        { "ignore": true },
+        { "ignore": true },
+        { "ignore": true },
+        { "ignore": true },
+        { "ignore": true },
+        { "ignore": true }
+      ]
+    },
+    "AES Encrypt": {
+      "op": "aes-encrypt",
+      "args": [
+        { "to": "key", "bytes": true },
+        { "to": "iv", "bytes": true },
+        {
+          "to": "mode",
+          "map": {
+            "CBC": "cbc",
+            "CTR": "ctr",
+            "GCM": "gcm",
+            "ECB": "ecb",
+            "CBC/NoPadding": { "value": "cbc", "set": { "padding": "none" } },
+            "ECB/NoPadding": { "value": "ecb", "set": { "padding": "none" } }
+          }
+        },
+        {
+          "map": {
+            "Raw": {},
+            "Hex": { "before": [{ "op": "from-hex", "args": { "delimiter": "auto" } }] }
+          }
+        },
+        {
+          "map": {
+            "Raw": {},
+            "Hex": { "after": [{ "op": "to-hex", "args": { "delimiter": "none" } }] }
+          }
+        },
+        { "to": "aad", "bytes": true }
+      ]
+    },
+    "AES Decrypt": {
+      "op": "aes-decrypt",
+      "args": [
+        { "to": "key", "bytes": true },
+        { "to": "iv", "bytes": true },
+        {
+          "to": "mode",
+          "map": {
+            "CBC": "cbc",
+            "CTR": "ctr",
+            "GCM": "gcm",
+            "ECB": "ecb",
+            "CBC/NoPadding": { "value": "cbc", "set": { "padding": "none" } },
+            "ECB/NoPadding": { "value": "ecb", "set": { "padding": "none" } }
+          }
+        },
+        {
+          "map": {
+            "Raw": {},
+            "Hex": { "before": [{ "op": "from-hex", "args": { "delimiter": "auto" } }] }
+          }
+        },
+        {
+          "map": {
+            "Raw": {},
+            "Hex": { "after": [{ "op": "to-hex", "args": { "delimiter": "none" } }] }
+          }
+        },
+        { "expect": { "option": "Hex", "string": "" } },
+        { "to": "aad", "bytes": true }
+      ]
+    },
+    "Encode text": {
+      "op": "encode-text",
+      "args": [
+        {
+          "to": "encoding",
+          "extract": "\\((\\d+)\\)\\s*$",
+          "map": {
+            "65001": "utf-8",
+            "1200": "utf-16le",
+            "1201": "utf-16be",
+            "12000": "utf-32le",
+            "12001": "utf-32be",
+            "28591": "iso-8859-1",
+            "1252": "windows-1252",
+            "20127": "ascii"
+          }
+        }
+      ]
+    },
+    "Decode text": {
+      "op": "decode-text",
+      "args": [
+        {
+          "to": "encoding",
+          "extract": "\\((\\d+)\\)\\s*$",
+          "map": {
+            "65001": "utf-8",
+            "1200": "utf-16le",
+            "1201": "utf-16be",
+            "12000": "utf-32le",
+            "12001": "utf-32be",
+            "28591": "iso-8859-1",
+            "1252": "windows-1252",
+            "20127": "ascii"
+          }
+        }
+      ]
+    },
+    "Normalise Unicode": {
+      "op": "normalize",
+      "args": [
+        { "to": "form", "map": { "NFC": "NFC", "NFD": "NFD", "NFKC": "NFKC", "NFKD": "NFKD" } }
+      ]
+    },
+    "Escape Unicode Characters": {
+      "op": "escape-unicode",
+      "args": [
+        { "to": "format", "map": { "\\u": "backslash-u", "%u": "percent-u", "U+": "u-plus" } },
+        { "to": "scope", "map": { "true": "all", "false": "non-ascii" } },
+        { "expect": 4 },
+        { "ignore": true }
+      ]
+    },
+    "Unescape Unicode Characters": {
+      "op": "unescape-unicode",
+      "args": [
+        { "to": "format", "map": { "\\u": "backslash-u", "%u": "percent-u", "U+": "u-plus" } }
+      ]
+    },
+    "To HTML Entity": {
+      "op": "html-entity-encode",
+      "args": [
+        { "to": "scope", "map": { "true": "all", "false": "special" } },
+        {
+          "to": "format",
+          "map": { "Named entities": "named", "Numeric entities": "decimal", "Hex entities": "hex" }
+        }
+      ]
+    },
+    "From HTML Entity": { "op": "html-entity-decode", "args": [] },
+    "To Upper case": {
+      "op": "unicode-case",
+      "set": { "mode": "upper" },
+      "args": [{ "expect": "All" }]
+    },
+    "To Lower case": { "op": "unicode-case", "set": { "mode": "lower" }, "args": [] },
+    "Remove Diacritics": { "op": "strip-diacritics", "args": [] },
+    "Reverse": {
+      "op": "reverse",
+      "args": [{ "to": "unit", "map": { "Character": "code-points", "Byte": "bytes" } }]
+    },
+    "Sort": {
+      "op": "sort-lines",
+      "args": [
+        { "expect": "Line feed" },
+        { "to": "order", "map": { "false": "ascending", "true": "descending" } },
+        {
+          "to": "key",
+          "map": {
+            "Alphabetical (case sensitive)": "code-point",
+            "Alphabetical (case insensitive)": "case-insensitive",
+            "Numeric": "numeric",
+            "Length": "length"
+          }
+        }
+      ]
+    },
+    "Unique": {
+      "op": "unique-lines",
+      "args": [{ "expect": "Line feed" }, { "to": "count" }]
+    },
+    "Split": {
+      "op": "split",
+      "args": [
+        { "to": "delimiter", "unescape": true },
+        { "to": "join", "unescape": true }
+      ]
+    },
+    "Head": {
+      "op": "head",
+      "args": [{ "expect": "Line feed" }, { "to": "count", "integer": true }]
+    },
+    "Tail": {
+      "op": "tail",
+      "args": [{ "expect": "Line feed" }, { "to": "count", "integer": true }]
+    },
+    "Find / Replace": {
+      "op": "find-replace",
+      "args": [
+        { "to": "pattern", "find": true },
+        { "to": "replacement" },
+        { "to": "global" },
+        { "flag": "i" },
+        { "flag": "m" },
+        { "flag": "s" }
+      ]
+    },
+    "Regular expression": {
+      "op": "regex-extract",
+      "args": [
+        { "expect": "User defined" },
+        { "to": "pattern" },
+        { "flag": "i" },
+        { "flag": "m" },
+        { "flag": "s" },
+        { "ignore": true },
+        { "ignore": true },
+        { "expect": false },
+        { "expect": "List matches" }
+      ]
+    },
+    "Label": { "op": "label", "args": [{ "to": "name" }] },
+    "Jump": {
+      "op": "jump",
+      "args": [{ "to": "to" }, { "to": "max", "integer": true }]
+    },
+    "Conditional Jump": {
+      "op": "conditional-jump",
+      "args": [
+        { "to": "pattern" },
+        { "to": "invert" },
+        { "to": "to" },
+        { "to": "max", "integer": true }
+      ]
+    },
+    "Comment": { "op": "comment", "args": [{ "to": "text" }] },
+    "Fork": {
+      "op": "fork",
+      "scope": true,
+      "args": [
+        { "to": "split", "unescape": true },
+        { "to": "merge", "unescape": true },
+        { "ignore": true }
+      ]
+    },
+    "Subsection": {
+      "op": "subsection",
+      "scope": true,
+      "args": [
+        { "to": "pattern" },
+        { "flag": "i", "when": false },
+        { "to": "global" },
+        { "ignore": true }
+      ]
+    },
+    "Merge": { "merge": true, "args": [] },
+    "JWT Decode": { "op": "jwt-decode", "args": [] },
+    "JWT Sign": {
+      "op": "jwt-sign",
+      "args": [
+        { "to": "key", "bytes": "utf8" },
+        { "to": "algorithm" },
+        { "to": "header", "map": { "{}": "", "*": "$" } }
+      ]
+    },
+    "Raw Deflate": {
+      "op": "raw-deflate",
+      "args": [{ "to": "level", "map": { "Dynamic Huffman Coding": 6, "None (Store)": 0 } }]
+    },
+    "Raw Inflate": {
+      "op": "raw-inflate",
+      "args": [
+        { "expect": 0 },
+        { "ignore": true },
+        { "ignore": true },
+        { "ignore": true },
+        { "ignore": true }
+      ]
+    },
+    "Zlib Deflate": {
+      "op": "zlib-deflate",
+      "args": [{ "to": "level", "map": { "Dynamic Huffman Coding": 6, "None (Store)": 0 } }]
+    },
+    "Zlib Inflate": {
+      "op": "zlib-inflate",
+      "args": [
+        { "expect": 0 },
+        { "ignore": true },
+        { "ignore": true },
+        { "ignore": true },
+        { "ignore": true }
+      ]
+    },
+    "Gzip": {
+      "op": "gzip",
+      "args": [
+        { "to": "level", "map": { "Dynamic Huffman Coding": 6, "None (Store)": 0 } },
+        { "expect": "" },
+        { "expect": "" },
+        { "expect": false }
+      ]
+    },
+    "Gunzip": { "op": "gunzip", "args": [] },
+    "To Punycode": { "op": "to-punycode", "args": [{ "to": "domain" }] },
+    "From Punycode": { "op": "from-punycode", "args": [{ "to": "domain" }] }
+  }
+}

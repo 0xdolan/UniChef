@@ -1,0 +1,23 @@
+{
+  "$comment": "Mirrors UniChef-PRD §0.1. Change a value here, then run scripts/version/sync.py. Never edit a constant inline elsewhere.",
+  "PROJECT_NAME": "UniChef",
+  "PROJECT_SLUG": "unichef",
+  "REPO_URL": "https://github.com/0xdolan/unichef",
+  "PAGES_URL": "https://0xdolan.github.io/unichef/",
+  "PYPI_NAME": "unichef",
+  "NPM_NAME": "@unichef/core",
+  "DEB_SOURCE": "unichef",
+  "DEB_BINARY": "unichef",
+  "PPA": "ppa:0xdolan/unichef",
+  "UCD_VERSION": "18.0.0",
+  "PYTHON_MIN": "3.12",
+  "NODE_LTS": "24",
+  "NODE_ENGINES": ">=22",
+  "GECKO_ID": "unichef@0xdolan.github.io",
+  "SAFARI_BUNDLE_ID": "io.github.0xdolan.unichef",
+  "CHROME_MIN": "116",
+  "FIREFOX_MIN": "128.0",
+  "SAFARI_MIN": "17.0",
+  "UBUNTU_SERIES": ["noble", "resolute"],
+  "LICENSE_SPDX": "GPL-3.0-or-later"
+}

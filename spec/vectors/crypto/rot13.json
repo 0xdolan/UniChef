@@ -1,0 +1,135 @@
+{
+  "op": "rot13",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "classic",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Hello, World!"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Uryyb, Jbeyq!"
+      }
+    },
+    {
+      "name": "self-inverse",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Uryyb, Jbeyq!"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Hello, World!"
+      }
+    },
+    {
+      "name": "digits off by default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "abc 123"
+      },
+      "expected": {
+        "type": "string",
+        "text": "nop 123"
+      }
+    },
+    {
+      "name": "digits on",
+      "args": {
+        "digits": true
+      },
+      "input": {
+        "type": "string",
+        "text": "abc 123"
+      },
+      "expected": {
+        "type": "string",
+        "text": "nop 456"
+      }
+    },
+    {
+      "name": "amount 1",
+      "args": {
+        "amount": 1
+      },
+      "input": {
+        "type": "string",
+        "text": "Zz9"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Aa9"
+      }
+    },
+    {
+      "name": "negative amount",
+      "args": {
+        "amount": -1
+      },
+      "input": {
+        "type": "string",
+        "text": "Aa"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Zz"
+      }
+    },
+    {
+      "name": "large amount",
+      "args": {
+        "amount": 27,
+        "digits": true
+      },
+      "input": {
+        "type": "string",
+        "text": "a0"
+      },
+      "expected": {
+        "type": "string",
+        "text": "b7"
+      }
+    },
+    {
+      "name": "non-ASCII unchanged",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "é ä ß"
+      },
+      "expected": {
+        "type": "string",
+        "text": "é ä ß"
+      }
+    },
+    {
+      "name": "amount must be an integer",
+      "args": {
+        "amount": "x"
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

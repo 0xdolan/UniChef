@@ -1,0 +1,22 @@
+{
+  "recipe": {
+    "version": 1,
+    "name": "Encoding round trip",
+    "description": "Text to UTF-16LE, base64 and hex, then back. The disabled step must be skipped.",
+    "steps": [
+      { "op": "encode-text", "args": { "encoding": "utf-16le" } },
+      { "op": "to-base64", "args": {} },
+      { "op": "url-encode", "args": { "mode": "all" }, "disabled": true },
+      { "op": "from-base64", "args": { "strict": true } },
+      { "op": "to-hex", "args": { "delimiter": "colon", "case": "upper" }, "label": "hex" },
+      { "op": "from-hex", "args": {} },
+      { "op": "decode-text", "args": { "encoding": "utf-16le" }, "comment": "Back to the original string." }
+    ]
+  },
+  "cases": [
+    { "name": "empty", "input": { "type": "string", "text": "" }, "expected": { "type": "string", "text": "" } },
+    { "name": "ascii", "input": { "type": "string", "text": "UniChef" }, "expected": { "type": "string", "text": "UniChef" } },
+    { "name": "non-BMP and combining mark", "input": { "type": "string", "text": "Ü 😀" }, "expected": { "type": "string", "text": "Ü 😀" } },
+    { "name": "lone surrogate becomes U+FFFD", "input": { "type": "string", "text": "a\ud800" }, "expected": { "type": "string", "text": "a�" } }
+  ]
+}

@@ -1,0 +1,138 @@
+{
+  "op": "split",
+  "cases": [
+    {
+      "name": "empty input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "default comma to LF",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a,b,c"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a\nb\nc"
+      }
+    },
+    {
+      "name": "multi-character delimiter",
+      "args": {
+        "delimiter": "::",
+        "join": "|"
+      },
+      "input": {
+        "type": "string",
+        "text": "a::b::c"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a|b|c"
+      }
+    },
+    {
+      "name": "adjacent delimiters keep empty parts",
+      "args": {
+        "delimiter": ";"
+      },
+      "input": {
+        "type": "string",
+        "text": "a;;b"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a\n\nb"
+      }
+    },
+    {
+      "name": "delimiter absent",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "abc"
+      },
+      "expected": {
+        "type": "string",
+        "text": "abc"
+      }
+    },
+    {
+      "name": "trailing delimiter",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a,"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a\n"
+      }
+    },
+    {
+      "name": "astral delimiter",
+      "args": {
+        "delimiter": "😀",
+        "join": "-"
+      },
+      "input": {
+        "type": "string",
+        "text": "x😀y"
+      },
+      "expected": {
+        "type": "string",
+        "text": "x-y"
+      }
+    },
+    {
+      "name": "empty join",
+      "args": {
+        "join": ""
+      },
+      "input": {
+        "type": "string",
+        "text": "a,b"
+      },
+      "expected": {
+        "type": "string",
+        "text": "ab"
+      }
+    },
+    {
+      "name": "delimiter is literal, not a regex",
+      "args": {
+        "delimiter": "."
+      },
+      "input": {
+        "type": "string",
+        "text": "a.b"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a\nb"
+      }
+    },
+    {
+      "name": "empty delimiter",
+      "args": {
+        "delimiter": ""
+      },
+      "input": {
+        "type": "string",
+        "text": "abc"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

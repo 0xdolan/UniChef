@@ -1,0 +1,20 @@
+#!/usr/bin/make -f
+# The Debian package is the Python CLI only (PRD §8.1).
+
+export PYBUILD_NAME = unichef
+export PYBUILD_TEST_PYTEST = 1
+# pytest-cov is not packaged for the build, so drop the coverage options from addopts.
+export PYBUILD_TEST_ARGS = -o addopts="-ra --strict-markers" -m "not slow and not perf" -p no:cacheprovider {dir}/tests
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+%:
+	dh $@ --buildsystem=pybuild --sourcedirectory=packages/python-cli
+
+override_dh_auto_build:
+	dh_auto_build
+	PYTHONPATH=packages/python-cli/src python3 -m unichef.cli.manpage > debian/unichef.1
+	PYTHONPATH=packages/python-cli/src python3 -m unichef completion bash > debian/unichef.bash-completion
+
+override_dh_auto_clean:
+	dh_auto_clean
+	rm -f debian/unichef.1 debian/unichef.bash-completion

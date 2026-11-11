@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "name": "List code points",
+  "description": "Write each code point of the input in U+ notation.",
+  "steps": [
+    {
+      "op": "to-code-points",
+      "args": {
+        "format": "u-plus",
+        "delimiter": "space"
+      }
+    }
+  ]
+}

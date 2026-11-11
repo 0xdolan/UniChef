@@ -1,0 +1,160 @@
+# Changelog
+
+All notable changes to UniChef are recorded here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versions follow [Semantic Versioning](https://semver.org/). Release entries are generated from Conventional Commits by `make version`.
+
+## [Unreleased]
+
+## [1.0.0-rc.2] - 2026-11-11
+
+### Fixed
+
+- **Release workflow:** the Debian package jobs run their steps in bash. The container's default `sh` rejected the artefact-name step, which stopped the 1.0.0-rc.1 release before anything was published.
+
+## [1.0.0-rc.1] - 2026-11-11
+
+### Added
+
+- **Python core** (`packages/python-cli`):
+  - Dish types and coercions, an in-house UTF-8 codec, the op registry, recipe loading and the runner.
+  - The Unicode engine, built on the pinned UCD:
+    - properties and names;
+    - NFC/NFD/NFKC/NFKD normalization;
+    - grapheme segmentation;
+    - full and tailored case mapping;
+    - UTS #39 skeletons and restriction levels.
+  - The portable regex profile, with a translator and a runner that has timeouts.
+  - The character query language.
+- **Operations:**
+  - Encoding: base64, base32, hex, URL, text encodings, binary, octal, decimal and HTML entities.
+  - Beta encoding (#7): `to-base58`/`from-base58` (Bitcoin and Flickr alphabets), `to-base85`/`from-base85` (Ascii85 with `z` and optional `<~ ~>`, and Z85) and `quoted-printable-encode`/`decode` (RFC 2045, with `text` and `binary` modes), with shared vectors and CyberChef import.
+  - Text: the text operations.
+  - Flow: the flow operations, including `subsection` and `conditional-jump`.
+  - Unicode: escapes, normalize, case, diacritics, graphemes, code points, `count` and `analyse-characters`.
+  - Security: `detect-invisible`, `remove-bidi-controls`, `detect-confusables` and `script-mix-check`.
+  - Hashing: MD5, SHA-1, SHA-2, SHA-3, SHAKE, BLAKE2b, BLAKE2s, CRC-32, Adler-32 and HMAC.
+  - Crypto: XOR, ROT13, ROT47, Atbash and AES (CBC, CTR, GCM, ECB).
+  - Beta crypto (#7): `vigenere-encode`/`decode`, `pbkdf2` (PBKDF2-HMAC with the HMAC hash list, up to 10 000 000 iterations, `W_INSECURE` below 100 000) and `generate-random-bytes` (seeded by the recipe `seed`, so recipe vectors can check it), with shared vectors and CyberChef import of Vigenère and Pseudo-Random Number Generator.
+  - Beta data (#7): `json-beautify`, `json-minify`, `json-to-csv` and `csv-to-json` (RFC 4180), `parse-url` (RFC 3986 parts, not decoded) and `parse-query-string` (form encoding, UTF-8), with shared vectors and CyberChef import of JSON Beautify, JSON Minify, CSV to JSON and JSON to CSV.
+  - Beta Unicode (#7): `filter-by-property` (keep or remove by General_Category, Script, Script_Extensions or Block), `show-bidi-classes` (Bidi_Class and Bidi_Mirrored per code point) and `utf8-explain` (each byte's role, with the reason for every ill-formed subpart), with shared vectors. The core UCD artefact now carries Bidi_Mirrored, which `\p{Bidi_Mirrored}` can also match.
+  - Beta compression (#7): `raw-deflate`/`raw-inflate`, `zlib-deflate`/`zlib-inflate` and `gzip`/`gunzip` (RFC 1951, 1950 and 1952), with levels 0-9. Level 0 and every decoder decision match across cores, and higher levels round-trip. The decoders follow zlib's rules, stop at the output limit, reject trailing data, and read multi-member gzip with FHCRC checks. Shared vectors and CyberChef import are included, and the TypeScript core now depends on fflate (MIT).
+  - Beta Punycode/IDNA (#7): `to-punycode`/`from-punycode` (RFC 3492, with a `domain` mode that works label by label) and `idna-to-ascii`/`idna-to-unicode` (UTS #46, nontransitional, with all five flags). The security artefact gains the IDNA mapping table and joining types, and both cores pass every line of `IdnaTestV2.txt`. Shared vectors and CyberChef import for To/From Punycode are included.
+  - JWT: `jwt-decode`, `jwt-sign` and `jwt-verify` with the HS, RS, PS, ES and EdDSA algorithms.
+  - Every operation except `jump`, `conditional-jump`, `generate-random-bytes` and `gunzip` has examples (107 in all) in both cores and in `spec/ops.json`. Tests in each core run them and check the stated output.
+- **Python CLI** (`unichef`, `python -m unichef`):
+  - The full command tree, help tree and themed output with the exact palette.
+  - JSON output that follows the output envelope schema.
+  - The documented exit codes.
+  - CyberChef recipe import for about 60 operations (`spec/cyberchef-map.json`).
+  - Shell completion and a man page.
+- **TypeScript core** (`packages/npm-core`, `@unichef/core`):
+  - A port of the Python core with the same dish types, Unicode engine, regex profile and every operation.
+  - It passes every shared vector.
+  - The gzipped data files load lazily in Node and browsers, and hosts can supply their own source with `setDataSource()`. A source may return the files already decompressed, as browsers do when a server sends `Content-Encoding: gzip`.
+  - `bake()` takes an `onStep` hook that reports each executed step's path, dish and time.
+  - Queries run `name~/…/` terms after the rest of their `&` chain, so `name~/ARROW$/ & gc=Sm & age<=6.0` scans the math symbols' names only (about 400 ms to 6 ms in a browser). Results are unchanged.
+- **Web app** (`clients/web`), first slice:
+  - The Workbench (`#/`): a searchable operation list, a recipe with schema-driven argument forms for every argument kind (nested steps included), and input and output panes.
+  - Input as text, hex or Base64.
+  - Every bake runs in a Web Worker. Auto-bake is debounced by 300 ms, and a new bake cancels the previous one. A watchdog restarts a worker that overruns its budget or ignores a cancel.
+  - Offline: the UCD and entity data ship as hashed build assets. A strict CSP is set on the production build.
+  - Dark and light themes from the PRD palette, an ARIA live bake status, and reduced motion support.
+- **Web app**, second slice:
+  - The step inspector: each step shows a live badge with its output type, size and time. Selecting a step shows the first 4 KiB of its output as text, a hex dump or a table, with an option to compare it with the step's input. The failing step is outlined with its error, and the steps after it are marked as not run.
+  - Steps reorder by drag and drop with a mouse, touch or the keyboard, with screen reader announcements.
+  - The recipe, input and input format live in the URL fragment (`#/?r=…&i=…&f=…`, deflate-raw and Base64url), so a link restores the workbench. Inputs that would make the link longer than 32 KiB are left out, with a notice. A "Copy link" button copies the link.
+  - Links with more than 20 steps open with auto-bake off and a prompt to review the recipe first. Damaged links show a notice and leave the workbench unchanged.
+  - Keys and IVs are left out of the URL and copied links as `"<redacted>"`, unless "Include keys and IVs in the link" is ticked (SEC-007). The playground's "Open in the workbench" link leaves them out too. A redacted link opens with those fields empty, auto-bake off and a warning. Operations mark these arguments with `secret`, which `spec/ops.json` records.
+- **Web app**, third slice:
+  - Character search (`#/chars?q=…`) with the query language. Plain words search names, and a loose exact name match (UAX44-LM2) links straight to its character. Results show in a virtualised grid.
+  - Character detail (`#/char/U+0645`): every property, aliases, and each escape format with a copy button.
+  - Blocks (`#/blocks`, `#/blocks/Basic_Latin`) with assigned counts, and scripts (`#/scripts`, `#/scripts/Arab`) by Script or Script_Extensions.
+  - Lookups run in their own worker, so they never wait behind a bake. The pages load on first visit.
+- **Web app**, fourth slice:
+  - The regex lab (`#/regex?p=…&f=…`) runs the portable profile in a dedicated worker. It highlights matches, lists groups with UTF-16 and code-point offsets, and shows the translated pattern. A worker that overruns the timeout is terminated (`E_REGEX_TIMEOUT`).
+  - The playground (`#/playground/<op-id>`) builds a live demo for every operation from its metadata (FR-030), with a link that opens the step in the workbench.
+  - A recipe gallery (`#/recipes`) of 12 recipes with sample inputs, each opening in the workbench.
+  - The About page (`#/about`) shows the versions, the licence, data notices and every shipped npm package with its licence text, collected at build time.
+- **Web app**, fifth slice:
+  - It installs as a PWA and works offline after the first visit. A Workbox service worker precaches the app shell, the UCD and the entity data, and updates itself on the next visit.
+  - Playwright end-to-end tests in Chromium, Firefox and WebKit cover the workbench, sharing, character lookup and the query language. They also run axe WCAG 2.2 AA checks on every page in both themes, plus an offline run (`make e2e`, the `e2e` CI job in the Playwright image).
+  - Bundle budgets (`scripts/check-bundle.mjs`) run after every web build: initial JS 250 KiB, and the UCD files at 400, 900 and 150 KiB, all gzipped.
+  - Character grid cells name their character with hidden text that starts with the visible code point, so voice control users can say what they see.
+  - `scripts/version/check.py` also checks that the Playwright image in `docker/docker-compose.yml` matches the locked `@playwright/test` version.
+- **Web app**, sixth slice:
+  - An "Import" dialog in the recipe pane takes a CyberChef recipe as JSON or in chef format and replaces the recipe. It names every operation it cannot map.
+  - The TypeScript core exports the importer (`importCyberChef`, `parseCyberChef`, `cyberChefOperations`), a port of the Python one with the same map.
+  - `spec/cyberchef-vectors.json` holds 98 shared import cases, 23 of them errors, which both cores run.
+  - The Python importer now accepts only plain decimal numbers in chef format, so `inf` and `1_0` are rejected as they are in TypeScript.
+- **Web app, phones and brand** (NFR-043):
+  - The header shows the UniChef lockup from the branding masters, in the dark or light colour set to match the theme, and links to the workbench.
+  - Below 900 px the navigation folds behind a **Menu** button with 44 px rows, the page scrolls as a whole, and the Workbench stacks Input and Output in one column. The header respects the notch and home-indicator safe areas.
+  - On touch screens, links, summaries, checkboxes and radios are at least 24 × 24 px (WCAG 2.5.8), and form fields are at least 16 px so iOS does not zoom on focus.
+  - The PWA manifest adds 192 and 512 px PNG icons, a maskable PNG, `id`, `lang`, `dir` and categories. The page adds a `favicon.ico`, an Apple touch icon, a `theme-color` for each scheme, and Open Graph and Twitter card tags with a 1200 × 630 preview image.
+  - `mobile-chrome` (Pixel 7) and `mobile-safari` (iPhone 15) Playwright projects check every route for sideways scrolling and small targets, plus the menu, the stacked Workbench and the manifest icons.
+  - The Pages workflow and the `e2e` CI job build the PNG icons from the masters, and the build fails if they are missing (`UNICHEF_REQUIRE_ICONS=1`).
+  - `assets/branding/manifest.json` adds `github/social-preview.png` (1280 × 640) for the repository's social preview.
+- **Release completeness** (`docs/release/process.md`):
+  - Every release attaches `.deb` packages for noble, resolute and trixie (`unichef_<v>-1~<series>1_all.deb`, built after lintian and autopkgtest pass with `scripts/deb/check.sh --out`) and the web app as `unichef-web-<v>.zip`. Both are attested and listed in `SHA256SUMS`.
+  - The container image gets BuildKit SBOM and provenance, plus a GitHub build provenance attestation pushed to GHCR.
+  - `scripts/release/verify.sh` (`make release-verify V=…`, and the `verify-release` job after each release) checks that every asset is attached, the checksums match, every artefact and the image are attested, and PyPI, npm and GHCR serve the version.
+  - `docs/release/process.md` lists the gates, every artefact and the release steps. CONTRIBUTING.md gains test and release rules, and the `release-qa` skill and `CLAUDE.md` give coding agents the same rules.
+- **Extension e2e** (FR-007, SEC-001): an `extension` Playwright project loads the built Chrome extension into Chromium and checks the manifest permissions, the context-menu item, a selection reaching the open panel and updating it live, the cut notice for an over-long selection, Recipe, Characters and the popup working offline with no outside requests or console errors, and settings applying, persisting and refusing an out-of-range limit. The `e2e` CI job runs it on the extension built by the `extensions` job.
+- **Safari** (PRD §7.7): CI generates the Xcode project from each extension build with `generate-xcode.sh --no-build --out DIR` and builds it for macOS, unsigned, on `macos-latest`. Each release attaches the project as `unichef-safari-xcode-<v>.zip`, and it is attested and checked by `verify-release`. `docs/extensions/publishing.md` explains how to build and enable it. The generated project is not committed, because its copied resources would go stale with every extension change.
+- **Edge Add-ons publishing** (PRD §7.6): `extensions.yml` gains an `edge` job that uploads `unichef-edge-<v>.zip` with the Edge Add-ons API v1.1 (`build/edge.ts`: upload, poll, submit, poll) after approval in `store-publish`. It is skipped until the `EDGE_PRODUCT_ID` variable is set. The `store` input is now `all`, `chrome`, `edge` or `firefox`. Every release attaches the Edge zip, and `verify-release` checks it. `clients/extensions/edge/store/listing.md` has the Partner Center text and `clients/extensions/chrome/store/screenshots.json` the screenshot order and captions.
+- **Extension tour** (PRD §9.3, §9.5): `make screenshots` also captures the extension's Inspect and Recipe tabs at 400 × 720 (`clients/web/screenshots/extension.spec.ts`), and INTRODUCTION.md walks through the extension with them. Its install table now shows PyPI, the PPA, npm and GHCR as available, the release `.deb` files, and how to get each extension.
+- **GitHub Pages** (`.github/workflows/pages.yml`): on a push to `main` or a manual run, builds the web app and the `@unichef/core` API reference (TypeDoc, at `api/`) and deploys them to https://0xdolan.github.io/unichef/. `make pages` builds the same site locally. The service worker leaves `api/` alone.
+- **Performance budgets** (PRD §13.1), checked in CI:
+  - NFR-001 and NFR-003 run in Playwright (Chromium) against the production build: first paint and interactivity on throttled "Fast 4G", and `analyse-characters` on 100 000 code points.
+  - NFR-002 and NFR-004 run in both cores with `make perf`, without coverage: a Base64 round trip plus SHA-256 on 10 MiB, and name queries over every named code point.
+  - Base64 is about 4 times faster in TypeScript and about 17 times faster in Python. The 10 MiB chain takes about 0.5 s and 0.3 s, down from 1.7 s and 5.2 s.
+  - Name queries (`name~/…/`) over every named code point take about 15–35 ms instead of 440 ms in TypeScript. The regex predicate now reads the clock once per 64 names, since each clock read cost as much as testing a name.
+  - In Python they take about 140 ms instead of 215 ms. The predicate passes the regex timeout positionally and keeps the GIL, since the keyword form and the GIL release cost more than searching a short name. The timeout still stops a runaway pattern.
+  - NFR-005: `unichef version` starts in about 20 ms (budget 150 ms). A test checks that `version`, `--help` and the non-Unicode operations never load the UCD, and that a bare `version` skips Rich.
+  - The output pane shows a table as virtualised rows instead of tab-separated text, and "Copy output" still copies it as TSV. With 100 000 rows, the output appears in under 1 s (down from 8 s), and the first rows in about 100 ms.
+- The core exports the types its public signatures use (`DishValues`, `BytesEncoding`, `Example`, `NestedRunner`, `PlainJson`, `WarnFn`), so they show in the API reference.
+- **CI** (`.github/`):
+  - Lint, typecheck, Python and TypeScript test matrices.
+  - A parity job that checks both cores ran every vector case (`scripts/parity-report.py`).
+  - UCD and HTML data drift checks, package builds, CodeQL, Dependabot and CODEOWNERS.
+- **Release tooling:**
+  - `make version V=…` (`scripts/version/sync.py`) sets the version in every file that carries it, mapping SemVer to the PEP 440, npm, Debian and extension forms, and moves the [Unreleased] changelog entries under the new version.
+  - `scripts/version/check.py` and the `version-consistency` CI job fail on any mismatch.
+  - `spec/ops.json`, the operation metadata index, generated from the Python registry (`make ops`). A drift check runs in CI and the npm-core tests compare their registry with it.
+  - `scripts/check-traceability.py` fails when a PRD requirement ID has no test or CI step. IDs for work not built yet are listed in `scripts/traceability-pending.txt`.
+- **Local CI** (`docker/`): `make docker-ci` runs `make ci` in an Ubuntu 24.04 dev container (`Dev.Dockerfile`, `docker-compose.yml`) with the container's own uv and pnpm environments. `make ci` skips stages that are not built yet. A `docker` CI job builds the image on amd64 and arm64.
+- **Release workflow** (`.github/workflows/release.yml`): on a signed `v*` tag matching `VERSION`, builds the Python sdist and wheel, the npm tarball and CycloneDX SBOMs, attests them, publishes to PyPI, npm (dist-tag `next` for pre-releases) and GHCR, and creates the GitHub Release from the changelog section.
+- **Documentation (#9):** `INTRODUCTION.md`, a guided tour of install, the CLI, the web app, recipes, security recipes, output formats and troubleshooting, with light and dark screenshots at 1x and 2x. `make screenshots` regenerates them: `scripts/screenshots/cli.py` records the CLI as SVG with Rich, and `clients/web/screenshots/` (Playwright, Chromium) renders those frames and captures the web app at 1280×800 into `assets/docs/screenshots/` (Git LFS). A `docs-links` CI job checks the local links and images in `README.md` and `INTRODUCTION.md` with lychee `--offline`.
+- **Branding derivation (#13):** `make assets` runs `scripts/assets/build.py`, which reads `assets/branding/manifest.json` and writes the favicons, web app icons, Open Graph image, extension icons (16 to 128 px), Chrome and Edge store images and an RGB PDF of the logo to `assets/branding/dist/`. SVGs are rasterised with rsvg-convert, padded and packed with ImageMagick, and every PNG goes through oxipng, so repeated builds are byte-identical. `build.py --lint` checks the SVG masters for scripts, external references, embedded fonts and rasters, and runs svgo on them; it is part of `make lint` and the CI `lint` job. The dev container installs the pinned oxipng 10.2.1 release after checking its SHA-256.
+- **Browser extensions (#10)** (`clients/extensions/`): one Manifest V3 extension for Chrome, Edge, Firefox and Safari. "Inspect with UniChef" on a text selection opens the side panel (Chrome, Edge), the sidebar (Firefox) or the popup (Safari), with no host permissions or content scripts. The panel is the web app's `extension.html` entry, with Inspect (invisible characters and one row per code point), Quick Recipe, Characters and Settings (theme, default tab, longest selection, in `storage.sync`). `pnpm --filter extensions build --target chrome|edge|firefox|safari` merges `manifest.base.json` with a per-browser overlay, validates Chrome and Edge against the pinned SchemaStore schema and Firefox with `web-ext lint`, and writes reproducible zips. `make build-ext` and a CI `extensions` job run it. `scripts/assets/build.py --only ext/` builds just the icons, and `clients/extensions/safari/generate-xcode.sh` makes the Safari Xcode project on macOS.
+- **Extension store publishing (#12):** `.github/workflows/extensions.yml` submits the Chrome zip to the Chrome Web Store (API v2, service account, `build/cws.ts`) and the Firefox package with its source archive to addons.mozilla.org (`web-ext sign`, listed channel). It runs on stable tags or by hand, and every run needs approval in the `store-publish` environment. Brave and Edge install from the Chrome Web Store. The release workflow attaches the Chrome and Firefox zips to the GitHub Release. Listing text, AMO metadata, the AMO build notes and `PRIVACY.md` are in the repository, and `docs/extensions/publishing.md` gives the one-time setup.
+- **Community files and asset guard (#14):** `SECURITY.md` covers private reporting through GitHub Security Advisories (now turned on), the 90-day disclosure policy, supported versions and the threat model. Also added: `CODE_OF_CONDUCT.md` (Contributor Covenant 2.1), bug and feature issue forms, and a pull request template. The `assets-guard` workflow fails a pull request that changes or deletes an existing file under `assets/branding/source/` or `assets/docs/`, unless an owner of `/assets/` in the base branch's CODEOWNERS added the `assets-change-approved` label.
+- **Debian package and PPA (#11):** `debian/` builds the `unichef` package with pybuild from `packages/python-cli`, with a man page and bash completion generated at build time and an autopkgtest smoke test. `debian/copyright` (DEP-5) carries the Unicode-3.0 and CC-BY-4.0 texts. `scripts/deb/make-orig.sh` makes a reproducible orig tarball from `git archive`. That tarball is also attached to GitHub Releases as `unichef-<version>.tar.gz`, which `debian/watch` tracks. `make deb-check` builds the package in a clean Ubuntu container and runs lintian and autopkgtest. The CI `deb` job does the same for noble and resolute. On every release tag, `.github/workflows/ppa.yml` uploads signed source packages for each series in `debian/ppa-series.txt` to `ppa:0xdolan/unichef`, after approval in the `ppa-publish` environment. Noble gets a patch for its older trove classifiers (`debian/patches/series-noble`). `make version` now updates `debian/changelog`, and `make version-check` checks `debian/ppa-series.txt` against `UBUNTU_SERIES`. The man page date honours `SOURCE_DATE_EPOCH`. The `regex` floor is now 2022.10.31, the version in noble, which passes the whole test suite. Setup: `docs/debian/ppa.md`.
+- **Spec:** shared vectors for every operation, with published known answers for hashing and AES.
+- **Build:** the WHATWG HTML entity table pipeline (`scripts/html/build.py`), with SHA-256 lock verification.
+- **Developer tooling:** the `ui-ux-pro-max` and `shadcn` agent skills, vendored for the responsive web UI work. They are not shipped.
+- Logo masters, brand guide and the master generator script.
+- UCD pipeline: `scripts/ucd/fetch.py` and `build.py`, the Unicode 18.0.0 source files and the three compiled data files.
+- Shared spec: recipe, output and vector schemas, the error catalogue, and vectors for ten encoding ops.
+- Repository scaffold: project constants, `VERSION`, licence and notices, and the Makefile skeleton.
+- **Release QA checklist:** `docs/release/qa-checklist.md` lists the manual checks for each release candidate: the extensions in Chrome, Brave, Edge and Firefox, the web app, and every CLI install channel.
+- **Credit footer (FR-011):** every web app page, including GitHub Pages, ends with "Made with ♥ by 0xdolan · Source · Docs · Site · vX.Y.Z". The links come from `project.constants.json`, and the version is the one the app was built from.
+- **Always current (FR-012):** the web app reloads into a new release on the first visit after a deploy, instead of serving the copy the service worker cached, and a status line names the version it updated to.
+- **Roadmap:** `docs/roadmap.md` restates the project scope (a cybersecurity and Unicode workbench) and plans the docs system, the marketing kit and milestones 1.1 to 2.0 for the CyberChef operations that 1.0 does not cover.
+- **Documentation (FR-013):** `docs/` has twelve concept guides in `docs/learn/` and a reference page for every operation in `docs/reference/ops/`. Each page explains how the operation works with a worked example, has security notes where they matter, links to the standards, and gives tested examples, a link that opens the example in the web app, and CLI, Python and TypeScript usage. `docs/README.md` is the full table of contents, and every page has previous and next links. `make docs` (`scripts/docs/build.py`) updates the generated parts, and `pytest scripts` fails when they drift or a link breaks.
+- **Docs in the web app (FR-014):** `#/docs` shows the same documentation inside the app, offline too, with links between pages kept in the app and example links opening the workbench. Each recipe step has a `?` button that opens its operation's page, and the footer's Docs link goes there. Pages are converted at build time, so the app renders no raw HTML.
+- **Marketing kit:** the social card, the repository social preview and the Chrome Web Store tiles show a new banner master, the lockup over the tagline "The cybersecurity and Unicode workbench", outlined in the brand font by `scripts/assets/make_masters.py` (new `--only` flag, so existing masters are never rewritten). `make screenshots` adds docs and tour shots and a 390 × 844 phone set. `docs/marketing/launch.md` has launch copy for X, Bluesky, Mastodon, LinkedIn, Hacker News and Reddit, with hashtags.
+- **First-run tour (FR-015):** the first visit to the web app opens a five-step introduction: what UniChef is, building a recipe, inspecting steps, seeing every character, and sharing and working offline. It can be skipped, works by keyboard, never opens on a shared link, and About has a button that opens it again.
+
+### Changed
+
+- **Positioning:** UniChef is described as a cybersecurity and Unicode workbench everywhere: the README (rewritten with a feature table and install channels), the introduction, the About page, the web app's meta and manifest description, the CLI help tagline, PyPI and npm descriptions and keywords, the Debian description, the extension description and the Chrome, Edge and Firefox store listings.
+- **Requirement traceability closed:** every functional, non-functional, security and governance requirement now has a test or CI step that names it, and `scripts/traceability-pending.txt` is empty. New checks: a CLI `bake` run over the shared recipe vectors (FR-003); `scan --fail-on` in CI (FR-004); no network or dynamic-code use in either core (SEC-001, SEC-003); regex timeouts and rejected constructs (SEC-004); `W_INSECURE` for ECB, MD5, SHA-1 and weak PBKDF2 (SEC-006); same-origin requests and `connect-src 'self'` in the web app (SEC-001, SEC-002); SHA-pinned actions, frozen installs, Dependabot, CodeQL and attested trusted publishing (SEC-008); and the `SECURITY.md` policy (SEC-009).
+- **Bidi-safe tables (NFR-041):** web table cells use `dir="auto"` and `unicode-bidi: isolate`, and regex matches show control and invisible characters as `⟨NAME⟩` labels.
+- **Platforms:** Python tests also run on macOS x86-64 and Windows arm64 (NFR-021). Both build cryptography from source, which no longer ships wheels for them; CI installs Rust and a vcpkg OpenSSL on Windows arm64. The `deb` job also builds, lints and autopkgtests in `debian:trixie`, and `scripts/deb/check.sh` picks the lintian profile from the container (NFR-023).
+- **CyberChef import:** recipes from CyberChef 10 and later name the checksum op `CRC Checksum` with an algorithm argument. The importer now maps it to `crc32` when the algorithm is CRC-32 and refuses other algorithms with `E_ARG_INVALID`. The old `CRC-32 Checksum` name still imports. The operations table now lists JWT Sign, Verify and Decode with their UniChef ids, and marks JWT Verify and Remove whitespace as not importable.
+- **Lint:** ESLint runs with `--max-warnings 0` (NFR-030), and an i18n test fails on hard-coded UI strings or missing extension messages (NFR-042).
+
+### Fixed
+
+- **Phone layout (NFR-043):** the recipe step's move, disable and remove buttons were 21–23 px on phones. They are now 40 px, and the step header wraps so a long operation name keeps its own line. The mobile e2e suite now checks step controls and the footer.
+- **Extension landmarks (NFR-040):** the Characters tabs no longer nest the web page's `<main id="main">` inside the panel's own, so each tab has one main landmark and one `#main`. The `extension` e2e project now runs an axe WCAG 2.2 AA scan of every tab.

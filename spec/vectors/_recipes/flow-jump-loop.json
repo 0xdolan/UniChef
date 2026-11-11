@@ -1,0 +1,18 @@
+{
+  "recipe": {
+    "version": 1,
+    "name": "Jump loop",
+    "description": "URL-encode three times: once, then twice more through the jump, which then hits its max and continues with a warning.",
+    "steps": [
+      { "op": "label", "args": { "name": "again" } },
+      { "op": "url-encode", "args": { "mode": "component" } },
+      { "op": "jump", "args": { "to": "again", "max": 2 } },
+      { "op": "comment", "args": { "text": "Reached after the jump limit." } }
+    ]
+  },
+  "cases": [
+    { "name": "empty", "input": { "type": "string", "text": "" }, "expected": { "type": "string", "text": "" }, "warnings": ["W_JUMP_LIMIT"] },
+    { "name": "space", "input": { "type": "string", "text": "a b" }, "expected": { "type": "string", "text": "a%252520b" }, "warnings": ["W_JUMP_LIMIT"] },
+    { "name": "bytes input is coerced", "input": { "type": "bytes", "hex": "2f" }, "expected": { "type": "string", "text": "%25252F" }, "warnings": ["W_JUMP_LIMIT"] }
+  ]
+}
