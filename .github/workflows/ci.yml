@@ -313,6 +313,11 @@ jobs:
           name: extensions
           path: clients/extensions/common/dist/*.zip
           if-no-files-found: error
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: extension-chrome-unpacked
+          path: clients/extensions/common/dist/chrome/
+          if-no-files-found: error
 
   e2e:
     name: e2e
@@ -330,10 +335,14 @@ jobs:
         with:
           name: web-icons
           path: assets/branding/dist/web/
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: extension-chrome-unpacked
+          path: clients/extensions/common/dist/chrome/
       - run: pnpm --filter web build
         env:
           UNICHEF_REQUIRE_ICONS: '1'
-      - name: Chromium, Firefox and WebKit on desktop and phones, with axe checks (NFR-020, NFR-043)
+      - name: Chromium, Firefox and WebKit on desktop and phones, with axe checks, and the Chrome extension (NFR-020, NFR-043, FR-007, SEC-001)
         run: pnpm --filter web e2e
       - name: Upload the report
         if: ${{ !cancelled() }}

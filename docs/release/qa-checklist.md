@@ -23,6 +23,14 @@ sequence with a skin tone modifier, and an Arabic ligature.
 
 Run sections 1.1 to 1.6 in each browser. Write down the browser version you tested.
 
+The `extension` e2e project (`clients/web/e2e/extension.spec.ts`) already runs these in
+Chromium on every pull request: the permissions, the menu item being registered, a selection
+reaching the open panel and updating it live, the cut notice, Recipe, Characters and the popup
+working offline with no outside requests or console errors, and settings applying, persisting
+and refusing an out-of-range limit. In Chrome, check those items quickly. What a machine cannot
+do is right-click a real page and open the side panel from the menu, so do 1.2 by hand in every
+browser, and run the whole list in Brave, Edge and Firefox.
+
 | Browser | How to load it |
 | ------- | -------------- |
 | Chrome (116 or later) | `chrome://extensions` → Developer mode → **Load unpacked** → the unzipped `unichef-chrome-<v>.zip` |
@@ -48,8 +56,7 @@ Run sections 1.1 to 1.6 in each browser. Write down the browser version you test
 - [ ] The menu item does not appear when no text is selected.
 - [ ] Select more than the selection limit (100 000 characters by default), for example a large
       page with Ctrl+A. The panel receives only the first 100 000 characters, with no emoji
-      split in half, and stays responsive. There is no truncation notice yet. If you think it
-      needs one, file an issue.
+      split in half, stays responsive, and says that the selection was cut.
 
 ### 1.3 Panel tabs
 

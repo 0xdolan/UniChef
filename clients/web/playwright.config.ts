@@ -10,6 +10,7 @@ const constants = JSON.parse(
 
 const PORT = 4917;
 const MOBILE = /mobile\.spec\.ts$/;
+const EXTENSION = /extension\.spec\.ts$/;
 const CI = process.env.CI !== undefined;
 const URL_BASE = `http://localhost:${PORT}${new URL(constants.PAGES_URL).pathname}`;
 
@@ -27,11 +28,13 @@ export default defineConfig({
     reuseExistingServer: !CI,
   },
   projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] }, testIgnore: MOBILE },
-    { name: 'firefox', use: { ...devices['Desktop Firefox'] }, testIgnore: MOBILE },
-    { name: 'webkit', use: { ...devices['Desktop Safari'] }, testIgnore: MOBILE },
+    { name: 'chromium', use: { ...devices['Desktop Chrome'] }, testIgnore: [MOBILE, EXTENSION] },
+    { name: 'firefox', use: { ...devices['Desktop Firefox'] }, testIgnore: [MOBILE, EXTENSION] },
+    { name: 'webkit', use: { ...devices['Desktop Safari'] }, testIgnore: [MOBILE, EXTENSION] },
     // NFR-043: phone layouts on a touch Android and a touch iOS profile.
     { name: 'mobile-chrome', use: { ...devices['Pixel 7'] }, testMatch: MOBILE },
     { name: 'mobile-safari', use: { ...devices['iPhone 15'] }, testMatch: MOBILE },
+    // FR-007, SEC-001: the built Chrome extension (make build-ext), loaded into Chromium.
+    { name: 'extension', testMatch: EXTENSION },
   ],
 });
