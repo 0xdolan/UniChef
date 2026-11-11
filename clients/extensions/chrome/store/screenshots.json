@@ -1,0 +1,26 @@
+{
+  "size": [1280, 800],
+  "directory": "assets/branding/dist/store",
+  "screenshots": [
+    {
+      "file": "screenshot-inspector.png",
+      "caption": "Every code point with its name, category and script; invisible and bidirectional characters first."
+    },
+    {
+      "file": "screenshot-recipes.png",
+      "caption": "Recipes: encode, decode, normalise and escape text, step by step."
+    },
+    {
+      "file": "screenshot-chars.png",
+      "caption": "Browse and search every Unicode character, by name, block or script."
+    },
+    {
+      "file": "screenshot-regex.png",
+      "caption": "Test Unicode-aware regular expressions against your text."
+    },
+    {
+      "file": "screenshot-workbench.png",
+      "caption": "The workbench: input, recipe and output side by side. Nothing leaves your browser."
+    }
+  ]
+}

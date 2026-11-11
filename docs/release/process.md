@@ -30,7 +30,7 @@ Every release has all of these. `scripts/release/verify.sh` fails if one is miss
 | Debian packages | `unichef_<deb>-1~<series>1_all.deb` for noble, resolute and trixie | `deb` (lintian and autopkgtest pass first) | Yes |
 | Ubuntu PPA | `ppa:0xdolan/unichef`, every series in `debian/ppa-series.txt` | `ppa.yml` (signed source upload, approval in `ppa-publish`) | Launchpad signs |
 | Source tarball | `unichef-<v>.tar.gz` (the Debian orig) | `build-all` | Yes |
-| Browser extensions | `unichef-chrome-<v>.zip` (Chrome, Brave, Edge), `unichef-firefox-<v>.zip`; stores on stable tags | `build-all`, `extensions.yml` (approval in `store-publish`) | Yes |
+| Browser extensions | `unichef-chrome-<v>.zip` (Chrome, Brave), `unichef-edge-<v>.zip`, `unichef-firefox-<v>.zip`; Chrome Web Store, Edge Add-ons and AMO on stable tags | `build-all`, `extensions.yml` (approval in `store-publish`) | Yes |
 | Safari Xcode project | `unichef-safari-xcode-<v>.zip` (unsigned; build it in Xcode, no App Store) | `safari` on `macos-latest` (it must build unsigned first) | Yes |
 | Web app | `unichef-web-<v>.zip` (serve under `/unichef/`); GitHub Pages from `main` | `build-all`, `pages.yml` | Yes |
 | Container | `ghcr.io/0xdolan/unichef:<v>`, and `latest` for stable tags; amd64 and arm64 | `ghcr` (BuildKit SBOM and provenance) | Yes, pushed to the registry |

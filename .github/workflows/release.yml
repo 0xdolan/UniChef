@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Release on a version tag (PRD §11.4, §10.3). The Safari Xcode project (#45) is added when
-# it lands. docs/release/process.md lists every artefact and where it is published.
-# The Chrome (also for Brave and Edge) and Firefox zips are attached here so they can be
-# loaded unpacked; extensions.yml publishes them to the stores.
+# Release on a version tag (PRD §11.4, §10.3). docs/release/process.md lists every artefact
+# and where it is published. The Chrome (also for Brave), Edge and Firefox zips and the
+# Safari Xcode project are attached here so they can be loaded unpacked or built;
+# extensions.yml publishes the zips to the stores.
 name: release
 
 on:
@@ -164,9 +164,10 @@ jobs:
       - name: Extension zips (Chrome, Brave and Edge; Firefox)
         run: |
           uv run scripts/assets/build.py --only ext/
-          pnpm --filter extensions build --target chrome --target firefox
+          pnpm --filter extensions build --target chrome --target edge --target firefox
           mkdir -p dist/extensions
           cp clients/extensions/common/dist/unichef-chrome-*.zip \
+            clients/extensions/common/dist/unichef-edge-*.zip \
             clients/extensions/common/dist/unichef-firefox-*.zip dist/extensions/
       # The Pages site as a zip, for offline or self-hosted use. It is built for the /unichef/
       # path, so serve it there.
