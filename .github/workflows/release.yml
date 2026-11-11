@@ -98,9 +98,43 @@ jobs:
           path: ${{ runner.temp }}/deb/*.deb
           if-no-files-found: error
 
+  # The Safari Xcode project, generated from this release's extension build (PRD §7.7). It is
+  # not signed or published; users build it in Xcode with their own signing team.
+  safari:
+    name: safari
+    needs: verify
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+      - uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      - run: pnpm install --frozen-lockfile
+      - name: Image tools for the extension icons (rsvg-convert, ImageMagick, oxipng)
+        run: brew install librsvg imagemagick oxipng
+      - name: Generate the Xcode project and check that it builds unsigned
+        env:
+          VERSION: ${{ needs.verify.outputs.version }}
+        run: |
+          uv run scripts/assets/build.py --only ext/
+          clients/extensions/safari/generate-xcode.sh --out "$RUNNER_TEMP/xcode"
+          xcodebuild -quiet -project "$RUNNER_TEMP/xcode/UniChef/UniChef.xcodeproj" \
+            -scheme "UniChef (macOS)" -configuration Release \
+            -derivedDataPath "$RUNNER_TEMP/derived" CODE_SIGNING_ALLOWED=NO build
+          mkdir -p dist/safari
+          zip="$PWD/dist/safari/unichef-safari-xcode-$VERSION.zip"
+          (cd "$RUNNER_TEMP/xcode" && zip -qrX "$zip" UniChef)
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: safari-xcode
+          path: dist/safari/
+          if-no-files-found: error
+
   build-all:
     name: build-all
-    needs: [verify, deb]
+    needs: [verify, deb, safari]
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -152,6 +186,11 @@ jobs:
           pattern: deb-*
           path: dist/deb
           merge-multiple: true
+      - name: Safari Xcode project
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: safari-xcode
+          path: dist/extensions
       - name: Source tarball (the Debian orig, PRD §8.3; debian/watch looks for it)
         run: |
           orig=$(scripts/deb/make-orig.sh --ref HEAD --out "$RUNNER_TEMP")
