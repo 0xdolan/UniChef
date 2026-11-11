@@ -93,7 +93,7 @@ ops-check: ## Fail if spec/ops.json drifts from the Python operation registry
 assets: ## Build favicons, icons and store images from the branding masters
 	uv run scripts/assets/build.py
 
-screenshots: build-web ## Capture CLI and web screenshots into assets/docs/screenshots/
+screenshots: build-web build-ext ## Capture CLI, web and extension screenshots into assets/docs/screenshots/
 	uv run --project packages/python-cli --locked python scripts/screenshots/cli.py
 	cd clients/web && pnpm exec playwright test -c playwright.screenshots.config.ts
 
