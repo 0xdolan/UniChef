@@ -5,6 +5,7 @@ import './styles/global.css';
 
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { registerSW } from 'virtual:pwa-register';
 
 import { App } from './app/App.js';
 
@@ -15,3 +16,7 @@ createRoot(root).render(
     <App />
   </StrictMode>,
 );
+
+// Offline support (PRD §6.4). With `autoUpdate`, a new release's service worker takes over
+// as soon as it installs and the page reloads into it, so nobody stays on a stale copy.
+registerSW({ immediate: true });

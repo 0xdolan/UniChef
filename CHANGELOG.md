@@ -130,6 +130,8 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
 - Repository scaffold: project constants, `VERSION`, licence and notices, and the Makefile skeleton.
 - **Release QA checklist:** `docs/release/qa-checklist.md` lists the manual checks for each release candidate: the extensions in Chrome, Brave, Edge and Firefox, the web app, and every CLI install channel.
 - **Credit footer (FR-011):** every web app page, including GitHub Pages, ends with "Made with ♥ by 0xdolan · Source · Docs · Site · vX.Y.Z". The links come from `project.constants.json`, and the version is the one the app was built from.
+- **Always current (FR-012):** the web app reloads into a new release on the first visit after a deploy, instead of serving the copy the service worker cached, and a status line names the version it updated to.
+- **Roadmap:** `docs/roadmap.md` restates the project scope (a cybersecurity and Unicode workbench) and plans the docs system, the marketing kit and milestones 1.1 to 2.0 for the CyberChef operations that 1.0 does not cover.
 
 ### Changed
 

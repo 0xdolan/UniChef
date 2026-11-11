@@ -23,6 +23,8 @@
   "footer.source": "Source",
   "footer.docs": "Docs",
   "footer.site": "Site",
+  "update.done": "UniChef updated to v{version}.",
+  "update.dismiss": "Dismiss",
   "ops.title": "Operations",
   "ops.search": "Search operations",
   "ops.add": "Add {name} to the recipe",
