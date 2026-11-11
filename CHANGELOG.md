@@ -134,3 +134,7 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
 - **Platforms:** Python tests also run on macOS x86-64 and Windows arm64 (NFR-021). Both build cryptography from source, which no longer ships wheels for them; CI installs Rust and a vcpkg OpenSSL on Windows arm64. The `deb` job also builds, lints and autopkgtests in `debian:trixie`, and `scripts/deb/check.sh` picks the lintian profile from the container (NFR-023).
 - **CyberChef import:** recipes from CyberChef 10 and later name the checksum op `CRC Checksum` with an algorithm argument. The importer now maps it to `crc32` when the algorithm is CRC-32 and refuses other algorithms with `E_ARG_INVALID`. The old `CRC-32 Checksum` name still imports. The operations table now lists JWT Sign, Verify and Decode with their UniChef ids, and marks JWT Verify and Remove whitespace as not importable.
 - **Lint:** ESLint runs with `--max-warnings 0` (NFR-030), and an i18n test fails on hard-coded UI strings or missing extension messages (NFR-042).
+
+### Fixed
+
+- **Extension landmarks (NFR-040):** the Characters tabs no longer nest the web page's `<main id="main">` inside the panel's own, so each tab has one main landmark and one `#main`. The `extension` e2e project now runs an axe WCAG 2.2 AA scan of every tab.

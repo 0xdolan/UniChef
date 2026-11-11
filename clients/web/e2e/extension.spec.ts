@@ -7,6 +7,7 @@
 import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
+import AxeBuilder from '@axe-core/playwright';
 import {
   chromium,
   expect,
@@ -164,6 +165,11 @@ test('SEC-001: Recipe, Characters and the popup work offline with no outside req
     .first()
     .click();
   await expect(page.getByText('ARABIC LIGATURE SALLALLAHOU ALAYHE WASALLAM').first()).toBeVisible();
+  // One main landmark and one #main on every tab, including the pages shared with the web app.
+  await expect(page.getByRole('main')).toHaveCount(1);
+  await expect(page.locator('[id="main"]')).toHaveCount(1);
+  await tab(page, 'Characters').click();
+  await expect(page.getByRole('main')).toHaveCount(1);
 
   const popup = await openPanel(context, extUrl('#/popup'));
   await expect(tab(popup.page, 'Inspect')).toHaveAttribute('aria-current', 'page');
@@ -192,3 +198,22 @@ test('FR-007: settings apply at once, persist, and refuse an out-of-range limit'
   await expect(next.page.locator('html')).toHaveAttribute('data-theme', 'light');
   await expect(tab(next.page, 'Characters')).toHaveAttribute('aria-current', 'page');
 });
+
+for (const hash of ['#/inspect', '#/recipe', '#/chars', '#/char/U+FDFA', '#/settings']) {
+  test(`NFR-040: the extension ${hash} tab has no serious axe violations`, async ({
+    context,
+    extUrl,
+  }) => {
+    const { page } = await openPanel(context, extUrl(hash));
+    await expect(page.locator('main h1, main h2, main label').first()).toBeVisible();
+    await expect(page.getByText(/Loading…|Looking up…/)).toHaveCount(0);
+    await expect(page.getByRole('main')).toHaveCount(1);
+    const { violations } = await new AxeBuilder({ page })
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'wcag22aa'])
+      .analyze();
+    const serious = violations.filter((v) => v.impact === 'serious' || v.impact === 'critical');
+    expect(
+      serious.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ')).join(', ')}`),
+    ).toEqual([]);
+  });
+}

@@ -84,6 +84,8 @@ export function ExtensionApp(): ReactNode {
   if (settings === null) return <p className={styles.muted}>{t('nav.loading')}</p>;
 
   const active = view.view === 'char' ? 'chars' : view.view;
+  // The Characters pages come from the web app and bring their own <main id="main">.
+  const Body = active === 'chars' ? 'div' : 'main';
   return (
     <div className={`${styles.app} ${layout === 'popup' ? styles.popup : ''}`}>
       <nav aria-label={t('ext.nav')} className={styles.tabs}>
@@ -93,7 +95,7 @@ export function ExtensionApp(): ReactNode {
           </a>
         ))}
       </nav>
-      <main id="main" className={styles.main}>
+      <Body id={Body === 'main' ? 'main' : undefined} className={styles.main}>
         {cut && (
           <p role="status" className={styles.notice}>
             {t('ext.selectionCut', { max: settings.maxSelection })}
@@ -114,7 +116,7 @@ export function ExtensionApp(): ReactNode {
           {view.view === 'char' && <CharPage param={decode(view.param)} />}
           {view.view === 'settings' && <SettingsTab host={api} settings={settings} />}
         </Suspense>
-      </main>
+      </Body>
     </div>
   );
 }
