@@ -23,7 +23,7 @@ endef
 endif
 
 .PHONY: help bootstrap fmt lint typecheck test-py test-ts test perf parity e2e ucd ucd-check entities entities-check \
-	ops ops-check assets screenshots build-py build-npm build-web pages build-ext build deb-check \
+	ops ops-check docs assets screenshots build-py build-npm build-web pages build-ext build deb-check \
 	version version-check release-verify traceability ci docker-ci clean
 
 help: ## List the available targets
@@ -89,6 +89,9 @@ ops: ## Regenerate spec/ops.json from the Python operation registry
 
 ops-check: ## Fail if spec/ops.json drifts from the Python operation registry
 	uv run --project packages/python-cli --locked python scripts/spec/ops.py --check
+
+docs: ## Update the generated parts of docs/ from spec/ops.json; check them with pytest scripts
+	uv run scripts/docs/build.py --write
 
 assets: ## Build favicons, icons and store images from the branding masters
 	uv run scripts/assets/build.py
