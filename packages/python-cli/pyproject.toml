@@ -5,12 +5,12 @@ build-backend = "hatchling.build"
 [project]
 name = "unichef"
 dynamic = ["version"]
-description = "Unicode character analysis and deterministic data-transformation recipes for the terminal."
+description = "Cybersecurity and Unicode workbench for the terminal: encode, decode, hash, encrypt and inspect data, and catch invisible and look-alike characters."
 readme = "README.md"
 requires-python = ">=3.12"
 license = { text = "GPL-3.0-or-later" }
 authors = [{ name = "0xdolan" }]
-keywords = ["unicode", "cyberchef", "encoding", "security", "cli", "homoglyph", "bidi"]
+keywords = ["cybersecurity", "unicode", "cyberchef", "encoding", "decoding", "hashing", "cryptography", "base64", "security", "ctf", "forensics", "cli", "homoglyph", "bidi", "trojan-source"]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Environment :: Console",

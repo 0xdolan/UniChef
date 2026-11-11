@@ -19,9 +19,9 @@ Paste these into Partner Center (**Microsoft Edge** → **Overview** → the Uni
 
 - **Description:**
 
-  > UniChef shows what a piece of text is really made of. Select text on any page, right-click and choose "Inspect with UniChef" to see every code point with its name, general category and script, and invisible and bidirectional control characters listed first.
+  > UniChef is a cybersecurity and Unicode workbench in your browser. Select text on any page, right-click and choose "Inspect with UniChef" to see every code point with its name, general category and script, with invisible and bidirectional control characters listed first: the tricks behind Trojan Source, homoglyph domains and hidden text.
   >
-  > The side panel also runs UniChef recipes (encode, decode, normalise, escape and more) and has a character browser. Everything runs inside the extension: no text leaves your browser, nothing is collected and the extension asks for no access to the pages you visit.
+  > The side panel runs UniChef recipes: decode Base64, hex or URL encoding, hash with SHA-2, SHA-3 or BLAKE2, decrypt AES, decode a JWT, gunzip, normalise Unicode and more, chained step by step. It also has a character browser. Everything runs inside the extension: no text leaves your browser, nothing is collected and the extension asks for no access to the pages you visit.
   >
   > Source code and issue tracker: https://github.com/0xdolan/unichef
 

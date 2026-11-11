@@ -15,9 +15,8 @@ from rich.text import Text
 from rich.tree import Tree
 
 from unichef.cli.about import semver
-from unichef.cli.parser import GROUPS, Command, UniChefParser
+from unichef.cli.parser import GROUPS, TAGLINE, Command, UniChefParser
 
-TAGLINE = "Unicode character analysis and deterministic data-transformation recipes."
 GLOBAL_DESTS = frozenset({
     "format", "color", "theme", "input", "output", "input_encoding", "max_input_size",
     "regex_timeout", "newline", "quiet", "verbose",

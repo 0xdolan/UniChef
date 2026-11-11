@@ -22,12 +22,13 @@ Vcs-Git: https://github.com/0xdolan/unichef.git -b main
 Package: unichef
 Architecture: all
 Depends: ${misc:Depends}, ${python3:Depends}
-Description: Unicode character analysis and data-transformation recipes
- UniChef inspects text at the code-point level (names, blocks, scripts,
- Unicode properties, normalization and grapheme clusters), detects
- invisible characters, bidirectional-control abuse and confusable
- homoglyphs, and runs deterministic recipes of encoding, hashing,
- encryption and text operations.
+Description: cybersecurity and Unicode workbench for the terminal
+ UniChef runs deterministic recipes of encoding, decoding, hashing,
+ encryption, compression and text operations (Base64, hex, SHA-2,
+ AES, JWT, gzip and more). It inspects text at the code-point level
+ (names, blocks, scripts, Unicode properties, normalization and
+ grapheme clusters) and detects invisible characters,
+ bidirectional-control abuse (Trojan Source) and confusable homoglyphs.
  .
  Recipes are interchangeable with the UniChef web application and
  browser extensions.

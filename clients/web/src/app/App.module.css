@@ -238,3 +238,20 @@
   height: 1em;
   fill: var(--error);
 }
+
+.update {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px 12px;
+  padding: 4px var(--gap);
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.update button {
+  min-height: 32px;
+}

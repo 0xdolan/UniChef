@@ -105,16 +105,18 @@ const RASTER_ICONS = hasRaster
     ]
   : [];
 
-// Offline (PRD §6.4): precache the app shell and every data file. The service worker
-// registers from a file, not an inline script, so the CSP holds.
+// Offline (PRD §6.4): precache the app shell and every data file. src/main.tsx registers
+// the service worker through `virtual:pwa-register` (no inline script, so the CSP holds), and
+// reloads into a new release as soon as it is installed instead of serving the old copy.
 const pwa = VitePWA({
   registerType: 'autoUpdate',
-  injectRegister: 'script',
+  injectRegister: false,
   manifest: {
     id: BASE,
     name: 'UniChef',
     short_name: 'UniChef',
-    description: 'Unicode-first data transformation recipes and character analysis.',
+    description:
+      'Cybersecurity and Unicode workbench: encode, decode, hash, encrypt and inspect text and data offline.',
     lang: 'en',
     dir: 'ltr',
     start_url: '.',
