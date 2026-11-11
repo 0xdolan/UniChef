@@ -15,6 +15,9 @@ const ROUTES = [
   '#/playground/to-hex',
   '#/recipes',
   '#/about',
+  '#/docs',
+  '#/docs/learn/hashing',
+  '#/docs/reference/ops/to-base64',
 ];
 
 async function open(page: Page, route: string): Promise<void> {
