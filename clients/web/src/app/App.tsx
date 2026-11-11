@@ -7,6 +7,7 @@ import { t, type MessageKey } from '../i18n/index.js';
 import styles from './App.module.css';
 import { Brand } from './Brand.js';
 import { Footer } from './Footer.js';
+import { Tour } from './Tour.js';
 import { UpdateNotice } from './UpdateNotice.js';
 import { useRoute } from './router.js';
 
@@ -148,6 +149,7 @@ export function App(): ReactNode {
         <Page section={section} param={param} />
       </Suspense>
       <UpdateNotice />
+      <Tour />
       <Footer />
     </div>
   );
