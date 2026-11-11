@@ -82,6 +82,10 @@ jobs:
         image: ['ubuntu:24.04', 'ubuntu:26.04', 'debian:trixie']
     runs-on: ubuntu-24.04
     container: ${{ matrix.image }}
+    # Container jobs default to sh; the slug step uses bash substitution.
+    defaults:
+      run:
+        shell: bash
     steps:
       - name: Install git
         run: apt-get update -qq && apt-get install -y -qq --no-install-recommends ca-certificates git

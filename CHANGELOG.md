@@ -4,6 +4,10 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
 
 ## [Unreleased]
 
+### Fixed
+
+- **Release workflow:** the Debian package jobs run their steps in bash. The container's default `sh` rejected the artefact-name step, which stopped the 1.0.0-rc.1 release before anything was published.
+
 ## [1.0.0-rc.1] - 2026-11-11
 
 ### Added
