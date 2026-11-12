@@ -191,6 +191,11 @@ jobs:
           pattern: deb-*
           path: dist/deb
           merge-multiple: true
+      # GitHub serves release assets with '~' replaced by '.', so name the .debs that way
+      # before SHA256SUMS is written; otherwise the sums list files nobody can download.
+      - name: Debian package names
+        working-directory: dist/deb
+        run: for f in *~*.deb; do mv -- "$f" "${f//\~/.}"; done
       - name: Safari Xcode project
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:

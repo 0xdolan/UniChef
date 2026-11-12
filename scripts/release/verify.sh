@@ -53,7 +53,7 @@ for f in "${expected[@]}"; do
   check "$f" "$f is missing" test -f "$work/$f"
 done
 for series in noble resolute trixie; do
-  deb=$(find "$work" -maxdepth 1 -name "unichef_*~${series}1_all.deb" -printf '%f\n' | head -1)
+  deb=$(find "$work" -maxdepth 1 -name "unichef_*.${series}1_all.deb" -printf '%f\n' | head -1)
   check "${deb:-$series}" ".deb for $series is missing" test -n "$deb"
 done
 
