@@ -27,7 +27,7 @@ Every release has all of these. `scripts/release/verify.sh` fails if one is miss
 |---|---|---|---|
 | Python wheel and sdist | `unichef-<pep440>-py3-none-any.whl`, `unichef-<pep440>.tar.gz`; PyPI | `build-all`, `pypi` (trusted publishing) | Yes, and PyPI attestations |
 | npm package | `unichef-core-<v>.tgz`; npm `@unichef/core` | `build-all`, `npm` (trusted publishing, provenance) | Yes |
-| Debian packages | `unichef_<deb>-1~<series>1_all.deb` for noble, resolute and trixie | `deb` (lintian and autopkgtest pass first) | Yes |
+| Debian packages | `unichef_<deb>-1.<series>1_all.deb` for noble, resolute and trixie (GitHub serves `~` as `.`, so the release names them that way) | `deb` (lintian and autopkgtest pass first) | Yes |
 | Ubuntu PPA | `ppa:0xdolan/unichef`, every series in `debian/ppa-series.txt` | `ppa.yml` (signed source upload, approval in `ppa-publish`) | Launchpad signs |
 | Source tarball | `unichef-<v>.tar.gz` (the Debian orig) | `build-all` | Yes |
 | Browser extensions | `unichef-chrome-<v>.zip` (Chrome, Brave), `unichef-edge-<v>.zip`, `unichef-firefox-<v>.zip`; Chrome Web Store, Edge Add-ons and AMO on stable tags | `build-all`, `extensions.yml` (approval in `store-publish`) | Yes |

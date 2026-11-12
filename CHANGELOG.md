@@ -4,6 +4,10 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
 
 ## [Unreleased]
 
+### Fixed
+
+- **Release assets:** the `.deb` files are named with `.` instead of `~` (for example `unichef_1.0.0.rc2-1.noble1_all.deb`), as GitHub serves them, so `SHA256SUMS` matches the files you download. `scripts/release/verify.sh` is executable again, so the `verify-release` job and `make release-verify` run.
+
 ## [1.0.0-rc.2] - 2026-11-11
 
 ### Fixed

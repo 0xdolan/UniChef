@@ -5,6 +5,7 @@ uv run --with pytest==9.2.0 pytest scripts
 """
 
 import shutil
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -24,7 +25,9 @@ from versions import TARGETS, Version, VersionError
         ("2.0.0-beta.4", "2.0.0b4", "2.0.0~beta4", "1.99.99.4"),
     ],
 )
-def test_rel_001_version_mapping(semver: str, pep440: str, debian: str, extension: str) -> None:
+def test_rel_001_version_mapping(
+    semver: str, pep440: str, debian: str, extension: str
+) -> None:
     """REL-001: one SemVer maps to the PyPI, npm, Debian and extension forms."""
     v = Version.parse(semver)
     assert (v.semver, v.npm, v.pep440, v.debian, v.extension) == (
@@ -44,7 +47,9 @@ def test_rejects_malformed_versions(text: str) -> None:
         Version.parse(text)
 
 
-@pytest.mark.parametrize("text", ["0.0.0-alpha.1", "1.0.0-rc.0", "70000.0.0", "1.0.0-rc.70000"])
+@pytest.mark.parametrize(
+    "text", ["0.0.0-alpha.1", "1.0.0-rc.0", "70000.0.0", "1.0.0-rc.70000"]
+)
 def test_rejects_unrepresentable_extension_versions(text: str) -> None:
     with pytest.raises(VersionError):
         _ = Version.parse(text).extension
@@ -56,7 +61,9 @@ def test_repository_targets_agree_with_version_file() -> None:
         assert t.read() == [f.expected(v) for f in t.fields], t.path
 
 
-def test_write_updates_every_field(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_write_updates_every_field(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     for t in versions.existing_targets():
         dest = tmp_path / t.path
         dest.parent.mkdir(parents=True, exist_ok=True)
@@ -79,7 +86,25 @@ def test_write_updates_every_field(tmp_path: Path, monkeypatch: pytest.MonkeyPat
 def test_promote_changelog() -> None:
     text = "# Changelog\n\n## [Unreleased]\n\n### Added\n\n- x\n"
     out = promote_changelog(text, "0.2.0", "2026-12-01")
-    assert out == "# Changelog\n\n## [Unreleased]\n\n## [0.2.0] - 2026-12-01\n\n### Added\n\n- x\n"
+    assert (
+        out
+        == "# Changelog\n\n## [Unreleased]\n\n## [0.2.0] - 2026-12-01\n\n### Added\n\n- x\n"
+    )
     assert promote_changelog(out, "0.2.0", "2026-12-02") == out
     with pytest.raises(VersionError):
         promote_changelog("# Changelog\n", "0.2.0", "2026-12-01")
+
+
+def test_rel_001_release_scripts_are_executable() -> None:
+    """CI and make run the shell scripts directly, so each must be committed as 100755."""
+    root = Path(__file__).resolve().parents[2]
+    out = subprocess.run(
+        ["git", "ls-files", "-s", "--", "scripts/*.sh", "scripts/**/*.sh"],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=True,
+    ).stdout
+    modes = {line.split()[3]: line.split()[0] for line in out.splitlines()}
+    assert "scripts/release/verify.sh" in modes
+    assert {path for path, mode in modes.items() if mode != "100755"} == set()
