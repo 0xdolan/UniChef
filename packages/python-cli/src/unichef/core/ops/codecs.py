@@ -297,3 +297,223 @@ def _qp_line(line: str) -> bytes:
         pos = found.end()
     out += utf8.encode(line[pos:])
     return bytes(out)
+
+
+# ---------------------------------------------------------------------------
+# Base45 (RFC 9285)
+
+B45 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:"
+_B45_INDEX = {ch: i for i, ch in enumerate(B45)}
+
+
+@operation(
+    "to-base45",
+    "To Base45",
+    "Encoding",
+    "bytes",
+    "string",
+    (),
+    examples=(Example("AB", {}, "BB8"),),
+)
+def to_base45(data: bytes, _args: Args, ctx: OpContext) -> str:
+    """Encode bytes as Base45 (RFC 9285), the QR-code encoding: 2 bytes become 3 characters."""
+    out: list[str] = []
+    for start in range(0, len(data), 2):
+        if start % 8192 == 0:
+            ctx.check()
+        pair = data[start : start + 2]
+        number = int.from_bytes(pair, "big")
+        # Digits are written least significant first: 3 for a pair, 2 for a last single byte.
+        for _ in range(len(pair) + 1):
+            number, digit = divmod(number, 45)
+            out.append(B45[digit])
+    return "".join(out)
+
+
+@operation(
+    "from-base45",
+    "From Base45",
+    "Encoding",
+    "string",
+    "bytes",
+    (bool_arg("strict"),),
+    examples=(Example("BB8", {}, "AB"),),
+)
+def from_base45(text: str, args: Args, ctx: OpContext) -> bytes:
+    """Decode Base45 (RFC 9285). Without `strict`, it skips characters outside the alphabet."""
+    if args.flag("strict"):
+        bad = next((ch for ch in text if ch not in _B45_INDEX), None)
+        if bad is not None:
+            raise _decode_error(f"Strict mode: {bad!r} is not a Base45 character.")
+        chars = text
+    else:
+        chars = "".join(ch for ch in text if ch in _B45_INDEX)
+    if len(chars) % 3 == 1:
+        raise _decode_error("Base45 input cannot end with a single character.")
+    out = bytearray()
+    for start in range(0, len(chars), 3):
+        if start % 8192 == 0:
+            ctx.check()
+        group = chars[start : start + 3]
+        number = sum(_B45_INDEX[ch] * 45**i for i, ch in enumerate(group))
+        size = len(group) - 1
+        if number >= 256**size:
+            raise _decode_error(f"Base45 group {group!r} is out of range.")
+        out += number.to_bytes(size, "big")
+    return bytes(out)
+
+
+# ---------------------------------------------------------------------------
+# Base62
+
+B62 = {
+    "upper-first": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+    "lower-first": "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
+}
+# Digits per big-integer step: 62**10 < 2**63.
+_B62_STEP = 10
+_B62_BASE = 62**_B62_STEP
+
+
+@operation(
+    "to-base62",
+    "To Base62",
+    "Encoding",
+    "bytes",
+    "string",
+    (enum_arg("alphabet", tuple(B62)),),
+    examples=(Example("Hello", {}, "5TP3P3v"),),
+)
+def to_base62(data: bytes, args: Args, ctx: OpContext) -> str:
+    """Write the bytes, read as one big-endian number, in base 62. Leading zeros are not kept."""
+    alphabet = B62[args.text("alphabet")]
+    if not data:
+        return ""
+    number = int.from_bytes(data, "big")
+    chunks: list[str] = []
+    while number:
+        ctx.check()
+        number, chunk = divmod(number, _B62_BASE)
+        digits = []
+        for _ in range(_B62_STEP):
+            chunk, digit = divmod(chunk, 62)
+            digits.append(alphabet[digit])
+        chunks.append("".join(reversed(digits)))
+    return "".join(reversed(chunks)).lstrip(alphabet[0]) or alphabet[0]
+
+
+@operation(
+    "from-base62",
+    "From Base62",
+    "Encoding",
+    "string",
+    "bytes",
+    (enum_arg("alphabet", tuple(B62)), bool_arg("strict")),
+    examples=(Example("5TP3P3v", {}, "Hello"),),
+)
+def from_base62(text: str, args: Args, ctx: OpContext) -> bytes:
+    """Decode a base-62 number to bytes. Without `strict`, it skips other characters."""
+    alphabet = B62[args.text("alphabet")]
+    index = {ch: i for i, ch in enumerate(alphabet)}
+    if args.flag("strict"):
+        bad = next((ch for ch in text if ch not in index), None)
+        if bad is not None:
+            raise _decode_error(f"Strict mode: {bad!r} is not a Base62 digit.")
+        chars = text
+    else:
+        chars = "".join(ch for ch in text if ch in index)
+    if not chars:
+        return b""
+    number = 0
+    for start in range(0, len(chars), _B62_STEP):
+        ctx.check()
+        part = chars[start : start + _B62_STEP]
+        chunk = 0
+        for ch in part:
+            chunk = chunk * 62 + index[ch]
+        number = number * 62 ** len(part) + chunk
+    return number.to_bytes(max(1, (number.bit_length() + 7) // 8), "big")
+
+
+# ---------------------------------------------------------------------------
+# Base92
+
+# '!', then '#' to '_' (61 characters), then 'a' to '}' (29): 91 digits.
+# '"', '`' and '~' are unused.
+B92 = "!" + "".join(map(chr, range(0x23, 0x60))) + "".join(map(chr, range(0x61, 0x7E)))
+_B92_INDEX = {ch: i for i, ch in enumerate(B92)}
+_B92_PAIR_BITS = 13  # two digits
+_B92_TAIL_BITS = 6  # a final single digit
+_BYTE_BITS = 8
+
+
+@operation(
+    "to-base92",
+    "To Base92",
+    "Encoding",
+    "bytes",
+    "string",
+    (),
+    examples=(Example("Hello", {}, ";K_$aOB"),),
+)
+def to_base92(data: bytes, _args: Args, ctx: OpContext) -> str:
+    """Encode bytes as Base92: every 13 bits become two printable ASCII characters."""
+    out: list[str] = []
+    acc = bits = 0
+    for i, byte in enumerate(data):
+        if i % 8192 == 0:
+            ctx.check()
+        acc = (acc << _BYTE_BITS) | byte
+        bits += _BYTE_BITS
+        if bits >= _B92_PAIR_BITS:
+            bits -= _B92_PAIR_BITS
+            high, low = divmod(acc >> bits, 91)
+            out += (B92[high], B92[low])
+            acc &= (1 << bits) - 1
+    if 0 < bits <= _B92_TAIL_BITS:
+        out.append(B92[acc << (_B92_TAIL_BITS - bits)])
+    elif bits:
+        high, low = divmod(acc << (_B92_PAIR_BITS - bits), 91)
+        out += (B92[high], B92[low])
+    return "".join(out)
+
+
+@operation(
+    "from-base92",
+    "From Base92",
+    "Encoding",
+    "string",
+    "bytes",
+    (bool_arg("strict"),),
+    examples=(Example(";K_$aOB", {}, "Hello"),),
+)
+def from_base92(text: str, args: Args, ctx: OpContext) -> bytes:
+    """Decode Base92. Without `strict`, it skips characters outside the alphabet."""
+    if args.flag("strict"):
+        bad = next((ch for ch in text if ch not in _B92_INDEX), None)
+        if bad is not None:
+            raise _decode_error(f"Strict mode: {bad!r} is not a Base92 character.")
+        chars = text
+    else:
+        chars = "".join(ch for ch in text if ch in _B92_INDEX)
+    out = bytearray()
+    acc = bits = 0
+    for start in range(0, len(chars), 2):
+        if start % 8192 == 0:
+            ctx.check()
+        pair = chars[start : start + 2]
+        if len(pair) > 1:
+            value = _B92_INDEX[pair[0]] * 91 + _B92_INDEX[pair[1]]
+            if value >= 1 << _B92_PAIR_BITS:
+                raise _decode_error(f"Base92 pair {pair!r} is out of range.")
+            acc, bits = (acc << _B92_PAIR_BITS) | value, bits + _B92_PAIR_BITS
+        else:
+            value = _B92_INDEX[pair]
+            if value >= 1 << _B92_TAIL_BITS:
+                raise _decode_error(f"Base92 final character {pair!r} is out of range.")
+            acc, bits = (acc << _B92_TAIL_BITS) | value, bits + _B92_TAIL_BITS
+        while bits >= _BYTE_BITS:
+            bits -= _BYTE_BITS
+            out.append(acc >> bits)
+            acc &= (1 << bits) - 1
+    return bytes(out)

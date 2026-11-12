@@ -1,0 +1,116 @@
+{
+  "op": "from-base62",
+  "cases": [
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": ""
+      }
+    },
+    {
+      "name": "'Hello, World!' (CyberChef test, Base62.mjs)",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "1wJfrzvdbtXUOlUjUf"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "48656c6c6f2c20576f726c6421"
+      }
+    },
+    {
+      "name": "Georgian text as UTF-8 (CyberChef test, Base62.mjs)",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "BPDNbjoGvDCDzHbKT77eWg0vGQrJuWRXltuRVZ"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "e1839ce183a320e1839ee18390e1839ce18398e18399e18390e183a1"
+      }
+    },
+    {
+      "name": "lower-first alphabet",
+      "args": {
+        "alphabet": "lower-first"
+      },
+      "input": {
+        "type": "string",
+        "text": "5tp3p3V"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "48656c6c6f"
+      }
+    },
+    {
+      "name": "zero is one zero byte",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "0"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "00"
+      }
+    },
+    {
+      "name": "leading zero digits add nothing",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "0005TP3P3v"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "48656c6c6f"
+      }
+    },
+    {
+      "name": "skips characters outside the alphabet",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "5TP3-P3v\n"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "48656c6c6f"
+      }
+    },
+    {
+      "name": "only skipped characters",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "-_-"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": ""
+      }
+    },
+    {
+      "name": "error: strict rejects a hyphen",
+      "args": {
+        "strict": true
+      },
+      "input": {
+        "type": "string",
+        "text": "5TP3-P3v"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    }
+  ]
+}

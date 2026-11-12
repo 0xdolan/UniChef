@@ -1733,6 +1733,140 @@
           }
         ]
       }
+    },
+    {
+      "name": "To Base45, defaults",
+      "input": "[{\"op\": \"To Base45\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-base45"
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Base45, the standard alphabet",
+      "input": "[{\"op\": \"To Base45\", \"args\": [\"0-9A-Z $%*+\\\\-./:\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-base45"
+          }
+        ]
+      }
+    },
+    {
+      "name": "error: To Base45 with a custom alphabet",
+      "input": "[{\"op\": \"To Base45\", \"args\": [\"0-9a-z $%*+\\\\-./:\"]}]",
+      "error": {
+        "code": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "From Base45, keeping non-alphabet characters is strict",
+      "input": "[{\"op\": \"From Base45\", \"args\": [\"0-9A-Z $%*+\\\\-./:\", false]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "from-base45",
+            "args": {
+              "strict": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "From Base45, removing non-alphabet characters",
+      "input": "[{\"op\": \"From Base45\", \"args\": [\"0-9A-Z $%*+\\\\-./:\", true]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "from-base45",
+            "args": {
+              "strict": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Base62, defaults",
+      "input": "[{\"op\": \"To Base62\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-base62"
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Base62, 0-9A-Za-z",
+      "input": "[{\"op\": \"To Base62\", \"args\": [\"0-9A-Za-z\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-base62",
+            "args": {
+              "alphabet": "upper-first"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "From Base62, 0-9a-zA-Z",
+      "input": "[{\"op\": \"From Base62\", \"args\": [\"0-9a-zA-Z\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "from-base62",
+            "args": {
+              "alphabet": "lower-first"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "error: To Base62 with a custom alphabet",
+      "input": "[{\"op\": \"To Base62\", \"args\": [\"A-Za-z0-9\"]}]",
+      "error": {
+        "code": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "To Base92",
+      "input": "[{\"op\": \"To Base92\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-base92"
+          }
+        ]
+      }
+    },
+    {
+      "name": "From Base92",
+      "input": "[{\"op\": \"From Base92\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "from-base92"
+          }
+        ]
+      }
     }
   ]
 }

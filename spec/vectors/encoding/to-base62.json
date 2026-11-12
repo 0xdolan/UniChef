@@ -1,0 +1,116 @@
+{
+  "op": "to-base62",
+  "cases": [
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "'Hello, World!' (CyberChef test, Base62.mjs)",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "48656c6c6f2c20576f726c6421"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1wJfrzvdbtXUOlUjUf"
+      }
+    },
+    {
+      "name": "Georgian text as UTF-8 (CyberChef test, Base62.mjs)",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "e1839ce183a320e1839ee18390e1839ce18398e18399e18390e183a1"
+      },
+      "expected": {
+        "type": "string",
+        "text": "BPDNbjoGvDCDzHbKT77eWg0vGQrJuWRXltuRVZ"
+      }
+    },
+    {
+      "name": "lower-first alphabet",
+      "args": {
+        "alphabet": "lower-first"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "48656c6c6f"
+      },
+      "expected": {
+        "type": "string",
+        "text": "5tp3p3V"
+      }
+    },
+    {
+      "name": "leading zero bytes are dropped",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "000048656c6c6f"
+      },
+      "expected": {
+        "type": "string",
+        "text": "5TP3P3v"
+      }
+    },
+    {
+      "name": "all zero bytes are the number zero",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "000000"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0"
+      }
+    },
+    {
+      "name": "61 is the last digit",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "3d"
+      },
+      "expected": {
+        "type": "string",
+        "text": "z"
+      }
+    },
+    {
+      "name": "62 carries",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "3e"
+      },
+      "expected": {
+        "type": "string",
+        "text": "10"
+      }
+    },
+    {
+      "name": "error: unknown alphabet",
+      "args": {
+        "alphabet": "flickr"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "00"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

@@ -1,0 +1,113 @@
+{
+  "op": "from-base92",
+  "cases": [
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": ""
+      }
+    },
+    {
+      "name": "'ietf!' (CyberChef test, Base92.mjs)",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "G'_DW[B"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "6965746621"
+      }
+    },
+    {
+      "name": "'Hello!!'",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ";K_$aOTo&"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "48656c6c6f2121"
+      }
+    },
+    {
+      "name": "'hello world'",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Fc_$aOTdKnsM*k"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "68656c6c6f20776f726c64"
+      }
+    },
+    {
+      "name": "skips characters outside the alphabet",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Fc_$ aOTd\nKnsM*k~"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "68656c6c6f20776f726c64"
+      }
+    },
+    {
+      "name": "error: strict rejects a space",
+      "args": {
+        "strict": true
+      },
+      "input": {
+        "type": "string",
+        "text": "Fc_$ aOTdKnsM*k"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: strict rejects the unused tilde",
+      "args": {
+        "strict": true
+      },
+      "input": {
+        "type": "string",
+        "text": "~"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: a pair above 8191",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "}}"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: a final character above 63",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "D,}"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    }
+  ]
+}

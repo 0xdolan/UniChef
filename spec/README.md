@@ -206,6 +206,37 @@ Decoding follows the HTML tokenizer's character-reference rules for text content
 
 The bytes are read as one big-endian number. Each leading zero byte becomes one leading `1` (the alphabet's first digit), and back. Without `strict`, `from-base58` discards every character outside the alphabet, including `0`, `O`, `I` and `l`.
 
+### `to-base45` (bytes → string) and `from-base45` (string → bytes)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `strict` | boolean | `false` | `from-base45` only. Any character outside the alphabet is `E_DECODE`. |
+
+RFC 9285. The alphabet is `0–9A–Z`, space, `$%*+-./:`. Each pair of bytes is a big-endian number written as three digits, least significant first; a final single byte is written as two digits. Empty input gives empty output.
+
+Without `strict`, `from-base45` discards every character outside the alphabet (a space is a digit and is kept). Errors (`E_DECODE`): a group of three above 65535, a final pair above 255, and a single character left over.
+
+### `to-base62` (bytes → string) and `from-base62` (string → bytes)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `alphabet` | `upper-first` \| `lower-first` | `upper-first` | `0–9A–Za–z`, or `0–9a–zA–Z`. |
+| `strict` | boolean | `false` | `from-base62` only. Any character outside the alphabet is `E_DECODE`. |
+
+The bytes are read as one big-endian number and written in base 62. Leading zero bytes are not kept. Bytes that are all zero give `0`; empty input gives empty output.
+
+`from-base62` writes the number in the fewest bytes, so leading `0` digits add nothing; a number of zero is one `00` byte. Without `strict`, it discards every character outside the alphabet. Input with no digits gives empty output.
+
+### `to-base92` (bytes → string) and `from-base92` (string → bytes)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `strict` | boolean | `false` | `from-base92` only. Any character outside the alphabet is `E_DECODE`. |
+
+The 91 digits are `!` (0), `#`–`_` (1–61) and `a`–`}` (62–90). The input is a big-endian bit stream. Every 13 bits are written as two digits, `value div 91` then `value mod 91`. Left-over bits are padded with zero bits on the right: 1–6 bits to 6 bits, written as one digit; 7–12 bits to 13 bits, written as two. Empty input gives empty output (not the reference implementation's `~`).
+
+`from-base92` reads two digits as 13 bits and a final single digit as 6 bits, emits each full 8 bits and drops the rest. Without `strict`, it discards every character outside the alphabet. Errors (`E_DECODE`): a pair above 8191, and a final digit above 63.
+
 ### `to-base85` (bytes → string) and `from-base85` (string → bytes)
 
 | Arg | Type | Default | Meaning |

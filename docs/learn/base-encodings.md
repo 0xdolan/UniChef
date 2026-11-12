@@ -19,9 +19,12 @@ write that number in a base equal to the size of the alphabet.
 | Decimal | 10 | about 3.3 | up to 3 digits per byte | byte lists, CTF puzzles |
 | Hex (Base16) | 16 | 4 | 2× | hashes, keys, packet dumps |
 | Base32 | 32 | 5 | 1.6× | TOTP secrets, case-insensitive IDs |
+| Base45 | 45 | about 5.33 (3 per 2 bytes) | 1.5× | QR codes, EU health certificates |
 | Base58 | 58 | about 5.86 | about 1.37× | Bitcoin addresses, IPFS IDs |
+| Base62 | 62 | about 5.95 | about 1.34× | short URLs, identifiers |
 | Base64 | 64 | 6 | 1.33× | email, data URLs, JWTs, PEM |
 | Base85 | 85 | about 6.41 | 1.25× | PDF, PostScript, Git binary patches |
+| Base92 | 91 | 6.5 (2 per 13 bits) | about 1.23× | dense text inside quoted strings |
 
 ## Hex
 
@@ -65,6 +68,13 @@ and no `0`, `1`, `8` or `9`, so `0` and `1` cannot be confused with `O` and `I`,
 it aloud and type it: authenticator apps use it for TOTP secrets. base32hex (§7) uses
 `0–9A–V` and keeps sort order. See [To Base32](../reference/ops/to-base32.md).
 
+## Base45
+
+Base45 (RFC 9285) writes **two bytes** as **three characters** from `0–9`, `A–Z`, space and
+`$%*+-./:`, least significant digit first. That is the alphanumeric character set of QR
+codes, which store it in 5.5 bits per character, so Base45 data makes a smaller QR code than
+Base64 would. See [To Base45](../reference/ops/to-base45.md).
+
 ## Base58
 
 Base58 treats the whole input as **one big-endian number** and repeatedly divides by 58.
@@ -74,12 +84,25 @@ can be double-clicked and copied as one word. Because there is no bit alignment,
 alphabet) to keep it. It is slow on long inputs (quadratic), so it is used for short
 identifiers. See [To Base58](../reference/ops/to-base58.md).
 
+## Base62
+
+Base62 uses the same big-number method as Base58 with all digits and letters (`0–9A–Za–z`,
+or lower case first). It has no punctuation at all, but also no way to keep leading zero
+bytes, so it suits numbers and identifiers more than arbitrary data. See
+[To Base62](../reference/ops/to-base62.md).
+
 ## Base85
 
 Ascii85 takes **four bytes** as a 32-bit number and writes it as **five base-85 digits**,
 each added to 33 (`!`). Four zero bytes become a single `z`. Adobe wraps it in `<~` and
 `~>`. **Z85** (ZeroMQ) uses a different alphabet that avoids quotes and backslashes, so it
 can sit in source code strings. See [To Base85](../reference/ops/to-base85.md).
+
+## Base92
+
+Base92 writes every **13 bits** as **two characters** from 91 printable ASCII characters
+(all but `"`, `` ` `` and `~`). It is a little denser than Base85 and safe inside a
+double-quoted string. See [To Base92](../reference/ops/to-base92.md).
 
 ## Recognising an encoding
 
@@ -91,6 +114,7 @@ can sit in source code strings. See [To Base85](../reference/ops/to-base85.md).
 | `A–Z2–7`, ends in `=` padding to a multiple of 8 | Base32 |
 | no `0OIl`, starts with `1` or `3`, 26 to 35 characters | Base58 (a Bitcoin address) |
 | starts with `<~` | Ascii85 |
+| upper case, digits and `$%*+-./:`, often starts `HC1:` | Base45 |
 
 `eyJ` is how `{"` looks in Base64, so it marks Base64-encoded JSON.
 
@@ -103,12 +127,13 @@ skip characters outside the alphabet so you can paste messy data; turn on `stric
 them, which is what you want when you check that two systems agree.
 
 <!-- docs:ops -->
-Operations explained here: [From Base32](../reference/ops/from-base32.md), [From Base58](../reference/ops/from-base58.md), [From Base64](../reference/ops/from-base64.md), [From Base85](../reference/ops/from-base85.md), [From Binary](../reference/ops/from-binary.md), [From Decimal](../reference/ops/from-decimal.md), [From Hex](../reference/ops/from-hex.md), [From Octal](../reference/ops/from-octal.md), [To Base32](../reference/ops/to-base32.md), [To Base58](../reference/ops/to-base58.md), [To Base64](../reference/ops/to-base64.md), [To Base85](../reference/ops/to-base85.md), [To Binary](../reference/ops/to-binary.md), [To Decimal](../reference/ops/to-decimal.md), [To Hex](../reference/ops/to-hex.md), [To Octal](../reference/ops/to-octal.md).
+Operations explained here: [From Base32](../reference/ops/from-base32.md), [From Base45](../reference/ops/from-base45.md), [From Base58](../reference/ops/from-base58.md), [From Base62](../reference/ops/from-base62.md), [From Base64](../reference/ops/from-base64.md), [From Base85](../reference/ops/from-base85.md), [From Base92](../reference/ops/from-base92.md), [From Binary](../reference/ops/from-binary.md), [From Decimal](../reference/ops/from-decimal.md), [From Hex](../reference/ops/from-hex.md), [From Octal](../reference/ops/from-octal.md), [To Base32](../reference/ops/to-base32.md), [To Base45](../reference/ops/to-base45.md), [To Base58](../reference/ops/to-base58.md), [To Base62](../reference/ops/to-base62.md), [To Base64](../reference/ops/to-base64.md), [To Base85](../reference/ops/to-base85.md), [To Base92](../reference/ops/to-base92.md), [To Binary](../reference/ops/to-binary.md), [To Decimal](../reference/ops/to-decimal.md), [To Hex](../reference/ops/to-hex.md), [To Octal](../reference/ops/to-octal.md).
 <!-- /docs:ops -->
 
 ## Learn more
 
 - [RFC 4648: Base16, Base32 and Base64](https://www.rfc-editor.org/rfc/rfc4648)
+- [RFC 9285: Base45](https://www.rfc-editor.org/rfc/rfc9285)
 - [Base58 in the Bitcoin wiki](https://en.bitcoin.it/wiki/Base58Check_encoding)
 - [Z85 specification (ZeroMQ RFC 32)](https://rfc.zeromq.org/spec/32/)
 - [Ascii85 on Wikipedia](https://en.wikipedia.org/wiki/Ascii85)

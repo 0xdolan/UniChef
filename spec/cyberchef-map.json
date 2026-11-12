@@ -203,6 +203,28 @@
         { "to": "strict", "invert": true }
       ]
     },
+    "To Base45": {
+      "op": "to-base45",
+      "args": [{ "expect": "0-9A-Z $%*+\\-./:" }]
+    },
+    "From Base45": {
+      "op": "from-base45",
+      "args": [{ "expect": "0-9A-Z $%*+\\-./:" }, { "to": "strict", "invert": true }]
+    },
+    "To Base62": {
+      "op": "to-base62",
+      "args": [
+        { "to": "alphabet", "map": { "0-9A-Za-z": "upper-first", "0-9a-zA-Z": "lower-first" } }
+      ]
+    },
+    "From Base62": {
+      "op": "from-base62",
+      "args": [
+        { "to": "alphabet", "map": { "0-9A-Za-z": "upper-first", "0-9a-zA-Z": "lower-first" } }
+      ]
+    },
+    "To Base92": { "op": "to-base92", "args": [] },
+    "From Base92": { "op": "from-base92", "args": [] },
     "To Base85": {
       "op": "to-base85",
       "args": [

@@ -97,5 +97,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← To Base58](to-base58.md) · [Contents](../../README.md) · [To Base85 →](to-base85.md)
+[← To Base62](to-base62.md) · [Contents](../../README.md) · [To Base85 →](to-base85.md)
 <!-- /docs:nav -->

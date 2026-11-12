@@ -1,0 +1,114 @@
+{
+  "op": "to-base45",
+  "cases": [
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "RFC 9285 'AB' (CyberChef test, Base45.mjs)",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "4142"
+      },
+      "expected": {
+        "type": "string",
+        "text": "BB8"
+      }
+    },
+    {
+      "name": "RFC 9285 'Hello!!' (CyberChef test, Base45.mjs)",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "48656c6c6f2121"
+      },
+      "expected": {
+        "type": "string",
+        "text": "%69 VD92EX0"
+      }
+    },
+    {
+      "name": "RFC 9285 'base-45' (CyberChef test, Base45.mjs)",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "626173652d3435"
+      },
+      "expected": {
+        "type": "string",
+        "text": "UJCLQE7W581"
+      }
+    },
+    {
+      "name": "RFC 9285 'ietf!'",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "6965746621"
+      },
+      "expected": {
+        "type": "string",
+        "text": "QED8WEX0"
+      }
+    },
+    {
+      "name": "a single byte takes two characters",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "00"
+      },
+      "expected": {
+        "type": "string",
+        "text": "00"
+      }
+    },
+    {
+      "name": "the largest pair",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "ffff"
+      },
+      "expected": {
+        "type": "string",
+        "text": "FGW"
+      }
+    },
+    {
+      "name": "a zero pair keeps three characters",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "000001"
+      },
+      "expected": {
+        "type": "string",
+        "text": "00010"
+      }
+    },
+    {
+      "name": "error: unknown argument",
+      "args": {
+        "alphabet": "standard"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "00"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

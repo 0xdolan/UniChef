@@ -88,5 +88,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← To Base64](to-base64.md) · [Contents](../../README.md) · [To Binary →](to-binary.md)
+[← To Base64](to-base64.md) · [Contents](../../README.md) · [To Base92 →](to-base92.md)
 <!-- /docs:nav -->
