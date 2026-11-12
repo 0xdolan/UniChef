@@ -822,6 +822,29 @@
       ]
     },
     {
+      "id": "from-base45",
+      "name": "From Base45",
+      "category": "Encoding",
+      "description": "Decode Base45 (RFC 9285). Without `strict`, it skips characters outside the alphabet.",
+      "input": "string",
+      "output": "bytes",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "strict",
+          "kind": "boolean",
+          "default": false
+        }
+      ],
+      "examples": [
+        {
+          "input": "BB8",
+          "args": {},
+          "output": "AB"
+        }
+      ]
+    },
+    {
       "id": "from-base58",
       "name": "From Base58",
       "category": "Encoding",
@@ -848,6 +871,38 @@
       "examples": [
         {
           "input": "9Ajdvzr",
+          "args": {},
+          "output": "Hello"
+        }
+      ]
+    },
+    {
+      "id": "from-base62",
+      "name": "From Base62",
+      "category": "Encoding",
+      "description": "Decode a base-62 number to bytes. Without `strict`, it skips other characters.",
+      "input": "string",
+      "output": "bytes",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "alphabet",
+          "kind": "enum",
+          "default": "upper-first",
+          "options": [
+            "upper-first",
+            "lower-first"
+          ]
+        },
+        {
+          "name": "strict",
+          "kind": "boolean",
+          "default": false
+        }
+      ],
+      "examples": [
+        {
+          "input": "5TP3P3v",
           "args": {},
           "output": "Hello"
         }
@@ -918,6 +973,29 @@
       "examples": [
         {
           "input": "87cURDZ",
+          "args": {},
+          "output": "Hello"
+        }
+      ]
+    },
+    {
+      "id": "from-base92",
+      "name": "From Base92",
+      "category": "Encoding",
+      "description": "Decode Base92. Without `strict`, it skips characters outside the alphabet.",
+      "input": "string",
+      "output": "bytes",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "strict",
+          "kind": "boolean",
+          "default": false
+        }
+      ],
+      "examples": [
+        {
+          "input": ";K_$aOB",
           "args": {},
           "output": "Hello"
         }
@@ -2543,6 +2621,23 @@
       ]
     },
     {
+      "id": "to-base45",
+      "name": "To Base45",
+      "category": "Encoding",
+      "description": "Encode bytes as Base45 (RFC 9285), the QR-code encoding: 2 bytes become 3 characters.",
+      "input": "bytes",
+      "output": "string",
+      "parity": "exact",
+      "args": [],
+      "examples": [
+        {
+          "input": "AB",
+          "args": {},
+          "output": "BB8"
+        }
+      ]
+    },
+    {
       "id": "to-base58",
       "name": "To Base58",
       "category": "Encoding",
@@ -2566,6 +2661,33 @@
           "input": "Hello",
           "args": {},
           "output": "9Ajdvzr"
+        }
+      ]
+    },
+    {
+      "id": "to-base62",
+      "name": "To Base62",
+      "category": "Encoding",
+      "description": "Write the bytes, read as one big-endian number, in base 62. Leading zeros are not kept.",
+      "input": "bytes",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "alphabet",
+          "kind": "enum",
+          "default": "upper-first",
+          "options": [
+            "upper-first",
+            "lower-first"
+          ]
+        }
+      ],
+      "examples": [
+        {
+          "input": "Hello",
+          "args": {},
+          "output": "5TP3P3v"
         }
       ]
     },
@@ -2636,6 +2758,23 @@
           "input": "Hello",
           "args": {},
           "output": "87cURDZ"
+        }
+      ]
+    },
+    {
+      "id": "to-base92",
+      "name": "To Base92",
+      "category": "Encoding",
+      "description": "Encode bytes as Base92: every 13 bits become two printable ASCII characters.",
+      "input": "bytes",
+      "output": "string",
+      "parity": "exact",
+      "args": [],
+      "examples": [
+        {
+          "input": "Hello",
+          "args": {},
+          "output": ";K_$aOB"
         }
       ]
     },

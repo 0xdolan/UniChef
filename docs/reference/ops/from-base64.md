@@ -93,5 +93,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← From Base58](from-base58.md) · [Contents](../../README.md) · [From Base85 →](from-base85.md)
+[← From Base62](from-base62.md) · [Contents](../../README.md) · [From Base85 →](from-base85.md)
 <!-- /docs:nav -->

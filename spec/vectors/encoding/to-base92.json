@@ -1,0 +1,114 @@
+{
+  "op": "to-base92",
+  "cases": [
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "'AB' (CyberChef test, Base92.mjs)",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "4142"
+      },
+      "expected": {
+        "type": "string",
+        "text": "8y2"
+      }
+    },
+    {
+      "name": "'Hello!!' (CyberChef test, Base92.mjs)",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "48656c6c6f2121"
+      },
+      "expected": {
+        "type": "string",
+        "text": ";K_$aOTo&"
+      }
+    },
+    {
+      "name": "'base-92' (CyberChef test, Base92.mjs)",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "626173652d3932"
+      },
+      "expected": {
+        "type": "string",
+        "text": "DX2?V<Y(*"
+      }
+    },
+    {
+      "name": "'hello world' (reference implementation)",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "68656c6c6f20776f726c64"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Fc_$aOTdKnsM*k"
+      }
+    },
+    {
+      "name": "one byte takes two characters",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "61"
+      },
+      "expected": {
+        "type": "string",
+        "text": "D,"
+      }
+    },
+    {
+      "name": "thirteen bytes fill eight pairs exactly",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "000102030405060708090a0b0c"
+      },
+      "expected": {
+        "type": "string",
+        "text": "!!-A&8!sCv']9EA)"
+      }
+    },
+    {
+      "name": "all bits set",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "ffff"
+      },
+      "expected": {
+        "type": "string",
+        "text": "}#Z"
+      }
+    },
+    {
+      "name": "error: unknown argument",
+      "args": {
+        "strict": true
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "00"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

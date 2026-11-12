@@ -393,6 +393,236 @@ export const quotedPrintableDecode = defineOp({
   },
 });
 
+// ---------------------------------------------------------------------------
+// Base45 (RFC 9285)
+
+const B45 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:';
+const B45_INDEX = new Map(Array.from(B45, (ch, i) => [ch, i]));
+const B45_SET: ReadonlySet<string> = new Set(B45_INDEX.keys());
+
+/** The characters of `text` that are in `allowed`; in strict mode any other character throws. */
+function alphabetChars(
+  text: string,
+  allowed: ReadonlySet<string>,
+  strict: boolean,
+  what: string,
+): string {
+  if (!strict) return keepOnly(text, allowed);
+  const bad = firstOutside(text, allowed);
+  if (bad !== undefined) throw decodeError(`Strict mode: ${pyRepr(bad)} is not a ${what}.`);
+  return text;
+}
+
+export const toBase45 = defineOp({
+  id: 'to-base45',
+  name: 'To Base45',
+  category: 'Encoding',
+  description:
+    'Encode bytes as Base45 (RFC 9285), the QR-code-friendly encoding: 2 bytes become 3 characters.',
+  inputType: 'bytes',
+  outputType: 'string',
+  examples: [{ input: 'AB', args: {}, output: 'BB8' }],
+  args: [],
+  run(data, _args, ctx) {
+    const out: string[] = [];
+    for (let start = 0; start < data.length; start += 2) {
+      if (start % 8192 === 0) ctx.check();
+      const size = Math.min(2, data.length - start);
+      let number = data[start] ?? 0;
+      if (size === 2) number = number * 256 + (data[start + 1] ?? 0);
+      // Digits are written least significant first: 3 for a pair, 2 for a last single byte.
+      for (let i = 0; i <= size; i++) {
+        out.push(B45[number % 45] ?? '');
+        number = Math.floor(number / 45);
+      }
+    }
+    return out.join('');
+  },
+});
+
+export const fromBase45 = defineOp({
+  id: 'from-base45',
+  name: 'From Base45',
+  category: 'Encoding',
+  description:
+    'Decode Base45 (RFC 9285). Without `strict`, it skips characters outside the alphabet.',
+  inputType: 'string',
+  outputType: 'bytes',
+  examples: [{ input: 'BB8', args: {}, output: 'AB' }],
+  args: [boolArg('strict')],
+  run(text, args, ctx) {
+    const chars = alphabetChars(text, B45_SET, args.flag('strict'), 'Base45 character');
+    if (chars.length % 3 === 1)
+      throw decodeError('Base45 input cannot end with a single character.');
+    const out: number[] = [];
+    for (let start = 0; start < chars.length; start += 3) {
+      if (start % 8192 === 0) ctx.check();
+      const group = chars.slice(start, start + 3);
+      let number = 0;
+      for (let i = group.length - 1; i >= 0; i--) {
+        number = number * 45 + (B45_INDEX.get(group[i] ?? '') ?? 0);
+      }
+      const size = group.length - 1;
+      if (number >= 256 ** size)
+        throw decodeError(`Base45 group ${pyRepr(group)} is out of range.`);
+      if (size === 2) out.push(number >> 8);
+      out.push(number & 0xff);
+    }
+    return Uint8Array.from(out);
+  },
+});
+
+// ---------------------------------------------------------------------------
+// Base62
+
+const B62: Record<string, string> = {
+  'upper-first': '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
+  'lower-first': '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ',
+};
+/** Digits per big-integer step: 62**8 < 2**53, so a step's digits fit a safe integer. */
+const B62_STEP = 8;
+const B62_BASE = 62n ** BigInt(B62_STEP);
+
+export const toBase62 = defineOp({
+  id: 'to-base62',
+  name: 'To Base62',
+  category: 'Encoding',
+  description:
+    'Write the bytes, read as one big-endian number, in base 62. Leading zero bytes are not kept.',
+  inputType: 'bytes',
+  outputType: 'string',
+  examples: [{ input: 'Hello', args: {}, output: '5TP3P3v' }],
+  args: [enumArg('alphabet', Object.keys(B62))],
+  run(data, args, ctx) {
+    const alphabet = B62[args.text('alphabet')] ?? '';
+    if (data.length === 0) return '';
+    let number = bytesToBigInt(data);
+    const chunks: string[] = [];
+    while (number > 0n) {
+      ctx.check();
+      let chunk = Number(number % B62_BASE);
+      number /= B62_BASE;
+      let digits = '';
+      for (let i = 0; i < B62_STEP; i++) {
+        digits = (alphabet[chunk % 62] ?? '') + digits;
+        chunk = Math.floor(chunk / 62);
+      }
+      chunks.push(digits);
+    }
+    const zero = alphabet[0] ?? '';
+    return stripLeading(chunks.reverse().join(''), zero) || zero;
+  },
+});
+
+export const fromBase62 = defineOp({
+  id: 'from-base62',
+  name: 'From Base62',
+  category: 'Encoding',
+  description:
+    'Decode a base-62 number to bytes. Without `strict`, it skips characters outside the alphabet.',
+  inputType: 'string',
+  outputType: 'bytes',
+  examples: [{ input: '5TP3P3v', args: {}, output: 'Hello' }],
+  args: [enumArg('alphabet', Object.keys(B62)), boolArg('strict')],
+  run(text, args, ctx) {
+    const alphabet = B62[args.text('alphabet')] ?? '';
+    const index = new Map(Array.from(alphabet, (ch, i) => [ch, i]));
+    const chars = alphabetChars(text, new Set(index.keys()), args.flag('strict'), 'Base62 digit');
+    if (chars === '') return new Uint8Array(0);
+    let number = 0n;
+    for (let start = 0; start < chars.length; start += B62_STEP) {
+      ctx.check();
+      const part = chars.slice(start, start + B62_STEP);
+      let chunk = 0;
+      for (const ch of part) chunk = chunk * 62 + (index.get(ch) ?? 0);
+      number = number * 62n ** BigInt(part.length) + BigInt(chunk);
+    }
+    return number === 0n ? new Uint8Array(1) : bigIntToBytes(number);
+  },
+});
+
+// ---------------------------------------------------------------------------
+// Base92
+
+/** '!', then '#' to '_' (61 characters), then 'a' to '}' (29): 91 digits. */
+const B92 =
+  '!' +
+  Array.from({ length: 0x60 - 0x23 }, (_, i) => String.fromCharCode(0x23 + i)).join('') +
+  Array.from({ length: 0x7e - 0x61 }, (_, i) => String.fromCharCode(0x61 + i)).join('');
+const B92_INDEX = new Map(Array.from(B92, (ch, i) => [ch, i]));
+const B92_SET: ReadonlySet<string> = new Set(B92_INDEX.keys());
+
+export const toBase92 = defineOp({
+  id: 'to-base92',
+  name: 'To Base92',
+  category: 'Encoding',
+  description: 'Encode bytes as Base92: every 13 bits become two printable ASCII characters.',
+  inputType: 'bytes',
+  outputType: 'string',
+  examples: [{ input: 'Hello', args: {}, output: ';K_$aOB' }],
+  args: [],
+  run(data, _args, ctx) {
+    const out: string[] = [];
+    const pair = (value: number): void => {
+      out.push(B92[Math.floor(value / 91)] ?? '', B92[value % 91] ?? '');
+    };
+    let acc = 0;
+    let bits = 0;
+    for (let i = 0; i < data.length; i++) {
+      if (i % 8192 === 0) ctx.check();
+      acc = (acc << 8) | (data[i] ?? 0);
+      bits += 8;
+      if (bits >= 13) {
+        bits -= 13;
+        pair(acc >> bits);
+        acc &= (1 << bits) - 1;
+      }
+    }
+    if (bits > 0 && bits < 7) out.push(B92[acc << (6 - bits)] ?? '');
+    else if (bits > 0) pair(acc << (13 - bits));
+    return out.join('');
+  },
+});
+
+export const fromBase92 = defineOp({
+  id: 'from-base92',
+  name: 'From Base92',
+  category: 'Encoding',
+  description: 'Decode Base92. Without `strict`, it skips characters outside the alphabet.',
+  inputType: 'string',
+  outputType: 'bytes',
+  examples: [{ input: ';K_$aOB', args: {}, output: 'Hello' }],
+  args: [boolArg('strict')],
+  run(text, args, ctx) {
+    const chars = alphabetChars(text, B92_SET, args.flag('strict'), 'Base92 character');
+    const out: number[] = [];
+    let acc = 0;
+    let bits = 0;
+    for (let start = 0; start < chars.length; start += 2) {
+      if (start % 8192 === 0) ctx.check();
+      const pair = chars.slice(start, start + 2);
+      const first = B92_INDEX.get(pair[0] ?? '') ?? 0;
+      if (pair.length === 2) {
+        const value = first * 91 + (B92_INDEX.get(pair[1] ?? '') ?? 0);
+        if (value >= 1 << 13) throw decodeError(`Base92 pair ${pyRepr(pair)} is out of range.`);
+        acc = (acc << 13) | value;
+        bits += 13;
+      } else {
+        if (first >= 1 << 6)
+          throw decodeError(`Base92 final character ${pyRepr(pair)} is out of range.`);
+        acc = (acc << 6) | first;
+        bits += 6;
+      }
+      while (bits >= 8) {
+        bits -= 8;
+        out.push(acc >> bits);
+        acc &= (1 << bits) - 1;
+      }
+    }
+    return Uint8Array.from(out);
+  },
+});
+
 export const CODEC_OPS: readonly Operation[] = [
   toBase58,
   fromBase58,
@@ -400,4 +630,10 @@ export const CODEC_OPS: readonly Operation[] = [
   fromBase85,
   quotedPrintableEncode,
   quotedPrintableDecode,
+  toBase45,
+  fromBase45,
+  toBase62,
+  fromBase62,
+  toBase92,
+  fromBase92,
 ];

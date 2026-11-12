@@ -74,5 +74,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← Encode Text](encode-text.md) · [Contents](../../README.md) · [From Base58 →](from-base58.md)
+[← Encode Text](encode-text.md) · [Contents](../../README.md) · [From Base45 →](from-base45.md)
 <!-- /docs:nav -->

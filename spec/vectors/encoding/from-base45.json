@@ -1,0 +1,111 @@
+{
+  "op": "from-base45",
+  "cases": [
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": ""
+      }
+    },
+    {
+      "name": "RFC 9285 'ietf!' (CyberChef test, Base45.mjs)",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "QED8WEX0"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "6965746621"
+      }
+    },
+    {
+      "name": "RFC 9285 'Hello!!' with a space digit",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "%69 VD92EX0"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "48656c6c6f2121"
+      }
+    },
+    {
+      "name": "skips characters outside the alphabet",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "QED8\nWEX0!"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "6965746621"
+      }
+    },
+    {
+      "name": "lower case is skipped",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "BbB8b"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "4142"
+      }
+    },
+    {
+      "name": "error: strict rejects a line feed",
+      "args": {
+        "strict": true
+      },
+      "input": {
+        "type": "string",
+        "text": "QED8\nWEX0"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: a group above 65535 (CyberChef test, Base45.mjs)",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "GGW"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: a pair above 255",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "::"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: a dangling single character",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "BB8A"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    }
+  ]
+}

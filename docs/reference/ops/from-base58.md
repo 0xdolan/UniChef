@@ -76,5 +76,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← From Base32](from-base32.md) · [Contents](../../README.md) · [From Base64 →](from-base64.md)
+[← From Base45](from-base45.md) · [Contents](../../README.md) · [From Base62 →](from-base62.md)
 <!-- /docs:nav -->

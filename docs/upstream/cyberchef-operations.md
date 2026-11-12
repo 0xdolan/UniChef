@@ -3,7 +3,7 @@
 > Generated from `src/core/config/Categories.json` at CyberChef commit `d4d96c6c3d2597fef836d81bfc04617d97c681a5` (v11.5.0, 2026-11-04).
 > Mapping targets are the op ids in [UniChef-PRD.md §3.8](../../UniChef-PRD.md). Seed `spec/cyberchef-map.json` from this table.
 
-**Totals:** 506 unique operations (some appear in several categories); 79 have a planned UniChef equivalent; 427 are not planned for 1.0.
+**Totals:** 506 unique operations (some appear in several categories); 85 have a UniChef equivalent (79 in 1.0); 421 are not yet covered.
 
 Rules for the importer:
 
@@ -31,19 +31,19 @@ Rules for the importer:
 | From Octal | `from-octal` | Alpha |
 | To Base32 | `to-base32` | Alpha |
 | From Base32 | `from-base32` | Alpha |
-| To Base45 | not planned | — |
-| From Base45 | not planned | — |
+| To Base45 | `to-base45` | 1.1 |
+| From Base45 | `from-base45` | 1.1 |
 | To Base58 | `to-base58` | Beta |
 | From Base58 | `from-base58` | Beta |
 | To Bech32 | not planned | — |
 | From Bech32 | not planned | — |
-| To Base62 | not planned | — |
-| From Base62 | not planned | — |
+| To Base62 | `to-base62` | 1.1 |
+| From Base62 | `from-base62` | 1.1 |
 | To Base64 | `to-base64` | Alpha |
 | From Base64 | `from-base64` | Alpha |
 | Show Base64 offsets | not planned | — |
-| To Base92 | not planned | — |
-| From Base92 | not planned | — |
+| To Base92 | `to-base92` | 1.1 |
+| From Base92 | `from-base92` | 1.1 |
 | To Base85 | `to-base85` | Beta |
 | From Base85 | `from-base85` | Beta |
 | To Base | not planned | — |

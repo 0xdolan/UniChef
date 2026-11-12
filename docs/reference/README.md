@@ -18,9 +18,12 @@ Background: [Base encodings](../learn/base-encodings.md)
 | [Decode Text](ops/decode-text.md) | Decode bytes from a character encoding. |
 | [Encode Text](ops/encode-text.md) | Encode text in a character encoding. |
 | [From Base32](ops/from-base32.md) | Decode Base32. |
+| [From Base45](ops/from-base45.md) | Decode Base45 (RFC 9285). |
 | [From Base58](ops/from-base58.md) | Decode Base58. |
+| [From Base62](ops/from-base62.md) | Decode a base-62 number to bytes. |
 | [From Base64](ops/from-base64.md) | Decode Base64. |
 | [From Base85](ops/from-base85.md) | Decode Ascii85 (optionally inside `<~ ~>`) or Z85. |
+| [From Base92](ops/from-base92.md) | Decode Base92. |
 | [From Binary](ops/from-binary.md) | Read bytes of 1-8 binary digits. |
 | [From Decimal](ops/from-decimal.md) | Read bytes of 1-3 decimal digits (at most 255). |
 | [From Hex](ops/from-hex.md) | Read hex digit pairs. |
@@ -33,9 +36,12 @@ Background: [Base encodings](../learn/base-encodings.md)
 | [Quoted-Printable Decode](ops/quoted-printable-decode.md) | Decode quoted-printable. |
 | [Quoted-Printable Encode](ops/quoted-printable-encode.md) | Encode bytes as quoted-printable, with lines of at most 76 characters. |
 | [To Base32](ops/to-base32.md) | Encode bytes as Base32 (RFC 4648 §6) or base32hex (§7). |
+| [To Base45](ops/to-base45.md) | Encode bytes as Base45 (RFC 9285), the QR-code encoding: 2 bytes become 3 characters. |
 | [To Base58](ops/to-base58.md) | Encode bytes as Base58. |
+| [To Base62](ops/to-base62.md) | Write the bytes, read as one big-endian number, in base 62. |
 | [To Base64](ops/to-base64.md) | Encode bytes as Base64 (RFC 4648 §4 or §5, or a custom alphabet). |
 | [To Base85](ops/to-base85.md) | Encode bytes as Ascii85 (`z` for a group of four zero bytes) or Z85. |
+| [To Base92](ops/to-base92.md) | Encode bytes as Base92: every 13 bits become two printable ASCII characters. |
 | [To Binary](ops/to-binary.md) | Write each byte as eight binary digits, separated by `delimiter`. |
 | [To Decimal](ops/to-decimal.md) | Write each byte as a decimal number without padding, separated by `delimiter`. |
 | [To Hex](ops/to-hex.md) | Write each byte as two hex digits, separated or prefixed by `delimiter`. |
