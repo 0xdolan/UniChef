@@ -1,0 +1,144 @@
+{
+  "op": "from-modhex",
+  "cases": [
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": ""
+      }
+    },
+    {
+      "name": "a stream to UTF-8 (CyberChef test, Modhex.mjs)",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "uhkgkbuhkgkbugltlkugltkc"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "e69591e69591e5ada9e5ad90"
+      }
+    },
+    {
+      "name": "mixed case (CyberChef test, Modhex.mjs)",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "uhKGkbUHkgkBUGltlkugltkc"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "e69591e69591e5ada9e5ad90"
+      }
+    },
+    {
+      "name": "multiline with commas (auto) (CyberChef test, Modhex.mjs)",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "fk,dc,ie,hb,ii,dc,ht,ik,ie,hg,hr,hh,dc,ie,hk,\nif,if,hk,hu,hi,dc,hk,hu,dc,if,hj,hg,dc,he,id,\nhv,if,he,hj,dc,hv,hh,dc,if,hj,hg,dc,if,hj,hk,\nie,dc,hh,hk,hi,dc,if,id,hg,hg"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "4920736177206d7973656c662073697474696e6720696e207468652063726f746368206f66207468652074686973206669672074726565"
+      }
+    },
+    {
+      "name": "multiline with percent (CyberChef test, Modhex.mjs)",
+      "args": {
+        "delimiter": "percent"
+      },
+      "input": {
+        "type": "string",
+        "text": "fk%dc%ie%hb%ii%dc%ht%ik%ie%hg%hr%hh%dc%ie%hk%\nif%if%hk%hu%hi%dc%hk%hu%dc%if%hj%hg%dc%he%id%\nhv%if%he%hj%dc%hv%hh%dc%if%hj%hg%dc%if%hj%hk%\nie%dc%hh%hk%hi%dc%if%id%hg%hg"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "4920736177206d7973656c662073697474696e6720696e207468652063726f746368206f66207468652074686973206669672074726565"
+      }
+    },
+    {
+      "name": "multiline with semicolons (CyberChef test, Modhex.mjs)",
+      "args": {
+        "delimiter": "semicolon"
+      },
+      "input": {
+        "type": "string",
+        "text": "fk;dc;ie;hb;ii;dc;ht;ik;ie;hg;hr;hh;dc;ie;hk;\nif;if;hk;hu;hi;dc;hk;hu;dc;if;hj;hg;dc;he;id;\nhv;if;he;hj;dc;hv;hh;dc;if;hj;hg;dc;if;hj;hk;\nie;dc;hh;hk;hi;dc;if;id;hg;hg"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "4920736177206d7973656c662073697474696e6720696e207468652063726f746368206f66207468652074686973206669672074726565"
+      }
+    },
+    {
+      "name": "default auto reads the space form",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "fj hk db"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "486921"
+      }
+    },
+    {
+      "name": "none still ignores whitespace",
+      "args": {
+        "delimiter": "none"
+      },
+      "input": {
+        "type": "string",
+        "text": "fjhk\ndb"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "486921"
+      }
+    },
+    {
+      "name": "error: a hex digit is not Modhex",
+      "args": {
+        "delimiter": "none"
+      },
+      "input": {
+        "type": "string",
+        "text": "fa"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: the wrong delimiter",
+      "args": {
+        "delimiter": "colon"
+      },
+      "input": {
+        "type": "string",
+        "text": "fj,hk"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: an odd digit count",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "fjh"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    }
+  ]
+}

@@ -17,6 +17,7 @@ Background: [Base encodings](../learn/base-encodings.md)
 |---|---|
 | [Decode Text](ops/decode-text.md) | Decode bytes from a character encoding. |
 | [Encode Text](ops/encode-text.md) | Encode text in a character encoding. |
+| [From Base](ops/from-base.md) | Read a number written in a radix from 2 to 36 and write it in decimal. |
 | [From Base32](ops/from-base32.md) | Decode Base32. |
 | [From Base45](ops/from-base45.md) | Decode Base45 (RFC 9285). |
 | [From Base58](ops/from-base58.md) | Decode Base58. |
@@ -25,8 +26,10 @@ Background: [Base encodings](../learn/base-encodings.md)
 | [From Base85](ops/from-base85.md) | Decode Ascii85 (optionally inside `<~ ~>`) or Z85. |
 | [From Base92](ops/from-base92.md) | Decode Base92. |
 | [From Binary](ops/from-binary.md) | Read bytes of 1-8 binary digits. |
+| [From Charcode](ops/from-charcode.md) | Read code points written in `base` and separated by `delimiter`. |
 | [From Decimal](ops/from-decimal.md) | Read bytes of 1-3 decimal digits (at most 255). |
 | [From Hex](ops/from-hex.md) | Read hex digit pairs. |
+| [From Modhex](ops/from-modhex.md) | Read Modhex digit pairs, in either case, ignoring whitespace. |
 | [From Octal](ops/from-octal.md) | Read bytes of 1-3 octal digits (at most 377). |
 | [From Punycode](ops/from-punycode.md) | Decode Punycode (RFC 3492). |
 | [HTML Entity Decode](ops/html-entity-decode.md) | Decode named and numeric character references as HTML does in text content: the longest known name wins, legacy names may omit the semicolon, numeric references may omit it, 0x80-0x9F map through windows-1252, and 0, surrogates and values above 10FFFF become U+FFFD. |
@@ -35,6 +38,8 @@ Background: [Base encodings](../learn/base-encodings.md)
 | [IDNA To Unicode](ops/idna-to-unicode.md) | UTS #46 ToUnicode with nontransitional processing: map, normalise to NFC, decode xn-- labels and check every label. |
 | [Quoted-Printable Decode](ops/quoted-printable-decode.md) | Decode quoted-printable. |
 | [Quoted-Printable Encode](ops/quoted-printable-encode.md) | Encode bytes as quoted-printable, with lines of at most 76 characters. |
+| [Swap Endianness](ops/swap-endianness.md) | Reverse the byte order inside each word of `word_length` bytes. |
+| [To Base](ops/to-base.md) | Write a decimal number in a radix from 2 to 36 with lower-case digits. |
 | [To Base32](ops/to-base32.md) | Encode bytes as Base32 (RFC 4648 §6) or base32hex (§7). |
 | [To Base45](ops/to-base45.md) | Encode bytes as Base45 (RFC 9285), the QR-code encoding: 2 bytes become 3 characters. |
 | [To Base58](ops/to-base58.md) | Encode bytes as Base58. |
@@ -43,8 +48,10 @@ Background: [Base encodings](../learn/base-encodings.md)
 | [To Base85](ops/to-base85.md) | Encode bytes as Ascii85 (`z` for a group of four zero bytes) or Z85. |
 | [To Base92](ops/to-base92.md) | Encode bytes as Base92: every 13 bits become two printable ASCII characters. |
 | [To Binary](ops/to-binary.md) | Write each byte as eight binary digits, separated by `delimiter`. |
+| [To Charcode](ops/to-charcode.md) | Write each code point in `base`. |
 | [To Decimal](ops/to-decimal.md) | Write each byte as a decimal number without padding, separated by `delimiter`. |
 | [To Hex](ops/to-hex.md) | Write each byte as two hex digits, separated or prefixed by `delimiter`. |
+| [To Modhex](ops/to-modhex.md) | Write each byte as two Modhex digits, separated by `delimiter`. |
 | [To Octal](ops/to-octal.md) | Write each byte as three octal digits, separated by `delimiter`. |
 | [To Punycode](ops/to-punycode.md) | Encode the input with Punycode (RFC 3492). |
 | [URL Decode](ops/url-decode.md) | Decode %XX escapes; malformed escapes stay as they are. |

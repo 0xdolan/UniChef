@@ -3,7 +3,7 @@
 > Generated from `src/core/config/Categories.json` at CyberChef commit `d4d96c6c3d2597fef836d81bfc04617d97c681a5` (v11.5.0, 2026-11-04).
 > Mapping targets are the op ids in [UniChef-PRD.md §3.8](../../UniChef-PRD.md). Seed `spec/cyberchef-map.json` from this table.
 
-**Totals:** 506 unique operations (some appear in several categories); 85 have a UniChef equivalent (79 in 1.0); 421 are not yet covered.
+**Totals:** 506 unique operations (some appear in several categories); 92 have a UniChef equivalent (79 in 1.0); 414 are not yet covered.
 
 Rules for the importer:
 
@@ -19,8 +19,8 @@ Rules for the importer:
 | From Hexdump | not planned | — |
 | To Hex | `to-hex` | Alpha |
 | From Hex | `from-hex` | Alpha |
-| To Charcode | not planned | — |
-| From Charcode | not planned | — |
+| To Charcode | `to-charcode` | 1.1 |
+| From Charcode | `from-charcode` | 1.1 |
 | To Decimal | `to-decimal` | Alpha |
 | From Decimal | `from-decimal` | Alpha |
 | To Float | not planned | — |
@@ -46,8 +46,8 @@ Rules for the importer:
 | From Base92 | `from-base92` | 1.1 |
 | To Base85 | `to-base85` | Beta |
 | From Base85 | `from-base85` | Beta |
-| To Base | not planned | — |
-| From Base | not planned | — |
+| To Base | `to-base` | 1.1 |
+| From Base | `from-base` | 1.1 |
 | To BCD | not planned | — |
 | From BCD | not planned | — |
 | Text-Integer Conversion | not planned | — |
@@ -74,7 +74,7 @@ Rules for the importer:
 | Encode text | `encode-text` | Alpha |
 | Decode text | `decode-text` | Alpha |
 | Text Encoding Brute Force | not planned | — |
-| Swap endianness | not planned | — |
+| Swap endianness | `swap-endianness` | 1.1 |
 | To MessagePack | not planned | — |
 | From MessagePack | not planned | — |
 | To Braille | not planned | — |
@@ -90,8 +90,8 @@ Rules for the importer:
 | Caret/M-decode | not planned | — |
 | Rison Encode | not planned | — |
 | Rison Decode | not planned | — |
-| To Modhex | not planned | — |
-| From Modhex | not planned | — |
+| To Modhex | `to-modhex` | 1.1 |
+| From Modhex | `from-modhex` | 1.1 |
 | MIME Decoding | not planned | — |
 | To COBS | not planned | — |
 | From COBS | not planned | — |
@@ -371,7 +371,7 @@ Rules for the importer:
 | Show on map | not planned | — |
 | Parse UNIX file permissions | not planned | — |
 | Parse ObjectID timestamp | not planned | — |
-| Swap endianness | not planned | — |
+| Swap endianness | `swap-endianness` | 1.1 |
 | Parse colour code | not planned | — |
 | Escape string | not planned | — |
 | Unescape string | not planned | — |

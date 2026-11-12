@@ -255,6 +255,14 @@ def to_hex(data: bytes, args: Args, ctx: OpContext) -> str:
     return HEX_DELIMITERS[delimiter].join(pairs)
 
 
+def parse_hex_auto(text: str) -> bytes:
+    """Read hex digit pairs after removing 0x and \\x prefixes, whitespace and ,:;-."""
+    digits = _AUTO_SEPARATOR.sub("", _AUTO_PREFIX.sub("", text))
+    if not _HEX_DIGITS.fullmatch(digits):
+        raise _decode_error("The input holds a non-hex character or an odd digit count.")
+    return bytes.fromhex(digits)
+
+
 @operation(
     "from-hex",
     "From Hex",
@@ -269,10 +277,7 @@ def from_hex(text: str, args: Args, ctx: OpContext) -> bytes:
     ctx.check()
     delimiter = args.text("delimiter")
     if delimiter == "auto":
-        digits = _AUTO_SEPARATOR.sub("", _AUTO_PREFIX.sub("", text))
-        if not _HEX_DIGITS.fullmatch(digits):
-            raise _decode_error("The input holds a non-hex character or an odd digit count.")
-        return bytes.fromhex(digits)
+        return parse_hex_auto(text)
     if text == "":
         return b""
     if delimiter in HEX_PREFIXES:

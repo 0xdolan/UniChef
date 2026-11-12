@@ -790,6 +790,40 @@
       ]
     },
     {
+      "id": "from-base",
+      "name": "From Base",
+      "category": "Encoding",
+      "description": "Read a number written in a radix from 2 to 36 and write it in decimal. Digits are case-insensitive, whitespace is ignored and a leading + or - is allowed. A fraction gets at most 20 decimal places, rounded half up.",
+      "input": "string",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "radix",
+          "kind": "integer",
+          "default": 36,
+          "minimum": 2,
+          "maximum": 36
+        }
+      ],
+      "examples": [
+        {
+          "input": "ff",
+          "args": {
+            "radix": 16
+          },
+          "output": "255"
+        },
+        {
+          "input": "10.1",
+          "args": {
+            "radix": 2
+          },
+          "output": "2.5"
+        }
+      ]
+    },
+    {
       "id": "from-base32",
       "name": "From Base32",
       "category": "Encoding",
@@ -1033,6 +1067,44 @@
       ]
     },
     {
+      "id": "from-charcode",
+      "name": "From Charcode",
+      "category": "Encoding",
+      "description": "Read code points written in `base` and separated by `delimiter`. Whitespace around each code is ignored and empty codes are skipped.",
+      "input": "string",
+      "output": "codepoints",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "delimiter",
+          "kind": "enum",
+          "default": "space",
+          "options": [
+            "space",
+            "comma",
+            "semicolon",
+            "colon",
+            "newline",
+            "crlf"
+          ]
+        },
+        {
+          "name": "base",
+          "kind": "integer",
+          "default": 16,
+          "minimum": 2,
+          "maximum": 36
+        }
+      ],
+      "examples": [
+        {
+          "input": "48 e9 20 1f44b",
+          "args": {},
+          "output": "U+0048 U+00E9 U+0020 U+1F44B"
+        }
+      ]
+    },
+    {
       "id": "from-code-points",
       "name": "From Code Points",
       "category": "Unicode",
@@ -1126,6 +1198,40 @@
           "input": "48 c3 a9 6c 6c 6f",
           "args": {},
           "output": "Héllo"
+        }
+      ]
+    },
+    {
+      "id": "from-modhex",
+      "name": "From Modhex",
+      "category": "Encoding",
+      "description": "Read Modhex digit pairs, in either case, ignoring whitespace. `auto` also drops every other character; any other choice removes only that delimiter.",
+      "input": "string",
+      "output": "bytes",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "delimiter",
+          "kind": "enum",
+          "default": "auto",
+          "options": [
+            "auto",
+            "space",
+            "percent",
+            "comma",
+            "semicolon",
+            "colon",
+            "newline",
+            "crlf",
+            "none"
+          ]
+        }
+      ],
+      "examples": [
+        {
+          "input": "fj hk db",
+          "args": {},
+          "output": "Hi!"
         }
       ]
     },
@@ -2552,6 +2658,44 @@
       ]
     },
     {
+      "id": "swap-endianness",
+      "name": "Swap Endianness",
+      "category": "Encoding",
+      "description": "Reverse the byte order inside each word of `word_length` bytes. With `hex`, the input is hex text (as From Hex reads it with `auto`) and the output is space-separated lower-case hex. With `pad`, a short final word is filled with zero bytes first.",
+      "input": "bytes",
+      "output": "bytes",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "format",
+          "kind": "enum",
+          "default": "hex",
+          "options": [
+            "hex",
+            "raw"
+          ]
+        },
+        {
+          "name": "word_length",
+          "kind": "integer",
+          "default": 4,
+          "minimum": 1
+        },
+        {
+          "name": "pad",
+          "kind": "boolean",
+          "default": true
+        }
+      ],
+      "examples": [
+        {
+          "input": "0a0b0c0d 01",
+          "args": {},
+          "output": "0d 0c 0b 0a 00 00 00 01"
+        }
+      ]
+    },
+    {
       "id": "tail",
       "name": "Tail",
       "category": "Text",
@@ -2585,6 +2729,40 @@
             "count": 2
           },
           "output": "two\nthree"
+        }
+      ]
+    },
+    {
+      "id": "to-base",
+      "name": "To Base",
+      "category": "Encoding",
+      "description": "Write a decimal number in a radix from 2 to 36 with lower-case digits. A fraction gets at most 20 digits, rounded half up.",
+      "input": "string",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "radix",
+          "kind": "integer",
+          "default": 36,
+          "minimum": 2,
+          "maximum": 36
+        }
+      ],
+      "examples": [
+        {
+          "input": "255",
+          "args": {
+            "radix": 16
+          },
+          "output": "ff"
+        },
+        {
+          "input": "10.5",
+          "args": {
+            "radix": 2
+          },
+          "output": "1010.1"
         }
       ]
     },
@@ -2809,6 +2987,44 @@
       ]
     },
     {
+      "id": "to-charcode",
+      "name": "To Charcode",
+      "category": "Encoding",
+      "description": "Write each code point in `base`. Base 16 pads to 2, 4 or 6 digits; other bases do not pad.",
+      "input": "codepoints",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "delimiter",
+          "kind": "enum",
+          "default": "space",
+          "options": [
+            "space",
+            "comma",
+            "semicolon",
+            "colon",
+            "newline",
+            "crlf"
+          ]
+        },
+        {
+          "name": "base",
+          "kind": "integer",
+          "default": 16,
+          "minimum": 2,
+          "maximum": 36
+        }
+      ],
+      "examples": [
+        {
+          "input": "Hé 👋",
+          "args": {},
+          "output": "48 e9 20 01f44b"
+        }
+      ]
+    },
+    {
       "id": "to-code-points",
       "name": "To Code Points",
       "category": "Unicode",
@@ -2914,6 +3130,45 @@
           "input": "Héllo",
           "args": {},
           "output": "48 c3 a9 6c 6c 6f"
+        }
+      ]
+    },
+    {
+      "id": "to-modhex",
+      "name": "To Modhex",
+      "category": "Encoding",
+      "description": "Write each byte as two Modhex digits, separated by `delimiter`. With `bytes_per_line`, a line feed follows the delimiter after every that many bytes.",
+      "input": "bytes",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "delimiter",
+          "kind": "enum",
+          "default": "space",
+          "options": [
+            "space",
+            "percent",
+            "comma",
+            "semicolon",
+            "colon",
+            "newline",
+            "crlf",
+            "none"
+          ]
+        },
+        {
+          "name": "bytes_per_line",
+          "kind": "integer",
+          "default": 0,
+          "minimum": 0
+        }
+      ],
+      "examples": [
+        {
+          "input": "Hi!",
+          "args": {},
+          "output": "fj hk db"
         }
       ]
     },

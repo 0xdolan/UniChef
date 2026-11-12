@@ -88,5 +88,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← Quoted-Printable Encode](quoted-printable-encode.md) · [Contents](../../README.md) · [To Base45 →](to-base45.md)
+[← To Base](to-base.md) · [Contents](../../README.md) · [To Base45 →](to-base45.md)
 <!-- /docs:nav -->

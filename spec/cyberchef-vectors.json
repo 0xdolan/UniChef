@@ -1867,6 +1867,116 @@
           }
         ]
       }
+    },
+    {
+      "name": "To Base",
+      "input": "[{\"op\": \"To Base\", \"args\": [16]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-base",
+            "args": {
+              "radix": 16
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "From Base",
+      "input": "[{\"op\": \"From Base\", \"args\": [2]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "from-base",
+            "args": {
+              "radix": 2
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Charcode",
+      "input": "[{\"op\": \"To Charcode\", \"args\": [\"Comma\", 10]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-charcode",
+            "args": {
+              "delimiter": "comma",
+              "base": 10
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "From Charcode",
+      "input": "[{\"op\": \"From Charcode\", \"args\": [\"Line feed\", 16]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "from-charcode",
+            "args": {
+              "delimiter": "newline",
+              "base": 16
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Modhex",
+      "input": "[{\"op\": \"To Modhex\", \"args\": [\"Colon\", 8]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-modhex",
+            "args": {
+              "delimiter": "colon",
+              "bytes_per_line": 8
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "From Modhex",
+      "input": "[{\"op\": \"From Modhex\", \"args\": [\"Auto\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "from-modhex",
+            "args": {
+              "delimiter": "auto"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Swap endianness",
+      "input": "[{\"op\": \"Swap endianness\", \"args\": [\"Raw\", 2, false]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "swap-endianness",
+            "args": {
+              "format": "raw",
+              "word_length": 2,
+              "pad": false
+            }
+          }
+        ]
+      }
     }
   ]
 }

@@ -225,6 +225,88 @@
     },
     "To Base92": { "op": "to-base92", "args": [] },
     "From Base92": { "op": "from-base92", "args": [] },
+    "To Base": { "op": "to-base", "args": [{ "to": "radix", "integer": true }] },
+    "From Base": { "op": "from-base", "args": [{ "to": "radix", "integer": true }] },
+    "To Charcode": {
+      "op": "to-charcode",
+      "args": [
+        {
+          "to": "delimiter",
+          "map": {
+            "Space": "space",
+            "Comma": "comma",
+            "Semi-colon": "semicolon",
+            "Colon": "colon",
+            "Line feed": "newline",
+            "CRLF": "crlf"
+          }
+        },
+        { "to": "base", "integer": true }
+      ]
+    },
+    "From Charcode": {
+      "op": "from-charcode",
+      "args": [
+        {
+          "to": "delimiter",
+          "map": {
+            "Space": "space",
+            "Comma": "comma",
+            "Semi-colon": "semicolon",
+            "Colon": "colon",
+            "Line feed": "newline",
+            "CRLF": "crlf"
+          }
+        },
+        { "to": "base", "integer": true }
+      ]
+    },
+    "To Modhex": {
+      "op": "to-modhex",
+      "args": [
+        {
+          "to": "delimiter",
+          "map": {
+            "Space": "space",
+            "Percent": "percent",
+            "Comma": "comma",
+            "Semi-colon": "semicolon",
+            "Colon": "colon",
+            "Line feed": "newline",
+            "CRLF": "crlf",
+            "None": "none"
+          }
+        },
+        { "to": "bytes_per_line", "integer": true }
+      ]
+    },
+    "From Modhex": {
+      "op": "from-modhex",
+      "args": [
+        {
+          "to": "delimiter",
+          "map": {
+            "Auto": "auto",
+            "Space": "space",
+            "Percent": "percent",
+            "Comma": "comma",
+            "Semi-colon": "semicolon",
+            "Colon": "colon",
+            "Line feed": "newline",
+            "CRLF": "crlf",
+            "None": "none"
+          }
+        }
+      ]
+    },
+    "Swap endianness": {
+      "op": "swap-endianness",
+      "args": [
+        { "to": "format", "map": { "Hex": "hex", "Raw": "raw" } },
+        { "to": "word_length", "integer": true },
+        { "to": "pad" }
+      ]
+    },
     "To Base85": {
       "op": "to-base85",
       "args": [

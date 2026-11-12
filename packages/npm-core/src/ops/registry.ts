@@ -5,6 +5,7 @@ import { UniChefError } from '../errors.js';
 import { pyRepr, type Operation } from './types.js';
 import { CRYPTO_OPS } from './crypto.js';
 import { CODEC_OPS } from './codecs.js';
+import { RADIX_OPS } from './radix.js';
 import { COMPRESSION_OPS } from './compression.js';
 import { DATA_OPS } from './data.js';
 import { ENCODING_OPS } from './encoding.js';
@@ -24,6 +25,7 @@ const MODULES: readonly (readonly Operation[])[] = [
   TEXT_OPS,
   ENCODING_OPS,
   CODEC_OPS,
+  RADIX_OPS,
   HTML_OPS,
   HASHING_OPS,
   CRYPTO_OPS,

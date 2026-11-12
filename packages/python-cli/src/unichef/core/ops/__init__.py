@@ -7,6 +7,7 @@ MODULES = (
     "flow",
     "encoding",
     "codecs",
+    "radix",
     "text",
     "html",
     "unicode",

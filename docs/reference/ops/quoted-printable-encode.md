@@ -82,5 +82,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← Quoted-Printable Decode](quoted-printable-decode.md) · [Contents](../../README.md) · [To Base32 →](to-base32.md)
+[← Quoted-Printable Decode](quoted-printable-decode.md) · [Contents](../../README.md) · [Swap Endianness →](swap-endianness.md)
 <!-- /docs:nav -->

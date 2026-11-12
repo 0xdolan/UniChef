@@ -1,0 +1,176 @@
+{
+  "op": "to-base",
+  "cases": [
+    {
+      "name": "zero",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "0"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0"
+      }
+    },
+    {
+      "name": "255 in hex",
+      "args": {
+        "radix": 16
+      },
+      "input": {
+        "type": "string",
+        "text": "255"
+      },
+      "expected": {
+        "type": "string",
+        "text": "ff"
+      }
+    },
+    {
+      "name": "default radix 36",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "1295"
+      },
+      "expected": {
+        "type": "string",
+        "text": "zz"
+      }
+    },
+    {
+      "name": "negative binary",
+      "args": {
+        "radix": 2
+      },
+      "input": {
+        "type": "string",
+        "text": "-10"
+      },
+      "expected": {
+        "type": "string",
+        "text": "-1010"
+      }
+    },
+    {
+      "name": "whitespace and a plus sign",
+      "args": {
+        "radix": 8
+      },
+      "input": {
+        "type": "string",
+        "text": " +63\n"
+      },
+      "expected": {
+        "type": "string",
+        "text": "77"
+      }
+    },
+    {
+      "name": "a fraction",
+      "args": {
+        "radix": 2
+      },
+      "input": {
+        "type": "string",
+        "text": "10.5"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1010.1"
+      }
+    },
+    {
+      "name": "a fraction rounds to 20 digits",
+      "args": {
+        "radix": 3
+      },
+      "input": {
+        "type": "string",
+        "text": "0.1"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0.00220022002200220022"
+      }
+    },
+    {
+      "name": "rounding carries into the whole part",
+      "args": {
+        "radix": 2
+      },
+      "input": {
+        "type": "string",
+        "text": "0.99999999999999999999999"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1"
+      }
+    },
+    {
+      "name": "minus zero is zero",
+      "args": {
+        "radix": 16
+      },
+      "input": {
+        "type": "string",
+        "text": "-0.0"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0"
+      }
+    },
+    {
+      "name": "beyond 2^64",
+      "args": {
+        "radix": 16
+      },
+      "input": {
+        "type": "string",
+        "text": "18446744073709551616"
+      },
+      "expected": {
+        "type": "string",
+        "text": "10000000000000000"
+      }
+    },
+    {
+      "name": "error: not a number",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "12a"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: only a point",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "."
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: radix 37",
+      "args": {
+        "radix": 37
+      },
+      "input": {
+        "type": "string",
+        "text": "1"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

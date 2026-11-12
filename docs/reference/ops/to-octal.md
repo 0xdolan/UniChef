@@ -74,5 +74,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← To Hex](to-hex.md) · [Contents](../../README.md) · [To Punycode →](to-punycode.md)
+[← To Modhex](to-modhex.md) · [Contents](../../README.md) · [To Punycode →](to-punycode.md)
 <!-- /docs:nav -->
