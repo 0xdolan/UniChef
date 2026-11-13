@@ -99,3 +99,18 @@ follows the cyberchef-reference skill:
 
 The enigma-family simulators (Enigma, Bombe, Multiple Bombe, Typex, Lorenz, Colossus,
 SIGABA) sit in 2.0, because they need their own visual UI to be useful.
+
+The six operations in the "Not ported" row are permanently out of scope, by maintainer
+decision (2026-11-12). Importing a recipe that uses one fails with `E_OP_UNKNOWN`.
+
+## GNOME Shell extension
+
+The design was confirmed on 2026-11-12. A top-bar icon opens a popup with two tabs:
+- **Convert:** pick an operation, paste or type the input, then copy the output. Buttons
+  paste from and copy to the clipboard.
+- **Character:** each character of the input with its code point, name and general
+  category, plus buttons that copy the input as `U+…` or `\u…` escapes.
+
+A footer link opens the full web app. Everything runs offline through the installed
+`unichef` CLI, so the extension makes no network requests (SEC-001). It ships on
+extensions.gnome.org and in the Debian package.
