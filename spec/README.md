@@ -237,6 +237,48 @@ The 91 digits are `!` (0), `#`–`_` (1–61) and `a`–`}` (62–90). The input
 
 `from-base92` reads two digits as 13 bits and a final single digit as 6 bits, emits each full 8 bits and drops the rest. Without `strict`, it discards every character outside the alphabet. Errors (`E_DECODE`): a pair above 8191, and a final digit above 63.
 
+### `to-base` (string → string) and `from-base` (string → string)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `radix` | integer 2–36 | `36` | The base. Digits are `0`–`9` then `a`–`z`; `from-base` accepts either case. |
+
+Whitespace anywhere in the input is removed first. `to-base` reads an optional sign, decimal digits and an optional `.` fraction (at most 4000 digits). The whole part is converted exactly. The fraction gets 20 digits in the target radix, rounded half up (a carry can reach the whole part), and trailing zeros are removed. `-0` is written `0`. Input that is not a decimal number is `E_DECODE`.
+
+`from-base` reads an optional sign and digits with at most one `.`. The value is exact (N / radix^k), rounded half up to 20 decimal places, trailing zeros removed, and written as a plain decimal (never in exponent form). Errors (`E_DECODE`): no digits, a digit not valid in the radix, more than 13 000 bits.
+
+### `to-charcode` (codepoints → string) and `from-charcode` (string → codepoints)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `delimiter` | `space` \| `comma` \| `semicolon` \| `colon` \| `newline` \| `crlf` | `space` | Separator between codes. |
+| `base` | integer 2–36 | `16` | Radix of each code. |
+
+`to-charcode` writes each code point in `base`, lower case. In base 16 each code is padded to 2, 4 or 6 digits (below U+0100, below U+10000, otherwise); other bases are not padded.
+
+`from-charcode` splits on the delimiter, strips ASCII whitespace from both ends of each piece and skips empty pieces. Each piece is one code point; surrogate values are kept. Errors (`E_DECODE`): a piece that is not a number in `base`, and a value above U+10FFFF. Unlike the reference implementation it returns code points, not Latin-1 bytes, and does not split runs of concatenated codes.
+
+### `to-modhex` (bytes → string) and `from-modhex` (string → bytes)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `delimiter` | `space` \| `percent` \| `comma` \| `semicolon` \| `colon` \| `newline` \| `crlf` \| `none` | `space` | Separator between bytes. `from-modhex` also takes `auto` (its default). |
+| `bytes_per_line` | integer ≥ 0 | `0` | `to-modhex` only. After every N bytes except the last, a line feed follows the delimiter. `0` means one line. |
+
+The alphabet is `cbdefghijklnrtuv` for the nibbles 0–15; each byte is two digits, high nibble first.
+
+`from-modhex` lower-cases ASCII letters and removes ASCII whitespace. With `auto` it removes every character outside the alphabet; with a named delimiter it removes only that delimiter. Errors (`E_DECODE`): a character outside the alphabet, an odd number of digits.
+
+### `swap-endianness` (bytes → bytes)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `format` | `hex` \| `raw` | `hex` | `hex` reads the input as hex text and writes space-separated lower-case hex; `raw` swaps the bytes themselves. |
+| `word_length` | integer ≥ 1 | `4` | Bytes per word. |
+| `pad` | boolean | `true` | Fill a short final word with zero bytes before reversing it. |
+
+In `hex` mode the input is read as Latin-1 text; `0x` and `\x` prefixes and any non-hex separators are removed, and an odd number of digits or a non-hex character is `E_DECODE`. The bytes are cut into words of `word_length` and each word is reversed.
+
 ### `to-base85` (bytes → string) and `from-base85` (string → bytes)
 
 | Arg | Type | Default | Meaning |

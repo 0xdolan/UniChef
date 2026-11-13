@@ -1,0 +1,143 @@
+{
+  "op": "swap-endianness",
+  "cases": [
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": ""
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": ""
+      }
+    },
+    {
+      "name": "hex words of four",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "3061306230633064203031"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "3064203063203062203061203030203030203030203031"
+      }
+    },
+    {
+      "name": "hex with prefixes and colons",
+      "args": {
+        "word_length": 2
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "307830313a307830323a307830333a30783034"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "3032203031203034203033"
+      }
+    },
+    {
+      "name": "hex without padding",
+      "args": {
+        "word_length": 4,
+        "pad": false
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "3031203032203033203034203035203036"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "3034203033203032203031203036203035"
+      }
+    },
+    {
+      "name": "raw bytes",
+      "args": {
+        "format": "raw",
+        "word_length": 2
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "61626364"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "62616463"
+      }
+    },
+    {
+      "name": "raw with padding",
+      "args": {
+        "format": "raw",
+        "word_length": 4
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "0102"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "00000201"
+      }
+    },
+    {
+      "name": "word length one changes nothing",
+      "args": {
+        "format": "raw",
+        "word_length": 1
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "616263"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "616263"
+      }
+    },
+    {
+      "name": "word longer than the input",
+      "args": {
+        "format": "raw",
+        "word_length": 8,
+        "pad": false
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "616263"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "636261"
+      }
+    },
+    {
+      "name": "error: not hex",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "7a7a"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: word length zero",
+      "args": {
+        "word_length": 0
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "3030"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

@@ -104,6 +104,31 @@ Base92 writes every **13 bits** as **two characters** from 91 printable ASCII ch
 (all but `"`, `` ` `` and `~`). It is a little denser than Base85 and safe inside a
 double-quoted string. See [To Base92](../reference/ops/to-base92.md).
 
+## Any radix
+
+Hex, octal and binary are bases 16, 8 and 2. [To Base](../reference/ops/to-base.md) and
+[From Base](../reference/ops/from-base.md) convert a decimal number to and from any base from
+2 to 36 (digits `0–9`, then `a–z`), including a fractional part: 255 is `ff` in base 16 and
+10.5 is `1010.1` in base 2.
+
+[To Charcode](../reference/ops/to-charcode.md) writes each character's **code point** in a
+chosen base (`é` → `e9`), and [From Charcode](../reference/ops/from-charcode.md) reads the
+codes back. Unlike [To Hex](../reference/ops/to-hex.md), which shows UTF-8 bytes (`c3 a9`),
+these work on characters.
+
+## Modhex
+
+Modhex is hex written with the letters `cbdefghijklnrtuv` in place of `0–9a–f`. YubiKeys type
+their one-time passwords in Modhex because those letters are on the same keys in most keyboard
+layouts. `Hi!` is `fj hk db`. See [To Modhex](../reference/ops/to-modhex.md).
+
+## Byte order
+
+A number that takes several bytes can be stored with its most significant byte first
+(big-endian, used on the network) or last (little-endian, used by most CPUs).
+[Swap Endianness](../reference/ops/swap-endianness.md) reverses the bytes in each word, so
+`0a0b0c0d` becomes `0d0c0b0a`.
+
 ## Recognising an encoding
 
 | You see | Probably |
@@ -127,7 +152,7 @@ skip characters outside the alphabet so you can paste messy data; turn on `stric
 them, which is what you want when you check that two systems agree.
 
 <!-- docs:ops -->
-Operations explained here: [From Base32](../reference/ops/from-base32.md), [From Base45](../reference/ops/from-base45.md), [From Base58](../reference/ops/from-base58.md), [From Base62](../reference/ops/from-base62.md), [From Base64](../reference/ops/from-base64.md), [From Base85](../reference/ops/from-base85.md), [From Base92](../reference/ops/from-base92.md), [From Binary](../reference/ops/from-binary.md), [From Decimal](../reference/ops/from-decimal.md), [From Hex](../reference/ops/from-hex.md), [From Octal](../reference/ops/from-octal.md), [To Base32](../reference/ops/to-base32.md), [To Base45](../reference/ops/to-base45.md), [To Base58](../reference/ops/to-base58.md), [To Base62](../reference/ops/to-base62.md), [To Base64](../reference/ops/to-base64.md), [To Base85](../reference/ops/to-base85.md), [To Base92](../reference/ops/to-base92.md), [To Binary](../reference/ops/to-binary.md), [To Decimal](../reference/ops/to-decimal.md), [To Hex](../reference/ops/to-hex.md), [To Octal](../reference/ops/to-octal.md).
+Operations explained here: [From Base](../reference/ops/from-base.md), [From Base32](../reference/ops/from-base32.md), [From Base45](../reference/ops/from-base45.md), [From Base58](../reference/ops/from-base58.md), [From Base62](../reference/ops/from-base62.md), [From Base64](../reference/ops/from-base64.md), [From Base85](../reference/ops/from-base85.md), [From Base92](../reference/ops/from-base92.md), [From Binary](../reference/ops/from-binary.md), [From Charcode](../reference/ops/from-charcode.md), [From Decimal](../reference/ops/from-decimal.md), [From Hex](../reference/ops/from-hex.md), [From Modhex](../reference/ops/from-modhex.md), [From Octal](../reference/ops/from-octal.md), [Swap Endianness](../reference/ops/swap-endianness.md), [To Base](../reference/ops/to-base.md), [To Base32](../reference/ops/to-base32.md), [To Base45](../reference/ops/to-base45.md), [To Base58](../reference/ops/to-base58.md), [To Base62](../reference/ops/to-base62.md), [To Base64](../reference/ops/to-base64.md), [To Base85](../reference/ops/to-base85.md), [To Base92](../reference/ops/to-base92.md), [To Binary](../reference/ops/to-binary.md), [To Charcode](../reference/ops/to-charcode.md), [To Decimal](../reference/ops/to-decimal.md), [To Hex](../reference/ops/to-hex.md), [To Modhex](../reference/ops/to-modhex.md), [To Octal](../reference/ops/to-octal.md).
 <!-- /docs:ops -->
 
 ## Learn more
@@ -137,6 +162,9 @@ Operations explained here: [From Base32](../reference/ops/from-base32.md), [From
 - [Base58 in the Bitcoin wiki](https://en.bitcoin.it/wiki/Base58Check_encoding)
 - [Z85 specification (ZeroMQ RFC 32)](https://rfc.zeromq.org/spec/32/)
 - [Ascii85 on Wikipedia](https://en.wikipedia.org/wiki/Ascii85)
+- [Radix (Wikipedia)](https://en.wikipedia.org/wiki/Radix)
+- [Modhex (Yubico)](https://developers.yubico.com/OTP/Modhex_Converter.html)
+- [Endianness (Wikipedia)](https://en.wikipedia.org/wiki/Endianness)
 
 <!-- docs:nav -->
 ---

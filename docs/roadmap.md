@@ -75,7 +75,8 @@ milestone or issue, and each item is done when its tests are green in CI.
 ## CyberChef parity
 
 CyberChef v11.5.0 has 506 operations. UniChef 1.0 covers 79 of them, and the development
-branch covers 85 (Base45, Base62 and Base92 are done). Each new operation
+branch covers 92 (Base45, Base62, Base92, To/From Base, To/From Charcode,
+To/From Modhex and Swap endianness are done). Each new operation
 follows the cyberchef-reference skill:
 - a PRD §3.8 entry;
 - Python and TypeScript implementations;

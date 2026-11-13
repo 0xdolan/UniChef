@@ -94,5 +94,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← Decode Text](decode-text.md) · [Contents](../../README.md) · [From Base32 →](from-base32.md)
+[← Decode Text](decode-text.md) · [Contents](../../README.md) · [From Base →](from-base.md)
 <!-- /docs:nav -->

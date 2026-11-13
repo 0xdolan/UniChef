@@ -1,0 +1,127 @@
+{
+  "op": "to-modhex",
+  "cases": [
+    {
+      "name": "empty (CyberChef test, Modhex.mjs)",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "a stream (CyberChef test, Modhex.mjs)",
+      "args": {
+        "delimiter": "none"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "6162657279737477797468"
+      },
+      "expected": {
+        "type": "string",
+        "text": "hbhdhgidikieifiiikifhj"
+      }
+    },
+    {
+      "name": "colon delimiter (CyberChef test, Modhex.mjs)",
+      "args": {
+        "delimiter": "colon"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "6162657279737477797468"
+      },
+      "expected": {
+        "type": "string",
+        "text": "hb:hd:hg:id:ik:ie:if:ii:ik:if:hj"
+      }
+    },
+    {
+      "name": "comma and line breaks (CyberChef test, Modhex.mjs)",
+      "args": {
+        "delimiter": "comma",
+        "bytes_per_line": 4
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "6162657279737477797468"
+      },
+      "expected": {
+        "type": "string",
+        "text": "hb,hd,hg,id,\nik,ie,if,ii,\nik,if,hj"
+      }
+    },
+    {
+      "name": "default space",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "486921"
+      },
+      "expected": {
+        "type": "string",
+        "text": "fj hk db"
+      }
+    },
+    {
+      "name": "every digit",
+      "args": {
+        "delimiter": "none"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "0123456789abcdef"
+      },
+      "expected": {
+        "type": "string",
+        "text": "cbdefghijklnrtuv"
+      }
+    },
+    {
+      "name": "percent between bytes",
+      "args": {
+        "delimiter": "percent"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "00ff"
+      },
+      "expected": {
+        "type": "string",
+        "text": "cc%vv"
+      }
+    },
+    {
+      "name": "no line break after the last byte",
+      "args": {
+        "bytes_per_line": 2
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "61626364"
+      },
+      "expected": {
+        "type": "string",
+        "text": "hb hd \nhe hf"
+      }
+    },
+    {
+      "name": "error: negative bytes per line",
+      "args": {
+        "bytes_per_line": -1
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "61"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

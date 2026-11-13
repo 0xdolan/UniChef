@@ -375,6 +375,15 @@ export const toHex = defineOp({
   },
 });
 
+/** Read hex digit pairs after removing 0x and \\x prefixes, whitespace and ,:;-. */
+export function parseHexAuto(text: string): Uint8Array {
+  const digits = text.replace(AUTO_PREFIX, '').replace(AUTO_SEPARATOR, '');
+  if (!HEX_DIGITS.test(digits)) {
+    throw decodeError('The input holds a non-hex character or an odd digit count.');
+  }
+  return hexBytes(pairs(digits, 2));
+}
+
 export const fromHex = defineOp({
   id: 'from-hex',
   name: 'From Hex',
@@ -388,11 +397,7 @@ export const fromHex = defineOp({
     ctx.check();
     const delimiter = args.text('delimiter');
     if (delimiter === 'auto') {
-      const digits = text.replace(AUTO_PREFIX, '').replace(AUTO_SEPARATOR, '');
-      if (!HEX_DIGITS.test(digits)) {
-        throw decodeError('The input holds a non-hex character or an odd digit count.');
-      }
-      return hexBytes(pairs(digits, 2));
+      return parseHexAuto(text);
     }
     if (text === '') {
       return new Uint8Array();

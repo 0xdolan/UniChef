@@ -1,0 +1,191 @@
+{
+  "op": "from-base",
+  "cases": [
+    {
+      "name": "binary (CyberChef test) (CyberChef test, FromBase.mjs)",
+      "args": {
+        "radix": 2
+      },
+      "input": {
+        "type": "string",
+        "text": "1010"
+      },
+      "expected": {
+        "type": "string",
+        "text": "10"
+      }
+    },
+    {
+      "name": "binary fraction (CyberChef test, FromBase.mjs)",
+      "args": {
+        "radix": 2
+      },
+      "input": {
+        "type": "string",
+        "text": "10.1"
+      },
+      "expected": {
+        "type": "string",
+        "text": "2.5"
+      }
+    },
+    {
+      "name": "hex fraction (CyberChef test, FromBase.mjs)",
+      "args": {
+        "radix": 16
+      },
+      "input": {
+        "type": "string",
+        "text": "a.8"
+      },
+      "expected": {
+        "type": "string",
+        "text": "10.5"
+      }
+    },
+    {
+      "name": "octal (CyberChef test, FromBase.mjs)",
+      "args": {
+        "radix": 8
+      },
+      "input": {
+        "type": "string",
+        "text": "77"
+      },
+      "expected": {
+        "type": "string",
+        "text": "63"
+      }
+    },
+    {
+      "name": "octal fraction (CyberChef test, FromBase.mjs)",
+      "args": {
+        "radix": 8
+      },
+      "input": {
+        "type": "string",
+        "text": "7.4"
+      },
+      "expected": {
+        "type": "string",
+        "text": "7.5"
+      }
+    },
+    {
+      "name": "default radix 36, upper case",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "ZZ"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1295"
+      }
+    },
+    {
+      "name": "negative with whitespace",
+      "args": {
+        "radix": 16
+      },
+      "input": {
+        "type": "string",
+        "text": " -F F "
+      },
+      "expected": {
+        "type": "string",
+        "text": "-255"
+      }
+    },
+    {
+      "name": "a fraction rounds to 20 places",
+      "args": {
+        "radix": 3
+      },
+      "input": {
+        "type": "string",
+        "text": "0.1"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0.33333333333333333333"
+      }
+    },
+    {
+      "name": "beyond 2^64",
+      "args": {
+        "radix": 16
+      },
+      "input": {
+        "type": "string",
+        "text": "10000000000000000"
+      },
+      "expected": {
+        "type": "string",
+        "text": "18446744073709551616"
+      }
+    },
+    {
+      "name": "minus zero is zero",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "-0"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0"
+      }
+    },
+    {
+      "name": "error: digit outside the radix",
+      "args": {
+        "radix": 10
+      },
+      "input": {
+        "type": "string",
+        "text": "1z"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: two points",
+      "args": {
+        "radix": 10
+      },
+      "input": {
+        "type": "string",
+        "text": "1.2.3"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: no digits",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": " - "
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: radix 1",
+      "args": {
+        "radix": 1
+      },
+      "input": {
+        "type": "string",
+        "text": "0"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

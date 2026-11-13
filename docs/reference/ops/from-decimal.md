@@ -73,5 +73,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← From Binary](from-binary.md) · [Contents](../../README.md) · [From Hex →](from-hex.md)
+[← From Charcode](from-charcode.md) · [Contents](../../README.md) · [From Hex →](from-hex.md)
 <!-- /docs:nav -->
