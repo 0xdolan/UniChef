@@ -2964,6 +2964,160 @@
           }
         ]
       }
+    },
+    {
+      "name": "Set Union, defaults",
+      "input": "[{\"op\": \"Set Union\", \"args\": [\"\\\\n\\\\n\", \",\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "set-union",
+            "args": {
+              "sample_delimiter": "\n\n",
+              "item_delimiter": ","
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Set Intersection, space items",
+      "input": "[{\"op\": \"Set Intersection\", \"args\": [\"\\\\n\\\\n\", \" \"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "set-intersection",
+            "args": {
+              "sample_delimiter": "\n\n",
+              "item_delimiter": " "
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Set Difference, custom sample delimiter",
+      "input": "[{\"op\": \"Set Difference\", \"args\": [\"whatever\", \",\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "set-difference",
+            "args": {
+              "sample_delimiter": "whatever",
+              "item_delimiter": ","
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Symmetric Difference, defaults",
+      "input": "[{\"op\": \"Symmetric Difference\", \"args\": [\"\\\\n\\\\n\", \",\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "symmetric-difference",
+            "args": {
+              "sample_delimiter": "\n\n",
+              "item_delimiter": ","
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Cartesian Product, hyphen items",
+      "input": "[{\"op\": \"Cartesian Product\", \"args\": [\"\\\\n\\\\n\", \"-\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "cartesian-product",
+            "args": {
+              "sample_delimiter": "\n\n",
+              "item_delimiter": "-"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Power Set, space items",
+      "input": "[{\"op\": \"Power Set\", \"args\": [\" \"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "power-set",
+            "args": {
+              "item_delimiter": " "
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Hamming Distance, bits of hex",
+      "input": "[{\"op\": \"Hamming Distance\", \"args\": [\"\\\\n\\\\n\", \"Bit\", \"Hex\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "hamming-distance",
+            "args": {
+              "delimiter": "\n\n",
+              "unit": "bit",
+              "input_type": "hex"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Hamming Distance, bytes of text",
+      "input": "[{\"op\": \"Hamming Distance\", \"args\": [\"\\\\n\", \"Byte\", \"Raw string\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "hamming-distance",
+            "args": {
+              "delimiter": "\n",
+              "unit": "byte",
+              "input_type": "text"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Hamming Distance, unknown unit",
+      "input": "[{\"op\": \"Hamming Distance\", \"args\": [\"\\\\n\\\\n\", \"Nibble\", \"Hex\"]}]",
+      "error": {
+        "code": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "Levenshtein Distance, weighted",
+      "input": "[{\"op\": \"Levenshtein Distance\", \"args\": [\"\\\\n\", 1, 2, 3]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "levenshtein-distance",
+            "args": {
+              "delimiter": "\n",
+              "insertion": 1,
+              "deletion": 2,
+              "substitution": 3
+            }
+          }
+        ]
+      }
     }
   ]
 }

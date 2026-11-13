@@ -1,0 +1,129 @@
+{
+  "op": "power-set",
+  "cases": [
+    {
+      "name": "default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a,b"
+      },
+      "expected": {
+        "type": "string",
+        "text": "\na\nb\na,b\n"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "CyberChef input, ordered by size then input order",
+      "args": {
+        "item_delimiter": " "
+      },
+      "input": {
+        "type": "string",
+        "text": "1 2 4"
+      },
+      "expected": {
+        "type": "string",
+        "text": "\n1\n2\n4\n1 2\n1 4\n2 4\n1 2 4\n"
+      }
+    },
+    {
+      "name": "one item",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "x"
+      },
+      "expected": {
+        "type": "string",
+        "text": "\nx\n"
+      }
+    },
+    {
+      "name": "empty items and repeats dropped",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ",a,,b,a,"
+      },
+      "expected": {
+        "type": "string",
+        "text": "\na\nb\na,b\n"
+      }
+    },
+    {
+      "name": "only delimiters",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ",,,"
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "multi-character delimiter",
+      "args": {
+        "item_delimiter": ", "
+      },
+      "input": {
+        "type": "string",
+        "text": "x, y, z"
+      },
+      "expected": {
+        "type": "string",
+        "text": "\nx\ny\nz\nx, y\nx, z\ny, z\nx, y, z\n"
+      }
+    },
+    {
+      "name": "non-ASCII items",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "α,日"
+      },
+      "expected": {
+        "type": "string",
+        "text": "\nα\n日\nα,日\n"
+      }
+    },
+    {
+      "name": "error: seventeen items",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16"
+      },
+      "expected": {
+        "error": "E_LIMIT"
+      }
+    },
+    {
+      "name": "error: empty delimiter",
+      "args": {
+        "item_delimiter": ""
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "op": "symmetric-difference",
+  "cases": [
+    {
+      "name": "default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "1,2,3\n\n3,4"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1,2,4"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "CyberChef: space-separated items",
+      "args": {
+        "item_delimiter": " "
+      },
+      "input": {
+        "type": "string",
+        "text": "1 2 3 4 5\n\n3 4 5 6 7"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1 2 6 7"
+      }
+    },
+    {
+      "name": "CyberChef: comma-separated items",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "1,2,3,4,5\n\n3,4,5,6,7"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1,2,6,7"
+      }
+    },
+    {
+      "name": "identical samples",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a,b\n\nb,a"
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "repeats count once",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a,a,b\n\nc,c,b"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a,c"
+      }
+    },
+    {
+      "name": "disjoint samples",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a\n\nb"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a,b"
+      }
+    },
+    {
+      "name": "custom delimiters",
+      "args": {
+        "sample_delimiter": "|",
+        "item_delimiter": " "
+      },
+      "input": {
+        "type": "string",
+        "text": "x y|y z"
+      },
+      "expected": {
+        "type": "string",
+        "text": "x z"
+      }
+    },
+    {
+      "name": "error: one sample",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "1,2"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: empty item delimiter",
+      "args": {
+        "item_delimiter": ""
+      },
+      "input": {
+        "type": "string",
+        "text": "1\n\n2"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

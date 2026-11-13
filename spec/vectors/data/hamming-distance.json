@@ -1,0 +1,168 @@
+{
+  "op": "hamming-distance",
+  "cases": [
+    {
+      "name": "default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "karolin\n\nkathrin"
+      },
+      "expected": {
+        "type": "string",
+        "text": "3"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "two empty samples",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "\n\n"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0"
+      }
+    },
+    {
+      "name": "identical",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "abc\n\nabc"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0"
+      }
+    },
+    {
+      "name": "bits",
+      "args": {
+        "unit": "bit"
+      },
+      "input": {
+        "type": "string",
+        "text": "karolin\n\nkathrin"
+      },
+      "expected": {
+        "type": "string",
+        "text": "9"
+      }
+    },
+    {
+      "name": "hex bytes, whitespace ignored",
+      "args": {
+        "input_type": "hex"
+      },
+      "input": {
+        "type": "string",
+        "text": "de ad be ef\n\nDEADBEEE"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1"
+      }
+    },
+    {
+      "name": "hex bits",
+      "args": {
+        "input_type": "hex",
+        "unit": "bit"
+      },
+      "input": {
+        "type": "string",
+        "text": "ff00\n\n00ff"
+      },
+      "expected": {
+        "type": "string",
+        "text": "16"
+      }
+    },
+    {
+      "name": "UTF-8 bytes",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "é\n\nè"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1"
+      }
+    },
+    {
+      "name": "custom delimiter",
+      "args": {
+        "delimiter": "|"
+      },
+      "input": {
+        "type": "string",
+        "text": "1011101|1001001"
+      },
+      "expected": {
+        "type": "string",
+        "text": "2"
+      }
+    },
+    {
+      "name": "error: different lengths",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "abc\n\nab"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: UTF-8 lengths differ",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "e\n\né"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: odd hex",
+      "args": {
+        "input_type": "hex"
+      },
+      "input": {
+        "type": "string",
+        "text": "abc\n\nabc"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: three samples",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a\n\nb\n\nc"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    }
+  ]
+}

@@ -1,0 +1,128 @@
+{
+  "op": "set-difference",
+  "cases": [
+    {
+      "name": "default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "1,2,3\n\n3,4"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1,2"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "CyberChef: space-separated items",
+      "args": {
+        "item_delimiter": " "
+      },
+      "input": {
+        "type": "string",
+        "text": "1 2 3 4 5\n\n3 4 5 6 7"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1 2"
+      }
+    },
+    {
+      "name": "CyberChef: comma-separated items",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "1,2,3,4,5\n\n3,4,5,6,7"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1,2"
+      }
+    },
+    {
+      "name": "second sample empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a,b,a\n\n"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a,b"
+      }
+    },
+    {
+      "name": "everything removed",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a,b\n\nb,a,c"
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "case-sensitive",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "A,a\n\na"
+      },
+      "expected": {
+        "type": "string",
+        "text": "A"
+      }
+    },
+    {
+      "name": "custom delimiters",
+      "args": {
+        "sample_delimiter": "\n",
+        "item_delimiter": ";"
+      },
+      "input": {
+        "type": "string",
+        "text": "x;y;z\nz"
+      },
+      "expected": {
+        "type": "string",
+        "text": "x;y"
+      }
+    },
+    {
+      "name": "error: one sample",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "1,2"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: three samples",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "1\n\n2\n\n3"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    }
+  ]
+}

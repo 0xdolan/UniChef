@@ -64,6 +64,7 @@ GUIDES = [
     "data-and-text",
     "text-formats",
     "number-formats",
+    "sets-and-distances",
 ]
 
 # Category order in the reference, and the guide that explains each category.
@@ -135,6 +136,14 @@ GUIDE_FOR_OP = {
     "text-integer": "number-formats",
     "pem-to-hex": "number-formats",
     "hex-to-pem": "number-formats",
+    "set-union": "sets-and-distances",
+    "set-intersection": "sets-and-distances",
+    "set-difference": "sets-and-distances",
+    "symmetric-difference": "sets-and-distances",
+    "cartesian-product": "sets-and-distances",
+    "power-set": "sets-and-distances",
+    "hamming-distance": "sets-and-distances",
+    "levenshtein-distance": "sets-and-distances",
 }
 
 # Other project documents listed in the table of contents.

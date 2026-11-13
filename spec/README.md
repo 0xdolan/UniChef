@@ -983,6 +983,51 @@ A number of more than 1024 bytes is `E_DECODE` (the reference has no limit). `de
 - `pem-to-hex` scans for `-----BEGIN L-----`, where the label `L` matches `[A-Z][A-Z ]+[A-Z]`. The body runs to the next `-----END L-----` with the same label; a missing footer is `E_DECODE`. The scan for the next header continues right after the BEGIN line, as in the reference. Every character outside `A–Z a–z 0–9 + /` is removed from the body, and the rest is decoded as Base64 with leftover bits discarded; a remaining length of 1 modulo 4 is `E_DECODE`. The output is the lower-case hex of each block, joined with LF. Input with no block gives empty output.
 - `hex-to-pem` removes ASCII whitespace; the rest must be an even number of hex digits, else `E_DECODE`. The output is `-----BEGIN header-----`, the padded Base64 of the bytes in lines of 64 characters, and `-----END header-----`, every line ended by CR LF (as jsrsasign writes it). Empty input gives the two lines with an empty line between them. `header` is not validated.
 
+## Sets and distances (data category)
+
+Set operations, Cartesian product, power set, and Hamming and Levenshtein distance follow the reference implementation except where noted. All of them take a string and give a string. A delimiter argument that is empty is `E_ARG_INVALID`. Empty input gives empty output.
+
+### `set-union`, `set-intersection`, `set-difference`, `symmetric-difference`, `cartesian-product`
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `sample_delimiter` | string | `\n\n` | Separates the samples. |
+| `item_delimiter` | string | `,` | Separates the items in a sample, and joins the result. |
+
+- The input is split at every occurrence of `sample_delimiter`, and each sample at every occurrence of `item_delimiter`. Empty items are items. Items are compared as exact code-point sequences.
+- Each sample is a set: repeated items after the first are dropped, keeping first-seen order. The reference kept repeats in `symmetric-difference` and `cartesian-product`, and its union put integer-like items first (a JavaScript object-key quirk); UniChef does neither.
+- The four set operations need exactly two samples, else `E_DECODE`. Union is the first sample followed by the items of the second not already present. Intersection and difference keep the order of the first sample. Symmetric difference is the first sample's items not in the second, followed by the second's items not in the first.
+- `cartesian-product` needs two or more samples, else `E_DECODE`. Each tuple is its items joined by `,` (whatever `item_delimiter` is) inside `(` and `)`; tuples are joined by `item_delimiter`, the last sample varying fastest. More than 100000 tuples is `E_LIMIT` (the reference has no limit).
+
+### `power-set`
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `item_delimiter` | string | `,` | Separates the items, and joins each subset. |
+
+The input is split at `item_delimiter`; empty items and repeats are dropped. With no items the output is empty. Otherwise every subset is written as its items joined by `item_delimiter` and followed by U+000A: the empty subset first, then by size, and within one size in lexicographic order of item positions. More than 16 items is `E_LIMIT`. The reference ordered subsets by the length of the joined text, which depends on item lengths; UniChef orders by size.
+
+### `hamming-distance`
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `delimiter` | string | `\n\n` | Separates the two samples. |
+| `unit` | `byte` \| `bit` | `byte` | Count differing bytes or differing bits. |
+| `input_type` | `text` \| `hex` | `text` | `text` is UTF-8; `hex` is hex digits with ASCII whitespace ignored. |
+
+The input must split into exactly two samples, else `E_DECODE`. A `hex` sample must be an even number of hex digits, else `E_DECODE`. The two byte strings must be the same length, else `E_DECODE`; the reference compared the lengths before conversion, so text with multi-byte characters or hex with spaces could pass or fail differently. The output is the count in decimal.
+
+### `levenshtein-distance`
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `delimiter` | string | `\n` | Separates the two samples. |
+| `insertion` | integer 0–1000000 | `1` | Cost of inserting one character. |
+| `deletion` | integer 0–1000000 | `1` | Cost of deleting one character. |
+| `substitution` | integer 0–1000000 | `1` | Cost of replacing one character with a different one. |
+
+The input must split into exactly two samples, else `E_DECODE`. Characters are code points (the reference used UTF-16 code units, so a character outside the BMP counted as two). The result is the Wagner–Fischer minimum cost of turning the first sample into the second, in decimal. If the product of the two lengths exceeds 4000000 the result is `E_LIMIT` (the reference has no limit). The reference accepted fractional costs; the importer truncates them to integers.
+
 ## Operation arguments (compression category)
 
 `raw-deflate`, `zlib-deflate` and `gzip` take one argument, `level`: an integer from 0 to 9, default 6. Level 0 stores the input in uncompressed blocks of at most 65 535 bytes, and both cores write it the same way, byte for byte. Levels 1 to 9 use the host compressor (zlib in Python, fflate in TypeScript), so the compressed bytes can differ between cores (parity class `roundtrip`). Both cores read what either one writes, and recipe vectors check the round trip.

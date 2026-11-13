@@ -90,5 +90,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← JSON Minify](json-minify.md) · [Contents](../../README.md) · [Parse Query String →](parse-query-string.md)
+[← JSON Minify](json-minify.md) · [Contents](../../README.md) · [Levenshtein Distance →](levenshtein-distance.md)
 <!-- /docs:nav -->

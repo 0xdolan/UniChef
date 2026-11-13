@@ -8,7 +8,7 @@ description: Reference for CyberChef (gchq/CyberChef) as it relates to UniChef. 
 Investigated at CyberChef commit `d4d96c6c3d2597fef836d81bfc04617d97c681a5` (v11.5.0, Apache-2.0). Full notes:
 
 - `docs/upstream/cyberchef.md`: architecture, op model, recipe formats, tests, licence.
-- `docs/upstream/cyberchef-operations.md`: all 506 ops mapped to UniChef op ids (132 mapped, 374 not yet covered).
+- `docs/upstream/cyberchef-operations.md`: all 506 ops mapped to UniChef op ids (140 mapped, 366 not yet covered).
 - `docs/upstream/gap-analysis.md`: what to adopt, and the proposed PRD changes (G-C*, G-I1).
 
 Read only the section you need. Use Grep on the operations table rather than reading the whole file.

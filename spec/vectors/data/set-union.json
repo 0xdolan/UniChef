@@ -1,0 +1,145 @@
+{
+  "op": "set-union",
+  "cases": [
+    {
+      "name": "default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "1,2,3\n\n3,4"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1,2,3,4"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "CyberChef: two empty samples",
+      "args": {
+        "item_delimiter": " "
+      },
+      "input": {
+        "type": "string",
+        "text": "\n\n"
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "CyberChef: space-separated items",
+      "args": {
+        "item_delimiter": " "
+      },
+      "input": {
+        "type": "string",
+        "text": "1 2 3 4 5\n\n3 4 5 6 7"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1 2 3 4 5 6 7"
+      }
+    },
+    {
+      "name": "CyberChef: comma-separated items",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "1,2,3,4,5\n\n3,4,5,6,7"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1,2,3,4,5,6,7"
+      }
+    },
+    {
+      "name": "CyberChef: word sample delimiter",
+      "args": {
+        "sample_delimiter": "whatever",
+        "item_delimiter": " "
+      },
+      "input": {
+        "type": "string",
+        "text": "1 2 3 4 5whatever3 4 5 6 7"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1 2 3 4 5 6 7"
+      }
+    },
+    {
+      "name": "repeated items count once, integer-like items keep their place",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "b,10,b,2\n\n2,a,10"
+      },
+      "expected": {
+        "type": "string",
+        "text": "b,10,2,a"
+      }
+    },
+    {
+      "name": "non-ASCII items",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "café,ü\n\nü,日本"
+      },
+      "expected": {
+        "type": "string",
+        "text": "café,ü,日本"
+      }
+    },
+    {
+      "name": "error: three samples",
+      "args": {
+        "item_delimiter": " "
+      },
+      "input": {
+        "type": "string",
+        "text": "1 2 3 4 5\n\n3 4 5 6 7\n\n1"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: one sample",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "1,2,3"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: empty item delimiter",
+      "args": {
+        "item_delimiter": ""
+      },
+      "input": {
+        "type": "string",
+        "text": "1\n\n2"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

@@ -3,7 +3,7 @@
 > Generated from `src/core/config/Categories.json` at CyberChef commit `d4d96c6c3d2597fef836d81bfc04617d97c681a5` (v11.5.0, 2026-11-04).
 > Mapping targets are the op ids in [UniChef-PRD.md §3.8](../../UniChef-PRD.md). Seed `spec/cyberchef-map.json` from this table.
 
-**Totals:** 506 unique operations (some appear in several categories); 132 have a UniChef equivalent (79 in 1.0); 374 are not yet covered.
+**Totals:** 506 unique operations (some appear in several categories); 140 have a UniChef equivalent (79 in 1.0); 366 are not yet covered.
 
 Rules for the importer:
 
@@ -238,12 +238,12 @@ Rules for the importer:
 
 | CyberChef op | UniChef op id | Milestone |
 |---|---|---|
-| Set Union | not planned | — |
-| Set Intersection | not planned | — |
-| Set Difference | not planned | — |
-| Symmetric Difference | not planned | — |
-| Cartesian Product | not planned | — |
-| Power Set | not planned | — |
+| Set Union | `set-union` | 1.1 |
+| Set Intersection | `set-intersection` | 1.1 |
+| Set Difference | `set-difference` | 1.1 |
+| Symmetric Difference | `symmetric-difference` | 1.1 |
+| Cartesian Product | `cartesian-product` | 1.1 |
+| Power Set | `power-set` | 1.1 |
 | XOR | `xor` | Alpha |
 | XOR Brute Force | not planned | — |
 | OR | not planned | — |
@@ -360,8 +360,8 @@ Rules for the importer:
 | Regular expression | `regex-extract` | Alpha |
 | Fuzzy Match | not planned | — |
 | Offset checker | not planned | — |
-| Hamming Distance | not planned | — |
-| Levenshtein Distance | not planned | — |
+| Hamming Distance | `hamming-distance` | 1.1 |
+| Levenshtein Distance | `levenshtein-distance` | 1.1 |
 | Convert distance | not planned | — |
 | Convert area | not planned | — |
 | Convert mass | not planned | — |
