@@ -81,5 +81,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← Parse URL](parse-url.md) · [Contents](../../README.md) · [Alternating caps →](alternating-caps.md)
+[← Symmetric Difference](symmetric-difference.md) · [Contents](../../README.md) · [Alternating caps →](alternating-caps.md)
 <!-- /docs:nav -->

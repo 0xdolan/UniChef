@@ -497,6 +497,34 @@
       ]
     },
     {
+      "id": "cartesian-product",
+      "name": "Cartesian Product",
+      "category": "Data",
+      "description": "Split the input on `sample_delimiter` into two or more samples and each sample on `item_delimiter` into items. Write every tuple that takes one item from each sample, as `(x,y)` with a comma inside, joined by `item_delimiter`. The last sample varies fastest. At most 100000 tuples.",
+      "input": "string",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "sample_delimiter",
+          "kind": "string",
+          "default": "\n\n"
+        },
+        {
+          "name": "item_delimiter",
+          "kind": "string",
+          "default": ","
+        }
+      ],
+      "examples": [
+        {
+          "input": "1,2\n\na,b",
+          "args": {},
+          "output": "(1,a),(1,b),(2,a),(2,b)"
+        }
+      ]
+    },
+    {
       "id": "comment",
       "name": "Comment",
       "category": "Flow",
@@ -1909,6 +1937,47 @@
       ]
     },
     {
+      "id": "hamming-distance",
+      "name": "Hamming Distance",
+      "category": "Data",
+      "description": "Split the input on `delimiter` into two samples of equal length, read as UTF-8 text or as hex (whitespace ignored). Write the number of positions where they differ, counting bytes or bits.",
+      "input": "string",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "delimiter",
+          "kind": "string",
+          "default": "\n\n"
+        },
+        {
+          "name": "unit",
+          "kind": "enum",
+          "default": "byte",
+          "options": [
+            "byte",
+            "bit"
+          ]
+        },
+        {
+          "name": "input_type",
+          "kind": "enum",
+          "default": "text",
+          "options": [
+            "text",
+            "hex"
+          ]
+        }
+      ],
+      "examples": [
+        {
+          "input": "karolin\n\nkathrin",
+          "args": {},
+          "output": "3"
+        }
+      ]
+    },
+    {
       "id": "head",
       "name": "Head",
       "category": "Text",
@@ -2497,6 +2566,50 @@
       ]
     },
     {
+      "id": "levenshtein-distance",
+      "name": "Levenshtein Distance",
+      "category": "Data",
+      "description": "Split the input on `delimiter` into two samples. Write the least total cost of the insertions, deletions and substitutions of characters (code points) that turn the first sample into the second. The product of the two lengths may be at most 4000000.",
+      "input": "string",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "delimiter",
+          "kind": "string",
+          "default": "\n"
+        },
+        {
+          "name": "insertion",
+          "kind": "integer",
+          "default": 1,
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        {
+          "name": "deletion",
+          "kind": "integer",
+          "default": 1,
+          "minimum": 0,
+          "maximum": 1000000
+        },
+        {
+          "name": "substitution",
+          "kind": "integer",
+          "default": 1,
+          "minimum": 0,
+          "maximum": 1000000
+        }
+      ],
+      "examples": [
+        {
+          "input": "kitten\nsitting",
+          "args": {},
+          "output": "3"
+        }
+      ]
+    },
+    {
       "id": "md5",
       "name": "MD5",
       "category": "Hashing",
@@ -2712,6 +2825,29 @@
           "input": "-----BEGIN DATA-----\nSGk=\n-----END DATA-----",
           "args": {},
           "output": "4869"
+        }
+      ]
+    },
+    {
+      "id": "power-set",
+      "name": "Power Set",
+      "category": "Data",
+      "description": "Split the input on `item_delimiter` into items, dropping empty ones and repeats. Write every subset on its own line, items joined by `item_delimiter` and each line ending in a line feed: the empty set first, then smaller subsets before larger ones, and subsets of one size in input order. At most 16 items.",
+      "input": "string",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "item_delimiter",
+          "kind": "string",
+          "default": ","
+        }
+      ],
+      "examples": [
+        {
+          "input": "a,b",
+          "args": {},
+          "output": "\na\nb\na,b\n"
         }
       ]
     },
@@ -3053,6 +3189,90 @@
           "input": "pаypal",
           "args": {},
           "output": "Minimally Restrictive"
+        }
+      ]
+    },
+    {
+      "id": "set-difference",
+      "name": "Set Difference",
+      "category": "Data",
+      "description": "Split the input on `sample_delimiter` into two samples and each sample on `item_delimiter` into items. Write the items of the first sample that are not in the second, once, in their order.",
+      "input": "string",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "sample_delimiter",
+          "kind": "string",
+          "default": "\n\n"
+        },
+        {
+          "name": "item_delimiter",
+          "kind": "string",
+          "default": ","
+        }
+      ],
+      "examples": [
+        {
+          "input": "1,2,3\n\n3,4",
+          "args": {},
+          "output": "1,2"
+        }
+      ]
+    },
+    {
+      "id": "set-intersection",
+      "name": "Set Intersection",
+      "category": "Data",
+      "description": "Split the input on `sample_delimiter` into two samples and each sample on `item_delimiter` into items. Write the items that are in both samples, once, in the order of the first sample.",
+      "input": "string",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "sample_delimiter",
+          "kind": "string",
+          "default": "\n\n"
+        },
+        {
+          "name": "item_delimiter",
+          "kind": "string",
+          "default": ","
+        }
+      ],
+      "examples": [
+        {
+          "input": "1,2,3\n\n3,2,4",
+          "args": {},
+          "output": "2,3"
+        }
+      ]
+    },
+    {
+      "id": "set-union",
+      "name": "Set Union",
+      "category": "Data",
+      "description": "Split the input on `sample_delimiter` into two samples and each sample on `item_delimiter` into items. Write every item that is in either sample, once, in the order first seen.",
+      "input": "string",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "sample_delimiter",
+          "kind": "string",
+          "default": "\n\n"
+        },
+        {
+          "name": "item_delimiter",
+          "kind": "string",
+          "default": ","
+        }
+      ],
+      "examples": [
+        {
+          "input": "1,2,3\n\n3,4",
+          "args": {},
+          "output": "1,2,3,4"
         }
       ]
     },
@@ -3446,6 +3666,34 @@
           "input": "0a0b0c0d 01",
           "args": {},
           "output": "0d 0c 0b 0a 00 00 00 01"
+        }
+      ]
+    },
+    {
+      "id": "symmetric-difference",
+      "name": "Symmetric Difference",
+      "category": "Data",
+      "description": "Split the input on `sample_delimiter` into two samples and each sample on `item_delimiter` into items. Write the items that are in exactly one sample, once: those of the first sample, then those of the second.",
+      "input": "string",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "sample_delimiter",
+          "kind": "string",
+          "default": "\n\n"
+        },
+        {
+          "name": "item_delimiter",
+          "kind": "string",
+          "default": ","
+        }
+      ],
+      "examples": [
+        {
+          "input": "1,2,3\n\n3,4",
+          "args": {},
+          "output": "1,2,4"
         }
       ]
     },

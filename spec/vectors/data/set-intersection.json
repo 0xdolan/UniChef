@@ -1,0 +1,129 @@
+{
+  "op": "set-intersection",
+  "cases": [
+    {
+      "name": "default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "1,2,3\n\n3,2,4"
+      },
+      "expected": {
+        "type": "string",
+        "text": "2,3"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "CyberChef: space-separated items",
+      "args": {
+        "item_delimiter": " "
+      },
+      "input": {
+        "type": "string",
+        "text": "1 2 3 4 5\n\n3 4 5 6 7"
+      },
+      "expected": {
+        "type": "string",
+        "text": "3 4 5"
+      }
+    },
+    {
+      "name": "CyberChef: comma-separated items",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "1,2,3,4,5\n\n3,4,5,6,7"
+      },
+      "expected": {
+        "type": "string",
+        "text": "3,4,5"
+      }
+    },
+    {
+      "name": "nothing in common",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a,b\n\nc,d"
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "repeats count once, first-sample order",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "c,a,c,b\n\nb,c,c"
+      },
+      "expected": {
+        "type": "string",
+        "text": "c,b"
+      }
+    },
+    {
+      "name": "custom sample delimiter",
+      "args": {
+        "sample_delimiter": "|"
+      },
+      "input": {
+        "type": "string",
+        "text": "x,y|y,z"
+      },
+      "expected": {
+        "type": "string",
+        "text": "y"
+      }
+    },
+    {
+      "name": "empty items are items",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a,,b\n\n,b"
+      },
+      "expected": {
+        "type": "string",
+        "text": ",b"
+      }
+    },
+    {
+      "name": "error: three samples",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "1\n\n2\n\n3"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: empty sample delimiter",
+      "args": {
+        "sample_delimiter": ""
+      },
+      "input": {
+        "type": "string",
+        "text": "1\n\n2"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

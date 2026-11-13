@@ -87,5 +87,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← Zlib Inflate](zlib-inflate.md) · [Contents](../../README.md) · [JSON Beautify →](json-beautify.md)
+[← Cartesian Product](cartesian-product.md) · [Contents](../../README.md) · [Hamming Distance →](hamming-distance.md)
 <!-- /docs:nav -->

@@ -87,5 +87,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← CSV to JSON](csv-to-json.md) · [Contents](../../README.md) · [JSON Minify →](json-minify.md)
+[← Hamming Distance](hamming-distance.md) · [Contents](../../README.md) · [JSON Minify →](json-minify.md)
 <!-- /docs:nav -->

@@ -169,12 +169,20 @@ Background: [Data formats and text processing](../learn/data-and-text.md)
 
 | Operation | What it does |
 |---|---|
+| [Cartesian Product](ops/cartesian-product.md) | Split the input on `sample_delimiter` into two or more samples and each sample on `item_delimiter` into items. |
 | [CSV to JSON](ops/csv-to-json.md) | Parse RFC 4180 CSV. |
+| [Hamming Distance](ops/hamming-distance.md) | Split the input on `delimiter` into two samples of equal length, read as UTF-8 text or as hex (whitespace ignored). |
 | [JSON Beautify](ops/json-beautify.md) | Write JSON with one value per line, like `JSON.stringify(v, null, indent)`. |
 | [JSON Minify](ops/json-minify.md) | Write JSON with no whitespace, keeping key order. |
 | [JSON to CSV](ops/json-to-csv.md) | Write an array of objects (with a header row) or an array of arrays as CSV. |
+| [Levenshtein Distance](ops/levenshtein-distance.md) | Split the input on `delimiter` into two samples. |
 | [Parse Query String](ops/parse-query-string.md) | Split `name=value` pairs on `&` and percent-decode them as UTF-8. |
 | [Parse URL](ops/parse-url.md) | Split a URL into its RFC 3986 parts without decoding or normalising them. |
+| [Power Set](ops/power-set.md) | Split the input on `item_delimiter` into items, dropping empty ones and repeats. |
+| [Set Difference](ops/set-difference.md) | Split the input on `sample_delimiter` into two samples and each sample on `item_delimiter` into items. |
+| [Set Intersection](ops/set-intersection.md) | Split the input on `sample_delimiter` into two samples and each sample on `item_delimiter` into items. |
+| [Set Union](ops/set-union.md) | Split the input on `sample_delimiter` into two samples and each sample on `item_delimiter` into items. |
+| [Symmetric Difference](ops/symmetric-difference.md) | Split the input on `sample_delimiter` into two samples and each sample on `item_delimiter` into items. |
 
 ## Text
 
@@ -226,5 +234,5 @@ Background: [How UniChef works](../learn/how-unichef-works.md)
 <!-- docs:nav -->
 ---
 
-[← Number and key formats: floats, BCD, text as a number, Bech32 and PEM](../learn/number-formats.md) · [Contents](../README.md) · [Decode Text →](ops/decode-text.md)
+[← Sets and distances: comparing lists and strings](../learn/sets-and-distances.md) · [Contents](../README.md) · [Decode Text →](ops/decode-text.md)
 <!-- /docs:nav -->

@@ -82,5 +82,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← Zlib Deflate](zlib-deflate.md) · [Contents](../../README.md) · [CSV to JSON →](csv-to-json.md)
+[← Zlib Deflate](zlib-deflate.md) · [Contents](../../README.md) · [Cartesian Product →](cartesian-product.md)
 <!-- /docs:nav -->

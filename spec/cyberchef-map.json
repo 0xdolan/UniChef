@@ -1102,6 +1102,59 @@
       ]
     },
     "PEM to Hex": { "op": "pem-to-hex", "args": [] },
-    "Hex to PEM": { "op": "hex-to-pem", "args": [{ "to": "header" }] }
+    "Hex to PEM": { "op": "hex-to-pem", "args": [{ "to": "header" }] },
+    "Set Union": {
+      "op": "set-union",
+      "args": [
+        { "to": "sample_delimiter", "unescape": true },
+        { "to": "item_delimiter", "unescape": true }
+      ]
+    },
+    "Set Intersection": {
+      "op": "set-intersection",
+      "args": [
+        { "to": "sample_delimiter", "unescape": true },
+        { "to": "item_delimiter", "unescape": true }
+      ]
+    },
+    "Set Difference": {
+      "op": "set-difference",
+      "args": [
+        { "to": "sample_delimiter", "unescape": true },
+        { "to": "item_delimiter", "unescape": true }
+      ]
+    },
+    "Symmetric Difference": {
+      "op": "symmetric-difference",
+      "args": [
+        { "to": "sample_delimiter", "unescape": true },
+        { "to": "item_delimiter", "unescape": true }
+      ]
+    },
+    "Cartesian Product": {
+      "op": "cartesian-product",
+      "args": [
+        { "to": "sample_delimiter", "unescape": true },
+        { "to": "item_delimiter", "unescape": true }
+      ]
+    },
+    "Power Set": { "op": "power-set", "args": [{ "to": "item_delimiter", "unescape": true }] },
+    "Hamming Distance": {
+      "op": "hamming-distance",
+      "args": [
+        { "to": "delimiter", "unescape": true },
+        { "to": "unit", "map": { "Byte": "byte", "Bit": "bit" } },
+        { "to": "input_type", "map": { "Raw string": "text", "Hex": "hex" } }
+      ]
+    },
+    "Levenshtein Distance": {
+      "op": "levenshtein-distance",
+      "args": [
+        { "to": "delimiter", "unescape": true },
+        { "to": "insertion", "integer": true },
+        { "to": "deletion", "integer": true },
+        { "to": "substitution", "integer": true }
+      ]
+    }
   }
 }

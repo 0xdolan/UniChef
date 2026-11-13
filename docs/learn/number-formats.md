@@ -112,5 +112,5 @@ Operations explained here: [From BCD](../reference/ops/from-bcd.md), [From Bech3
 <!-- docs:nav -->
 ---
 
-[← Text formats: hexdumps, escapes and identifier cases](text-formats.md) · [Contents](../README.md) · [Operation reference →](../reference/README.md)
+[← Text formats: hexdumps, escapes and identifier cases](text-formats.md) · [Contents](../README.md) · [Sets and distances: comparing lists and strings →](sets-and-distances.md)
 <!-- /docs:nav -->
