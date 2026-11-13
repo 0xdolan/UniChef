@@ -20,6 +20,7 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
   - Encoding: base64, base32, hex, URL, text encodings, binary, octal, decimal and HTML entities.
   - CyberChef parity, encoding: `to-base45`/`from-base45` (RFC 9285), `to-base62`/`from-base62` (digits then upper or lower case) and `to-base92`/`from-base92`, with importer mappings for the six CyberChef operations.
   - CyberChef parity, radix and byte order: `to-base`/`from-base` (any radix 2–36, with fractions), `to-charcode`/`from-charcode` (code points in any base), `to-modhex`/`from-modhex` (YubiKey alphabet) and `swap-endianness`, with importer mappings for the seven CyberChef operations.
+  - CyberChef parity, text: `swap-case`, `alternating-caps` and `get-all-casings` (full Unicode case mappings), `remove-null-bytes`, `remove-ansi-escape-codes`, `strip-html-tags`, `add-line-numbers`, `remove-line-numbers` and `pad-lines`, with importer mappings for the nine CyberChef operations.
   - Beta encoding (#7): `to-base58`/`from-base58` (Bitcoin and Flickr alphabets), `to-base85`/`from-base85` (Ascii85 with `z` and optional `<~ ~>`, and Z85) and `quoted-printable-encode`/`decode` (RFC 2045, with `text` and `binary` modes), with shared vectors and CyberChef import.
   - Text: the text operations.
   - Flow: the flow operations, including `subsection` and `conditional-jump`.

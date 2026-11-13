@@ -1,0 +1,114 @@
+{
+  "op": "alternating-caps",
+  "cases": [
+    {
+      "name": "basic (CyberChef test, AlternatingCaps.mjs)",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Hello, world!"
+      },
+      "expected": {
+        "type": "string",
+        "text": "hElLo, WoRlD!"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "non-letters do not break the run",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a1b2c3d"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a1B2c3D"
+      }
+    },
+    {
+      "name": "Cyrillic letters",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "привет мир"
+      },
+      "expected": {
+        "type": "string",
+        "text": "пРиВеТ мИр"
+      }
+    },
+    {
+      "name": "uncased letters still count (CJK)",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a中b"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a中b"
+      }
+    },
+    {
+      "name": "ß in an upper position becomes SS",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "aßc"
+      },
+      "expected": {
+        "type": "string",
+        "text": "aSSc"
+      }
+    },
+    {
+      "name": "marks are not letters",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "éé"
+      },
+      "expected": {
+        "type": "string",
+        "text": "éÉ"
+      }
+    },
+    {
+      "name": "math letters have no case mapping but still count",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "𝐚𝐛c"
+      },
+      "expected": {
+        "type": "string",
+        "text": "𝐚𝐛c"
+      }
+    },
+    {
+      "name": "error: an unknown argument",
+      "args": {
+        "bogus": 1
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

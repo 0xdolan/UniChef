@@ -78,5 +78,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← Find / replace](find-replace.md) · [Contents](../../README.md) · [Join lines →](join.md)
+[← Get all casings](get-all-casings.md) · [Contents](../../README.md) · [Join lines →](join.md)
 <!-- /docs:nav -->

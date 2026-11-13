@@ -1,0 +1,114 @@
+{
+  "op": "remove-null-bytes",
+  "cases": [
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": ""
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": ""
+      }
+    },
+    {
+      "name": "no null bytes",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "616263"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "616263"
+      }
+    },
+    {
+      "name": "nulls between characters (UTF-16LE text)",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "48006900"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "4869"
+      }
+    },
+    {
+      "name": "only nulls",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "000000"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": ""
+      }
+    },
+    {
+      "name": "leading and trailing",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "006100"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "61"
+      }
+    },
+    {
+      "name": "other control bytes kept",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "010002ff"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "0102ff"
+      }
+    },
+    {
+      "name": "high bytes kept",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "8000fe"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "80fe"
+      }
+    },
+    {
+      "name": "UTF-8 multibyte kept",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "c3a900f09f918b"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "c3a9f09f918b"
+      }
+    },
+    {
+      "name": "error: an unknown argument",
+      "args": {
+        "bogus": 1
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "61"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

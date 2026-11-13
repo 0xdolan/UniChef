@@ -1,0 +1,114 @@
+{
+  "op": "swap-case",
+  "cases": [
+    {
+      "name": "basic (CyberChef test, SwapCase.mjs)",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Hello, World!"
+      },
+      "expected": {
+        "type": "string",
+        "text": "hELLO, wORLD!"
+      }
+    },
+    {
+      "name": "empty (CyberChef test, SwapCase.mjs)",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "accented Latin",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Ünïcödé"
+      },
+      "expected": {
+        "type": "string",
+        "text": "üNÏCÖDÉ"
+      }
+    },
+    {
+      "name": "ß upper-cases to SS",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "straße"
+      },
+      "expected": {
+        "type": "string",
+        "text": "STRASSE"
+      }
+    },
+    {
+      "name": "Greek: one character at a time, so no final sigma",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "ΟΔΟΣ οδος"
+      },
+      "expected": {
+        "type": "string",
+        "text": "οδοσ ΟΔΟΣ"
+      }
+    },
+    {
+      "name": "titlecase ǅ upper-cases to Ǆ",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "ǅemal"
+      },
+      "expected": {
+        "type": "string",
+        "text": "ǄEMAL"
+      }
+    },
+    {
+      "name": "uncased characters unchanged",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "123 ✓ 中文 👋"
+      },
+      "expected": {
+        "type": "string",
+        "text": "123 ✓ 中文 👋"
+      }
+    },
+    {
+      "name": "dotted capital I lower-cases to i plus a combining dot",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "İ"
+      },
+      "expected": {
+        "type": "string",
+        "text": "i̇"
+      }
+    },
+    {
+      "name": "error: an unknown argument",
+      "args": {
+        "bogus": 1
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

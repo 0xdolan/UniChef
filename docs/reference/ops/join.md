@@ -72,5 +72,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← Head](head.md) · [Contents](../../README.md) · [Regex extract →](regex-extract.md)
+[← Head](head.md) · [Contents](../../README.md) · [Pad lines →](pad-lines.md)
 <!-- /docs:nav -->

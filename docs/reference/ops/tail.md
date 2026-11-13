@@ -74,5 +74,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← Split](split.md) · [Contents](../../README.md) · [Trim →](trim.md)
+[← Swap case](swap-case.md) · [Contents](../../README.md) · [Trim →](trim.md)
 <!-- /docs:nav -->

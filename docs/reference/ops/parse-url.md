@@ -89,5 +89,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← Parse Query String](parse-query-string.md) · [Contents](../../README.md) · [Find / replace →](find-replace.md)
+[← Parse Query String](parse-query-string.md) · [Contents](../../README.md) · [Add line numbers →](add-line-numbers.md)
 <!-- /docs:nav -->

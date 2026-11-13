@@ -623,6 +623,25 @@
     },
     "To Lower case": { "op": "unicode-case", "set": { "mode": "lower" }, "args": [] },
     "Remove Diacritics": { "op": "strip-diacritics", "args": [] },
+    "Swap case": { "op": "swap-case", "args": [] },
+    "Alternating Caps": { "op": "alternating-caps", "args": [] },
+    "Get All Casings": { "op": "get-all-casings", "args": [] },
+    "Remove null bytes": { "op": "remove-null-bytes", "args": [] },
+    "Remove ANSI Escape Codes": { "op": "remove-ansi-escape-codes", "args": [] },
+    "Strip HTML tags": {
+      "op": "strip-html-tags",
+      "args": [{ "to": "remove_indentation" }, { "to": "remove_line_breaks" }]
+    },
+    "Add line numbers": { "op": "add-line-numbers", "args": [{ "to": "offset", "integer": true }] },
+    "Remove line numbers": { "op": "remove-line-numbers", "args": [] },
+    "Pad lines": {
+      "op": "pad-lines",
+      "args": [
+        { "to": "position", "map": { "Start": "start", "End": "end" } },
+        { "to": "length", "integer": true },
+        { "to": "character", "unescape": true }
+      ]
+    },
     "Reverse": {
       "op": "reverse",
       "args": [{ "to": "unit", "map": { "Character": "code-points", "Byte": "bytes" } }]

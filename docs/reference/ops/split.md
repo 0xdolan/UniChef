@@ -76,5 +76,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← Sort lines](sort-lines.md) · [Contents](../../README.md) · [Tail →](tail.md)
+[← Sort lines](sort-lines.md) · [Contents](../../README.md) · [Strip HTML tags →](strip-html-tags.md)
 <!-- /docs:nav -->

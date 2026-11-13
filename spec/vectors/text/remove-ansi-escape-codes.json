@@ -1,0 +1,126 @@
+{
+  "op": "remove-ansi-escape-codes",
+  "cases": [
+    {
+      "name": "colour codes (CyberChef test, RemoveANSIEscapeCodes.mjs)",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "\u001b[31mHello, \u001b[31mWorld!"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Hello, World!"
+      }
+    },
+    {
+      "name": "incomplete code eats the next byte (CyberChef test, RemoveANSIEscapeCodes.mjs)",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "\u001b[31 Hello, World!"
+      },
+      "expected": {
+        "type": "string",
+        "text": "ello, World!"
+      }
+    },
+    {
+      "name": "cursor and clear screen (CyberChef test, RemoveANSIEscapeCodes.mjs)",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "\u001b[2J\u001b[H\u001b[3BHello, World!"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Hello, World!"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "no codes",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "plain text"
+      },
+      "expected": {
+        "type": "string",
+        "text": "plain text"
+      }
+    },
+    {
+      "name": "bold and reset with parameters",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "\u001b[1;31mred\u001b[0m"
+      },
+      "expected": {
+        "type": "string",
+        "text": "red"
+      }
+    },
+    {
+      "name": "a bare ESC is kept",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a\u001bb"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a\u001bb"
+      }
+    },
+    {
+      "name": "text escape representation is not a code",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "\\033[32mHi"
+      },
+      "expected": {
+        "type": "string",
+        "text": "\\033[32mHi"
+      }
+    },
+    {
+      "name": "non-ASCII text kept",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "\u001b[32mgrün 👋\u001b[0m"
+      },
+      "expected": {
+        "type": "string",
+        "text": "grün 👋"
+      }
+    },
+    {
+      "name": "error: an unknown argument",
+      "args": {
+        "bogus": 1
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}
