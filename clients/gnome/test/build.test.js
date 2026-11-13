@@ -9,7 +9,8 @@ import { FILES, UUID, build, metadataProblems, reproducibleZip, versionName } fr
 
 const SRC = join(import.meta.dirname, '..', UUID);
 const meta = JSON.parse(readFileSync(join(SRC, 'metadata.json'), 'utf8'));
-const VERSION = readFileSync(join(import.meta.dirname, '..', '..', '..', 'VERSION'), 'utf8').trim();
+const REPO = join(import.meta.dirname, '..', '..', '..');
+const VERSION = readFileSync(join(REPO, 'VERSION'), 'utf8').trim();
 
 describe('FR-016: GNOME extension package', () => {
   it('has valid metadata that matches VERSION', () => {
@@ -49,5 +50,18 @@ describe('FR-016: GNOME extension package', () => {
       .map((s) => s.trim())
       .filter(Boolean);
     for (const name of names) expect(lib).toHaveProperty(name);
+  });
+
+  it('ships the same files in the Debian package as in the zip', () => {
+    const rules = readFileSync(join(REPO, 'debian', 'rules'), 'utf8');
+    const files = /^EXT_FILES = (.*)$/m.exec(rules)?.[1].split(' ');
+    expect(files?.sort()).toEqual([...FILES].sort());
+    expect(rules).toContain(`EXT_UUID = ${UUID}`);
+  });
+
+  it('depends on the oldest GNOME Shell that metadata.json supports', () => {
+    const control = readFileSync(join(REPO, 'debian', 'control'), 'utf8');
+    const oldest = Math.min(...meta['shell-version'].map(Number));
+    expect(control).toContain(`gnome-shell (>= ${oldest})`);
   });
 });

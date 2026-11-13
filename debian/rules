@@ -1,5 +1,12 @@
 #!/usr/bin/make -f
-# The Debian package is the Python CLI only (PRD §8.1).
+# Two binary packages (PRD §8.1): unichef, the Python CLI, and
+# gnome-shell-extension-unichef, which installs clients/gnome as it is (no build step).
+
+EXT_UUID = unichef@0xdolan.github.io
+EXT_SRC = clients/gnome/$(EXT_UUID)
+EXT_DEST = debian/gnome-shell-extension-unichef/usr/share/gnome-shell/extensions/$(EXT_UUID)
+# The same files as FILES in clients/gnome/build.mjs (checked by its FR-016 test).
+EXT_FILES = extension.js lib.js metadata.json stylesheet.css
 
 export PYBUILD_NAME = unichef
 export PYBUILD_TEST_PYTEST = 1
@@ -14,6 +21,15 @@ override_dh_auto_build:
 	dh_auto_build
 	PYTHONPATH=packages/python-cli/src python3 -m unichef.cli.manpage > debian/unichef.1
 	PYTHONPATH=packages/python-cli/src python3 -m unichef completion bash > debian/unichef.bash-completion
+
+# With two binary packages debhelper defaults to debian/tmp; the CLI keeps its own tree.
+override_dh_auto_install:
+	dh_auto_install --destdir=debian/unichef
+
+execute_after_dh_install:
+	install -d $(EXT_DEST)/icons
+	for f in $(EXT_FILES); do install -m 644 $(EXT_SRC)/$$f $(EXT_DEST)/$$f || exit 1; done
+	install -m 644 assets/branding/source/unichef-mark-mono.svg $(EXT_DEST)/icons/unichef-symbolic.svg
 
 override_dh_auto_clean:
 	dh_auto_clean

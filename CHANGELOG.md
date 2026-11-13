@@ -12,6 +12,9 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
   `\u…`). It runs the local `unichef` CLI, so it makes no network requests, and shows how to
   install the CLI when it is missing. CI builds a reproducible `unichef-gnome-<v>.zip`, and
   each release attaches it. The install guide is in INTRODUCTION.md.
+- **Debian package `gnome-shell-extension-unichef`** (PRD §8.1): the GNOME Shell extension
+  installed system-wide, from the PPA and attached to each release next to the CLI `.deb`.
+  `scripts/deb/check.sh` checks that it installs every extension file.
 - **Python core** (`packages/python-cli`):
   - Dish types and coercions, an in-house UTF-8 codec, the op registry, recipe loading and the runner.
   - The Unicode engine, built on the pinned UCD:

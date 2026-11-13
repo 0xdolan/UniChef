@@ -32,3 +32,16 @@ Description: cybersecurity and Unicode workbench for the terminal
  .
  Recipes are interchangeable with the UniChef web application and
  browser extensions.
+
+Package: gnome-shell-extension-unichef
+Architecture: all
+Depends: ${misc:Depends}, unichef (= ${binary:Version}), gnome-shell (>= 46)
+Description: GNOME Shell extension for UniChef quick conversions
+ Adds a UniChef icon to the GNOME top bar. Its popup runs any UniChef
+ operation (Base64, hex, URL encoding, hashes and more) on typed or
+ pasted text, and lists the code point, name and general category of
+ each character, with buttons to copy the result.
+ .
+ It calls the unichef command on the local machine and makes no network
+ requests. Enable it with:
+ gnome-extensions enable unichef@0xdolan.github.io

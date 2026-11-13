@@ -56,6 +56,9 @@ done
 for series in noble resolute trixie; do
   deb=$(find "$work" -maxdepth 1 -name "unichef_*~${series}1_all.deb" -printf '%f\n' | head -1)
   check "${deb:-$series}" ".deb for $series is missing" test -n "$deb"
+  # '~' or '.': GitHub serves '~' in an asset name as '.'.
+  ext=$(find "$work" -maxdepth 1 -name "gnome-shell-extension-unichef_*${series}1_all.deb" -printf '%f\n' | head -1)
+  check "${ext:-gnome $series}" "GNOME extension .deb for $series is missing" test -n "$ext"
 done
 
 echo "Checksums"

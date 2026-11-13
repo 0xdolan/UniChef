@@ -155,7 +155,7 @@ man unichef                              # PPA only: the man page opens
 A real session is needed: the popup, the panel icon and the clipboard can only be judged on a
 desktop. CI checks the metadata, the zip contents and the CLI calls (`FR-016` tests).
 
-Install the CLI (section 3), then:
+Install it from the PPA (`sudo apt install gnome-shell-extension-unichef`) on noble or resolute, or install the CLI (section 3) and then:
 `gnome-extensions install --force unichef-gnome-<v>.zip`, log out and in, and
 `gnome-extensions enable unichef@0xdolan.github.io`.
 
