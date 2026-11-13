@@ -3,7 +3,7 @@
 > Generated from `src/core/config/Categories.json` at CyberChef commit `d4d96c6c3d2597fef836d81bfc04617d97c681a5` (v11.5.0, 2026-11-04).
 > Mapping targets are the op ids in [UniChef-PRD.md §3.8](../../UniChef-PRD.md). Seed `spec/cyberchef-map.json` from this table.
 
-**Totals:** 506 unique operations (some appear in several categories); 112 have a UniChef equivalent (79 in 1.0); 394 are not yet covered.
+**Totals:** 506 unique operations (some appear in several categories); 123 have a UniChef equivalent (79 in 1.0); 383 are not yet covered.
 
 Rules for the importer:
 
@@ -15,8 +15,8 @@ Rules for the importer:
 
 | CyberChef op | UniChef op id | Milestone |
 |---|---|---|
-| To Hexdump | not planned | — |
-| From Hexdump | not planned | — |
+| To Hexdump | `to-hexdump` | 1.1 |
+| From Hexdump | `from-hexdump` | 1.1 |
 | To Hex | `to-hex` | Alpha |
 | From Hex | `from-hex` | Alpha |
 | To Charcode | `to-charcode` | 1.1 |
@@ -58,15 +58,15 @@ Rules for the importer:
 | Escape Unicode Characters | `escape-unicode` | Alpha |
 | Unescape Unicode Characters | `unescape-unicode` | Alpha |
 | Normalise Unicode | `normalize` | Alpha |
-| Escape Smart Characters | not planned | — |
+| Escape Smart Characters | `escape-smart-characters` | 1.1 |
 | To Quoted Printable | `quoted-printable-encode` | Beta |
 | From Quoted Printable | `quoted-printable-decode` | Beta |
 | To Punycode | `to-punycode` | Beta |
 | From Punycode | `from-punycode` | Beta |
 | AMF Encode | not planned | — |
 | AMF Decode | not planned | — |
-| To Hex Content | not planned | — |
-| From Hex Content | not planned | — |
+| To Hex Content | `to-hex-content` | 1.1 |
+| From Hex Content | `from-hex-content` | 1.1 |
 | PEM to Hex | not planned | — |
 | Hex to PEM | not planned | — |
 | Parse ASN.1 hex string | not planned | — |
@@ -373,12 +373,12 @@ Rules for the importer:
 | Parse ObjectID timestamp | not planned | — |
 | Swap endianness | `swap-endianness` | 1.1 |
 | Parse colour code | not planned | — |
-| Escape string | not planned | — |
-| Unescape string | not planned | — |
+| Escape string | `escape-string` | 1.1 |
+| Unescape string | `unescape-string` | 1.1 |
 | Pseudo-Random Number Generator | `generate-random-bytes` | Beta |
 | Sleep | not planned | never: only useful for testing CyberChef itself |
 | File Tree | not planned | — |
-| Wrap | not planned | — |
+| Wrap | `wrap` | 1.1 |
 | Take nth bytes | not planned | — |
 | Drop nth bytes | not planned | — |
 
@@ -529,9 +529,9 @@ Rules for the importer:
 | Microsoft Script Decoder | not planned | — |
 | Strip HTML tags | `strip-html-tags` | 1.1 |
 | Diff | not planned | — |
-| To Snake case | not planned | — |
-| To Camel case | not planned | — |
-| To Kebab case | not planned | — |
+| To Snake case | `to-snake-case` | 1.1 |
+| To Camel case | `to-camel-case` | 1.1 |
+| To Kebab case | `to-kebab-case` | 1.1 |
 | BSON serialise | not planned | — |
 | BSON deserialise | not planned | — |
 | To MessagePack | not planned | — |

@@ -1,0 +1,116 @@
+{
+  "op": "to-camel-case",
+  "cases": [
+    {
+      "name": "default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "parseHTTPResponse v2"
+      },
+      "expected": {
+        "type": "string",
+        "text": "parseHttpResponseV2"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "snake input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "foo_bar_baz"
+      },
+      "expected": {
+        "type": "string",
+        "text": "fooBarBaz"
+      }
+    },
+    {
+      "name": "sharp s at a word start",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a ßb"
+      },
+      "expected": {
+        "type": "string",
+        "text": "aSsb"
+      }
+    },
+    {
+      "name": "number words",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "version 2 beta"
+      },
+      "expected": {
+        "type": "string",
+        "text": "version2Beta"
+      }
+    },
+    {
+      "name": "context aware",
+      "args": {
+        "context_aware": true
+      },
+      "input": {
+        "type": "string",
+        "text": "my_var = \"keep_me\" + other_var"
+      },
+      "expected": {
+        "type": "string",
+        "text": "myVar = \"keep_me\" + otherVar"
+      }
+    },
+    {
+      "name": "Greek",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "καλη μέρα"
+      },
+      "expected": {
+        "type": "string",
+        "text": "καληΜέρα"
+      }
+    },
+    {
+      "name": "single word",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Hello"
+      },
+      "expected": {
+        "type": "string",
+        "text": "hello"
+      }
+    },
+    {
+      "name": "error: context_aware is a boolean",
+      "args": {
+        "context_aware": "yes"
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

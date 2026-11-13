@@ -811,6 +811,89 @@ The 64 six-dot patterns U+2800–U+283F correspond, in order, to the North Ameri
 
 The rotated set is the 63 404 BMP code points U+0021–U+007E, U+00A1–U+167F, U+1681–U+1FFF, U+200B–U+2027, U+202A–U+202E, U+2030–U+205E, U+2060–U+2FFF, U+3001–U+D7FF and U+E000–U+FFFF, in order. The code point at index i becomes the one at index (i + 31 702) mod 63 404, so the operation is its own inverse. Other code points (spaces, C0 and C1 controls, surrogates, non-BMP) are copied.
 
+## Text formats (text and encoding categories)
+
+Identifier cases, hexdumps, Snort hex content, string escapes, smart characters and wrapping follow the reference implementation (and jsesc 3.1.0 for `escape-string`). Text is read one code point at a time; the reference read UTF-16 code units, so a non-BMP character counted twice.
+
+### `to-snake-case`, `to-kebab-case`, `to-camel-case` (string → string)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `context_aware` | boolean | `false` | Convert only identifiers outside double-quoted strings. |
+
+The input is split into words with the pinned UCD, not lodash:
+
+1. U+0027 and U+2019 are removed.
+2. Each code point is classed by General_Category: upper (Lu, Lt), lower (any other L), number (N), mark (M) or separator (anything else).
+3. A word is a run of letters and numbers. A separator ends the current word. A mark joins the current word; a mark with no word before it is dropped.
+4. A word also ends between a number and a letter (either way), between a lower and an upper letter, and before the last of two or more upper letters when a lower letter follows (`HTTPResponse` is `HTTP` and `Response`).
+
+Snake case joins the words with `_` and kebab case with `-`, each word lower-cased with the full mapping. Camel case lower-cases the first word and title-cases the rest, with nothing between them. Unlike lodash, letters are not deburred (`é` stays `é`) and every script's letters and numbers count.
+
+With `context_aware`, the input is scanned for `\"`, a double-quoted string (where `\"` does not end it), or an identifier: ASCII letters, digits, `_` and `-`, not starting or ending with `-`. Only identifiers are converted; the rest is copied.
+
+### `to-hexdump` (bytes → string), `from-hexdump` (string → bytes)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `width` | integer 1–65536 | `16` | Bytes per line. |
+| `upper` | boolean | `false` | Upper-case hex digits. |
+| `final_length` | boolean | `false` | Add a last line with the total length. |
+| `ascii_only` | boolean | `false` | Show only printable ASCII in the text column. |
+
+- `to-hexdump` writes one line per `width` bytes: the offset as eight hex digits, two spaces, the bytes as two-digit hex each followed by a space (padded with spaces to `width × 3`), `|`, the bytes as Latin-1 text and `|`. In the text column, bytes below 0x20, 0x7F–0x9F and 0xAD are written as `.`; with `ascii_only`, everything outside 0x20–0x7E is. Lines are joined with LF and empty input gives empty output. With `final_length` and non-empty input, the last line is the length as eight hex digits; unlike the reference, `upper` applies to it too.
+- `from-hexdump` finds each line that starts with optional ASCII whitespace, an optional offset of 4–16 hex digits (optionally followed by `h` and `:`), spaces or tabs, and then hex columns: up to eight two-digit groups, a gap or `-`, and up to eight more; groups of four digits; or two-digit groups. Matching ignores case. A line start is the start of the input or the position after an LF (the reference used JavaScript's multiline `^`, which also accepted CR, U+2028 and U+2029). In each match, `-` becomes a space; the text is split on runs of non-hex characters and each run is read in pairs, a lone last digit on its own.
+
+### `to-hex-content` (bytes → string), `from-hex-content` (string → bytes)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `convert` | `special` \| `special-and-space` \| `all` | `special` | Which bytes become hex. |
+| `spaces` | boolean | `false` | Put a space between hex bytes. |
+
+- `to-hex-content` copies ASCII letters, digits and U+0020 (unless `special-and-space`) and writes each run of other bytes as `|`, lower-case hex, `|`. With `all`, the whole input is one run, so empty input gives `||`.
+- `from-hex-content` replaces each `|…|` that holds at least two hex digits or spaces with those bytes, read as in `from-hexdump`. Text outside the pipes is encoded as UTF-8; the reference wrote each UTF-16 code unit as one byte, losing everything above U+00FF.
+
+### `escape-string`, `unescape-string` (string → string)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `level` | `special` \| `everything` \| `minimal` | `special` | Which characters to escape. |
+| `quote` | `single` \| `double` \| `backtick` | `single` | The quote to escape. |
+| `json` | boolean | `false` | Use `\u` escapes only and wrap the result in the quote. |
+| `es6` | boolean | `true` | Write code points past U+FFFF as `\u{…}` instead of a surrogate pair. |
+| `upper_hex` | boolean | `false` | Upper-case hex digits. |
+
+`escape-string` follows jsesc 3.1.0 for each code point:
+
+1. Past U+FFFF: copied with `minimal`, else `\u{hex}` with `es6`, else the surrogate pair as two `\uXXXX`.
+2. Printable ASCII other than `"`, `'`, `\` and `` ` `` is copied unless `level` is `everything`.
+3. U+0000 not followed by an ASCII digit is `\0`, unless `json`.
+4. A quote character is escaped when it is the chosen quote or `level` is `everything`, else copied.
+5. `\`, BS, FF, LF, CR and TAB are `\\`, `\b`, `\f`, `\n`, `\r` and `\t`.
+6. With `minimal`, everything else is copied except JavaScript's non-ASCII whitespace (U+00A0, U+1680, U+2000–U+200A, U+2028, U+2029, U+202F, U+205F, U+3000).
+7. Otherwise the code point is `\xHH` when it fits in two hex digits and `json` is off, else `\uXXXX`.
+
+With backtick quotes, `${` becomes `\${`.
+
+`unescape-string` replaces `\\`, `\a`, `\b`, `\t`, `\n`, `\v`, `\f`, `\r`, `\"`, `\'`, octal `\0`–`\377` (one to three digits), `\xHH`, `\uXXXX` and `\u{H…}` (one to six digits). A high surrogate escape followed by a low surrogate escape is one code point. Any other escape that names a surrogate or a value past U+10FFFF fails with `E_DECODE`; the reference made a lone surrogate. Other backslashes are copied.
+
+### `escape-smart-characters` (string → string)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `unmappable` | `include` \| `remove` \| `replace` | `include` | What to do with other non-ASCII code points: keep, drop, or write `.`. |
+
+ASCII is copied. The table: U+201C–U+201F and U+2033 → `"`; U+2018–U+201B and U+2032 → `'`; U+2010–U+2013 → `-`; U+2014, U+2015 → `--`; U+2026 → `...`; U+00A9 → `(c)`; U+00AE → `(r)`; U+2122 → `(tm)`; U+2190 → `<--`; U+2192 → `-->`; U+2191 → `^`; U+2193 → `v`; U+2194 → `<->`; U+21D0 → `<==`; U+21D2 → `==>`; U+21D4 → `<=>`; U+00AB → `<<`; U+00BB → `>>`; U+2039 → `<`; U+203A → `>`; U+00D7 → `x`; U+00F7 → `/`; U+00B1 → `+/-`; U+2022 → `*`; U+00B7 → `.`; U+00A0, U+2002, U+2003, U+2009 and U+200A → U+0020.
+
+### `wrap` (string → string)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `width` | integer 1–65536 | `64` | Code points per line. |
+
+The input is split on LF. A CR at the end of a line is set aside, the rest is cut into pieces of `width` code points joined with LF, and the CR is put back at the end. Blank lines stay blank. Lines are joined with LF.
+
 ## Operation arguments (compression category)
 
 `raw-deflate`, `zlib-deflate` and `gzip` take one argument, `level`: an integer from 0 to 9, default 6. Level 0 stores the input in uncompressed blocks of at most 65 535 bytes, and both cores write it the same way, byte for byte. Levels 1 to 9 use the host compressor (zlib in Python, fflate in TypeScript), so the compressed bytes can differ between cores (parity class `roundtrip`). Both cores read what either one writes, and recipe vectors check the round trip.

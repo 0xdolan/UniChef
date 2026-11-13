@@ -75,12 +75,13 @@ milestone or issue, and each item is done when its tests are green in CI.
 ## CyberChef parity
 
 CyberChef v11.5.0 has 506 operations. UniChef 1.0 covers 79 of them, and the development
-branch covers 112 (Base45, Base62, Base92, To/From Base, To/From Charcode,
+branch covers 123 (Base45, Base62, Base92, To/From Base, To/From Charcode,
 To/From Modhex, Swap endianness, Swap case, Alternating Caps, Get All Casings,
 Remove null bytes, Remove ANSI Escape Codes, Strip HTML tags, Add/Remove line
 numbers, Pad lines, To/From Morse Code, To/From Braille, Convert to NATO
-alphabet, Convert Leet Speak, A1Z26 and Bacon Cipher Encode/Decode and ROT8000
-are done). Each new operation
+alphabet, Convert Leet Speak, A1Z26 and Bacon Cipher Encode/Decode, ROT8000,
+To Snake/Camel/Kebab case, To/From Hexdump, To/From Hex Content,
+Escape/Unescape string, Escape Smart Characters and Wrap are done). Each new operation
 follows the cyberchef-reference skill:
 - a PRD §3.8 entry;
 - Python and TypeScript implementations;

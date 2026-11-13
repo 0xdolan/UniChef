@@ -74,5 +74,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← Add line numbers](add-line-numbers.md) · [Contents](../../README.md) · [Find / replace →](find-replace.md)
+[← Add line numbers](add-line-numbers.md) · [Contents](../../README.md) · [Escape Smart Characters →](escape-smart-characters.md)
 <!-- /docs:nav -->

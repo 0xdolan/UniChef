@@ -1,0 +1,154 @@
+{
+  "op": "to-snake-case",
+  "cases": [
+    {
+      "name": "default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "parseHTTPResponse v2"
+      },
+      "expected": {
+        "type": "string",
+        "text": "parse_http_response_v_2"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "camel and kebab input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "fooBar baz-qux_quux"
+      },
+      "expected": {
+        "type": "string",
+        "text": "foo_bar_baz_qux_quux"
+      }
+    },
+    {
+      "name": "apostrophes are dropped",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "don't ’stop’"
+      },
+      "expected": {
+        "type": "string",
+        "text": "dont_stop"
+      }
+    },
+    {
+      "name": "acronym before a word, then a number",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "IOStream2go"
+      },
+      "expected": {
+        "type": "string",
+        "text": "io_stream_2_go"
+      }
+    },
+    {
+      "name": "Unicode letters and full lower case",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "ÄpfelÜber STRASSE İ"
+      },
+      "expected": {
+        "type": "string",
+        "text": "äpfel_über_strasse_i̇"
+      }
+    },
+    {
+      "name": "final sigma in each word",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "ΟΔΟΣ ΚΑΛΟΣ"
+      },
+      "expected": {
+        "type": "string",
+        "text": "οδος_καλος"
+      }
+    },
+    {
+      "name": "letters without case and marks",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "日本Go été ́x"
+      },
+      "expected": {
+        "type": "string",
+        "text": "日本_go_été_x"
+      }
+    },
+    {
+      "name": "only separators",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": " __--.. "
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "context aware: strings are kept",
+      "args": {
+        "context_aware": true
+      },
+      "input": {
+        "type": "string",
+        "text": "var fooBar = \"keepThis\"; doIt(xY) \\\"aB"
+      },
+      "expected": {
+        "type": "string",
+        "text": "var foo_bar = \"keepThis\"; do_it(x_y) \\\"a_b"
+      }
+    },
+    {
+      "name": "context aware: only ASCII identifiers",
+      "args": {
+        "context_aware": true
+      },
+      "input": {
+        "type": "string",
+        "text": "caféBar -fooBar-"
+      },
+      "expected": {
+        "type": "string",
+        "text": "cafébar -foo_bar-"
+      }
+    },
+    {
+      "name": "error: an unknown argument",
+      "args": {
+        "bogus": 1
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

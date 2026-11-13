@@ -1,0 +1,153 @@
+{
+  "op": "escape-string",
+  "cases": [
+    {
+      "name": "default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Don't stop\n"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Don\\'t stop\\n"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "special characters",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "\"x\" `y` \\ \b\f\r\t\u000b é ☃ 😀  "
+      },
+      "expected": {
+        "type": "string",
+        "text": "\"x\" `y` \\\\ \\b\\f\\r\\t\\x0b\\x7f \\xe9 \\u2603 \\u{1f600} \\u2028"
+      }
+    },
+    {
+      "name": "NUL before a digit",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "\u0000\u00001"
+      },
+      "expected": {
+        "type": "string",
+        "text": "\\0\\x001"
+      }
+    },
+    {
+      "name": "double quote",
+      "args": {
+        "quote": "double"
+      },
+      "input": {
+        "type": "string",
+        "text": "'a' \"b\""
+      },
+      "expected": {
+        "type": "string",
+        "text": "'a' \\\"b\\\""
+      }
+    },
+    {
+      "name": "backtick and template",
+      "args": {
+        "quote": "backtick"
+      },
+      "input": {
+        "type": "string",
+        "text": "`a` ${b} $c"
+      },
+      "expected": {
+        "type": "string",
+        "text": "\\`a\\` \\${b} $c"
+      }
+    },
+    {
+      "name": "everything, upper hex, no ES6",
+      "args": {
+        "level": "everything",
+        "es6": false,
+        "upper_hex": true
+      },
+      "input": {
+        "type": "string",
+        "text": "a'😀ÿ"
+      },
+      "expected": {
+        "type": "string",
+        "text": "\\x61\\'\\uD83D\\uDE00\\xFF"
+      }
+    },
+    {
+      "name": "minimal",
+      "args": {
+        "level": "minimal"
+      },
+      "input": {
+        "type": "string",
+        "text": "café 😀 'q' \n   \u0001"
+      },
+      "expected": {
+        "type": "string",
+        "text": "café 😀 \\'q\\' \\n \\xa0 \u0001"
+      }
+    },
+    {
+      "name": "JSON",
+      "args": {
+        "json": true
+      },
+      "input": {
+        "type": "string",
+        "text": "a\u0000b é 😀"
+      },
+      "expected": {
+        "type": "string",
+        "text": "'a\\u0000b \\u00e9 \\u{1f600}'"
+      }
+    },
+    {
+      "name": "JSON with a backtick quote",
+      "args": {
+        "json": true,
+        "quote": "backtick"
+      },
+      "input": {
+        "type": "string",
+        "text": "`${x}`"
+      },
+      "expected": {
+        "type": "string",
+        "text": "`\\`\\${x}\\``"
+      }
+    },
+    {
+      "name": "error: an unknown quote",
+      "args": {
+        "quote": "angle"
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

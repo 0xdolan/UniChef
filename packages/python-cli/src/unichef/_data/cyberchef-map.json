@@ -930,6 +930,61 @@
       "op": "leet-speak",
       "args": [{ "to": "direction", "map": { "To Leet Speak": "to", "From Leet Speak": "from" } }]
     },
-    "ROT8000": { "op": "rot8000", "args": [] }
+    "ROT8000": { "op": "rot8000", "args": [] },
+    "To Snake case": { "op": "to-snake-case", "args": [{ "to": "context_aware" }] },
+    "To Camel case": { "op": "to-camel-case", "args": [{ "to": "context_aware" }] },
+    "To Kebab case": { "op": "to-kebab-case", "args": [{ "to": "context_aware" }] },
+    "To Hexdump": {
+      "op": "to-hexdump",
+      "args": [
+        { "to": "width", "integer": true },
+        { "to": "upper" },
+        { "to": "final_length" },
+        { "to": "ascii_only" }
+      ]
+    },
+    "From Hexdump": { "op": "from-hexdump", "args": [] },
+    "To Hex Content": {
+      "op": "to-hex-content",
+      "args": [
+        {
+          "to": "convert",
+          "map": {
+            "Only special chars": "special",
+            "Only special chars including spaces": "special-and-space",
+            "All chars": "all"
+          }
+        },
+        { "to": "spaces" }
+      ]
+    },
+    "From Hex Content": { "op": "from-hex-content", "args": [] },
+    "Escape string": {
+      "op": "escape-string",
+      "args": [
+        {
+          "to": "level",
+          "map": { "Special chars": "special", "Everything": "everything", "Minimal": "minimal" }
+        },
+        {
+          "to": "quote",
+          "map": { "Single": "single", "Double": "double", "Backtick": "backtick" }
+        },
+        { "to": "json" },
+        { "to": "es6" },
+        { "to": "upper_hex" }
+      ]
+    },
+    "Unescape string": { "op": "unescape-string", "args": [] },
+    "Escape Smart Characters": {
+      "op": "escape-smart-characters",
+      "args": [
+        {
+          "to": "unmappable",
+          "map": { "Include": "include", "Remove": "remove", "Replace with '.'": "replace" }
+        }
+      ]
+    },
+    "Wrap": { "op": "wrap", "args": [{ "to": "width", "integer": true }] }
   }
 }

@@ -81,5 +81,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← To Punycode](to-punycode.md) · [Contents](../../README.md) · [URL Encode →](url-encode.md)
+[← Unescape String](unescape-string.md) · [Contents](../../README.md) · [URL Encode →](url-encode.md)
 <!-- /docs:nav -->

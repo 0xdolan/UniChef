@@ -79,5 +79,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← Unique lines](unique-lines.md) · [Contents](../../README.md) · [Conditional jump →](conditional-jump.md)
+[← Wrap](wrap.md) · [Contents](../../README.md) · [Conditional jump →](conditional-jump.md)
 <!-- /docs:nav -->

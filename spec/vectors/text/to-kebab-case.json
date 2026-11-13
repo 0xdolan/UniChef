@@ -1,0 +1,116 @@
+{
+  "op": "to-kebab-case",
+  "cases": [
+    {
+      "name": "default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "parseHTTPResponse v2"
+      },
+      "expected": {
+        "type": "string",
+        "text": "parse-http-response-v-2"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "snake input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "foo_bar_baz"
+      },
+      "expected": {
+        "type": "string",
+        "text": "foo-bar-baz"
+      }
+    },
+    {
+      "name": "digits",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "v1.2.3beta"
+      },
+      "expected": {
+        "type": "string",
+        "text": "v-1-2-3-beta"
+      }
+    },
+    {
+      "name": "context aware",
+      "args": {
+        "context_aware": true
+      },
+      "input": {
+        "type": "string",
+        "text": "let myVar = \"Keep Me\";"
+      },
+      "expected": {
+        "type": "string",
+        "text": "let my-var = \"Keep Me\";"
+      }
+    },
+    {
+      "name": "title case letters",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "ǅungla ǈubav"
+      },
+      "expected": {
+        "type": "string",
+        "text": "ǆungla-ǉubav"
+      }
+    },
+    {
+      "name": "lines become one word list",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "one\ntwo\r\nThree"
+      },
+      "expected": {
+        "type": "string",
+        "text": "one-two-three"
+      }
+    },
+    {
+      "name": "upper case only",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "HELLO WORLD"
+      },
+      "expected": {
+        "type": "string",
+        "text": "hello-world"
+      }
+    },
+    {
+      "name": "error: an unknown argument",
+      "args": {
+        "bogus": 1
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

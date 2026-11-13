@@ -1,0 +1,112 @@
+{
+  "op": "wrap",
+  "cases": [
+    {
+      "name": "default width 64",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      },
+      "expected": {
+        "type": "string",
+        "text": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\nxxxxxx"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "width 3",
+      "args": {
+        "width": 3
+      },
+      "input": {
+        "type": "string",
+        "text": "abcdefg"
+      },
+      "expected": {
+        "type": "string",
+        "text": "abc\ndef\ng"
+      }
+    },
+    {
+      "name": "lines and blank lines are kept",
+      "args": {
+        "width": 2
+      },
+      "input": {
+        "type": "string",
+        "text": "abc\n\nde\n"
+      },
+      "expected": {
+        "type": "string",
+        "text": "ab\nc\n\nde\n"
+      }
+    },
+    {
+      "name": "CRLF is kept",
+      "args": {
+        "width": 2
+      },
+      "input": {
+        "type": "string",
+        "text": "abcd\r\nef"
+      },
+      "expected": {
+        "type": "string",
+        "text": "ab\ncd\r\nef"
+      }
+    },
+    {
+      "name": "per code point",
+      "args": {
+        "width": 2
+      },
+      "input": {
+        "type": "string",
+        "text": "😀😁😂"
+      },
+      "expected": {
+        "type": "string",
+        "text": "😀😁\n😂"
+      }
+    },
+    {
+      "name": "exact multiple",
+      "args": {
+        "width": 2
+      },
+      "input": {
+        "type": "string",
+        "text": "abcd"
+      },
+      "expected": {
+        "type": "string",
+        "text": "ab\ncd"
+      }
+    },
+    {
+      "name": "error: width 0",
+      "args": {
+        "width": 0
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

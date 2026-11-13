@@ -1,0 +1,114 @@
+{
+  "op": "from-hex-content",
+  "cases": [
+    {
+      "name": "default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "foo|3d|bar"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "666f6f3d626172"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": ""
+      }
+    },
+    {
+      "name": "spaces and case",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "|41 42 4a 4B|"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "41424a4b"
+      }
+    },
+    {
+      "name": "not hex stays literal",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a|zz|b|4|c"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "617c7a7a7c627c347c63"
+      }
+    },
+    {
+      "name": "odd digit count",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "|414|"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "4104"
+      }
+    },
+    {
+      "name": "pipes pair from the left",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "|41|42|43|"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "41343243"
+      }
+    },
+    {
+      "name": "non-ASCII text is UTF-8",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "é|20|☺"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "c3a920e298ba"
+      }
+    },
+    {
+      "name": "only spaces",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "|  |"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": ""
+      }
+    },
+    {
+      "name": "error: an unknown argument",
+      "args": {
+        "bogus": 1
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

@@ -1,0 +1,122 @@
+{
+  "op": "escape-smart-characters",
+  "cases": [
+    {
+      "name": "default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "“Hi” — ok…"
+      },
+      "expected": {
+        "type": "string",
+        "text": "\"Hi\" -- ok..."
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "the whole table",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "“”„‟″‘’‚‛′‐‑‒–—―…©®™←→↑↓↔⇐⇒⇔«»‹›×÷±•·     "
+      },
+      "expected": {
+        "type": "string",
+        "text": "\"\"\"\"\"'''''--------...(c)(r)(tm)<---->^v<-><====><=><<>><>x/+/-*.     "
+      }
+    },
+    {
+      "name": "unmappable: include",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "☣ é 😀"
+      },
+      "expected": {
+        "type": "string",
+        "text": "☣ é 😀"
+      }
+    },
+    {
+      "name": "unmappable: remove",
+      "args": {
+        "unmappable": "remove"
+      },
+      "input": {
+        "type": "string",
+        "text": "☣ é 😀"
+      },
+      "expected": {
+        "type": "string",
+        "text": "  "
+      }
+    },
+    {
+      "name": "unmappable: replace",
+      "args": {
+        "unmappable": "replace"
+      },
+      "input": {
+        "type": "string",
+        "text": "☣ é 😀"
+      },
+      "expected": {
+        "type": "string",
+        "text": ". . ."
+      }
+    },
+    {
+      "name": "ASCII is kept",
+      "args": {
+        "unmappable": "remove"
+      },
+      "input": {
+        "type": "string",
+        "text": "plain \"ASCII\" -- ok\n"
+      },
+      "expected": {
+        "type": "string",
+        "text": "plain \"ASCII\" -- ok\n"
+      }
+    },
+    {
+      "name": "other spaces are not mapped",
+      "args": {
+        "unmappable": "replace"
+      },
+      "input": {
+        "type": "string",
+        "text": "a b　c"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a.b.c"
+      }
+    },
+    {
+      "name": "error: an unknown mode",
+      "args": {
+        "unmappable": "keep"
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}
