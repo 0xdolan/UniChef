@@ -274,8 +274,8 @@ Rules for the importer:
 
 | CyberChef op | UniChef op id | Milestone |
 |---|---|---|
-| HTTP request | not planned | — |
-| DNS over HTTPS | not planned | — |
+| HTTP request | not planned | never: SEC-001, UniChef makes no network requests |
+| DNS over HTTPS | not planned | never: SEC-001, UniChef makes no network requests |
 | Strip HTTP headers | not planned | — |
 | Dechunk HTTP response | not planned | — |
 | Parse Ethernet frame | not planned | — |
@@ -376,7 +376,7 @@ Rules for the importer:
 | Escape string | not planned | — |
 | Unescape string | not planned | — |
 | Pseudo-Random Number Generator | `generate-random-bytes` | Beta |
-| Sleep | not planned | — |
+| Sleep | not planned | never: only useful for testing CyberChef itself |
 | File Tree | not planned | — |
 | Wrap | not planned | — |
 | Take nth bytes | not planned | — |
@@ -395,7 +395,7 @@ Rules for the importer:
 | DateTime Delta | not planned | — |
 | Extract dates | not planned | — |
 | Get Time | not planned | — |
-| Sleep | not planned | — |
+| Sleep | not planned | never: only useful for testing CyberChef itself |
 
 ## Extractors (20)
 
@@ -612,9 +612,9 @@ Rules for the importer:
 | Haversine distance | not planned | — |
 | HTML To Text | not planned | — |
 | Generate Lorem Ipsum | not planned | — |
-| Numberwang | not planned | — |
-| XKCD Random Number | not planned | — |
-| Automated Validation Test Op | not planned | — |
+| Numberwang | not planned | never: joke op, no real use |
+| XKCD Random Number | not planned | never: joke op, no real use |
+| Automated Validation Test Op | not planned | never: CyberChef's internal test |
 
 ## Flow control (10)
 
