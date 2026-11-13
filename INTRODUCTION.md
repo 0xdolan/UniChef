@@ -41,6 +41,7 @@ UniChef is in pre-release ahead of 1.0.0. Operations and recipe files may still 
 | Chrome, Brave | Chrome Web Store listing, or load `unichef-chrome-<version>.zip` from a GitHub Release unpacked | Store listing from 1.0.0; the zip is available |
 | Edge | Edge Add-ons listing, or load `unichef-edge-<version>.zip` unpacked | Store listing from 1.0.0; the zip from 1.0.0-rc.1 |
 | Firefox | addons.mozilla.org listing, or load `unichef-firefox-<version>.zip` as a temporary add-on | Store listing from 1.0.0; the zip is available |
+| GNOME Shell 46 to 50 | extensions.gnome.org listing, or `gnome-extensions install unichef-gnome-<version>.zip` from a GitHub Release. Needs the CLI. | The zip from the next release; the listing after review |
 | Safari (macOS) | Build `unichef-safari-xcode-<version>.zip` from a GitHub Release in Xcode. It is not in the App Store. | From 1.0.0-rc.1 |
 
 [docs/extensions/publishing.md](docs/extensions/publishing.md#installing-without-a-store) has the steps for loading each extension without a store.
@@ -203,6 +204,27 @@ The UniChef extension for Chrome, Brave, Edge, Firefox and Safari brings the ins
 
 4. **Characters.** Search and browse the Unicode character database offline, as in the web app's Characters page.
 5. **Settings.** Choose the theme, the tab the panel opens on and the longest selection. Chrome, Brave and Edge sync them with your browser profile.
+
+## GNOME Shell extension
+
+On a GNOME desktop (GNOME Shell 46 or later), the UniChef extension puts two quick tools in the top bar. It runs the `unichef` CLI on your computer, so it needs no network and gives the same results as the CLI.
+
+1. **Install the CLI** (`pipx install unichef`, or the PPA on Ubuntu). Without it, the popup shows these commands instead of the tools.
+2. **Install the extension.** Download `unichef-gnome-<version>.zip` from a [GitHub Release](https://github.com/0xdolan/unichef/releases), then:
+
+   ```sh
+   gnome-extensions install --force unichef-gnome-<version>.zip
+   # Log out and back in (on Wayland GNOME loads new extensions only at login), then:
+   gnome-extensions enable unichef@0xdolan.github.io
+   ```
+
+3. **Convert.** Click the UniChef icon. Type part of an operation's name, such as `base`, and choose one from the list. Type or paste text into the input, or choose **Paste clipboard**. The output updates as you type. **Copy output** copies it. Binary output that is not UTF-8 text is shown as hex.
+4. **Character.** Type or paste up to 200 characters. Each one gets a row with its code point, the character and its name and general category; invisible characters show as `⟨U+200B⟩`. **Copy as U+…** and **Copy as \u…** copy the code points in either notation.
+5. **Open the full UniChef web app** opens the web app in your browser for recipes and the character explorer.
+
+Inputs over 1 MiB are refused. To remove the extension, run `gnome-extensions uninstall unichef@0xdolan.github.io`.
+
+To build it from source: `pnpm install`, then `pnpm --filter gnome build` writes the zip to `clients/gnome/dist/`, and `pnpm --filter gnome install-local` copies it into `~/.local/share/gnome-shell/extensions/`.
 
 ## Recipes
 

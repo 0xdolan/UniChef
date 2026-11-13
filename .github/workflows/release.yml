@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Release on a version tag (PRD §11.4, §10.3). docs/release/process.md lists every artefact
-# and where it is published. The Chrome (also for Brave), Edge and Firefox zips and the
-# Safari Xcode project are attached here so they can be loaded unpacked or built;
+# and where it is published. The Chrome (also for Brave), Edge, Firefox and GNOME Shell
+# zips and the Safari Xcode project are attached here so they can be loaded unpacked or built;
 # extensions.yml publishes the zips to the stores.
 name: release
 
@@ -169,6 +169,11 @@ jobs:
           cp clients/extensions/common/dist/unichef-chrome-*.zip \
             clients/extensions/common/dist/unichef-edge-*.zip \
             clients/extensions/common/dist/unichef-firefox-*.zip dist/extensions/
+      # Uploaded to extensions.gnome.org by hand (docs/release/process.md); attached here too.
+      - name: 'FR-016: GNOME Shell extension zip'
+        run: |
+          pnpm --filter gnome build
+          cp clients/gnome/dist/unichef-gnome-*.zip dist/extensions/
       # The Pages site as a zip, for offline or self-hosted use. It is built for the /unichef/
       # path, so serve it there.
       - name: Web app zip

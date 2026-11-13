@@ -78,6 +78,16 @@ The API can't create a product. The first submission is done in Partner Center.
    gh variable set EDGE_PRODUCT_ID -R 0xdolan/unichef --body '<product id>'
    ```
 
+## GNOME Shell extension
+
+extensions.gnome.org has no upload API, so the maintainer uploads each stable release by hand:
+
+1. Sign in at <https://extensions.gnome.org/upload/> (one-time: create the account).
+2. Upload `unichef-gnome-<version>.zip` from the GitHub Release. Do not rebuild it: the zip is reproducible and attested, so reviewers and users can check it against the release.
+3. Wait for review (often a few days). A rejection comes with comments; fix them on `develop` and ship them in the next release.
+
+The site needs a higher `version` for each upload, and it assigns that number itself. `version-name` in `metadata.json` carries the UniChef version (`0.1.0 alpha.1`); `make version` sets it.
+
 ## Publishing a release
 
 A stable tag publishes on its own. To publish a pre-release, or to retry a store run, start the workflow by hand:

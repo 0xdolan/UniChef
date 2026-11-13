@@ -1,0 +1,59 @@
+/* SPDX-License-Identifier: GPL-3.0-or-later */
+.unichef-popup {
+  width: 26em;
+  spacing: 0.5em;
+}
+.unichef-tabs {
+  spacing: 0.25em;
+}
+.unichef-tabs .unichef-button {
+  padding: 0.3em 1em;
+}
+.unichef-tabs .unichef-button:checked {
+  font-weight: bold;
+}
+.unichef-tab {
+  spacing: 0.4em;
+}
+.unichef-entry {
+  min-height: 2em;
+}
+.unichef-scroll {
+  max-height: 9em;
+}
+.unichef-chars {
+  max-height: 18em;
+}
+.unichef-matches {
+  spacing: 0.1em;
+}
+.unichef-match {
+  padding: 0.25em 0.5em;
+  border-radius: 0.4em;
+}
+.unichef-match:hover,
+.unichef-match:focus {
+  background-color: rgba(127, 127, 127, 0.2);
+}
+.unichef-op {
+  font-weight: bold;
+}
+.unichef-note {
+  font-size: 0.9em;
+  color: #e5a50a;
+}
+.unichef-actions {
+  spacing: 0.5em;
+}
+.unichef-char {
+  spacing: 0.75em;
+  padding: 0.15em 0;
+}
+.unichef-cp {
+  font-family: monospace;
+  min-width: 5.5em;
+}
+.unichef-glyph {
+  min-width: 1.5em;
+  font-size: 1.2em;
+}

@@ -42,6 +42,7 @@ expected=(
   "unichef-chrome-$v.zip"
   "unichef-edge-$v.zip"
   "unichef-firefox-$v.zip"
+  "unichef-gnome-$v.zip"
   "unichef-safari-xcode-$v.zip"
   "unichef-web-$v.zip"
   "unichef-$v.tar.gz"

@@ -2,3 +2,4 @@ packages:
   - packages/npm-core
   - clients/web
   - clients/extensions/common
+  - clients/gnome

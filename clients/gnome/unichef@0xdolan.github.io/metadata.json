@@ -1,0 +1,9 @@
+{
+  "uuid": "unichef@0xdolan.github.io",
+  "name": "UniChef",
+  "description": "Cybersecurity and Unicode workbench in the top bar: convert text with any UniChef operation and look up characters, offline through the installed unichef command.",
+  "version-name": "0.1.0 alpha.1",
+  "shell-version": ["46", "47", "48", "49", "50"],
+  "url": "https://github.com/0xdolan/unichef",
+  "gettext-domain": "unichef"
+}

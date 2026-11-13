@@ -33,6 +33,7 @@ SOURCES = (
     "clients/**/e2e/**/*.ts",
     "clients/**/*.test.ts",
     "clients/**/*.test.tsx",
+    "clients/**/*.test.js",
     ".github/workflows/*.yml",
 )
 

@@ -31,6 +31,7 @@ Every release has all of these. `scripts/release/verify.sh` fails if one is miss
 | Ubuntu PPA | `ppa:0xdolan/unichef`, every series in `debian/ppa-series.txt` | `ppa.yml` (signed source upload, approval in `ppa-publish`) | Launchpad signs |
 | Source tarball | `unichef-<v>.tar.gz` (the Debian orig) | `build-all` | Yes |
 | Browser extensions | `unichef-chrome-<v>.zip` (Chrome, Brave), `unichef-edge-<v>.zip`, `unichef-firefox-<v>.zip`; Chrome Web Store, Edge Add-ons and AMO on stable tags | `build-all`, `extensions.yml` (approval in `store-publish`) | Yes |
+| GNOME Shell extension | `unichef-gnome-<v>.zip` (reproducible); extensions.gnome.org by hand on stable tags (it has no upload API) | `build-all` | Yes |
 | Safari Xcode project | `unichef-safari-xcode-<v>.zip` (unsigned; build it in Xcode, no App Store) | `safari` on `macos-latest` (it must build unsigned first) | Yes |
 | Web app | `unichef-web-<v>.zip` (serve under `/unichef/`); GitHub Pages from `main` | `build-all`, `pages.yml` | Yes |
 | Container | `ghcr.io/0xdolan/unichef:<v>`, and `latest` for stable tags; amd64 and arm64 | `ghcr` (BuildKit SBOM and provenance) | Yes, pushed to the registry |
@@ -76,6 +77,8 @@ spells them in PEP 440 (`1.0.0rc1`), which `make version` handles.
 
 - Upload `assets/branding/dist/github/social-preview.png` under **Settings → General → Social
   preview** if the brand changed. GitHub has no API for it.
+- For a stable tag, upload `unichef-gnome-<v>.zip` from the release at
+  <https://extensions.gnome.org/upload/>. Review there takes days, and there is no API.
 - Close the RC tracking issue with the versions tested.
 - If something must be pulled: yank on PyPI, `npm deprecate`, delete the GHCR tag, and mark
   the GitHub Release as a pre-release with a notice. Never reuse a version number.
