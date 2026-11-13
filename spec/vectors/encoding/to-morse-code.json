@@ -1,0 +1,158 @@
+{
+  "op": "to-morse-code",
+  "cases": [
+    {
+      "name": "default: SOS",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "SOS"
+      },
+      "expected": {
+        "type": "string",
+        "text": "... --- ..."
+      }
+    },
+    {
+      "name": "words go on new lines, case is ignored",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Hi all, 2"
+      },
+      "expected": {
+        "type": "string",
+        "text": ".... ..\n.- .-.. .-.. --..--\n..---"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "lines stay lines; CRLF becomes LF",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a b\r\nc"
+      },
+      "expected": {
+        "type": "string",
+        "text": ".-\n-...\n-.-."
+      }
+    },
+    {
+      "name": "Dash/Dot words, slash and comma delimiters",
+      "args": {
+        "format": "Dash/Dot",
+        "letter_delimiter": "slash",
+        "word_delimiter": "comma"
+      },
+      "input": {
+        "type": "string",
+        "text": "SOS sos"
+      },
+      "expected": {
+        "type": "string",
+        "text": "DotDotDot/DashDashDash/DotDotDot,DotDotDot/DashDashDash/DotDotDot"
+      }
+    },
+    {
+      "name": "underscore format",
+      "args": {
+        "format": "_/."
+      },
+      "input": {
+        "type": "string",
+        "text": "Q"
+      },
+      "expected": {
+        "type": "string",
+        "text": "__._"
+      }
+    },
+    {
+      "name": "all punctuation in the table",
+      "args": {
+        "letter_delimiter": "space"
+      },
+      "input": {
+        "type": "string",
+        "text": ".,:;!?'\"/-+()@=&_$"
+      },
+      "expected": {
+        "type": "string",
+        "text": ".-.-.- --..-- ---... -.-.-. -.-.-- ..--.. .----. .-..-. -..-. -....- .-.-. -.--. -.--.- .--.-. -...- .-... ..--.- ...-..-"
+      }
+    },
+    {
+      "name": "no code: nothing, but delimiters remain",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "aéb"
+      },
+      "expected": {
+        "type": "string",
+        "text": ".-  -..."
+      }
+    },
+    {
+      "name": "only ASCII letters are upper-cased",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "ıſ"
+      },
+      "expected": {
+        "type": "string",
+        "text": " "
+      }
+    },
+    {
+      "name": "a non-BMP character is one character",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a😀b"
+      },
+      "expected": {
+        "type": "string",
+        "text": ".-  -..."
+      }
+    },
+    {
+      "name": "runs of spaces are one word break",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "e   t"
+      },
+      "expected": {
+        "type": "string",
+        "text": ".\n-"
+      }
+    },
+    {
+      "name": "error: an unknown format",
+      "args": {
+        "format": "x/y"
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

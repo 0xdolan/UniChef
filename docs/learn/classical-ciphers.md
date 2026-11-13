@@ -27,8 +27,38 @@ argument, [ROT13](../reference/ops/rot13.md) is any Caesar shift.
 (0x7E), shifting by 47, so digits and punctuation change too: `Hello, World!` becomes
 `w6==@[ (@C=5P`. See [ROT47](../reference/ops/rot47.md).
 
+**ROT8000** stretches the idea to Unicode: it rotates 63 404 visible characters of the Basic
+Multilingual Plane by half of that, so Latin text turns into CJK ideographs. `Hello, World!`
+becomes `籑籮籵籵籸簵 籠籸类籵籭簪`. Spaces stay put, which is a quick way to recognise it. See
+[ROT8000](../reference/ops/rot8000.md).
+
 **Breaking it.** There are only 25 possible shifts: try them all and read the one that makes
 sense.
+
+## A1Z26
+
+[A1Z26 encode](../reference/ops/a1z26-encode.md) writes each letter as its place in the
+alphabet: `Hello` becomes `8 5 12 12 15`. It has no key; it is a number substitution, often the
+first layer of a puzzle. A list of numbers that never goes above 26 is the tell.
+[A1Z26 decode](../reference/ops/a1z26-decode.md) reverses it and stops with an error on any
+number outside 1–26, so a wrong delimiter shows up straight away.
+
+## Bacon's cipher
+
+Francis Bacon's 1605 cipher writes each letter as five binary symbols, A and B. The original
+**standard** alphabet has 24 letters, because I and J shared a code and so did U and V; the
+**complete** alphabet gives all 26 their own:
+
+```
+H = 7  = 00111 = AABBB
+I = 8  = 01000 = ABAAA
+```
+
+Its real trick is steganography: the A/B symbols can hide in any text that has two visibly
+different forms, such as two typefaces, upper and lower case (`bacON ciPHer` decodes as `DG`),
+or the first letter of each word falling in A–M or N–Z. See
+[Bacon cipher encode](../reference/ops/bacon-encode.md) and
+[Bacon cipher decode](../reference/ops/bacon-decode.md).
 
 ## Atbash
 
@@ -90,12 +120,14 @@ A **one-time pad** (a truly random key as long as the message, used once) is the
 XOR that is unbreakable. Reuse the key once and it falls apart.
 
 <!-- docs:ops -->
-Operations explained here: [Atbash](../reference/ops/atbash.md), [ROT13](../reference/ops/rot13.md), [ROT47](../reference/ops/rot47.md), [Vigenère Decode](../reference/ops/vigenere-decode.md), [Vigenère Encode](../reference/ops/vigenere-encode.md), [XOR](../reference/ops/xor.md).
+Operations explained here: [A1Z26 decode](../reference/ops/a1z26-decode.md), [A1Z26 encode](../reference/ops/a1z26-encode.md), [Atbash](../reference/ops/atbash.md), [Bacon cipher decode](../reference/ops/bacon-decode.md), [Bacon cipher encode](../reference/ops/bacon-encode.md), [ROT13](../reference/ops/rot13.md), [ROT47](../reference/ops/rot47.md), [ROT8000](../reference/ops/rot8000.md), [Vigenère Decode](../reference/ops/vigenere-decode.md), [Vigenère Encode](../reference/ops/vigenere-encode.md), [XOR](../reference/ops/xor.md).
 <!-- /docs:ops -->
 
 ## Learn more
 
 - [Caesar cipher on Wikipedia](https://en.wikipedia.org/wiki/Caesar_cipher)
+- [Bacon's cipher on Wikipedia](https://en.wikipedia.org/wiki/Bacon%27s_cipher)
+- [ROT8000 by rottytooth](https://github.com/rottytooth/rot8000)
 - [Vigenère cipher on Wikipedia](https://en.wikipedia.org/wiki/Vigen%C3%A8re_cipher)
 - [Cryptopals set 1: basics, including repeating-key XOR](https://cryptopals.com/sets/1)
 - [Practical Cryptography: classical ciphers](http://practicalcryptography.com/ciphers/)
@@ -103,5 +135,5 @@ Operations explained here: [Atbash](../reference/ops/atbash.md), [ROT13](../refe
 <!-- docs:nav -->
 ---
 
-[← Encryption](encryption.md) · [Contents](../README.md) · [Compression →](compression.md)
+[← Encryption](encryption.md) · [Contents](../README.md) · [Letter codes: Morse, Braille, NATO and leet →](letter-codes.md)
 <!-- /docs:nav -->

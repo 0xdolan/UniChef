@@ -76,5 +76,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← Atbash](atbash.md) · [Contents](../../README.md) · [JWT Decode →](jwt-decode.md)
+[← Bacon cipher encode](bacon-encode.md) · [Contents](../../README.md) · [JWT Decode →](jwt-decode.md)
 <!-- /docs:nav -->

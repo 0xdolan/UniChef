@@ -748,6 +748,69 @@ Every match of `<[^>]+>` is removed, repeatedly, until the length stops changing
 - `remove-line-numbers` removes, at the start of the text and after each LF, up to five spaces or tabs, one or more ASCII digits and one character that is JavaScript whitespace or one of `:|-,.)]`. The removed character may be an LF.
 - These follow the reference implementation except that a final LF is kept rather than treated as an extra empty line, and empty input stays empty.
 
+## Letter codes (encoding, crypto and text categories)
+
+Morse, NATO, Braille, A1Z26, Bacon, leet speak and ROT8000 follow the reference implementation, with two deviations that apply to all of them: input is read one code point at a time (the reference reads UTF-16 code units, so a non-BMP character counted twice), and only ASCII `a`–`z` are upper-cased (the reference used the host's full mapping, so `ı` read as `I` and `ß` as `S`).
+
+Delimiter names: `space` is U+0020, `newline` LF, `crlf` CR LF, `slash` `/`, `backslash` `\`, `comma` `,`, `semicolon` `;` and `colon` `:`.
+
+### `to-morse-code`, `from-morse-code` (string → string)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `format` | `-/.` \| `_/.` \| `Dash/Dot` \| `DASH/DOT` \| `dash/dot` | `-/.` | `to-morse-code`: the dash and dot symbols, split on `/`. |
+| `letter_delimiter` | `space` \| `newline` \| `crlf` \| `slash` \| `backslash` \| `comma` \| `semicolon` \| `colon` | `space` | Between the codes of one word. |
+| `word_delimiter` | `newline` \| `crlf` \| `slash` \| `backslash` \| `comma` \| `semicolon` \| `colon` | `newline` | Between words. |
+
+The table is International Morse code for A–Z, 0–9 and `.,:;!?'"/-+()@=&_$`, plus seven dots for a space.
+
+- `to-morse-code` splits the input into lines on LF or CR LF, each line into words on runs of U+0020, and each word into code points. A code point with no code (after ASCII upper-casing) is written as the empty string but still gets its letter delimiters. Words are joined with `word_delimiter` and lines with LF.
+- `from-morse-code` first replaces every `-`, U+2010, U+2212, `_`, U+2013, U+2014 and ASCII case-insensitive `dash` with a dash, then every `.`, U+00B7 and case-insensitive `dot` with a dot. It splits on `word_delimiter`, splits each word on `letter_delimiter`, and looks each code up; a code not in the table, including the empty code, is dropped. Words are joined with one space.
+
+### `to-nato-alphabet` (string → string)
+
+Each ASCII letter (either case), digit, `,`, `/` and `.` is replaced by its spelling word and one space: Alfa, Bravo, Charlie, Delta, Echo, Foxtrot, Golf, Hotel, India, Juliett, Kilo, Lima, Mike, November, Oscar, Papa, Quebec, Romeo, Sierra, Tango, Uniform, Victor, Whiskey, X-ray, Yankee, Zulu, Zero, One, Two, Three, Four, Five, Six, Seven, Eight, Nine, Comma, Fraction bar and Full stop. Other code points are copied, so the output has a trailing space when the input ends in a replaced character.
+
+### `to-braille`, `from-braille` (string → string)
+
+The 64 six-dot patterns U+2800–U+283F correspond, in order, to the North American Braille ASCII string `` ␠A1B'K2L@CIF/MSP"E3H9O6R^DJG>NTQ,*5<-U8V.%[$+X!&;:4\0Z7(_?W]#Y)= `` (␠ is U+0020).
+
+- `to-braille` ASCII-upper-cases each code point and replaces it with its pattern if it is in that string; others are copied.
+- `from-braille` replaces each pattern with its character, so letters come out upper case. Eight-dot patterns (U+2840 and up) and other code points are copied.
+
+### `a1z26-encode`, `a1z26-decode` (string → string)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `delimiter` | `space` \| `comma` \| `semicolon` \| `colon` \| `newline` \| `crlf` | `space` | Between numbers. |
+
+- `a1z26-encode` writes each ASCII letter as its alphabet position 1–26 in decimal, joined by `delimiter`. Other code points are dropped.
+- `a1z26-decode` returns empty output for empty input. Otherwise it splits on `delimiter`; each piece, with ASCII whitespace (U+0009–U+000D, U+0020) trimmed, must be one or more ASCII digits with a value from 1 to 26, else `E_DECODE`. Each value is written as the lower-case letter. The reference accepted anything JavaScript's `Number()` read as 1–26 (such as `1e1` or `0x1a`) and turned other non-numbers into U+0000 rather than failing.
+
+### `bacon-encode`, `bacon-decode` (string → string)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `alphabet` | `standard` \| `complete` | `standard` | `standard` has 24 codes: I and J share code 8, U and V share code 19. `complete` gives A–Z codes 0–25. |
+| `translation` | encode: `01` \| `ab`; decode: also `case` \| `first-letter` | `01` | The two symbols. |
+| `keep_other` | boolean | `false` | `bacon-encode`: write codes in place among the other code points instead of dropping them. |
+| `invert` | boolean | `false` | Swap the two symbols. |
+
+- `bacon-encode` writes each ASCII letter as its code in five binary digits, most significant first, using `0`/`1` or `A`/`B`. Without `keep_other`, other code points are dropped and codes are joined with one space; with it, codes and other code points are concatenated in order. Unlike the reference, `invert` and `ab` change only the codes, never digits or letters that were already in the input, and input `0` and `1` are never read as part of a code.
+- `bacon-decode` turns the input into symbols: `01` keeps `0` and `1`; `ab` keeps `A`, `a` (0) and `B`, `b` (1); `case` keeps ASCII letters, upper case 1 and lower case 0; `first-letter` splits on runs of JavaScript whitespace and reads each word whose first code point is an ASCII letter, A–M as 0 and N–Z as 1 in either case (the reference also read words starting with anything else, by code unit order). `invert` swaps the symbols. Each group of five is a number; it is written as that letter of the alphabet, or `?` when it is past the end. Fewer than five symbols left over are ignored.
+
+### `leet-speak` (string → string)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `direction` | `to` \| `from` | `to` | Which way to convert. |
+
+`to` replaces ASCII `a`, `e`, `i`, `o`, `s`, `t` and their upper-case forms with `4`, `3`, `1`, `0`, `5`, `7`. `from` replaces `4`, `3`, `1`, `0`, `5`, `7` with lower-case `a`, `e`, `i`, `o`, `s`, `t`. Other code points are copied.
+
+### `rot8000` (string → string)
+
+The rotated set is the 63 404 BMP code points U+0021–U+007E, U+00A1–U+167F, U+1681–U+1FFF, U+200B–U+2027, U+202A–U+202E, U+2030–U+205E, U+2060–U+2FFF, U+3001–U+D7FF and U+E000–U+FFFF, in order. The code point at index i becomes the one at index (i + 31 702) mod 63 404, so the operation is its own inverse. Other code points (spaces, C0 and C1 controls, surrogates, non-BMP) are copied.
+
 ## Operation arguments (compression category)
 
 `raw-deflate`, `zlib-deflate` and `gzip` take one argument, `level`: an integer from 0 to 9, default 6. Level 0 stores the input in uncompressed blocks of at most 65 535 bytes, and both cores write it the same way, byte for byte. Levels 1 to 9 use the host compressor (zlib in Python, fflate in TypeScript), so the compressed bytes can differ between cores (parity class `roundtrip`). Both cores read what either one writes, and recipe vectors check the round trip.

@@ -1,0 +1,131 @@
+{
+  "op": "from-morse-code",
+  "cases": [
+    {
+      "name": "default: SOS",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "... --- ..."
+      },
+      "expected": {
+        "type": "string",
+        "text": "SOS"
+      }
+    },
+    {
+      "name": "words split on LF",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ".... ..\n.- .-.. .-.. --..--"
+      },
+      "expected": {
+        "type": "string",
+        "text": "HI ALL,"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "dash and dot words in any case",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "DashDotDot DOT"
+      },
+      "expected": {
+        "type": "string",
+        "text": "DE"
+      }
+    },
+    {
+      "name": "other dash and dot characters",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "‐· − – — _·"
+      },
+      "expected": {
+        "type": "string",
+        "text": "NTTTN"
+      }
+    },
+    {
+      "name": "unknown codes are dropped",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "...... .-"
+      },
+      "expected": {
+        "type": "string",
+        "text": "A"
+      }
+    },
+    {
+      "name": "seven dots is a space",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "......."
+      },
+      "expected": {
+        "type": "string",
+        "text": " "
+      }
+    },
+    {
+      "name": "slash and comma delimiters",
+      "args": {
+        "letter_delimiter": "slash",
+        "word_delimiter": "comma"
+      },
+      "input": {
+        "type": "string",
+        "text": ".../---/...,.-"
+      },
+      "expected": {
+        "type": "string",
+        "text": "SOS A"
+      }
+    },
+    {
+      "name": "CRLF word delimiter",
+      "args": {
+        "word_delimiter": "crlf"
+      },
+      "input": {
+        "type": "string",
+        "text": ".-\r\n-..."
+      },
+      "expected": {
+        "type": "string",
+        "text": "A B"
+      }
+    },
+    {
+      "name": "error: space is not a word delimiter",
+      "args": {
+        "word_delimiter": "space"
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

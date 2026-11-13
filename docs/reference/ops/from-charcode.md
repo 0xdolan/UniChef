@@ -78,5 +78,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← From Binary](from-binary.md) · [Contents](../../README.md) · [From Decimal →](from-decimal.md)
+[← From Braille](from-braille.md) · [Contents](../../README.md) · [From Decimal →](from-decimal.md)
 <!-- /docs:nav -->

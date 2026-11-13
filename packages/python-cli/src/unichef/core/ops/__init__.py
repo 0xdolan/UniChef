@@ -9,6 +9,7 @@ MODULES = (
     "codecs",
     "radix",
     "texttools",
+    "textcodes",
     "text",
     "html",
     "unicode",

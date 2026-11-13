@@ -26,10 +26,12 @@ Background: [Base encodings](../learn/base-encodings.md)
 | [From Base85](ops/from-base85.md) | Decode Ascii85 (optionally inside `<~ ~>`) or Z85. |
 | [From Base92](ops/from-base92.md) | Decode Base92. |
 | [From Binary](ops/from-binary.md) | Read bytes of 1-8 binary digits. |
+| [From Braille](ops/from-braille.md) | Replace each six-dot Braille pattern (U+2800 to U+283F) with its North American Braille ASCII character; letters come out in upper case. |
 | [From Charcode](ops/from-charcode.md) | Read code points written in `base` and separated by `delimiter`. |
 | [From Decimal](ops/from-decimal.md) | Read bytes of 1-3 decimal digits (at most 255). |
 | [From Hex](ops/from-hex.md) | Read hex digit pairs. |
 | [From Modhex](ops/from-modhex.md) | Read Modhex digit pairs, in either case, ignoring whitespace. |
+| [From Morse code](ops/from-morse-code.md) | Read International Morse code. |
 | [From Octal](ops/from-octal.md) | Read bytes of 1-3 octal digits (at most 377). |
 | [From Punycode](ops/from-punycode.md) | Decode Punycode (RFC 3492). |
 | [HTML Entity Decode](ops/html-entity-decode.md) | Decode named and numeric character references as HTML does in text content: the longest known name wins, legacy names may omit the semicolon, numeric references may omit it, 0x80-0x9F map through windows-1252, and 0, surrogates and values above 10FFFF become U+FFFD. |
@@ -48,10 +50,13 @@ Background: [Base encodings](../learn/base-encodings.md)
 | [To Base85](ops/to-base85.md) | Encode bytes as Ascii85 (`z` for a group of four zero bytes) or Z85. |
 | [To Base92](ops/to-base92.md) | Encode bytes as Base92: every 13 bits become two printable ASCII characters. |
 | [To Binary](ops/to-binary.md) | Write each byte as eight binary digits, separated by `delimiter`. |
+| [To Braille](ops/to-braille.md) | Replace each character of North American Braille ASCII (space, ASCII letters in either case, digits and `!"#$%&'()*+,-./:;<=>?@[\]^_`) with its six-dot Braille pattern, U+2800 to U+283F. |
 | [To Charcode](ops/to-charcode.md) | Write each code point in `base`. |
 | [To Decimal](ops/to-decimal.md) | Write each byte as a decimal number without padding, separated by `delimiter`. |
 | [To Hex](ops/to-hex.md) | Write each byte as two hex digits, separated or prefixed by `delimiter`. |
 | [To Modhex](ops/to-modhex.md) | Write each byte as two Modhex digits, separated by `delimiter`. |
+| [To Morse code](ops/to-morse-code.md) | Write each character as International Morse code. |
+| [To NATO alphabet](ops/to-nato-alphabet.md) | Replace each ASCII letter, digit, `,`, `/` and `.` with its NATO spelling word and a space. |
 | [To Octal](ops/to-octal.md) | Write each byte as three octal digits, separated by `delimiter`. |
 | [To Punycode](ops/to-punycode.md) | Encode the input with Punycode (RFC 3492). |
 | [URL Decode](ops/url-decode.md) | Decode %XX escapes; malformed escapes stay as they are. |
@@ -111,9 +116,13 @@ Background: [Encryption](../learn/encryption.md)
 
 | Operation | What it does |
 |---|---|
+| [A1Z26 decode](ops/a1z26-decode.md) | Split on `delimiter` and write each number from 1 to 26 as a lower-case letter. |
+| [A1Z26 encode](ops/a1z26-encode.md) | Write each ASCII letter as its place in the alphabet (`a` and `A` are 1, `z` and `Z` are 26), joined by `delimiter`. |
 | [AES Decrypt](ops/aes-decrypt.md) | Inverse of `aes-encrypt` with the same arguments. |
 | [AES Encrypt](ops/aes-encrypt.md) | AES in CBC (default), CTR, GCM or ECB mode. |
 | [Atbash](ops/atbash.md) | Mirror the ASCII alphabet (A<->Z, case kept). |
+| [Bacon cipher decode](ops/bacon-decode.md) | Read Bacon codes as upper-case letters. |
+| [Bacon cipher encode](ops/bacon-encode.md) | Write each ASCII letter as a five-symbol Bacon code. |
 | [Generate Random Bytes](ops/generate-random-bytes.md) | Replace the input with `length` random bytes: from the platform's secure random generator, or, when the recipe has a `seed`, from SHA-256 in counter mode. |
 | [JWT Decode](ops/jwt-decode.md) | Split a JWT into `header`, `payload` and `signature` (base64url text), without checking the signature or time claims. |
 | [JWT Sign](ops/jwt-sign.md) | Sign a JSON object as a JWT. |
@@ -121,6 +130,7 @@ Background: [Encryption](../learn/encryption.md)
 | [PBKDF2](ops/pbkdf2.md) | Derive a `length`-byte key from the input password (PBKDF2-HMAC, RFC 8018) and return it as hex. |
 | [ROT13](ops/rot13.md) | Rotate ASCII letters by `amount` (default 13, case kept); with `digits`, also rotate 0-9 by the same amount mod 10. |
 | [ROT47](ops/rot47.md) | Rotate printable ASCII U+0021..U+007E by `amount` (default 47) mod 94. |
+| [ROT8000](ops/rot8000.md) | Rotate visible Basic Multilingual Plane characters halfway through the list of 63 404 that take part, so applying it twice gives the input back. |
 | [Vigenère Decode](ops/vigenere-decode.md) | Undo `vigenere-encode`: shift each ASCII letter back by the next letter of `key`. |
 | [Vigenère Encode](ops/vigenere-encode.md) | Shift each ASCII letter forward by the next letter of `key` (A=0, case kept). |
 | [XOR](ops/xor.md) | XOR with a repeating `key`. |
@@ -163,6 +173,7 @@ Background: [Data formats and text processing](../learn/data-and-text.md)
 | [Get all casings](ops/get-all-casings.md) | Every combination of upper and lower case, one per line. |
 | [Head](ops/head.md) | The first `count` lines (keeping a final LF), graphemes or code points. |
 | [Join lines](ops/join.md) | Join the lines with `delimiter`. |
+| [Leet speak](ops/leet-speak.md) | `to` replaces the ASCII letters a, e, i, o, s and t, in either case, with 4, 3, 1, 0, 5 and 7. |
 | [Pad lines](ops/pad-lines.md) | Add `length` code points to the start or end of each line, made by repeating `character` and cutting it to length. |
 | [Regex extract](ops/regex-extract.md) | List every match of `pattern` (or its capture group `group`), joined by `separator`. |
 | [Remove ANSI escape codes](ops/remove-ansi-escape-codes.md) | Remove ANSI control sequences (ESC `[`, parameter bytes, intermediate bytes and a final byte), such as colour and cursor codes. |

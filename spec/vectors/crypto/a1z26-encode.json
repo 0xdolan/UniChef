@@ -1,0 +1,120 @@
+{
+  "op": "a1z26-encode",
+  "cases": [
+    {
+      "name": "default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Hello"
+      },
+      "expected": {
+        "type": "string",
+        "text": "8 5 12 12 15"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "other characters are dropped",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a-z 1!"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1 26"
+      }
+    },
+    {
+      "name": "comma delimiter",
+      "args": {
+        "delimiter": "comma"
+      },
+      "input": {
+        "type": "string",
+        "text": "abc"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1,2,3"
+      }
+    },
+    {
+      "name": "CRLF delimiter",
+      "args": {
+        "delimiter": "crlf"
+      },
+      "input": {
+        "type": "string",
+        "text": "ab"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1\r\n2"
+      }
+    },
+    {
+      "name": "only ASCII letters",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Kık"
+      },
+      "expected": {
+        "type": "string",
+        "text": "11"
+      }
+    },
+    {
+      "name": "semicolon delimiter",
+      "args": {
+        "delimiter": "semicolon"
+      },
+      "input": {
+        "type": "string",
+        "text": "xyz"
+      },
+      "expected": {
+        "type": "string",
+        "text": "24;25;26"
+      }
+    },
+    {
+      "name": "upper and lower case are the same",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "aA zZ"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1 1 26 26"
+      }
+    },
+    {
+      "name": "error: an unknown delimiter",
+      "args": {
+        "delimiter": "tab"
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

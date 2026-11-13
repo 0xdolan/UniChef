@@ -1,0 +1,112 @@
+{
+  "op": "a1z26-decode",
+  "cases": [
+    {
+      "name": "default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "8 5 12 12 15"
+      },
+      "expected": {
+        "type": "string",
+        "text": "hello"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "whitespace around numbers and leading zeros",
+      "args": {
+        "delimiter": "comma"
+      },
+      "input": {
+        "type": "string",
+        "text": " 1,\t02 ,26\n"
+      },
+      "expected": {
+        "type": "string",
+        "text": "abz"
+      }
+    },
+    {
+      "name": "semicolon delimiter",
+      "args": {
+        "delimiter": "semicolon"
+      },
+      "input": {
+        "type": "string",
+        "text": "3;1;20"
+      },
+      "expected": {
+        "type": "string",
+        "text": "cat"
+      }
+    },
+    {
+      "name": "error: 0",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "0"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: 27",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "1 27"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: not a number",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: empty piece",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "1  2"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: sign",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "+1"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    }
+  ]
+}

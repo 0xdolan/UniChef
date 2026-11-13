@@ -80,5 +80,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← To Hex](to-hex.md) · [Contents](../../README.md) · [To Octal →](to-octal.md)
+[← To Hex](to-hex.md) · [Contents](../../README.md) · [To Morse code →](to-morse-code.md)
 <!-- /docs:nav -->

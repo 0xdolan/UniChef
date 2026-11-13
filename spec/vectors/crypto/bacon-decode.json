@@ -1,0 +1,151 @@
+{
+  "op": "bacon-decode",
+  "cases": [
+    {
+      "name": "default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "00111 01000"
+      },
+      "expected": {
+        "type": "string",
+        "text": "HI"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "leftover symbols are ignored",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "000000001"
+      },
+      "expected": {
+        "type": "string",
+        "text": "A"
+      }
+    },
+    {
+      "name": "past the standard alphabet is ?",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "11000 10111"
+      },
+      "expected": {
+        "type": "string",
+        "text": "?Z"
+      }
+    },
+    {
+      "name": "complete alphabet",
+      "args": {
+        "alphabet": "complete"
+      },
+      "input": {
+        "type": "string",
+        "text": "01000 01001 11001"
+      },
+      "expected": {
+        "type": "string",
+        "text": "IJZ"
+      }
+    },
+    {
+      "name": "A/B in either case",
+      "args": {
+        "translation": "ab"
+      },
+      "input": {
+        "type": "string",
+        "text": "AABBB abaaa"
+      },
+      "expected": {
+        "type": "string",
+        "text": "HI"
+      }
+    },
+    {
+      "name": "case",
+      "args": {
+        "translation": "case"
+      },
+      "input": {
+        "type": "string",
+        "text": "bacON ciPHer"
+      },
+      "expected": {
+        "type": "string",
+        "text": "DG"
+      }
+    },
+    {
+      "name": "first letter of each word",
+      "args": {
+        "translation": "first-letter"
+      },
+      "input": {
+        "type": "string",
+        "text": "and now some cats sat here, often eating very nicely in bed"
+      },
+      "expected": {
+        "type": "string",
+        "text": "OM"
+      }
+    },
+    {
+      "name": "first letter: words not starting with a letter are skipped",
+      "args": {
+        "translation": "first-letter",
+        "alphabet": "complete"
+      },
+      "input": {
+        "type": "string",
+        "text": "a 1 b c d e"
+      },
+      "expected": {
+        "type": "string",
+        "text": "A"
+      }
+    },
+    {
+      "name": "invert",
+      "args": {
+        "invert": true
+      },
+      "input": {
+        "type": "string",
+        "text": "11000 10111"
+      },
+      "expected": {
+        "type": "string",
+        "text": "HI"
+      }
+    },
+    {
+      "name": "error: an unknown alphabet",
+      "args": {
+        "alphabet": "latin"
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

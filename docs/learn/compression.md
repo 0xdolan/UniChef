@@ -79,5 +79,5 @@ Operations explained here: [Gunzip](../reference/ops/gunzip.md), [Gzip](../refer
 <!-- docs:nav -->
 ---
 
-[← Classical ciphers and XOR](classical-ciphers.md) · [Contents](../README.md) · [Unicode security →](unicode-security.md)
+[← Letter codes: Morse, Braille, NATO and leet](letter-codes.md) · [Contents](../README.md) · [Unicode security →](unicode-security.md)
 <!-- /docs:nav -->

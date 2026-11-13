@@ -1,0 +1,118 @@
+{
+  "op": "leet-speak",
+  "cases": [
+    {
+      "name": "default: to",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Leet speak"
+      },
+      "expected": {
+        "type": "string",
+        "text": "L337 5p34k"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "upper case letters",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "SEAT TOIL"
+      },
+      "expected": {
+        "type": "string",
+        "text": "5347 701L"
+      }
+    },
+    {
+      "name": "from",
+      "args": {
+        "direction": "from"
+      },
+      "input": {
+        "type": "string",
+        "text": "L337 5P34K 2 8 9"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Leet sPeaK 2 8 9"
+      }
+    },
+    {
+      "name": "non-ASCII is copied",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "àı"
+      },
+      "expected": {
+        "type": "string",
+        "text": "àı"
+      }
+    },
+    {
+      "name": "only the six letters change",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "abcdefghijklmnopqrstuvwxyz"
+      },
+      "expected": {
+        "type": "string",
+        "text": "4bcd3fgh1jklmn0pqr57uvwxyz"
+      }
+    },
+    {
+      "name": "to leaves digits alone",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "2 4 8"
+      },
+      "expected": {
+        "type": "string",
+        "text": "2 4 8"
+      }
+    },
+    {
+      "name": "from leaves letters alone",
+      "args": {
+        "direction": "from"
+      },
+      "input": {
+        "type": "string",
+        "text": "abc ABC"
+      },
+      "expected": {
+        "type": "string",
+        "text": "abc ABC"
+      }
+    },
+    {
+      "name": "error: an unknown direction",
+      "args": {
+        "direction": "both"
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

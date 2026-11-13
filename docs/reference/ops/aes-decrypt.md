@@ -95,5 +95,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← SHAKE](shake.md) · [Contents](../../README.md) · [AES Encrypt →](aes-encrypt.md)
+[← A1Z26 encode](a1z26-encode.md) · [Contents](../../README.md) · [AES Encrypt →](aes-encrypt.md)
 <!-- /docs:nav -->

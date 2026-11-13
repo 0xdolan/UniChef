@@ -1,0 +1,138 @@
+{
+  "op": "bacon-encode",
+  "cases": [
+    {
+      "name": "default: standard alphabet",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Hi"
+      },
+      "expected": {
+        "type": "string",
+        "text": "00111 01000"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "standard: I=J and U=V",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "IJUVZ"
+      },
+      "expected": {
+        "type": "string",
+        "text": "01000 01000 10011 10011 10111"
+      }
+    },
+    {
+      "name": "complete alphabet",
+      "args": {
+        "alphabet": "complete"
+      },
+      "input": {
+        "type": "string",
+        "text": "IJUVZ"
+      },
+      "expected": {
+        "type": "string",
+        "text": "01000 01001 10100 10101 11001"
+      }
+    },
+    {
+      "name": "A/B translation",
+      "args": {
+        "translation": "ab"
+      },
+      "input": {
+        "type": "string",
+        "text": "ab"
+      },
+      "expected": {
+        "type": "string",
+        "text": "AAAAA AAAAB"
+      }
+    },
+    {
+      "name": "invert",
+      "args": {
+        "invert": true
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "type": "string",
+        "text": "11111"
+      }
+    },
+    {
+      "name": "keep other characters in place",
+      "args": {
+        "keep_other": true
+      },
+      "input": {
+        "type": "string",
+        "text": "Hi, J!"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0011101000, 01000!"
+      }
+    },
+    {
+      "name": "keep, invert and A/B leave input digits alone",
+      "args": {
+        "keep_other": true,
+        "invert": true,
+        "translation": "ab"
+      },
+      "input": {
+        "type": "string",
+        "text": "a01"
+      },
+      "expected": {
+        "type": "string",
+        "text": "BBBBB01"
+      }
+    },
+    {
+      "name": "other characters are dropped",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a 1 é b"
+      },
+      "expected": {
+        "type": "string",
+        "text": "00000 00001"
+      }
+    },
+    {
+      "name": "error: case is decode-only",
+      "args": {
+        "translation": "case"
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

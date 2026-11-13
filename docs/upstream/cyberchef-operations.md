@@ -3,7 +3,7 @@
 > Generated from `src/core/config/Categories.json` at CyberChef commit `d4d96c6c3d2597fef836d81bfc04617d97c681a5` (v11.5.0, 2026-11-04).
 > Mapping targets are the op ids in [UniChef-PRD.md §3.8](../../UniChef-PRD.md). Seed `spec/cyberchef-map.json` from this table.
 
-**Totals:** 506 unique operations (some appear in several categories); 101 have a UniChef equivalent (79 in 1.0); 405 are not yet covered.
+**Totals:** 506 unique operations (some appear in several categories); 112 have a UniChef equivalent (79 in 1.0); 394 are not yet covered.
 
 Rules for the importer:
 
@@ -77,8 +77,8 @@ Rules for the importer:
 | Swap endianness | `swap-endianness` | 1.1 |
 | To MessagePack | not planned | — |
 | From MessagePack | not planned | — |
-| To Braille | not planned | — |
-| From Braille | not planned | — |
+| To Braille | `to-braille` | 1.1 |
+| From Braille | `from-braille` | 1.1 |
 | Parse TLV | not planned | — |
 | CSV to JSON | `csv-to-json` | Beta |
 | JSON to CSV | `json-to-csv` | Beta |
@@ -141,7 +141,7 @@ Rules for the importer:
 | ROT13 Brute Force | not planned | — |
 | ROT47 | `rot47` | Alpha |
 | ROT47 Brute Force | not planned | — |
-| ROT8000 | not planned | — |
+| ROT8000 | `rot8000` | 1.1 |
 | XOR | `xor` | Alpha |
 | XOR Brute Force | not planned | — |
 | Vigenère Encode | `vigenere-encode` | Beta |
@@ -152,17 +152,17 @@ Rules for the importer:
 | XTEA Decrypt | not planned | — |
 | XXTEA Encrypt | not planned | — |
 | XXTEA Decrypt | not planned | — |
-| To Morse Code | not planned | — |
-| From Morse Code | not planned | — |
-| Bacon Cipher Encode | not planned | — |
-| Bacon Cipher Decode | not planned | — |
+| To Morse Code | `to-morse-code` | 1.1 |
+| From Morse Code | `from-morse-code` | 1.1 |
+| Bacon Cipher Encode | `bacon-encode` | 1.1 |
+| Bacon Cipher Decode | `bacon-decode` | 1.1 |
 | Bifid Cipher Encode | not planned | — |
 | Bifid Cipher Decode | not planned | — |
 | Caesar Box Cipher | not planned | — |
 | Affine Cipher Encode | not planned | — |
 | Affine Cipher Decode | not planned | — |
-| A1Z26 Cipher Encode | not planned | — |
-| A1Z26 Cipher Decode | not planned | — |
+| A1Z26 Cipher Encode | `a1z26-encode` | 1.1 |
+| A1Z26 Cipher Decode | `a1z26-decode` | 1.1 |
 | Rail Fence Cipher Encode | not planned | — |
 | Rail Fence Cipher Decode | not planned | — |
 | Atbash Cipher | `atbash` | Alpha |
@@ -268,7 +268,7 @@ Rules for the importer:
 | Rotate right | not planned | — |
 | ROR13 | not planned | — |
 | ROT13 | `rot13` | Alpha |
-| ROT8000 | not planned | — |
+| ROT8000 | `rot8000` | 1.1 |
 
 ## Networking (38)
 
@@ -322,8 +322,8 @@ Rules for the importer:
 | Unicode Text Format | not planned | — |
 | Remove Diacritics | `strip-diacritics` | Alpha |
 | Unescape Unicode Characters | `unescape-unicode` | Alpha |
-| Convert to NATO alphabet | not planned | — |
-| Convert Leet Speak | not planned | — |
+| Convert to NATO alphabet | `to-nato-alphabet` | 1.1 |
+| Convert Leet Speak | `leet-speak` | 1.1 |
 
 ## Utils (52)
 

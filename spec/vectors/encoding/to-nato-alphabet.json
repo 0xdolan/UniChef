@@ -1,0 +1,114 @@
+{
+  "op": "to-nato-alphabet",
+  "cases": [
+    {
+      "name": "default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Hi 5"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Hotel India  Five "
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "punctuation words",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "1,2/3.4"
+      },
+      "expected": {
+        "type": "string",
+        "text": "One Comma Two Fraction bar Three Full stop Four "
+      }
+    },
+    {
+      "name": "other characters are copied",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "xé-!"
+      },
+      "expected": {
+        "type": "string",
+        "text": "X-ray é-!"
+      }
+    },
+    {
+      "name": "every letter",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "abcdefghijklmnopqrstuvwxyz"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Alfa Bravo Charlie Delta Echo Foxtrot Golf Hotel India Juliett Kilo Lima Mike November Oscar Papa Quebec Romeo Sierra Tango Uniform Victor Whiskey X-ray Yankee Zulu "
+      }
+    },
+    {
+      "name": "every digit",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "0123456789"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Zero One Two Three Four Five Six Seven Eight Nine "
+      }
+    },
+    {
+      "name": "lines are kept",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a\nb"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Alfa \nBravo "
+      }
+    },
+    {
+      "name": "only ASCII letters are upper-cased",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "ıK"
+      },
+      "expected": {
+        "type": "string",
+        "text": "ıK"
+      }
+    },
+    {
+      "name": "error: an unknown argument",
+      "args": {
+        "bogus": 1
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}
