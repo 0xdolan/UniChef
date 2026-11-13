@@ -60,7 +60,9 @@ git rev-parse --verify -q "$ref^{commit}" > /dev/null || die "no such ref: $ref"
 mkdir -p "$out"
 tarball="$out/unichef_$deb.orig.tar.gz"
 git archive --format=tar --prefix="unichef-$deb/" "$ref" -- . \
-  ':(exclude)debian' ':(exclude)clients' ':(exclude)assets' ':(exclude)docker' \
+  ':(exclude)debian' ':(exclude)docker' \
+  ':(exclude)clients/web' ':(exclude)clients/extensions' ':(exclude)clients/gnome/test' \
+  ':(exclude)assets/docs' \
   ':(exclude).claude' \
   | gzip -n -9 > "$tarball"
 echo "$tarball"

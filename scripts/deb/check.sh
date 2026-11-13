@@ -58,5 +58,15 @@ dpkg-buildpackage -us -uc
 cd "$work"
 lintian --profile "$distro" --fail-on error,warning --info "$work"/unichef_*.changes
 autopkgtest "$work"/unichef_*_all.deb "$src" -- null
-[[ -z "$out" ]] || cp "$work"/unichef_*_all.deb "$out/"
+# FR-016: the extension package holds the extension where GNOME Shell looks for it. Its
+# autopkgtest would have to install all of gnome-shell, so check the contents instead.
+ext=/usr/share/gnome-shell/extensions/unichef@0xdolan.github.io
+listing=$(dpkg-deb -c "$work"/gnome-shell-extension-unichef_*_all.deb)
+for f in extension.js lib.js metadata.json stylesheet.css icons/unichef-symbolic.svg; do
+  grep -q " \.$ext/$f\$" <<< "$listing" || { echo "deb-check: $ext/$f is missing" >&2; exit 1; }
+done
+dpkg-deb --fsys-tarfile "$work"/gnome-shell-extension-unichef_*_all.deb \
+  | tar -xO ".$ext/metadata.json" \
+  | python3 -c 'import json, sys; assert json.load(sys.stdin)["uuid"] == "unichef@0xdolan.github.io"'
+[[ -z "$out" ]] || cp "$work"/unichef_*_all.deb "$work"/gnome-shell-extension-unichef_*_all.deb "$out/"
 echo "deb-check: ok"

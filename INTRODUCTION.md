@@ -41,7 +41,7 @@ UniChef is in pre-release ahead of 1.0.0. Operations and recipe files may still 
 | Chrome, Brave | Chrome Web Store listing, or load `unichef-chrome-<version>.zip` from a GitHub Release unpacked | Store listing from 1.0.0; the zip is available |
 | Edge | Edge Add-ons listing, or load `unichef-edge-<version>.zip` unpacked | Store listing from 1.0.0; the zip from 1.0.0-rc.1 |
 | Firefox | addons.mozilla.org listing, or load `unichef-firefox-<version>.zip` as a temporary add-on | Store listing from 1.0.0; the zip is available |
-| GNOME Shell 46 to 50 | extensions.gnome.org listing, or `gnome-extensions install unichef-gnome-<version>.zip` from a GitHub Release. Needs the CLI. | The zip from the next release; the listing after review |
+| GNOME Shell 46 to 50 | `sudo apt install gnome-shell-extension-unichef` from the PPA, the extensions.gnome.org listing, or `gnome-extensions install unichef-gnome-<version>.zip` from a GitHub Release. Needs the CLI. | The zip from the next release; the listing after review |
 | Safari (macOS) | Build `unichef-safari-xcode-<version>.zip` from a GitHub Release in Xcode. It is not in the App Store. | From 1.0.0-rc.1 |
 
 [docs/extensions/publishing.md](docs/extensions/publishing.md#installing-without-a-store) has the steps for loading each extension without a store.
@@ -210,7 +210,7 @@ The UniChef extension for Chrome, Brave, Edge, Firefox and Safari brings the ins
 On a GNOME desktop (GNOME Shell 46 or later), the UniChef extension puts two quick tools in the top bar. It runs the `unichef` CLI on your computer, so it needs no network and gives the same results as the CLI.
 
 1. **Install the CLI** (`pipx install unichef`, or the PPA on Ubuntu). Without it, the popup shows these commands instead of the tools.
-2. **Install the extension.** Download `unichef-gnome-<version>.zip` from a [GitHub Release](https://github.com/0xdolan/unichef/releases), then:
+2. **Install the extension.** On Ubuntu with the PPA, run `sudo apt install gnome-shell-extension-unichef` (it installs the CLI too), log out and back in, and enable it as below. Otherwise, download `unichef-gnome-<version>.zip` from a [GitHub Release](https://github.com/0xdolan/unichef/releases), then:
 
    ```sh
    gnome-extensions install --force unichef-gnome-<version>.zip
