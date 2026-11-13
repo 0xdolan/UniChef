@@ -11,6 +11,7 @@ MODULES = (
     "texttools",
     "textcodes",
     "textformat",
+    "numformats",
     "text",
     "html",
     "unicode",

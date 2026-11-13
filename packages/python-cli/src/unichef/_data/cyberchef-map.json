@@ -985,6 +985,123 @@
         }
       ]
     },
-    "Wrap": { "op": "wrap", "args": [{ "to": "width", "integer": true }] }
+    "Wrap": { "op": "wrap", "args": [{ "to": "width", "integer": true }] },
+    "To Float": {
+      "op": "to-float",
+      "args": [
+        { "to": "endianness", "map": { "Big Endian": "big", "Little Endian": "little" } },
+        { "to": "size", "map": { "Float (4 bytes)": "float", "Double (8 bytes)": "double" } },
+        {
+          "to": "delimiter",
+          "map": {
+            "Space": "space",
+            "Comma": "comma",
+            "Semi-colon": "semicolon",
+            "Colon": "colon",
+            "Line feed": "newline",
+            "CRLF": "crlf"
+          }
+        }
+      ]
+    },
+    "From Float": {
+      "op": "from-float",
+      "args": [
+        { "to": "endianness", "map": { "Big Endian": "big", "Little Endian": "little" } },
+        { "to": "size", "map": { "Float (4 bytes)": "float", "Double (8 bytes)": "double" } },
+        {
+          "to": "delimiter",
+          "map": {
+            "Space": "space",
+            "Comma": "comma",
+            "Semi-colon": "semicolon",
+            "Colon": "colon",
+            "Line feed": "newline",
+            "CRLF": "crlf"
+          }
+        }
+      ]
+    },
+    "To Bech32": {
+      "op": "to-bech32",
+      "args": [
+        { "to": "hrp" },
+        { "to": "encoding", "map": { "Bech32": "bech32", "Bech32m": "bech32m" } },
+        { "expect": "Raw bytes" },
+        { "to": "mode", "map": { "Generic": "generic", "Bitcoin SegWit": "segwit" } },
+        { "to": "witness_version", "integer": true }
+      ]
+    },
+    "From Bech32": {
+      "op": "from-bech32",
+      "args": [
+        {
+          "to": "encoding",
+          "map": { "Auto-detect": "auto", "Bech32": "bech32", "Bech32m": "bech32m" }
+        },
+        {
+          "to": "format",
+          "default": "Raw",
+          "map": {
+            "Raw": "raw",
+            "Hex": "hex",
+            "Bitcoin scriptPubKey": "script-pubkey",
+            "HRP: Hex": "hrp-hex",
+            "JSON": "json"
+          }
+        }
+      ]
+    },
+    "To BCD": {
+      "op": "to-bcd",
+      "args": [
+        {
+          "to": "scheme",
+          "map": {
+            "8 4 2 1": "8421",
+            "7 4 2 1": "7421",
+            "4 2 2 1": "4221",
+            "2 4 2 1": "2421",
+            "8 4 -2 -1": "84-2-1",
+            "Excess-3": "excess-3",
+            "IBM 8 4 2 1": "ibm-8421"
+          }
+        },
+        { "to": "packed" },
+        { "to": "signed" },
+        { "to": "format", "map": { "Nibbles": "nibbles", "Bytes": "bytes", "Raw": "raw" } }
+      ]
+    },
+    "From BCD": {
+      "op": "from-bcd",
+      "args": [
+        {
+          "to": "scheme",
+          "map": {
+            "8 4 2 1": "8421",
+            "7 4 2 1": "7421",
+            "4 2 2 1": "4221",
+            "2 4 2 1": "2421",
+            "8 4 -2 -1": "84-2-1",
+            "Excess-3": "excess-3",
+            "IBM 8 4 2 1": "ibm-8421"
+          }
+        },
+        { "to": "packed" },
+        { "to": "signed" },
+        { "to": "format", "map": { "Nibbles": "nibbles", "Bytes": "bytes", "Raw": "raw" } }
+      ]
+    },
+    "Text-Integer Conversion": {
+      "op": "text-integer",
+      "args": [
+        {
+          "to": "output",
+          "map": { "String": "string", "Decimal": "decimal", "Hexadecimal": "hex" }
+        }
+      ]
+    },
+    "PEM to Hex": { "op": "pem-to-hex", "args": [] },
+    "Hex to PEM": { "op": "hex-to-pem", "args": [{ "to": "header" }] }
   }
 }

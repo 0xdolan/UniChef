@@ -83,5 +83,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← From Octal](from-octal.md) · [Contents](../../README.md) · [HTML Entity Decode →](html-entity-decode.md)
+[← From Octal](from-octal.md) · [Contents](../../README.md) · [Hex to PEM →](hex-to-pem.md)
 <!-- /docs:nav -->

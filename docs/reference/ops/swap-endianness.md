@@ -78,5 +78,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← Quoted-Printable Encode](quoted-printable-encode.md) · [Contents](../../README.md) · [To Base →](to-base.md)
+[← Quoted-Printable Encode](quoted-printable-encode.md) · [Contents](../../README.md) · [Text-Integer Conversion →](text-integer.md)
 <!-- /docs:nav -->

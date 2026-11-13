@@ -3,7 +3,7 @@
 > Generated from `src/core/config/Categories.json` at CyberChef commit `d4d96c6c3d2597fef836d81bfc04617d97c681a5` (v11.5.0, 2026-11-04).
 > Mapping targets are the op ids in [UniChef-PRD.md §3.8](../../UniChef-PRD.md). Seed `spec/cyberchef-map.json` from this table.
 
-**Totals:** 506 unique operations (some appear in several categories); 123 have a UniChef equivalent (79 in 1.0); 383 are not yet covered.
+**Totals:** 506 unique operations (some appear in several categories); 132 have a UniChef equivalent (79 in 1.0); 374 are not yet covered.
 
 Rules for the importer:
 
@@ -23,8 +23,8 @@ Rules for the importer:
 | From Charcode | `from-charcode` | 1.1 |
 | To Decimal | `to-decimal` | Alpha |
 | From Decimal | `from-decimal` | Alpha |
-| To Float | not planned | — |
-| From Float | not planned | — |
+| To Float | `to-float` | 1.1 |
+| From Float | `from-float` | 1.1 |
 | To Binary | `to-binary` | Alpha |
 | From Binary | `from-binary` | Alpha |
 | To Octal | `to-octal` | Alpha |
@@ -35,8 +35,8 @@ Rules for the importer:
 | From Base45 | `from-base45` | 1.1 |
 | To Base58 | `to-base58` | Beta |
 | From Base58 | `from-base58` | Beta |
-| To Bech32 | not planned | — |
-| From Bech32 | not planned | — |
+| To Bech32 | `to-bech32` | 1.1 |
+| From Bech32 | `from-bech32` | 1.1 |
 | To Base62 | `to-base62` | 1.1 |
 | From Base62 | `from-base62` | 1.1 |
 | To Base64 | `to-base64` | Alpha |
@@ -48,9 +48,9 @@ Rules for the importer:
 | From Base85 | `from-base85` | Beta |
 | To Base | `to-base` | 1.1 |
 | From Base | `from-base` | 1.1 |
-| To BCD | not planned | — |
-| From BCD | not planned | — |
-| Text-Integer Conversion | not planned | — |
+| To BCD | `to-bcd` | 1.1 |
+| From BCD | `from-bcd` | 1.1 |
+| Text-Integer Conversion | `text-integer` | 1.1 |
 | To HTML Entity | `html-entity-encode` | Alpha |
 | From HTML Entity | `html-entity-decode` | Alpha |
 | URL Encode | `url-encode` | Alpha |
@@ -67,8 +67,8 @@ Rules for the importer:
 | AMF Decode | not planned | — |
 | To Hex Content | `to-hex-content` | 1.1 |
 | From Hex Content | `from-hex-content` | 1.1 |
-| PEM to Hex | not planned | — |
-| Hex to PEM | not planned | — |
+| PEM to Hex | `pem-to-hex` | 1.1 |
+| Hex to PEM | `hex-to-pem` | 1.1 |
 | Parse ASN.1 hex string | not planned | — |
 | Change IP format | not planned | — |
 | Encode text | `encode-text` | Alpha |
@@ -204,8 +204,8 @@ Rules for the importer:
 | Parse X.509 certificate bundles | not planned | — |
 | Parse X.509 CRL | not planned | — |
 | Parse ASN.1 hex string | not planned | — |
-| PEM to Hex | not planned | — |
-| Hex to PEM | not planned | — |
+| PEM to Hex | `pem-to-hex` | 1.1 |
+| Hex to PEM | `hex-to-pem` | 1.1 |
 | Hex to Object Identifier | not planned | — |
 | Object Identifier to Hex | not planned | — |
 | PEM to JWK | not planned | — |

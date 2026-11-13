@@ -22,6 +22,12 @@ export function matchOps(
     if (group === undefined) groups.set(op.category, [op]);
     else group.push(op);
   }
+  // Names that start with the query come first, so "to hex" puts To Hex above PEM to Hex.
+  // Array.prototype.sort is stable, so each part keeps the catalogue order.
+  if (q !== '') {
+    const rank = (op: OperationInfo): number => (op.name.toLowerCase().startsWith(q) ? 0 : 1);
+    for (const group of groups.values()) group.sort((a, b) => rank(a) - rank(b));
+  }
   return groups;
 }
 

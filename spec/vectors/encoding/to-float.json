@@ -1,0 +1,166 @@
+{
+  "op": "to-float",
+  "cases": [
+    {
+      "name": "default: big-endian float",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "ABCD"
+      },
+      "expected": {
+        "type": "string",
+        "text": "12.141422271728516"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "CyberChef: two floats",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "3f0000003f000000"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0.5 0.5"
+      }
+    },
+    {
+      "name": "CyberChef: little-endian floats",
+      "args": {
+        "endianness": "little"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "0000003f0000003f"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0.5 0.5"
+      }
+    },
+    {
+      "name": "CyberChef: doubles",
+      "args": {
+        "size": "double"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "3fe00000000000003fe0000000000000"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0.5 0.5"
+      }
+    },
+    {
+      "name": "CyberChef: little-endian doubles",
+      "args": {
+        "endianness": "little",
+        "size": "double"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "000000000000e03f000000000000e03f"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0.5 0.5"
+      }
+    },
+    {
+      "name": "zeros, infinities and NaN",
+      "args": {
+        "delimiter": "comma"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "00000000800000007f800000ff8000007fc00000ffc00001"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0,-0,Infinity,-Infinity,NaN,NaN"
+      }
+    },
+    {
+      "name": "smallest, largest and exponent forms (float)",
+      "args": {
+        "delimiter": "newline"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "000000017f7fffff3eaaaaab501502f95a0e1bca358637bd"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1.401298464324817e-45\n3.4028234663852886e+38\n0.3333333432674408\n10000000000\n10000000272564224\n9.999999974752427e-7"
+      }
+    },
+    {
+      "name": "exponent forms (double)",
+      "args": {
+        "size": "double",
+        "delimiter": "semicolon"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "00000000000000017fefffffffffffff3fb999999999999a444b1ae4d6e2ef503eb0c6f7a0b5ed8d4341c37937e08000"
+      },
+      "expected": {
+        "type": "string",
+        "text": "5e-324;1.7976931348623157e+308;0.1;1e+21;0.000001;10000000000000000"
+      }
+    },
+    {
+      "name": "pi and 1e21 boundary",
+      "args": {
+        "size": "double",
+        "delimiter": "crlf"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "400921fb54442d184431e0c8f1c9d19043c158e460913d0044b52d02c7e14af6"
+      },
+      "expected": {
+        "type": "string",
+        "text": "3.141592653589793\r\n329792111162006960000\r\n2500000000000000000\r\n1e+23"
+      }
+    },
+    {
+      "name": "error: three bytes are not a float",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "000000"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: twelve bytes are not doubles",
+      "args": {
+        "size": "double"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "000000000000000000000000"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    }
+  ]
+}

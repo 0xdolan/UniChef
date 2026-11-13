@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 /** The workbench end to end against a fake worker: add steps, edit args, auto-bake. */
 
-import { makeDish } from '@unichef/core';
+import { allOperationInfo, makeDish } from '@unichef/core';
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { matchOps } from '../src/features/workbench/OperationList.js';
 import { Workbench } from '../src/features/workbench/Workbench.js';
 import { AUTO_BAKE_MS } from '../src/lib/baker.js';
 import { useApp } from '../src/state/store.js';
@@ -207,6 +208,22 @@ describe('Workbench', () => {
     expect(screen.getByRole('alert').textContent).toContain('This link holds 25 steps');
     fireEvent.click(screen.getByRole('button', { name: 'Dismiss' }));
     expect(screen.queryByRole('alert')).toBeNull();
+  });
+});
+
+describe('operation search (FR-001)', () => {
+  it('FR-001: lists names that start with the query first in each category', () => {
+    const names = matchOps(allOperationInfo(), ' To Hex ')
+      .get('Encoding')
+      ?.map((op) => op.name);
+    expect(names?.slice(0, 3)).toEqual(['To Hex', 'To Hex Content', 'To Hexdump']);
+    expect(names).toContain('PEM to Hex');
+  });
+
+  it('FR-001: keeps the catalogue order without a query', () => {
+    const all = allOperationInfo();
+    const listed = [...matchOps(all, '').values()].flat();
+    expect(listed).toHaveLength(all.length);
   });
 });
 

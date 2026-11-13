@@ -79,5 +79,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← From Base85](from-base85.md) · [Contents](../../README.md) · [From Binary →](from-binary.md)
+[← From Base85](from-base85.md) · [Contents](../../README.md) · [From BCD →](from-bcd.md)
 <!-- /docs:nav -->

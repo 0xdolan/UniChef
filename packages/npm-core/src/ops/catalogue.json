@@ -1310,6 +1310,98 @@
       ]
     },
     {
+      "id": "from-bcd",
+      "name": "From BCD",
+      "category": "Encoding",
+      "description": "Read binary-coded decimal back into a decimal integer. The input is binary digits (`nibbles` or `bytes`, spaces ignored) or one character per byte (`raw`). With `signed`, the last nibble is the sign: 1101 or 1011 is minus.",
+      "input": "string",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "scheme",
+          "kind": "enum",
+          "default": "8421",
+          "options": [
+            "8421",
+            "7421",
+            "4221",
+            "2421",
+            "84-2-1",
+            "excess-3",
+            "ibm-8421"
+          ]
+        },
+        {
+          "name": "packed",
+          "kind": "boolean",
+          "default": true
+        },
+        {
+          "name": "signed",
+          "kind": "boolean",
+          "default": false
+        },
+        {
+          "name": "format",
+          "kind": "enum",
+          "default": "nibbles",
+          "options": [
+            "nibbles",
+            "bytes",
+            "raw"
+          ]
+        }
+      ],
+      "examples": [
+        {
+          "input": "0001 0010 0011 0100",
+          "args": {},
+          "output": "1234"
+        }
+      ]
+    },
+    {
+      "id": "from-bech32",
+      "name": "From Bech32",
+      "category": "Encoding",
+      "description": "Check the checksum of a Bech32 or Bech32m string and write its data as hex. A SegWit address gives the witness version byte and then the program. Other formats: `raw` (one character per byte), `script-pubkey`, `hrp-hex` and `json`.",
+      "input": "string",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "encoding",
+          "kind": "enum",
+          "default": "auto",
+          "options": [
+            "auto",
+            "bech32",
+            "bech32m"
+          ]
+        },
+        {
+          "name": "format",
+          "kind": "enum",
+          "default": "hex",
+          "options": [
+            "hex",
+            "raw",
+            "script-pubkey",
+            "hrp-hex",
+            "json"
+          ]
+        }
+      ],
+      "examples": [
+        {
+          "input": "test1fp5sjj6w55",
+          "args": {},
+          "output": "4869"
+        }
+      ]
+    },
+    {
       "id": "from-binary",
       "name": "From Binary",
       "category": "Encoding",
@@ -1456,6 +1548,55 @@
           "input": "72 105",
           "args": {},
           "output": "Hi"
+        }
+      ]
+    },
+    {
+      "id": "from-float",
+      "name": "From Float",
+      "category": "Encoding",
+      "description": "Read decimal numbers separated by `delimiter` and write each as an IEEE 754 `float` (4 bytes) or `double` (8 bytes), rounded to the nearest value. `Infinity`, `-Infinity` and `NaN` are accepted.",
+      "input": "string",
+      "output": "bytes",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "endianness",
+          "kind": "enum",
+          "default": "big",
+          "options": [
+            "big",
+            "little"
+          ]
+        },
+        {
+          "name": "size",
+          "kind": "enum",
+          "default": "float",
+          "options": [
+            "float",
+            "double"
+          ]
+        },
+        {
+          "name": "delimiter",
+          "kind": "enum",
+          "default": "space",
+          "options": [
+            "space",
+            "comma",
+            "semicolon",
+            "colon",
+            "newline",
+            "crlf"
+          ]
+        }
+      ],
+      "examples": [
+        {
+          "input": "12.141422271728516",
+          "args": {},
+          "output": "ABCD"
         }
       ]
     },
@@ -1801,6 +1942,31 @@
             "count": 2
           },
           "output": "one\ntwo"
+        }
+      ]
+    },
+    {
+      "id": "hex-to-pem",
+      "name": "Hex to PEM",
+      "category": "Encoding",
+      "description": "Write hex bytes (usually DER) as a PEM block: a BEGIN line with the `header` label, the bytes as Base64 in lines of 64 characters, and an END line. Lines end in CR LF.",
+      "input": "string",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "header",
+          "kind": "string",
+          "default": "CERTIFICATE"
+        }
+      ],
+      "examples": [
+        {
+          "input": "4869",
+          "args": {
+            "header": "DATA"
+          },
+          "output": "-----BEGIN DATA-----\r\nSGk=\r\n-----END DATA-----\r\n"
         }
       ]
     },
@@ -2529,6 +2695,23 @@
             }
           },
           "output": "0394a2ede332c9a13eb82e9b24631604c31df978b4e2f0fbd2c549944f9d79a5"
+        }
+      ]
+    },
+    {
+      "id": "pem-to-hex",
+      "name": "PEM to Hex",
+      "category": "Encoding",
+      "description": "Find each PEM block (BEGIN and END lines with the same label), decode its Base64 body and write the bytes as hex, one line per block.",
+      "input": "string",
+      "output": "string",
+      "parity": "exact",
+      "args": [],
+      "examples": [
+        {
+          "input": "-----BEGIN DATA-----\nSGk=\n-----END DATA-----",
+          "args": {},
+          "output": "4869"
         }
       ]
     },
@@ -3304,6 +3487,36 @@
       ]
     },
     {
+      "id": "text-integer",
+      "name": "Text-Integer Conversion",
+      "category": "Encoding",
+      "description": "Convert between text and the big-endian integer its bytes spell: `ABC` is 0x414243 is 4276803. Input that is all digits is read as decimal, input starting with 0x as hex and anything else, quoted or not, as text. `output` picks the form to write.",
+      "input": "string",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "output",
+          "kind": "enum",
+          "default": "string",
+          "options": [
+            "string",
+            "decimal",
+            "hex"
+          ]
+        }
+      ],
+      "examples": [
+        {
+          "input": "ABC",
+          "args": {
+            "output": "decimal"
+          },
+          "output": "4276803"
+        }
+      ]
+    },
+    {
       "id": "to-base",
       "name": "To Base",
       "category": "Encoding",
@@ -3528,6 +3741,108 @@
       ]
     },
     {
+      "id": "to-bcd",
+      "name": "To BCD",
+      "category": "Encoding",
+      "description": "Write a decimal integer as binary-coded decimal: four bits per digit in the chosen `scheme`. `packed` puts two digits in a byte, `signed` adds a sign nibble (1100 plus, 1101 minus) at the end, and `format` shows nibbles, bytes or one character per byte.",
+      "input": "string",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "scheme",
+          "kind": "enum",
+          "default": "8421",
+          "options": [
+            "8421",
+            "7421",
+            "4221",
+            "2421",
+            "84-2-1",
+            "excess-3",
+            "ibm-8421"
+          ]
+        },
+        {
+          "name": "packed",
+          "kind": "boolean",
+          "default": true
+        },
+        {
+          "name": "signed",
+          "kind": "boolean",
+          "default": false
+        },
+        {
+          "name": "format",
+          "kind": "enum",
+          "default": "nibbles",
+          "options": [
+            "nibbles",
+            "bytes",
+            "raw"
+          ]
+        }
+      ],
+      "examples": [
+        {
+          "input": "1234",
+          "args": {},
+          "output": "0001 0010 0011 0100"
+        }
+      ]
+    },
+    {
+      "id": "to-bech32",
+      "name": "To Bech32",
+      "category": "Encoding",
+      "description": "Encode bytes as Bech32 or Bech32m: the human-readable part `hrp`, a `1`, the data in a 32-character alphabet and a six-character checksum. `segwit` mode writes a Bitcoin SegWit address from a witness program and `witness_version`.",
+      "input": "bytes",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "hrp",
+          "kind": "string",
+          "default": "bc"
+        },
+        {
+          "name": "encoding",
+          "kind": "enum",
+          "default": "bech32",
+          "options": [
+            "bech32",
+            "bech32m"
+          ]
+        },
+        {
+          "name": "mode",
+          "kind": "enum",
+          "default": "generic",
+          "options": [
+            "generic",
+            "segwit"
+          ]
+        },
+        {
+          "name": "witness_version",
+          "kind": "integer",
+          "default": 0,
+          "minimum": 0,
+          "maximum": 16
+        }
+      ],
+      "examples": [
+        {
+          "input": "Hi",
+          "args": {
+            "hrp": "test"
+          },
+          "output": "test1fp5sjj6w55"
+        }
+      ]
+    },
+    {
       "id": "to-binary",
       "name": "To Binary",
       "category": "Encoding",
@@ -3700,6 +4015,55 @@
           "input": "Hi",
           "args": {},
           "output": "72 105"
+        }
+      ]
+    },
+    {
+      "id": "to-float",
+      "name": "To Float",
+      "category": "Encoding",
+      "description": "Read the bytes as IEEE 754 numbers, 4 bytes each for `float` or 8 for `double`, and write them in decimal joined by `delimiter`. Each number is written with the fewest digits that give the same value back.",
+      "input": "bytes",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "endianness",
+          "kind": "enum",
+          "default": "big",
+          "options": [
+            "big",
+            "little"
+          ]
+        },
+        {
+          "name": "size",
+          "kind": "enum",
+          "default": "float",
+          "options": [
+            "float",
+            "double"
+          ]
+        },
+        {
+          "name": "delimiter",
+          "kind": "enum",
+          "default": "space",
+          "options": [
+            "space",
+            "comma",
+            "semicolon",
+            "colon",
+            "newline",
+            "crlf"
+          ]
+        }
+      ],
+      "examples": [
+        {
+          "input": "ABCD",
+          "args": {},
+          "output": "12.141422271728516"
         }
       ]
     },

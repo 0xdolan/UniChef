@@ -79,5 +79,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← To Base92](to-base92.md) · [Contents](../../README.md) · [To Braille →](to-braille.md)
+[← To Bech32](to-bech32.md) · [Contents](../../README.md) · [To Braille →](to-braille.md)
 <!-- /docs:nav -->

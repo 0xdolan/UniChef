@@ -26,10 +26,13 @@ Background: [Base encodings](../learn/base-encodings.md)
 | [From Base64](ops/from-base64.md) | Decode Base64. |
 | [From Base85](ops/from-base85.md) | Decode Ascii85 (optionally inside `<~ ~>`) or Z85. |
 | [From Base92](ops/from-base92.md) | Decode Base92. |
+| [From BCD](ops/from-bcd.md) | Read binary-coded decimal back into a decimal integer. |
+| [From Bech32](ops/from-bech32.md) | Check the checksum of a Bech32 or Bech32m string and write its data as hex. |
 | [From Binary](ops/from-binary.md) | Read bytes of 1-8 binary digits. |
 | [From Braille](ops/from-braille.md) | Replace each six-dot Braille pattern (U+2800 to U+283F) with its North American Braille ASCII character; letters come out in upper case. |
 | [From Charcode](ops/from-charcode.md) | Read code points written in `base` and separated by `delimiter`. |
 | [From Decimal](ops/from-decimal.md) | Read bytes of 1-3 decimal digits (at most 255). |
+| [From Float](ops/from-float.md) | Read decimal numbers separated by `delimiter` and write each as an IEEE 754 `float` (4 bytes) or `double` (8 bytes), rounded to the nearest value. |
 | [From Hex](ops/from-hex.md) | Read hex digit pairs. |
 | [From Hex Content](ops/from-hex-content.md) | Read Snort content: hex between pipes becomes those bytes and the rest is UTF-8. |
 | [From Hexdump](ops/from-hexdump.md) | Read the bytes back from a hexdump in the xxd, hexdump -C, Wireshark or 010 Editor style: on each line, an optional offset and then the hex columns. |
@@ -37,13 +40,16 @@ Background: [Base encodings](../learn/base-encodings.md)
 | [From Morse code](ops/from-morse-code.md) | Read International Morse code. |
 | [From Octal](ops/from-octal.md) | Read bytes of 1-3 octal digits (at most 377). |
 | [From Punycode](ops/from-punycode.md) | Decode Punycode (RFC 3492). |
+| [Hex to PEM](ops/hex-to-pem.md) | Write hex bytes (usually DER) as a PEM block: a BEGIN line with the `header` label, the bytes as Base64 in lines of 64 characters, and an END line. |
 | [HTML Entity Decode](ops/html-entity-decode.md) | Decode named and numeric character references as HTML does in text content: the longest known name wins, legacy names may omit the semicolon, numeric references may omit it, 0x80-0x9F map through windows-1252, and 0, surrogates and values above 10FFFF become U+FFFD. |
 | [HTML Entity Encode](ops/html-entity-encode.md) | Replace characters with references. |
 | [IDNA To ASCII](ops/idna-to-ascii.md) | UTS #46 ToASCII with nontransitional processing: map, normalise to NFC, check every label, and encode non-ASCII labels as xn-- plus Punycode. |
 | [IDNA To Unicode](ops/idna-to-unicode.md) | UTS #46 ToUnicode with nontransitional processing: map, normalise to NFC, decode xn-- labels and check every label. |
+| [PEM to Hex](ops/pem-to-hex.md) | Find each PEM block (BEGIN and END lines with the same label), decode its Base64 body and write the bytes as hex, one line per block. |
 | [Quoted-Printable Decode](ops/quoted-printable-decode.md) | Decode quoted-printable. |
 | [Quoted-Printable Encode](ops/quoted-printable-encode.md) | Encode bytes as quoted-printable, with lines of at most 76 characters. |
 | [Swap Endianness](ops/swap-endianness.md) | Reverse the byte order inside each word of `word_length` bytes. |
+| [Text-Integer Conversion](ops/text-integer.md) | Convert between text and the big-endian integer its bytes spell: `ABC` is 0x414243 is 4276803. |
 | [To Base](ops/to-base.md) | Write a decimal number in a radix from 2 to 36 with lower-case digits. |
 | [To Base32](ops/to-base32.md) | Encode bytes as Base32 (RFC 4648 §6) or base32hex (§7). |
 | [To Base45](ops/to-base45.md) | Encode bytes as Base45 (RFC 9285), the QR-code encoding: 2 bytes become 3 characters. |
@@ -52,10 +58,13 @@ Background: [Base encodings](../learn/base-encodings.md)
 | [To Base64](ops/to-base64.md) | Encode bytes as Base64 (RFC 4648 §4 or §5, or a custom alphabet). |
 | [To Base85](ops/to-base85.md) | Encode bytes as Ascii85 (`z` for a group of four zero bytes) or Z85. |
 | [To Base92](ops/to-base92.md) | Encode bytes as Base92: every 13 bits become two printable ASCII characters. |
+| [To BCD](ops/to-bcd.md) | Write a decimal integer as binary-coded decimal: four bits per digit in the chosen `scheme`. |
+| [To Bech32](ops/to-bech32.md) | Encode bytes as Bech32 or Bech32m: the human-readable part `hrp`, a `1`, the data in a 32-character alphabet and a six-character checksum. |
 | [To Binary](ops/to-binary.md) | Write each byte as eight binary digits, separated by `delimiter`. |
 | [To Braille](ops/to-braille.md) | Replace each character of North American Braille ASCII (space, ASCII letters in either case, digits and `!"#$%&'()*+,-./:;<=>?@[\]^_`) with its six-dot Braille pattern, U+2800 to U+283F. |
 | [To Charcode](ops/to-charcode.md) | Write each code point in `base`. |
 | [To Decimal](ops/to-decimal.md) | Write each byte as a decimal number without padding, separated by `delimiter`. |
+| [To Float](ops/to-float.md) | Read the bytes as IEEE 754 numbers, 4 bytes each for `float` or 8 for `double`, and write them in decimal joined by `delimiter`. |
 | [To Hex](ops/to-hex.md) | Write each byte as two hex digits, separated or prefixed by `delimiter`. |
 | [To Hex Content](ops/to-hex-content.md) | Write bytes as Snort content: ASCII letters, digits and spaces stay as they are and every other byte goes between pipes as hex. |
 | [To Hexdump](ops/to-hexdump.md) | Write `width` bytes per line: the offset, the bytes in hex and the bytes as Latin-1 text, with controls and the soft hyphen as dots (`ascii_only` keeps only printable ASCII). |
@@ -217,5 +226,5 @@ Background: [How UniChef works](../learn/how-unichef-works.md)
 <!-- docs:nav -->
 ---
 
-[← Text formats: hexdumps, escapes and identifier cases](../learn/text-formats.md) · [Contents](../README.md) · [Decode Text →](ops/decode-text.md)
+[← Number and key formats: floats, BCD, text as a number, Bech32 and PEM](../learn/number-formats.md) · [Contents](../README.md) · [Decode Text →](ops/decode-text.md)
 <!-- /docs:nav -->

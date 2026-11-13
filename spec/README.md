@@ -894,6 +894,95 @@ ASCII is copied. The table: U+201C–U+201F and U+2033 → `"`; U+2018–U+201B 
 
 The input is split on LF. A CR at the end of a line is set aside, the rest is cut into pieces of `width` code points joined with LF, and the CR is put back at the end. Blank lines stay blank. Lines are joined with LF.
 
+## Number and key formats (encoding category)
+
+Floats, Bech32, BCD, text as an integer and PEM follow the reference implementation except where noted: input is validated strictly instead of being read as far as it makes sense. "ASCII whitespace" below is U+0009–U+000D and U+0020.
+
+### `to-float` (bytes → string), `from-float` (string → bytes)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `endianness` | `big` \| `little` | `big` | Byte order of each number. |
+| `size` | `float` \| `double` | `float` | 4-byte binary32 or 8-byte binary64. |
+| `delimiter` | `space` \| `comma` \| `semicolon` \| `colon` \| `newline` \| `crlf` | `space` | Separator between numbers. |
+
+- `to-float` reads consecutive groups of 4 or 8 bytes; a length that is not a multiple of the size is `E_DECODE` (the reference read past the end). A binary32 value is widened to binary64, and each value is written as ECMAScript `Number::toString` does (the shortest digits that round-trip; exponent form from 1e21 and below 1e-6, as `1e+21` and `1e-7`), except that negative zero is written `-0`. Infinities are `Infinity` and `-Infinity`; every NaN is `NaN`. Empty input gives empty output.
+- `from-float` splits the input at the delimiter. Each piece, with ASCII whitespace trimmed from both ends, must match `[+-]?(digits[.digits?] | .digits)([eE][+-]?digits)?`, `[+-]?Infinity` or `NaN` (ASCII digits only); anything else, including an empty piece, is `E_DECODE` (the reference used `parseFloat`, which accepts `1abc` and turns garbage into NaN). The value is rounded to the nearest binary64, then for `float` to the nearest binary32, ties to even; a magnitude too large for the size gives infinity. `NaN` is written as `7fc00000` or `7ff8000000000000` (byte-reversed for `little`). Empty input gives empty output.
+
+### `to-bech32` (bytes → string)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `hrp` | string | `bc` | Human-readable part. |
+| `encoding` | `bech32` \| `bech32m` | `bech32` | Checksum constant: 1 or 0x2bc830a3. |
+| `mode` | `generic` \| `segwit` | `generic` | `segwit` puts the witness version before the program. |
+| `witness_version` | integer 0–16 | `0` | Used by `segwit` only. |
+
+- `hrp` must be one or more characters in U+0021–U+007E, else `E_ARG_INVALID`; ASCII upper-case letters are lower-cased.
+- The bytes are regrouped into 5-bit values, most significant bit first, zero-padded. In `segwit` mode the program must be 2–40 bytes, and 20 or 32 bytes for version 0, else `E_DECODE` (the reference checked this only for the `bc` and `tb` prefixes); the version is written as one 5-bit value before the program. The `encoding` is used as given: nothing forces Bech32m for version 1 and later.
+- The checksum is BIP-173's, over the expanded `hrp`, the data and six zeros, XORed with the constant. A result longer than 90 characters is `E_DECODE`.
+- The reference's "Hex" input format is not offered: run `from-hex` first. The importer rejects it with `E_ARG_INVALID`.
+
+### `from-bech32` (string → string)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `encoding` | `auto` \| `bech32` \| `bech32m` | `auto` | Which checksum constants to accept. |
+| `format` | `hex` \| `raw` \| `script-pubkey` \| `hrp-hex` \| `json` | `hex` | Output form. The reference's default is `raw`; the importer sets it. |
+
+1. ASCII whitespace is trimmed from both ends; an empty string gives empty output.
+2. `E_DECODE` if the string is longer than 90 code points, has a non-ASCII character, mixes ASCII upper and lower case, has no `1` or has it first, has fewer than six characters after the last `1`, has a character outside U+0021–U+007E in the human-readable part, has a data character outside the Bech32 alphabet, or fails the checksum for the accepted constants.
+3. The string is lower-cased. If the human-readable part is `bc`, `tb`, `ltc`, `tltc` or `bcrt`, the first data value is at most 16, and the rest regroups to a valid witness program (2–40 bytes; 20 or 32 for version 0), the payload is the version as one byte followed by the program. Otherwise all data values are regrouped to bytes; a whole unused 5-bit value or non-zero padding bits are `E_DECODE`.
+4. `hex` is lower-case hex with no separator. `raw` is one code point per byte (U+0000–U+00FF). `script-pubkey`, for a witness payload, is the opcode (`00` for version 0, else 0x50 + version), the program length and the program, in hex; for anything else it is the same as `hex`. `hrp-hex` is the human-readable part, `: ` and the hex. `json` is an object with the keys `hrp`, `encoding` (`Bech32` or `Bech32m`) and `data` (hex), in that order, indented by two spaces with LF line ends.
+
+### `to-bcd`, `from-bcd` (string → string)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `scheme` | `8421` \| `7421` \| `4221` \| `2421` \| `84-2-1` \| `excess-3` \| `ibm-8421` | `8421` | The four-bit code of each digit. |
+| `packed` | boolean | `true` | Two digits in a byte; otherwise one digit in a byte. |
+| `signed` | boolean | `false` | A final sign nibble. |
+| `format` | `nibbles` \| `bytes` \| `raw` | `nibbles` | Output form (`to-bcd`) or input form (`from-bcd`). |
+
+Codes for the digits 0–9:
+
+| Scheme | Codes |
+|---|---|
+| `8421` | 0 1 2 3 4 5 6 7 8 9 |
+| `7421` | 0 1 2 3 4 5 6 8 9 10 |
+| `4221` | 0 1 4 5 8 9 12 13 14 15 |
+| `2421` | 0 1 2 3 4 11 12 13 14 15 |
+| `84-2-1` | 0 7 6 5 4 11 10 9 8 15 |
+| `excess-3` | 3 4 5 6 7 8 9 10 11 12 |
+| `ibm-8421` | 10 1 2 3 4 5 6 7 8 9 |
+
+- `to-bcd`: the input, with ASCII whitespace trimmed, must be `[+-]?[0-9]+` (else `E_DECODE`; the reference used a floating-point parse and lost digits past 2^53); empty input gives empty output. Leading zeros are dropped. With `signed`, a packed number with an even digit count gets the code of 0 in front, and the sign nibble 12 (plus) or 13 (minus) is appended; zero is always plus (the reference wrote minus for zero). Packed bytes hold two nibbles each, the last padded with a zero low nibble; unpacked bytes hold one nibble each. `nibbles` writes four binary digits per nibble (unpacked: `0000` before each), `bytes` eight per byte, both joined with U+0020; `raw` writes one code point per byte.
+- `from-bcd`: `nibbles` and `bytes` input is binary digits after all ASCII whitespace is removed; its length must be a multiple of four with no other character, else `E_DECODE` (the reference skipped what it could not read). `raw` input gives two nibbles per code point, which must be at most U+00FF. Empty input gives empty output. Without `packed`, only every second nibble (the low one of each byte) is kept. With `signed`, the last nibble is removed and 13 or 11 means minus. No digits left, or a nibble that is not a code in the scheme, is `E_DECODE`. Leading zeros are dropped and zero has no sign.
+
+### `text-integer` (string → string)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `output` | `string` \| `decimal` \| `hex` | `string` | Form to write. |
+
+The input is trimmed as ECMAScript `String.prototype.trim` does, then read as the first of:
+
+1. Empty: 0.
+2. `0x` or `0X` and hex digits: that number.
+3. `[+-]?[0-9]+`: that decimal number.
+4. Text. If it is at least two characters, starts and ends with `"` or `'` (they need not match) and has no U+000A, U+000D, U+2028 or U+2029, the two quotes are removed. Each code point is one byte, big-endian; a code point above U+00FF is `E_DECODE`.
+
+A number of more than 1024 bytes is `E_DECODE` (the reference has no limit). `decimal` writes the number with `-` if negative; `hex` writes `0x` and lower-case digits without leading zeros (`0x0` for zero, `-0x…` if negative). `string` writes the big-endian bytes without leading zero bytes as one code point each (nothing for zero); a negative number is `E_DECODE`.
+
+### `pem-to-hex`, `hex-to-pem` (string → string)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `header` | string | `CERTIFICATE` | Label of the BEGIN and END lines (`hex-to-pem` only). |
+
+- `pem-to-hex` scans for `-----BEGIN L-----`, where the label `L` matches `[A-Z][A-Z ]+[A-Z]`. The body runs to the next `-----END L-----` with the same label; a missing footer is `E_DECODE`. The scan for the next header continues right after the BEGIN line, as in the reference. Every character outside `A–Z a–z 0–9 + /` is removed from the body, and the rest is decoded as Base64 with leftover bits discarded; a remaining length of 1 modulo 4 is `E_DECODE`. The output is the lower-case hex of each block, joined with LF. Input with no block gives empty output.
+- `hex-to-pem` removes ASCII whitespace; the rest must be an even number of hex digits, else `E_DECODE`. The output is `-----BEGIN header-----`, the padded Base64 of the bytes in lines of 64 characters, and `-----END header-----`, every line ended by CR LF (as jsrsasign writes it). Empty input gives the two lines with an empty line between them. `header` is not validated.
+
 ## Operation arguments (compression category)
 
 `raw-deflate`, `zlib-deflate` and `gzip` take one argument, `level`: an integer from 0 to 9, default 6. Level 0 stores the input in uncompressed blocks of at most 65 535 bytes, and both cores write it the same way, byte for byte. Levels 1 to 9 use the host compressor (zlib in Python, fflate in TypeScript), so the compressed bytes can differ between cores (parity class `roundtrip`). Both cores read what either one writes, and recipe vectors check the round trip.

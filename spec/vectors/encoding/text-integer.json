@@ -1,0 +1,327 @@
+{
+  "op": "text-integer",
+  "cases": [
+    {
+      "name": "default: text to decimal",
+      "args": {
+        "output": "decimal"
+      },
+      "input": {
+        "type": "string",
+        "text": "ABC"
+      },
+      "expected": {
+        "type": "string",
+        "text": "4276803"
+      }
+    },
+    {
+      "name": "empty is zero",
+      "args": {
+        "output": "decimal"
+      },
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": "0"
+      }
+    },
+    {
+      "name": "CyberChef: quoted string to decimal",
+      "args": {
+        "output": "decimal"
+      },
+      "input": {
+        "type": "string",
+        "text": "\"ABC\""
+      },
+      "expected": {
+        "type": "string",
+        "text": "4276803"
+      }
+    },
+    {
+      "name": "CyberChef: quoted string to hex",
+      "args": {
+        "output": "hex"
+      },
+      "input": {
+        "type": "string",
+        "text": "\"ABC\""
+      },
+      "expected": {
+        "type": "string",
+        "text": "0x414243"
+      }
+    },
+    {
+      "name": "CyberChef: single quoted to decimal",
+      "args": {
+        "output": "decimal"
+      },
+      "input": {
+        "type": "string",
+        "text": "'Hello'"
+      },
+      "expected": {
+        "type": "string",
+        "text": "310939249775"
+      }
+    },
+    {
+      "name": "CyberChef: decimal to string",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "4276803"
+      },
+      "expected": {
+        "type": "string",
+        "text": "ABC"
+      }
+    },
+    {
+      "name": "CyberChef: hex to string",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "0x48656C6C6F"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Hello"
+      }
+    },
+    {
+      "name": "decimal to hex",
+      "args": {
+        "output": "hex"
+      },
+      "input": {
+        "type": "string",
+        "text": "255"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0xff"
+      }
+    },
+    {
+      "name": "hex to decimal, upper-case prefix",
+      "args": {
+        "output": "decimal"
+      },
+      "input": {
+        "type": "string",
+        "text": "0XfF"
+      },
+      "expected": {
+        "type": "string",
+        "text": "255"
+      }
+    },
+    {
+      "name": "negative decimal",
+      "args": {
+        "output": "decimal"
+      },
+      "input": {
+        "type": "string",
+        "text": "-5"
+      },
+      "expected": {
+        "type": "string",
+        "text": "-5"
+      }
+    },
+    {
+      "name": "negative to hex",
+      "args": {
+        "output": "hex"
+      },
+      "input": {
+        "type": "string",
+        "text": "-255"
+      },
+      "expected": {
+        "type": "string",
+        "text": "-0xff"
+      }
+    },
+    {
+      "name": "zero to string is empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "0"
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "zero to hex",
+      "args": {
+        "output": "hex"
+      },
+      "input": {
+        "type": "string",
+        "text": "0"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0x0"
+      }
+    },
+    {
+      "name": "quoted digits are text",
+      "args": {
+        "output": "decimal"
+      },
+      "input": {
+        "type": "string",
+        "text": "'12'"
+      },
+      "expected": {
+        "type": "string",
+        "text": "12594"
+      }
+    },
+    {
+      "name": "Latin-1 text",
+      "args": {
+        "output": "hex"
+      },
+      "input": {
+        "type": "string",
+        "text": "é ÿ"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0xe920ff"
+      }
+    },
+    {
+      "name": "white space is trimmed, inner kept",
+      "args": {
+        "output": "hex"
+      },
+      "input": {
+        "type": "string",
+        "text": "  a b\n"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0x612062"
+      }
+    },
+    {
+      "name": "mismatched quotes are both removed",
+      "args": {
+        "output": "hex"
+      },
+      "input": {
+        "type": "string",
+        "text": "\"a'"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0x61"
+      }
+    },
+    {
+      "name": "a quoted line break keeps the quotes",
+      "args": {
+        "output": "hex"
+      },
+      "input": {
+        "type": "string",
+        "text": "'a\nb'"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0x27610a6227"
+      }
+    },
+    {
+      "name": "leading zero bytes are lost",
+      "args": {
+        "output": "hex"
+      },
+      "input": {
+        "type": "string",
+        "text": "\u0000\u0000A"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0x41"
+      }
+    },
+    {
+      "name": "1024 bytes",
+      "args": {
+        "output": "decimal"
+      },
+      "input": {
+        "type": "string",
+        "text": "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1090748135619415929462984244733782862448264161996232692431832786189721331849119295216264234525201987223957291796157025273109870820177184063610979765077554799078906298842192989538609825228048205159696851613591638196771886542609324560121290553901886301017900252535799917200010079600026535836800905297805880952350501630195475653911005312364560014847426035293551245843928918752768696279344088055617515694349945406677825140814900616105920256438504578013326493565836047242407382442812245131517757519164899226365743722432277368075027627883045206501792761700945699168497257879683851737049996900961120515655050115561271491492515342105748966629547032786321505730828430221664970324396138635251626409516168005427623435996308921691446181187406395310665404885739434832877428167407495370993511868756359970390117021823616749458620969857006263612082706715408157066575137281027022310927564910276759160520878304632411049364568754920967322982459184763427383790272448438018526977764941072715611580434690827459339991961414242741410599117426060556483763756314527611362658628383368621157993638020878537675545336789915694234433955666315070087213535470255670312004130725495834508357439653828936077080978550578912967907352780054935621561090795845172954115972927479877527738560008204118558930004777748727761853813510493840581861598652211605960308356405941821189714037868726219481498727603653616298856174822413033485438785324024751419417183012281078209729303537372804574372095228703622776363945290869806258422355148507571039619387449629866808188769662815778153079393179093143648340761738581819563002994422790754955061288818308430079648693232179158765918035565216157115402992120276155607873107937477466841528362987708699450152031231862594203085693838944657061346236704234026821102958954951197087076546186622796294536451620756509351018906023773821539532776208676978589731966330308893304665169436185078350641568336944530051437491311298834367265238595404904273455928723949525227184617404367854754610474377019768025576605881038077270707717942221977090385438585844095492116099852538903974655703943973086090930596963360767529964938414598185705963754561497355827813623833288906309004288017321424808663962671333528009232758350873059614118723781422101460198615747386855096896089189180441339558524822867541113212638793675567650340362970031930023397828465318547238244232028015189689660418822976000815437610652254270163595650875433851147123214227266605403581781469090806576468950587661997186505665475715792895"
+      }
+    },
+    {
+      "name": "error: character above U+00FF",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "日本"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: negative to string",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "-65"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: 1025 bytes",
+      "args": {
+        "output": "decimal"
+      },
+      "input": {
+        "type": "string",
+        "text": "0x0100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: 1025 characters",
+      "args": {
+        "output": "hex"
+      },
+      "input": {
+        "type": "string",
+        "text": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    }
+  ]
+}

@@ -96,5 +96,5 @@ Operations explained here: [Escape String](../reference/ops/escape-string.md), [
 <!-- docs:nav -->
 ---
 
-[← Data formats and text processing](data-and-text.md) · [Contents](../README.md) · [Operation reference →](../reference/README.md)
+[← Data formats and text processing](data-and-text.md) · [Contents](../README.md) · [Number and key formats: floats, BCD, text as a number, Bech32 and PEM →](number-formats.md)
 <!-- /docs:nav -->

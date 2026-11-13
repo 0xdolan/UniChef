@@ -1,0 +1,229 @@
+{
+  "op": "from-bcd",
+  "cases": [
+    {
+      "name": "default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "0001 0010 0011 0100"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1234"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "CyberChef: zero",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "0000"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0"
+      }
+    },
+    {
+      "name": "CyberChef: packed, signed bytes",
+      "args": {
+        "signed": true,
+        "format": "bytes"
+      },
+      "input": {
+        "type": "string",
+        "text": "00000001 00100011 01000101 01100111 10001001 00001101"
+      },
+      "expected": {
+        "type": "string",
+        "text": "-1234567890"
+      }
+    },
+    {
+      "name": "CyberChef: excess-3 unpacked bytes",
+      "args": {
+        "scheme": "excess-3",
+        "packed": false,
+        "format": "bytes"
+      },
+      "input": {
+        "type": "string",
+        "text": "00000100 00000101 00000110 00000111 00001000 00001001 00001010 00001011 00001100 00000011"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1234567890"
+      }
+    },
+    {
+      "name": "raw",
+      "args": {
+        "format": "raw"
+      },
+      "input": {
+        "type": "string",
+        "text": "AB"
+      },
+      "expected": {
+        "type": "string",
+        "text": "4142"
+      }
+    },
+    {
+      "name": "no spaces, leading zeros",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "00000000000100100011"
+      },
+      "expected": {
+        "type": "string",
+        "text": "123"
+      }
+    },
+    {
+      "name": "sign nibble 1011 is minus",
+      "args": {
+        "signed": true
+      },
+      "input": {
+        "type": "string",
+        "text": "0001 0010 1011"
+      },
+      "expected": {
+        "type": "string",
+        "text": "-12"
+      }
+    },
+    {
+      "name": "sign nibble 1100 is plus",
+      "args": {
+        "signed": true
+      },
+      "input": {
+        "type": "string",
+        "text": "0001 0010 1100"
+      },
+      "expected": {
+        "type": "string",
+        "text": "12"
+      }
+    },
+    {
+      "name": "minus zero is zero",
+      "args": {
+        "signed": true
+      },
+      "input": {
+        "type": "string",
+        "text": "0000 1101"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0"
+      }
+    },
+    {
+      "name": "ibm-8421: 1010 is zero",
+      "args": {
+        "scheme": "ibm-8421"
+      },
+      "input": {
+        "type": "string",
+        "text": "0001 1010 1010"
+      },
+      "expected": {
+        "type": "string",
+        "text": "100"
+      }
+    },
+    {
+      "name": "unpacked signed raw",
+      "args": {
+        "packed": false,
+        "signed": true,
+        "format": "raw"
+      },
+      "input": {
+        "type": "string",
+        "text": "\u0001\u0002\r"
+      },
+      "expected": {
+        "type": "string",
+        "text": "-12"
+      }
+    },
+    {
+      "name": "error: nibble that is no digit",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "1010"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: not four bits",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "00010"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: other characters",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "0001 0012"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: a sign and no digits",
+      "args": {
+        "signed": true
+      },
+      "input": {
+        "type": "string",
+        "text": "1100"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: raw character above U+00FF",
+      "args": {
+        "format": "raw"
+      },
+      "input": {
+        "type": "string",
+        "text": "Ā"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    }
+  ]
+}
