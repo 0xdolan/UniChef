@@ -70,5 +70,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← AES Encrypt](aes-encrypt.md) · [Contents](../../README.md) · [Generate Random Bytes →](generate-random-bytes.md)
+[← AES Encrypt](aes-encrypt.md) · [Contents](../../README.md) · [Bacon cipher decode →](bacon-decode.md)
 <!-- /docs:nav -->

@@ -1,0 +1,114 @@
+{
+  "op": "rot8000",
+  "cases": [
+    {
+      "name": "default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Hello, World!"
+      },
+      "expected": {
+        "type": "string",
+        "text": "籑籮籵籵籸簵 籠籸类籵籭簪"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "reverse",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "籑籮籵籵籸簵 籠籸类籵籭簪"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Hello, World!"
+      }
+    },
+    {
+      "name": "spaces, controls and non-BMP are copied",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "\t  　😀 "
+      },
+      "expected": {
+        "type": "string",
+        "text": "\t  　😀 "
+      }
+    },
+    {
+      "name": "range edges",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "!~¡�￿"
+      },
+      "expected": {
+        "type": "string",
+        "text": "簪粇粈簧簩"
+      }
+    },
+    {
+      "name": "around the skipped format characters",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "   ⁠퟿"
+      },
+      "expected": {
+        "type": "string",
+        "text": "   鰷尩"
+      }
+    },
+    {
+      "name": "private use area",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": "尪"
+      }
+    },
+    {
+      "name": "other scripts",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "开éЖ"
+      },
+      "expected": {
+        "type": "string",
+        "text": "糐翽"
+      }
+    },
+    {
+      "name": "error: an unknown argument",
+      "args": {
+        "bogus": 1
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

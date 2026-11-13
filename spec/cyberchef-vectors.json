@@ -2097,6 +2097,207 @@
           }
         ]
       }
+    },
+    {
+      "name": "To Morse Code",
+      "input": "[{\"op\": \"To Morse Code\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-morse-code"
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Morse Code with Dash/Dot, slash and comma",
+      "input": "[{\"op\": \"To Morse Code\", \"args\": [\"Dash/Dot\", \"Forward slash\", \"Comma\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-morse-code",
+            "args": {
+              "format": "Dash/Dot",
+              "letter_delimiter": "slash",
+              "word_delimiter": "comma"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "From Morse Code",
+      "input": "[{\"op\": \"From Morse Code\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "from-morse-code"
+          }
+        ]
+      }
+    },
+    {
+      "name": "From Morse Code with backslash and CRLF",
+      "input": "[{\"op\": \"From Morse Code\", \"args\": [\"Backslash\", \"CRLF\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "from-morse-code",
+            "args": {
+              "letter_delimiter": "backslash",
+              "word_delimiter": "crlf"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Convert to NATO alphabet",
+      "input": "[{\"op\": \"Convert to NATO alphabet\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-nato-alphabet"
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Braille",
+      "input": "[{\"op\": \"To Braille\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-braille"
+          }
+        ]
+      }
+    },
+    {
+      "name": "From Braille",
+      "input": "[{\"op\": \"From Braille\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "from-braille"
+          }
+        ]
+      }
+    },
+    {
+      "name": "A1Z26 Cipher Encode",
+      "input": "[{\"op\": \"A1Z26 Cipher Encode\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "a1z26-encode"
+          }
+        ]
+      }
+    },
+    {
+      "name": "A1Z26 Cipher Decode with comma",
+      "input": "[{\"op\": \"A1Z26 Cipher Decode\", \"args\": [\"Comma\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "a1z26-decode",
+            "args": {
+              "delimiter": "comma"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Bacon Cipher Encode",
+      "input": "[{\"op\": \"Bacon Cipher Encode\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "bacon-encode"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Bacon Cipher Encode, complete, A/B, keep, invert",
+      "input": "[{\"op\": \"Bacon Cipher Encode\", \"args\": [\"Complete\", \"A/B\", true, true]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "bacon-encode",
+            "args": {
+              "alphabet": "complete",
+              "translation": "ab",
+              "keep_other": true,
+              "invert": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Bacon Cipher Decode, first letter",
+      "input": "[{\"op\": \"Bacon Cipher Decode\", \"args\": [\"Standard (I=J and U=V)\", \"A-M/N-Z first letter\", false]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "bacon-decode",
+            "args": {
+              "alphabet": "standard",
+              "translation": "first-letter",
+              "invert": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Convert Leet Speak, from",
+      "input": "[{\"op\": \"Convert Leet Speak\", \"args\": [\"From Leet Speak\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "leet-speak",
+            "args": {
+              "direction": "from"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "ROT8000",
+      "input": "[{\"op\": \"ROT8000\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "rot8000"
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Morse Code with an unknown delimiter",
+      "input": "[{\"op\": \"To Morse Code\", \"args\": [\"-/.\", \"Tab\"]}]",
+      "error": {
+        "code": "E_ARG_INVALID"
+      }
     }
   ]
 }

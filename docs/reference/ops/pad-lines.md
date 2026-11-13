@@ -76,5 +76,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← Join lines](join.md) · [Contents](../../README.md) · [Regex extract →](regex-extract.md)
+[← Leet speak](leet-speak.md) · [Contents](../../README.md) · [Regex extract →](regex-extract.md)
 <!-- /docs:nav -->

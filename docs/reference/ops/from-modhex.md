@@ -75,5 +75,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← From Hex](from-hex.md) · [Contents](../../README.md) · [From Octal →](from-octal.md)
+[← From Hex](from-hex.md) · [Contents](../../README.md) · [From Morse code →](from-morse-code.md)
 <!-- /docs:nav -->

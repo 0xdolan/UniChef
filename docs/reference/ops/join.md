@@ -72,5 +72,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← Head](head.md) · [Contents](../../README.md) · [Pad lines →](pad-lines.md)
+[← Head](head.md) · [Contents](../../README.md) · [Leet speak →](leet-speak.md)
 <!-- /docs:nav -->

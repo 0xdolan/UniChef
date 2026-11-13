@@ -81,5 +81,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← To Binary](to-binary.md) · [Contents](../../README.md) · [To Decimal →](to-decimal.md)
+[← To Braille](to-braille.md) · [Contents](../../README.md) · [To Decimal →](to-decimal.md)
 <!-- /docs:nav -->

@@ -85,5 +85,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← SHA-3](sha3.md) · [Contents](../../README.md) · [AES Decrypt →](aes-decrypt.md)
+[← SHA-3](sha3.md) · [Contents](../../README.md) · [A1Z26 decode →](a1z26-decode.md)
 <!-- /docs:nav -->

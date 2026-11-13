@@ -1,0 +1,114 @@
+{
+  "op": "to-braille",
+  "cases": [
+    {
+      "name": "default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Hi!"
+      },
+      "expected": {
+        "type": "string",
+        "text": "⠓⠊⠮"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "the whole Braille ASCII table",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": " A1B'K2L@CIF/MSP\"E3H9O6R^DJG>NTQ,*5<-U8V.%[$+X!&;:4\\0Z7(_?W]#Y)="
+      },
+      "expected": {
+        "type": "string",
+        "text": "⠀⠁⠂⠃⠄⠅⠆⠇⠈⠉⠊⠋⠌⠍⠎⠏⠐⠑⠒⠓⠔⠕⠖⠗⠘⠙⠚⠛⠜⠝⠞⠟⠠⠡⠢⠣⠤⠥⠦⠧⠨⠩⠪⠫⠬⠭⠮⠯⠰⠱⠲⠳⠴⠵⠶⠷⠸⠹⠺⠻⠼⠽⠾⠿"
+      }
+    },
+    {
+      "name": "lower case maps like upper case",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "abc"
+      },
+      "expected": {
+        "type": "string",
+        "text": "⠁⠃⠉"
+      }
+    },
+    {
+      "name": "other characters are copied",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "é\n`{|}~😀"
+      },
+      "expected": {
+        "type": "string",
+        "text": "é\n`{|}~😀"
+      }
+    },
+    {
+      "name": "only ASCII letters are upper-cased",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "ı"
+      },
+      "expected": {
+        "type": "string",
+        "text": "ı"
+      }
+    },
+    {
+      "name": "digits",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "0123456789"
+      },
+      "expected": {
+        "type": "string",
+        "text": "⠴⠂⠆⠒⠲⠢⠖⠶⠦⠔"
+      }
+    },
+    {
+      "name": "lines are kept",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a\nb"
+      },
+      "expected": {
+        "type": "string",
+        "text": "⠁\n⠃"
+      }
+    },
+    {
+      "name": "error: an unknown argument",
+      "args": {
+        "bogus": 1
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

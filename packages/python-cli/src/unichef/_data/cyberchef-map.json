@@ -789,6 +789,147 @@
     },
     "Gunzip": { "op": "gunzip", "args": [] },
     "To Punycode": { "op": "to-punycode", "args": [{ "to": "domain" }] },
-    "From Punycode": { "op": "from-punycode", "args": [{ "to": "domain" }] }
+    "From Punycode": { "op": "from-punycode", "args": [{ "to": "domain" }] },
+    "To Morse Code": {
+      "op": "to-morse-code",
+      "args": [
+        {
+          "to": "format",
+          "map": {
+            "-/.": "-/.",
+            "_/.": "_/.",
+            "Dash/Dot": "Dash/Dot",
+            "DASH/DOT": "DASH/DOT",
+            "dash/dot": "dash/dot"
+          }
+        },
+        {
+          "to": "letter_delimiter",
+          "map": {
+            "Space": "space",
+            "Line feed": "newline",
+            "CRLF": "crlf",
+            "Forward slash": "slash",
+            "Backslash": "backslash",
+            "Comma": "comma",
+            "Semi-colon": "semicolon",
+            "Colon": "colon"
+          }
+        },
+        {
+          "to": "word_delimiter",
+          "map": {
+            "Line feed": "newline",
+            "CRLF": "crlf",
+            "Forward slash": "slash",
+            "Backslash": "backslash",
+            "Comma": "comma",
+            "Semi-colon": "semicolon",
+            "Colon": "colon"
+          }
+        }
+      ]
+    },
+    "From Morse Code": {
+      "op": "from-morse-code",
+      "args": [
+        {
+          "to": "letter_delimiter",
+          "map": {
+            "Space": "space",
+            "Line feed": "newline",
+            "CRLF": "crlf",
+            "Forward slash": "slash",
+            "Backslash": "backslash",
+            "Comma": "comma",
+            "Semi-colon": "semicolon",
+            "Colon": "colon"
+          }
+        },
+        {
+          "to": "word_delimiter",
+          "map": {
+            "Line feed": "newline",
+            "CRLF": "crlf",
+            "Forward slash": "slash",
+            "Backslash": "backslash",
+            "Comma": "comma",
+            "Semi-colon": "semicolon",
+            "Colon": "colon"
+          }
+        }
+      ]
+    },
+    "Convert to NATO alphabet": { "op": "to-nato-alphabet", "args": [] },
+    "To Braille": { "op": "to-braille", "args": [] },
+    "From Braille": { "op": "from-braille", "args": [] },
+    "A1Z26 Cipher Encode": {
+      "op": "a1z26-encode",
+      "args": [
+        {
+          "to": "delimiter",
+          "map": {
+            "Space": "space",
+            "Comma": "comma",
+            "Semi-colon": "semicolon",
+            "Colon": "colon",
+            "Line feed": "newline",
+            "CRLF": "crlf"
+          }
+        }
+      ]
+    },
+    "A1Z26 Cipher Decode": {
+      "op": "a1z26-decode",
+      "args": [
+        {
+          "to": "delimiter",
+          "map": {
+            "Space": "space",
+            "Comma": "comma",
+            "Semi-colon": "semicolon",
+            "Colon": "colon",
+            "Line feed": "newline",
+            "CRLF": "crlf"
+          }
+        }
+      ]
+    },
+    "Bacon Cipher Encode": {
+      "op": "bacon-encode",
+      "args": [
+        {
+          "to": "alphabet",
+          "map": { "Standard (I=J and U=V)": "standard", "Complete": "complete" }
+        },
+        { "to": "translation", "map": { "0/1": "01", "A/B": "ab" } },
+        { "to": "keep_other" },
+        { "to": "invert" }
+      ]
+    },
+    "Bacon Cipher Decode": {
+      "op": "bacon-decode",
+      "args": [
+        {
+          "to": "alphabet",
+          "map": { "Standard (I=J and U=V)": "standard", "Complete": "complete" }
+        },
+        {
+          "to": "translation",
+          "map": {
+            "0/1": "01",
+            "A/B": "ab",
+            "Case": "case",
+            "A-M/N-Z first letter": "first-letter"
+          }
+        },
+        { "to": "invert" }
+      ]
+    },
+    "Convert Leet Speak": {
+      "op": "leet-speak",
+      "args": [{ "to": "direction", "map": { "To Leet Speak": "to", "From Leet Speak": "from" } }]
+    },
+    "ROT8000": { "op": "rot8000", "args": [] }
   }
 }

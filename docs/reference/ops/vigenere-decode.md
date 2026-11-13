@@ -73,5 +73,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← ROT47](rot47.md) · [Contents](../../README.md) · [Vigenère Encode →](vigenere-encode.md)
+[← ROT8000](rot8000.md) · [Contents](../../README.md) · [Vigenère Encode →](vigenere-encode.md)
 <!-- /docs:nav -->

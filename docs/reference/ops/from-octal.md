@@ -72,5 +72,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← From Modhex](from-modhex.md) · [Contents](../../README.md) · [From Punycode →](from-punycode.md)
+[← From Morse code](from-morse-code.md) · [Contents](../../README.md) · [From Punycode →](from-punycode.md)
 <!-- /docs:nav -->

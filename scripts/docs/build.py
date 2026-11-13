@@ -58,6 +58,7 @@ GUIDES = [
     "hmac-and-key-derivation",
     "encryption",
     "classical-ciphers",
+    "letter-codes",
     "compression",
     "unicode-security",
     "data-and-text",
@@ -101,6 +102,17 @@ GUIDE_FOR_OP = {
     "vigenere-encode": "classical-ciphers",
     "vigenere-decode": "classical-ciphers",
     "xor": "classical-ciphers",
+    "rot8000": "classical-ciphers",
+    "a1z26-encode": "classical-ciphers",
+    "a1z26-decode": "classical-ciphers",
+    "bacon-encode": "classical-ciphers",
+    "bacon-decode": "classical-ciphers",
+    "to-morse-code": "letter-codes",
+    "from-morse-code": "letter-codes",
+    "to-nato-alphabet": "letter-codes",
+    "to-braille": "letter-codes",
+    "from-braille": "letter-codes",
+    "leet-speak": "letter-codes",
 }
 
 # Other project documents listed in the table of contents.
