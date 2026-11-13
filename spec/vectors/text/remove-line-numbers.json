@@ -1,0 +1,126 @@
+{
+  "op": "remove-line-numbers",
+  "cases": [
+    {
+      "name": "space and colon",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "1 one\n2:two"
+      },
+      "expected": {
+        "type": "string",
+        "text": "one\ntwo"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "padded numbers",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "  9 nine\n 10 ten"
+      },
+      "expected": {
+        "type": "string",
+        "text": "nine\nten"
+      }
+    },
+    {
+      "name": "one separator only",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "2) two"
+      },
+      "expected": {
+        "type": "string",
+        "text": " two"
+      }
+    },
+    {
+      "name": "a line that is only a number joins the next",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "12\nfoo"
+      },
+      "expected": {
+        "type": "string",
+        "text": "foo"
+      }
+    },
+    {
+      "name": "more than five spaces is not a number",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "      7 seven"
+      },
+      "expected": {
+        "type": "string",
+        "text": "      7 seven"
+      }
+    },
+    {
+      "name": "no separator, not removed",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "123abc"
+      },
+      "expected": {
+        "type": "string",
+        "text": "123abc"
+      }
+    },
+    {
+      "name": "non-ASCII digits are not removed",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "١ one"
+      },
+      "expected": {
+        "type": "string",
+        "text": "١ one"
+      }
+    },
+    {
+      "name": "bracket and pipe",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "1] a\n2| b"
+      },
+      "expected": {
+        "type": "string",
+        "text": " a\n b"
+      }
+    },
+    {
+      "name": "error: an unknown argument",
+      "args": {
+        "bogus": 1
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

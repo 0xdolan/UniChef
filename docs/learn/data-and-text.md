@@ -79,6 +79,32 @@ These operations treat the text as lines separated by LF:
 
 [Reverse](../reference/ops/reverse.md) reverses the order of characters, code points or bytes.
 
+[Add line numbers](../reference/ops/add-line-numbers.md) and
+[Remove line numbers](../reference/ops/remove-line-numbers.md) number a listing and undo it;
+[Pad lines](../reference/ops/pad-lines.md) indents every line or fills it on the right.
+
+## Cleaning up text
+
+Text copied from a terminal, a web page or a binary file often carries extra material:
+- [Remove ANSI escape codes](../reference/ops/remove-ansi-escape-codes.md) drops terminal
+  colour and cursor sequences such as `ESC[31m`;
+- [Strip HTML tags](../reference/ops/strip-html-tags.md) keeps the text between tags and tidies
+  the blank lines left behind (it does not decode `&amp;`; follow it with
+  [HTML entity decode](../reference/ops/html-entity-decode.md));
+- [Remove null bytes](../reference/ops/remove-null-bytes.md) drops 0x00 bytes, which turns
+  ASCII stored as UTF-16 back into readable text.
+
+## Changing case
+
+[Unicode Case](../reference/ops/unicode-case.md) upper-, lower- or title-cases text. Three
+more operations play with case one character at a time:
+- [Swap case](../reference/ops/swap-case.md): `Hello` → `hELLO`;
+- [Alternating caps](../reference/ops/alternating-caps.md): `Hello world` → `hElLo WoRlD`;
+- [Get all casings](../reference/ops/get-all-casings.md): every mix of upper and lower case,
+  one per line (`ab` → `ab`, `Ab`, `aB`, `AB`).
+
+They use full Unicode case mappings, so `ß` upper-cases to `SS`.
+
 **Unicode-aware means:**
 - case-insensitive comparison uses full case folding (`STRASSE` equals `straße`);
 - trimming removes every Unicode White_Space character, not just ASCII spaces;
@@ -87,7 +113,7 @@ These operations treat the text as lines separated by LF:
 See [Unicode](unicode.md).
 
 <!-- docs:ops -->
-Operations explained here: [CSV to JSON](../reference/ops/csv-to-json.md), [JSON Beautify](../reference/ops/json-beautify.md), [JSON Minify](../reference/ops/json-minify.md), [JSON to CSV](../reference/ops/json-to-csv.md), [Parse Query String](../reference/ops/parse-query-string.md), [Parse URL](../reference/ops/parse-url.md), [Find / replace](../reference/ops/find-replace.md), [Head](../reference/ops/head.md), [Join lines](../reference/ops/join.md), [Regex extract](../reference/ops/regex-extract.md), [Reverse](../reference/ops/reverse.md), [Sort lines](../reference/ops/sort-lines.md), [Split](../reference/ops/split.md), [Tail](../reference/ops/tail.md), [Trim](../reference/ops/trim.md), [Unique lines](../reference/ops/unique-lines.md).
+Operations explained here: [CSV to JSON](../reference/ops/csv-to-json.md), [JSON Beautify](../reference/ops/json-beautify.md), [JSON Minify](../reference/ops/json-minify.md), [JSON to CSV](../reference/ops/json-to-csv.md), [Parse Query String](../reference/ops/parse-query-string.md), [Parse URL](../reference/ops/parse-url.md), [Add line numbers](../reference/ops/add-line-numbers.md), [Alternating caps](../reference/ops/alternating-caps.md), [Find / replace](../reference/ops/find-replace.md), [Get all casings](../reference/ops/get-all-casings.md), [Head](../reference/ops/head.md), [Join lines](../reference/ops/join.md), [Pad lines](../reference/ops/pad-lines.md), [Regex extract](../reference/ops/regex-extract.md), [Remove ANSI escape codes](../reference/ops/remove-ansi-escape-codes.md), [Remove line numbers](../reference/ops/remove-line-numbers.md), [Remove null bytes](../reference/ops/remove-null-bytes.md), [Reverse](../reference/ops/reverse.md), [Sort lines](../reference/ops/sort-lines.md), [Split](../reference/ops/split.md), [Strip HTML tags](../reference/ops/strip-html-tags.md), [Swap case](../reference/ops/swap-case.md), [Tail](../reference/ops/tail.md), [Trim](../reference/ops/trim.md), [Unique lines](../reference/ops/unique-lines.md).
 <!-- /docs:ops -->
 
 ## Learn more
@@ -97,6 +123,8 @@ Operations explained here: [CSV to JSON](../reference/ops/csv-to-json.md), [JSON
 - [RFC 3986: URI syntax](https://www.rfc-editor.org/rfc/rfc3986)
 - [MDN: regular expressions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_expressions)
 - [OWASP: CSV injection](https://owasp.org/www-community/attacks/CSV_Injection)
+- [ANSI escape code (Wikipedia)](https://en.wikipedia.org/wiki/ANSI_escape_code)
+- [Unicode case mapping FAQ](https://www.unicode.org/faq/casemap_charprop.html)
 
 <!-- docs:nav -->
 ---

@@ -6,6 +6,7 @@ import { pyRepr, type Operation } from './types.js';
 import { CRYPTO_OPS } from './crypto.js';
 import { CODEC_OPS } from './codecs.js';
 import { RADIX_OPS } from './radix.js';
+import { TEXT_TOOL_OPS } from './text-tools.js';
 import { COMPRESSION_OPS } from './compression.js';
 import { DATA_OPS } from './data.js';
 import { ENCODING_OPS } from './encoding.js';
@@ -26,6 +27,7 @@ const MODULES: readonly (readonly Operation[])[] = [
   ENCODING_OPS,
   CODEC_OPS,
   RADIX_OPS,
+  TEXT_TOOL_OPS,
   HTML_OPS,
   HASHING_OPS,
   CRYPTO_OPS,

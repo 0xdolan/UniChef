@@ -706,6 +706,48 @@ Parses `application/x-www-form-urlencoded` text, following the WHATWG rules:
 | `output` | `object` (default): an object of names to values, in first-seen order. A repeated name collects its values into an array, in order. `pairs`: an array of `[name, value]` arrays that keeps order and repeats. |
 | `plus_as_space` | Default true. |
 
+## Operation arguments (text category)
+
+Lines are separated by LF. A final LF ends the last line rather than starting an empty one, and line operations keep it; empty input has no lines. "JavaScript whitespace" below means U+0009–U+000D, U+0020, U+00A0, U+1680, U+2000–U+200A, U+2028, U+2029, U+202F, U+205F, U+3000 and U+FEFF.
+
+### `swap-case`, `alternating-caps`, `get-all-casings` (string → string)
+
+All three use the full, locale-independent case mappings one code point at a time, so casing contexts (final sigma) do not apply and a mapping may change the length (`ß` → `SS`).
+
+- `swap-case`: a code point whose upper-case mapping differs from itself is upper-cased; any other is lower-cased.
+- `alternating-caps`: letters are General_Category L*. The first letter is lower-cased, the next upper-cased, alternating; other code points are copied and do not change the alternation.
+- `get-all-casings`: the input is lower-cased into n code points. For k from 0 to 2ⁿ − 1, line k upper-cases code point j when bit j of k is set. Lines are joined with LF, with no final LF. Empty input gives empty output. More than 16 code points is `E_LIMIT`.
+
+### `remove-null-bytes` (bytes → bytes)
+
+Every 0x00 byte is removed.
+
+### `remove-ansi-escape-codes` (string → string)
+
+Every match of ESC `[` `[0-?]*` `[ -/]*` `[@-~]` is removed (ECMA-48 control sequences). Other escape sequences are kept.
+
+### `strip-html-tags` (string → string)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `remove_indentation` | boolean | `true` | Replace LF followed by spaces, tabs or form feeds with LF. |
+| `remove_line_breaks` | boolean | `true` | Remove the longest run of JavaScript whitespace ending in LF at the start of the text, then replace every run of two or more (LF, JavaScript whitespace) groups with one LF. |
+
+Every match of `<[^>]+>` is removed, repeatedly, until the length stops changing. Entities are not decoded.
+
+### `add-line-numbers`, `remove-line-numbers`, `pad-lines` (string → string)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `offset` | integer | `0` | `add-line-numbers`: the first line is numbered `offset` + 1. |
+| `position` | `start` \| `end` | `start` | `pad-lines`: where the padding goes. |
+| `length` | integer 0–1 000 000 | `5` | `pad-lines`: padding length in code points. |
+| `character` | string | space | `pad-lines`: repeated and cut to `length` code points. Empty is `E_ARG_INVALID`. |
+
+- `add-line-numbers` writes each number in decimal, right-aligned with spaces to the digit count of the number of lines, then one space and the line.
+- `remove-line-numbers` removes, at the start of the text and after each LF, up to five spaces or tabs, one or more ASCII digits and one character that is JavaScript whitespace or one of `:|-,.)]`. The removed character may be an LF.
+- These follow the reference implementation except that a final LF is kept rather than treated as an extra empty line, and empty input stays empty.
+
 ## Operation arguments (compression category)
 
 `raw-deflate`, `zlib-deflate` and `gzip` take one argument, `level`: an integer from 0 to 9, default 6. Level 0 stores the input in uncompressed blocks of at most 65 535 bytes, and both cores write it the same way, byte for byte. Levels 1 to 9 use the host compressor (zlib in Python, fflate in TypeScript), so the compressed bytes can differ between cores (parity class `roundtrip`). Both cores read what either one writes, and recipe vectors check the round trip.

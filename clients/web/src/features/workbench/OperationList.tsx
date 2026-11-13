@@ -1,16 +1,19 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 /** Searchable operation list, grouped by category. Clicking an operation appends it. */
 
-import { allOperations, type Operation } from '@unichef/core';
+import { allOperationInfo, type OperationInfo } from '@unichef/core';
 import { useMemo, type ReactNode } from 'react';
 
 import { t } from '../../i18n/index.js';
 import { useApp } from '../../state/store.js';
 import styles from './Workbench.module.css';
 
-export function matchOps(ops: readonly Operation[], query: string): Map<string, Operation[]> {
+export function matchOps(
+  ops: readonly OperationInfo[],
+  query: string,
+): Map<string, OperationInfo[]> {
   const q = query.trim().toLowerCase();
-  const groups = new Map<string, Operation[]>();
+  const groups = new Map<string, OperationInfo[]>();
   for (const op of ops) {
     if (q !== '' && ![op.id, op.name, op.description].some((s) => s.toLowerCase().includes(q))) {
       continue;
@@ -26,7 +29,7 @@ export function OperationList(): ReactNode {
   const query = useApp((s) => s.opQuery);
   const setQuery = useApp((s) => s.setOpQuery);
   const addStep = useApp((s) => s.addStep);
-  const groups = useMemo(() => matchOps(allOperations(), query), [query]);
+  const groups = useMemo(() => matchOps(allOperationInfo(), query), [query]);
   return (
     <section className={styles.pane} aria-labelledby="ops-title">
       <h2 id="ops-title" className={styles.paneTitle}>

@@ -1,0 +1,130 @@
+{
+  "op": "strip-html-tags",
+  "cases": [
+    {
+      "name": "simple",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "<p>Hello <b>world</b></p>"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Hello world"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "nested removal leaves no tag (aabcbc)",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "<<b>script>alert(1)<</b>/script>"
+      },
+      "expected": {
+        "type": "string",
+        "text": "script>alert(1)/script>"
+      }
+    },
+    {
+      "name": "indentation and blank lines",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "<div>\n    <p>one</p>\n\n\n    <p>two</p>\n</div>"
+      },
+      "expected": {
+        "type": "string",
+        "text": "one\ntwo\n"
+      }
+    },
+    {
+      "name": "keep indentation",
+      "args": {
+        "remove_indentation": false
+      },
+      "input": {
+        "type": "string",
+        "text": "<div>\n    <p>one</p>\n</div>"
+      },
+      "expected": {
+        "type": "string",
+        "text": "    one\n"
+      }
+    },
+    {
+      "name": "keep line breaks",
+      "args": {
+        "remove_line_breaks": false
+      },
+      "input": {
+        "type": "string",
+        "text": "\n<p>one</p>\n\n\n<p>two</p>"
+      },
+      "expected": {
+        "type": "string",
+        "text": "\none\n\n\ntwo"
+      }
+    },
+    {
+      "name": "text from < to > is removed even when it is not a tag",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a < b and c > d"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a  d"
+      }
+    },
+    {
+      "name": "attributes and comments",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "<a href=\"x\">link</a><!-- note -->"
+      },
+      "expected": {
+        "type": "string",
+        "text": "link"
+      }
+    },
+    {
+      "name": "non-ASCII text",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "<p>Grüße 👋</p>"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Grüße 👋"
+      }
+    },
+    {
+      "name": "error: not a boolean",
+      "args": {
+        "remove_indentation": "yes"
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

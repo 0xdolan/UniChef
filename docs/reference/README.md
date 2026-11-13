@@ -157,13 +157,22 @@ Background: [Data formats and text processing](../learn/data-and-text.md)
 
 | Operation | What it does |
 |---|---|
+| [Add line numbers](ops/add-line-numbers.md) | Put the line number and a space before each line, counting from `offset` + 1. |
+| [Alternating caps](ops/alternating-caps.md) | Lower-case the first letter, upper-case the next, and so on. |
 | [Find / replace](ops/find-replace.md) | Replace matches of `pattern` with `replacement`. |
+| [Get all casings](ops/get-all-casings.md) | Every combination of upper and lower case, one per line. |
 | [Head](ops/head.md) | The first `count` lines (keeping a final LF), graphemes or code points. |
 | [Join lines](ops/join.md) | Join the lines with `delimiter`. |
+| [Pad lines](ops/pad-lines.md) | Add `length` code points to the start or end of each line, made by repeating `character` and cutting it to length. |
 | [Regex extract](ops/regex-extract.md) | List every match of `pattern` (or its capture group `group`), joined by `separator`. |
+| [Remove ANSI escape codes](ops/remove-ansi-escape-codes.md) | Remove ANSI control sequences (ESC `[`, parameter bytes, intermediate bytes and a final byte), such as colour and cursor codes. |
+| [Remove line numbers](ops/remove-line-numbers.md) | At the start of each line, remove up to five spaces or tabs, ASCII digits and one following separator: whitespace (including a line feed) or one of `:\|-,.)]`. |
+| [Remove null bytes](ops/remove-null-bytes.md) | Remove every 0x00 byte. |
 | [Reverse](ops/reverse.md) | Reverse the order of graphemes (default), code points or bytes. |
 | [Sort lines](ops/sort-lines.md) | Stable sort of the lines. |
 | [Split](ops/split.md) | Split on the literal `delimiter` and join the parts with `join`. |
+| [Strip HTML tags](ops/strip-html-tags.md) | Remove everything from `<` to the next `>`, repeating until none is left. |
+| [Swap case](ops/swap-case.md) | Upper-case every character that changes when upper-cased, and lower-case the rest, one code point at a time with full case mappings (`ß` becomes `SS`). |
 | [Tail](ops/tail.md) | The last `count` lines (keeping a final LF), graphemes or code points. |
 | [Trim](ops/trim.md) | Remove White_Space characters from the start, end or both ends of the text, or of every line with `lines` (a final LF is kept). |
 | [Unique lines](ops/unique-lines.md) | Keep the first of each set of equal lines, in input order. |

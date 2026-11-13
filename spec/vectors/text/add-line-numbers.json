@@ -1,0 +1,118 @@
+{
+  "op": "add-line-numbers",
+  "cases": [
+    {
+      "name": "two lines",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "one\ntwo"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1 one\n2 two"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "final LF kept",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "one\ntwo\n"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1 one\n2 two\n"
+      }
+    },
+    {
+      "name": "width of the line count",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a\nb\nc\nd\ne\nf\ng\nh\ni\nj"
+      },
+      "expected": {
+        "type": "string",
+        "text": " 1 a\n 2 b\n 3 c\n 4 d\n 5 e\n 6 f\n 7 g\n 8 h\n 9 i\n10 j"
+      }
+    },
+    {
+      "name": "offset",
+      "args": {
+        "offset": 9
+      },
+      "input": {
+        "type": "string",
+        "text": "a\nb"
+      },
+      "expected": {
+        "type": "string",
+        "text": "10 a\n11 b"
+      }
+    },
+    {
+      "name": "negative offset",
+      "args": {
+        "offset": -5
+      },
+      "input": {
+        "type": "string",
+        "text": "a\nb"
+      },
+      "expected": {
+        "type": "string",
+        "text": "-4 a\n-3 b"
+      }
+    },
+    {
+      "name": "blank lines numbered",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a\n\nb"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1 a\n2 \n3 b"
+      }
+    },
+    {
+      "name": "non-ASCII",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Grüße\n👋"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1 Grüße\n2 👋"
+      }
+    },
+    {
+      "name": "error: offset is not an integer",
+      "args": {
+        "offset": 1.5
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

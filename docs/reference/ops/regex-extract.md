@@ -84,5 +84,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← Join lines](join.md) · [Contents](../../README.md) · [Reverse →](reverse.md)
+[← Pad lines](pad-lines.md) · [Contents](../../README.md) · [Remove ANSI escape codes →](remove-ansi-escape-codes.md)
 <!-- /docs:nav -->

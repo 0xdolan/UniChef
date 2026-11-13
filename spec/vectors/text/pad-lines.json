@@ -1,0 +1,145 @@
+{
+  "op": "pad-lines",
+  "cases": [
+    {
+      "name": "default: five spaces at the start",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a\nb"
+      },
+      "expected": {
+        "type": "string",
+        "text": "     a\n     b"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "end",
+      "args": {
+        "position": "end",
+        "length": 2,
+        "character": "."
+      },
+      "input": {
+        "type": "string",
+        "text": "a\nb"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a..\nb.."
+      }
+    },
+    {
+      "name": "final LF kept",
+      "args": {
+        "length": 1,
+        "character": "-"
+      },
+      "input": {
+        "type": "string",
+        "text": "a\n"
+      },
+      "expected": {
+        "type": "string",
+        "text": "-a\n"
+      }
+    },
+    {
+      "name": "multi-character filler is cut",
+      "args": {
+        "length": 5,
+        "character": "ab"
+      },
+      "input": {
+        "type": "string",
+        "text": "x"
+      },
+      "expected": {
+        "type": "string",
+        "text": "ababax"
+      }
+    },
+    {
+      "name": "astral filler counts code points",
+      "args": {
+        "length": 3,
+        "character": "👋"
+      },
+      "input": {
+        "type": "string",
+        "text": "x"
+      },
+      "expected": {
+        "type": "string",
+        "text": "👋👋👋x"
+      }
+    },
+    {
+      "name": "length zero",
+      "args": {
+        "length": 0
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a"
+      }
+    },
+    {
+      "name": "blank line padded",
+      "args": {
+        "length": 1,
+        "character": "*"
+      },
+      "input": {
+        "type": "string",
+        "text": "a\n\nb"
+      },
+      "expected": {
+        "type": "string",
+        "text": "*a\n*\n*b"
+      }
+    },
+    {
+      "name": "error: empty character",
+      "args": {
+        "character": ""
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "error: negative length",
+      "args": {
+        "length": -1
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

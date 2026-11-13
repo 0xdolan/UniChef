@@ -3,7 +3,7 @@
 
 # HTML Entity Decode
 
-Decode named and numeric character references as HTML does in text content: the longest known name wins, legacy names may omit the semicolon, numeric references may omit it, 0x80-0x9F map through windows-1252, and 0, surrogates and values above 10FFFF become U+FFFD. An ``&`` that starts no reference stays as it is. `strict` fails on a missing semicolon, an unknown name or an invalid code point instead.
+Decode named and numeric character references as HTML does in text content: the longest known name wins, legacy names may omit the semicolon, numeric references may omit it, 0x80-0x9F map through windows-1252, and 0, surrogates and values above 10FFFF become U+FFFD. An `&` that starts no reference stays as it is. `strict` fails on a missing semicolon, an unknown name or an invalid code point instead.
 
 | Id | Input | Output | Background |
 |---|---|---|---|

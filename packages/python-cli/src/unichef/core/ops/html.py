@@ -103,7 +103,7 @@ def html_entity_decode(text: str, args: Args, ctx: OpContext) -> str:
     """Decode named and numeric character references as HTML does in text content: the
     longest known name wins, legacy names may omit the semicolon, numeric references may
     omit it, 0x80-0x9F map through windows-1252, and 0, surrogates and values above
-    10FFFF become U+FFFD. An ``&`` that starts no reference stays as it is. `strict`
+    10FFFF become U+FFFD. An `&` that starts no reference stays as it is. `strict`
     fails on a missing semicolon, an unknown name or an invalid code point instead."""
     strict = args.flag("strict")
     out: list[str] = []
@@ -139,8 +139,8 @@ def html_entity_decode(text: str, args: Args, ctx: OpContext) -> str:
 )
 def html_entity_encode(text: str, args: Args, ctx: OpContext) -> str:
     """Replace characters with references. `scope` is the five HTML-special characters
-    ``& < > " '``, those plus every non-ASCII character, or all characters. `named` uses
-    the shortest name ending in ``;`` (hex where there is none); astral characters get
+    `& < > " '`, those plus every non-ASCII character, or all characters. `named` uses
+    the shortest name ending in `;` (hex where there is none); astral characters get
     one reference each."""
     ctx.check()
     scope = args.text("scope")

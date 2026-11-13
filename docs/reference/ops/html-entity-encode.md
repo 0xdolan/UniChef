@@ -3,7 +3,7 @@
 
 # HTML Entity Encode
 
-Replace characters with references. `scope` is the five HTML-special characters ``& < > " '``, those plus every non-ASCII character, or all characters. `named` uses the shortest name ending in ``;`` (hex where there is none); astral characters get one reference each.
+Replace characters with references. `scope` is the five HTML-special characters `& < > " '`, those plus every non-ASCII character, or all characters. `named` uses the shortest name ending in `;` (hex where there is none); astral characters get one reference each.
 
 | Id | Input | Output | Background |
 |---|---|---|---|

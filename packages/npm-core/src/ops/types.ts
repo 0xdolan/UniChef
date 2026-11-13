@@ -405,6 +405,6 @@ export function defineOp<I extends DishType, O extends DishType>(def: {
   } as unknown as Operation;
 }
 
-export function argSpec(op: Operation, name: string): ArgSpec | undefined {
+export function argSpec(op: Pick<Operation, 'args'>, name: string): ArgSpec | undefined {
   return op.args.find((a) => a.name === name);
 }

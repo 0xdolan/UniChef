@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 /** The built-in recipe gallery (`#/recipes`). Each card opens its recipe in the workbench. */
 
-import { getOperation } from '@unichef/core';
+import { getOperationInfo } from '@unichef/core';
 import type { ReactNode } from 'react';
 
 import { t } from '../../i18n/index.js';
@@ -17,7 +17,7 @@ function Card({ entry }: { readonly entry: GalleryRecipe }): ReactNode {
       <p className={styles.muted}>{entry.description}</p>
       <ol className={styles.chips} aria-label={t('recipes.steps')}>
         {entry.recipe.steps.map((step, i) => (
-          <li key={i}>{getOperation(step.op).name}</li>
+          <li key={i}>{getOperationInfo(step.op).name}</li>
         ))}
       </ol>
       {href !== null && (

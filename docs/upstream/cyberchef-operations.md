@@ -3,7 +3,7 @@
 > Generated from `src/core/config/Categories.json` at CyberChef commit `d4d96c6c3d2597fef836d81bfc04617d97c681a5` (v11.5.0, 2026-11-04).
 > Mapping targets are the op ids in [UniChef-PRD.md §3.8](../../UniChef-PRD.md). Seed `spec/cyberchef-map.json` from this table.
 
-**Totals:** 506 unique operations (some appear in several categories); 92 have a UniChef equivalent (79 in 1.0); 414 are not yet covered.
+**Totals:** 506 unique operations (some appear in several categories); 101 have a UniChef equivalent (79 in 1.0); 405 are not yet covered.
 
 Rules for the importer:
 
@@ -331,17 +331,17 @@ Rules for the importer:
 |---|---|---|
 | Diff | not planned | — |
 | Remove whitespace | `trim` (not importable: CyberChef removes whitespace everywhere, `trim` only at the ends) | Alpha |
-| Remove null bytes | not planned | — |
-| Remove ANSI Escape Codes | not planned | — |
+| Remove null bytes | `remove-null-bytes` | 1.1 |
+| Remove ANSI Escape Codes | `remove-ansi-escape-codes` | 1.1 |
 | To Upper case | `unicode-case (upper)` | Alpha |
 | To Lower case | `unicode-case (lower)` | Alpha |
-| Swap case | not planned | — |
-| Alternating Caps | not planned | — |
+| Swap case | `swap-case` | 1.1 |
+| Alternating Caps | `alternating-caps` | 1.1 |
 | To Case Insensitive Regex | not planned | — |
 | From Case Insensitive Regex | not planned | — |
-| Add line numbers | not planned | — |
-| Remove line numbers | not planned | — |
-| Get All Casings | not planned | — |
+| Add line numbers | `add-line-numbers` | 1.1 |
+| Remove line numbers | `remove-line-numbers` | 1.1 |
+| Get All Casings | `get-all-casings` | 1.1 |
 | To Table | not planned | — |
 | Reverse | `reverse` | Alpha |
 | Sort | `sort-lines` | Alpha |
@@ -355,7 +355,7 @@ Rules for the importer:
 | Expand alphabet range | not planned | — |
 | Drop bytes | not planned | — |
 | Take bytes | not planned | — |
-| Pad lines | not planned | — |
+| Pad lines | `pad-lines` | 1.1 |
 | Find / Replace | `find-replace` | Alpha |
 | Regular expression | `regex-extract` | Alpha |
 | Fuzzy Match | not planned | — |
@@ -527,7 +527,7 @@ Rules for the importer:
 | PHP Deserialize | not planned | — |
 | PHP Serialize | not planned | — |
 | Microsoft Script Decoder | not planned | — |
-| Strip HTML tags | not planned | — |
+| Strip HTML tags | `strip-html-tags` | 1.1 |
 | Diff | not planned | — |
 | To Snake case | not planned | — |
 | To Camel case | not planned | — |

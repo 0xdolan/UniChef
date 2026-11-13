@@ -1977,6 +1977,126 @@
           }
         ]
       }
+    },
+    {
+      "name": "Swap case",
+      "input": "[{\"op\": \"Swap case\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "swap-case"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Alternating Caps",
+      "input": "[{\"op\": \"Alternating Caps\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "alternating-caps"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Get All Casings",
+      "input": "[{\"op\": \"Get All Casings\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "get-all-casings"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Remove null bytes",
+      "input": "[{\"op\": \"Remove null bytes\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "remove-null-bytes"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Remove ANSI Escape Codes",
+      "input": "[{\"op\": \"Remove ANSI Escape Codes\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "remove-ansi-escape-codes"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Strip HTML tags",
+      "input": "[{\"op\": \"Strip HTML tags\", \"args\": [true, false]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "strip-html-tags",
+            "args": {
+              "remove_indentation": true,
+              "remove_line_breaks": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Add line numbers",
+      "input": "[{\"op\": \"Add line numbers\", \"args\": [2]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "add-line-numbers",
+            "args": {
+              "offset": 2
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Remove line numbers",
+      "input": "[{\"op\": \"Remove line numbers\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "remove-line-numbers"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Pad lines with an escaped tab",
+      "input": "[{\"op\": \"Pad lines\", \"args\": [\"End\", 3, \"\\\\t\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "pad-lines",
+            "args": {
+              "position": "end",
+              "length": 3,
+              "character": "\t"
+            }
+          }
+        ]
+      }
     }
   ]
 }

@@ -79,5 +79,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← Regex extract](regex-extract.md) · [Contents](../../README.md) · [Sort lines →](sort-lines.md)
+[← Remove null bytes](remove-null-bytes.md) · [Contents](../../README.md) · [Sort lines →](sort-lines.md)
 <!-- /docs:nav -->

@@ -20,6 +20,7 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
   - Encoding: base64, base32, hex, URL, text encodings, binary, octal, decimal and HTML entities.
   - CyberChef parity, encoding: `to-base45`/`from-base45` (RFC 9285), `to-base62`/`from-base62` (digits then upper or lower case) and `to-base92`/`from-base92`, with importer mappings for the six CyberChef operations.
   - CyberChef parity, radix and byte order: `to-base`/`from-base` (any radix 2–36, with fractions), `to-charcode`/`from-charcode` (code points in any base), `to-modhex`/`from-modhex` (YubiKey alphabet) and `swap-endianness`, with importer mappings for the seven CyberChef operations.
+  - CyberChef parity, text: `swap-case`, `alternating-caps` and `get-all-casings` (full Unicode case mappings), `remove-null-bytes`, `remove-ansi-escape-codes`, `strip-html-tags`, `add-line-numbers`, `remove-line-numbers` and `pad-lines`, with importer mappings for the nine CyberChef operations.
   - Beta encoding (#7): `to-base58`/`from-base58` (Bitcoin and Flickr alphabets), `to-base85`/`from-base85` (Ascii85 with `z` and optional `<~ ~>`, and Z85) and `quoted-printable-encode`/`decode` (RFC 2045, with `text` and `binary` modes), with shared vectors and CyberChef import.
   - Text: the text operations.
   - Flow: the flow operations, including `subsection` and `conditional-jump`.
@@ -146,6 +147,7 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
 - **Bidi-safe tables (NFR-041):** web table cells use `dir="auto"` and `unicode-bidi: isolate`, and regex matches show control and invisible characters as `⟨NAME⟩` labels.
 - **Platforms:** Python tests also run on macOS x86-64 and Windows arm64 (NFR-021). Both build cryptography from source, which no longer ships wheels for them; CI installs Rust and a vcpkg OpenSSL on Windows arm64. The `deb` job also builds, lints and autopkgtests in `debian:trixie`, and `scripts/deb/check.sh` picks the lintian profile from the container (NFR-023).
 - **CyberChef import:** recipes from CyberChef 10 and later name the checksum op `CRC Checksum` with an algorithm argument. The importer now maps it to `crc32` when the algorithm is CRC-32 and refuses other algorithms with `E_ARG_INVALID`. The old `CRC-32 Checksum` name still imports. The operations table now lists JWT Sign, Verify and Decode with their UniChef ids, and marks JWT Verify and Remove whitespace as not importable.
+- **Web bundle (NFR-010):** the main thread no longer bundles the operation implementations. It reads operation metadata from a catalogue (`allOperationInfo`, `getOperationInfo`, `hasOperationInfo` in `@unichef/core`), a copy of `spec/ops.json` that `make ops` writes and the tests check against the registry; only the bake worker loads the code. Initial JS drops from about 252 KiB to 210 KiB gzipped. Recipe validation uses the catalogue too, and the two cores now have identical operation descriptions.
 - **Lint:** ESLint runs with `--max-warnings 0` (NFR-030), and an i18n test fails on hard-coded UI strings or missing extension messages (NFR-042).
 
 ### Fixed
