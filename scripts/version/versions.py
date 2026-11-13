@@ -164,6 +164,12 @@ TARGETS: tuple[Target, ...] = (
             Field(_json_key("version_name"), lambda v: v.semver),
         ),
     ),
+    _package_json("clients/gnome/package.json"),
+    # GNOME Shell shows version-name; its grammar allows letters, digits, spaces and dots.
+    Target(
+        "clients/gnome/unichef@0xdolan.github.io/metadata.json",
+        (Field(_json_key("version-name"), lambda v: v.semver.replace("-", " ")),),
+    ),
     # The top entry's upstream version; PPA uploads add their suffix at build time (PRD §8.5).
     Target(
         "debian/changelog",

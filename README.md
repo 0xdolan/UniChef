@@ -65,6 +65,7 @@ A character explorer, a regex lab and a recipe gallery come with the web app.
 |---|---|
 | Web app | <https://0xdolan.github.io/unichef/>. It installs as an app and works offline. |
 | Browser extension | Chrome, Brave, Edge and Firefox. Select text, right-click, then "Inspect with UniChef". |
+| GNOME Shell extension | Quick convert and character lookup in the top bar, through the CLI. |
 | Python CLI and library | `pipx install unichef` |
 | Ubuntu | `sudo add-apt-repository ppa:0xdolan/unichef && sudo apt install unichef` |
 | TypeScript library | `npm install @unichef/core` |

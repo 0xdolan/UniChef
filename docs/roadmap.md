@@ -112,5 +112,6 @@ The design was confirmed on 2026-11-12. A top-bar icon opens a popup with two ta
   category, plus buttons that copy the input as `U+…` or `\u…` escapes.
 
 A footer link opens the full web app. Everything runs offline through the installed
-`unichef` CLI, so the extension makes no network requests (SEC-001). It ships on
-extensions.gnome.org and in the Debian package.
+`unichef` CLI, so the extension makes no network requests (SEC-001). Each GitHub Release
+attaches a reproducible `unichef-gnome-<v>.zip`, which the maintainer uploads to
+extensions.gnome.org. A `gnome-shell-extension-unichef` Debian package is next.

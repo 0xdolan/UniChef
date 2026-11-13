@@ -6,6 +6,12 @@ All notable changes to UniChef are recorded here. The format follows [Keep a Cha
 
 ### Added
 
+- **GNOME Shell extension** (`clients/gnome`, FR-016): a top-bar popup for GNOME Shell 46 to 50
+  with a Convert tab (search the operations, run one on typed or pasted text, copy the output)
+  and a Character tab (code point, name and category of each character, copied as `U+…` or
+  `\u…`). It runs the local `unichef` CLI, so it makes no network requests, and shows how to
+  install the CLI when it is missing. CI builds a reproducible `unichef-gnome-<v>.zip`, and
+  each release attaches it. The install guide is in INTRODUCTION.md.
 - **Python core** (`packages/python-cli`):
   - Dish types and coercions, an in-house UTF-8 codec, the op registry, recipe loading and the runner.
   - The Unicode engine, built on the pinned UCD:

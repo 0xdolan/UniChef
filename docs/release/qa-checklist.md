@@ -150,7 +150,27 @@ man unichef                              # PPA only: the man page opens
 - [ ] Container smoke test.
 - [ ] npm: `import { bake } from '@unichef/core'` runs a recipe in Node 22 or later.
 
-## 4. Sign-off
+## 4. GNOME Shell extension
+
+A real session is needed: the popup, the panel icon and the clipboard can only be judged on a
+desktop. CI checks the metadata, the zip contents and the CLI calls (`FR-016` tests).
+
+Install the CLI (section 3), then:
+`gnome-extensions install --force unichef-gnome-<v>.zip`, log out and in, and
+`gnome-extensions enable unichef@0xdolan.github.io`.
+
+- [ ] The UniChef icon appears in the top bar, in the light and the dark style.
+- [ ] **Convert:** type `base` in the search, choose From Base64 and type `SGVsbG8=`. The output
+      is `Hello`. **Copy output** puts it on the clipboard.
+- [ ] **Paste clipboard** fills the input and runs the operation.
+- [ ] **Character:** type `é👋🏽`. The list shows U+00E9, U+1F44B and U+1F3FD with their names.
+      **Copy as U+…** and **Copy as \u…** copy the code points.
+- [ ] **Open the full UniChef web app** opens the Pages site in the browser.
+- [ ] With `unichef` removed from `PATH`, the popup shows the install hint instead of failing.
+- [ ] `journalctl --user -b | grep -i unichef` shows no errors after enabling, using and
+      disabling the extension.
+
+## 5. Sign-off
 
 - [ ] Every box above is ticked, or has an issue linked next to it.
 - [ ] No `priority:high` issue is open in the milestone.
