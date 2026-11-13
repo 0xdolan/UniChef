@@ -89,5 +89,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← To Octal](to-octal.md) · [Contents](../../README.md) · [URL Decode →](url-decode.md)
+[← To Octal](to-octal.md) · [Contents](../../README.md) · [Unescape String →](unescape-string.md)
 <!-- /docs:nav -->

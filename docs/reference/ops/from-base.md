@@ -77,5 +77,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← Encode Text](encode-text.md) · [Contents](../../README.md) · [From Base32 →](from-base32.md)
+[← Escape String](escape-string.md) · [Contents](../../README.md) · [From Base32 →](from-base32.md)
 <!-- /docs:nav -->

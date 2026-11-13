@@ -2298,6 +2298,321 @@
       "error": {
         "code": "E_ARG_INVALID"
       }
+    },
+    {
+      "name": "To Snake case, defaults",
+      "input": "[{\"op\": \"To Snake case\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-snake-case"
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Snake case, context aware",
+      "input": "[{\"op\": \"To Snake case\", \"args\": [true]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-snake-case",
+            "args": {
+              "context_aware": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Camel case, defaults",
+      "input": "[{\"op\": \"To Camel case\", \"args\": [false]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-camel-case",
+            "args": {
+              "context_aware": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Kebab case, context aware",
+      "input": "[{\"op\": \"To Kebab case\", \"args\": [true]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-kebab-case",
+            "args": {
+              "context_aware": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Hexdump, three args as in CyberChef's tests",
+      "input": "[{\"op\": \"To Hexdump\", \"args\": [16, false, false]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-hexdump",
+            "args": {
+              "width": 16,
+              "upper": false,
+              "final_length": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Hexdump, all args",
+      "input": "[{\"op\": \"To Hexdump\", \"args\": [8, true, true, true]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-hexdump",
+            "args": {
+              "width": 8,
+              "upper": true,
+              "final_length": true,
+              "ascii_only": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "From Hexdump",
+      "input": "[{\"op\": \"From Hexdump\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "from-hexdump"
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Hex Content, only special chars",
+      "input": "[{\"op\": \"To Hex Content\", \"args\": [\"Only special chars\", true]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-hex-content",
+            "args": {
+              "convert": "special",
+              "spaces": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Hex Content, including spaces",
+      "input": "[{\"op\": \"To Hex Content\", \"args\": [\"Only special chars including spaces\", false]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-hex-content",
+            "args": {
+              "convert": "special-and-space",
+              "spaces": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Hex Content, all chars",
+      "input": "[{\"op\": \"To Hex Content\", \"args\": [\"All chars\", true]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-hex-content",
+            "args": {
+              "convert": "all",
+              "spaces": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "From Hex Content",
+      "input": "[{\"op\": \"From Hex Content\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "from-hex-content"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Escape string, CyberChef defaults",
+      "input": "[{\"op\": \"Escape string\", \"args\": [\"Special chars\", \"Single\", false, true, false]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "escape-string",
+            "args": {
+              "level": "special",
+              "quote": "single",
+              "json": false,
+              "es6": true,
+              "upper_hex": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Escape string, everything as JSON",
+      "input": "[{\"op\": \"Escape string\", \"args\": [\"Everything\", \"Double\", true, false, true]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "escape-string",
+            "args": {
+              "level": "everything",
+              "quote": "double",
+              "json": true,
+              "es6": false,
+              "upper_hex": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Escape string, minimal with backticks",
+      "input": "[{\"op\": \"Escape string\", \"args\": [\"Minimal\", \"Backtick\", false, true, false]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "escape-string",
+            "args": {
+              "level": "minimal",
+              "quote": "backtick",
+              "json": false,
+              "es6": true,
+              "upper_hex": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Unescape string",
+      "input": "[{\"op\": \"Unescape string\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "unescape-string"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Escape Smart Characters, include",
+      "input": "[{\"op\": \"Escape Smart Characters\", \"args\": [\"Include\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "escape-smart-characters",
+            "args": {
+              "unmappable": "include"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Escape Smart Characters, remove",
+      "input": "[{\"op\": \"Escape Smart Characters\", \"args\": [\"Remove\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "escape-smart-characters",
+            "args": {
+              "unmappable": "remove"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Escape Smart Characters, replace",
+      "input": "[{\"op\": \"Escape Smart Characters\", \"args\": [\"Replace with '.'\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "escape-smart-characters",
+            "args": {
+              "unmappable": "replace"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Wrap at 32",
+      "input": "[{\"op\": \"Wrap\", \"args\": [32]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "wrap",
+            "args": {
+              "width": 32
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Wrap, a fractional width is truncated",
+      "input": "[{\"op\": \"Wrap\", \"args\": [1.1]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "wrap",
+            "args": {
+              "width": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Escape string with an unknown quote",
+      "input": "[{\"op\": \"Escape string\", \"args\": [\"Special chars\", \"Guillemet\"]}]",
+      "error": {
+        "code": "E_ARG_INVALID"
+      }
     }
   ]
 }

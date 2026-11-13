@@ -93,5 +93,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← Alternating caps](alternating-caps.md) · [Contents](../../README.md) · [Get all casings →](get-all-casings.md)
+[← Escape Smart Characters](escape-smart-characters.md) · [Contents](../../README.md) · [Get all casings →](get-all-casings.md)
 <!-- /docs:nav -->

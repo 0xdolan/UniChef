@@ -792,6 +792,87 @@
       ]
     },
     {
+      "id": "escape-smart-characters",
+      "name": "Escape Smart Characters",
+      "category": "Text",
+      "description": "Replace typographic characters (curly quotes, dashes, ellipsis, ©, ®, ™, arrows and some spaces) with plain ASCII. Other non-ASCII characters are kept (`include`), removed (`remove`) or replaced with a dot (`replace`).",
+      "input": "string",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "unmappable",
+          "kind": "enum",
+          "default": "include",
+          "options": [
+            "include",
+            "remove",
+            "replace"
+          ]
+        }
+      ],
+      "examples": [
+        {
+          "input": "“Hi” — ok…",
+          "args": {},
+          "output": "\"Hi\" -- ok..."
+        }
+      ]
+    },
+    {
+      "id": "escape-string",
+      "name": "Escape String",
+      "category": "Encoding",
+      "description": "Escape a string for a JavaScript literal the way jsesc does. `special` escapes all but printable ASCII, `everything` escapes every character and `minimal` only the quote, backslash, control escapes and line or paragraph separators. `json` uses \\u escapes and wraps the result in quotes; `es6` writes characters past U+FFFF as \\u{...}.",
+      "input": "string",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "level",
+          "kind": "enum",
+          "default": "special",
+          "options": [
+            "special",
+            "everything",
+            "minimal"
+          ]
+        },
+        {
+          "name": "quote",
+          "kind": "enum",
+          "default": "single",
+          "options": [
+            "single",
+            "double",
+            "backtick"
+          ]
+        },
+        {
+          "name": "json",
+          "kind": "boolean",
+          "default": false
+        },
+        {
+          "name": "es6",
+          "kind": "boolean",
+          "default": true
+        },
+        {
+          "name": "upper_hex",
+          "kind": "boolean",
+          "default": false
+        }
+      ],
+      "examples": [
+        {
+          "input": "Don't stop\n",
+          "args": {},
+          "output": "Don\\'t stop\\n"
+        }
+      ]
+    },
+    {
       "id": "escape-unicode",
       "name": "Escape Unicode",
       "category": "Unicode",
@@ -1408,6 +1489,40 @@
           "input": "48 c3 a9 6c 6c 6f",
           "args": {},
           "output": "Héllo"
+        }
+      ]
+    },
+    {
+      "id": "from-hex-content",
+      "name": "From Hex Content",
+      "category": "Encoding",
+      "description": "Read Snort content: hex between pipes becomes those bytes and the rest is UTF-8.",
+      "input": "string",
+      "output": "bytes",
+      "parity": "exact",
+      "args": [],
+      "examples": [
+        {
+          "input": "foo|3d|bar",
+          "args": {},
+          "output": "foo=bar"
+        }
+      ]
+    },
+    {
+      "id": "from-hexdump",
+      "name": "From Hexdump",
+      "category": "Encoding",
+      "description": "Read the bytes back from a hexdump in the xxd, hexdump -C, Wireshark or 010 Editor style: on each line, an optional offset and then the hex columns. Check the result.",
+      "input": "string",
+      "output": "bytes",
+      "parity": "exact",
+      "args": [],
+      "examples": [
+        {
+          "input": "00000000  48 69 21                                         |Hi!|",
+          "args": {},
+          "output": "Hi!"
         }
       ]
     },
@@ -3460,6 +3575,29 @@
       ]
     },
     {
+      "id": "to-camel-case",
+      "name": "To Camel case",
+      "category": "Text",
+      "description": "Like To Snake case, but the first word is lower case and every later word is title case, with nothing between them.",
+      "input": "string",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "context_aware",
+          "kind": "boolean",
+          "default": false
+        }
+      ],
+      "examples": [
+        {
+          "input": "parseHTTPResponse v2",
+          "args": {},
+          "output": "parseHttpResponseV2"
+        }
+      ]
+    },
+    {
       "id": "to-charcode",
       "name": "To Charcode",
       "category": "Encoding",
@@ -3603,6 +3741,102 @@
           "input": "Héllo",
           "args": {},
           "output": "48 c3 a9 6c 6c 6f"
+        }
+      ]
+    },
+    {
+      "id": "to-hex-content",
+      "name": "To Hex Content",
+      "category": "Encoding",
+      "description": "Write bytes as Snort content: ASCII letters, digits and spaces stay as they are and every other byte goes between pipes as hex. `special-and-space` also converts spaces, `all` converts everything, and `spaces` puts a space between hex bytes.",
+      "input": "bytes",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "convert",
+          "kind": "enum",
+          "default": "special",
+          "options": [
+            "special",
+            "special-and-space",
+            "all"
+          ]
+        },
+        {
+          "name": "spaces",
+          "kind": "boolean",
+          "default": false
+        }
+      ],
+      "examples": [
+        {
+          "input": "foo=bar",
+          "args": {},
+          "output": "foo|3d|bar"
+        }
+      ]
+    },
+    {
+      "id": "to-hexdump",
+      "name": "To Hexdump",
+      "category": "Encoding",
+      "description": "Write `width` bytes per line: the offset, the bytes in hex and the bytes as Latin-1 text, with controls and the soft hyphen as dots (`ascii_only` keeps only printable ASCII). `final_length` adds a last line with the total length.",
+      "input": "bytes",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "width",
+          "kind": "integer",
+          "default": 16,
+          "minimum": 1,
+          "maximum": 65536
+        },
+        {
+          "name": "upper",
+          "kind": "boolean",
+          "default": false
+        },
+        {
+          "name": "final_length",
+          "kind": "boolean",
+          "default": false
+        },
+        {
+          "name": "ascii_only",
+          "kind": "boolean",
+          "default": false
+        }
+      ],
+      "examples": [
+        {
+          "input": "Hi!",
+          "args": {},
+          "output": "00000000  48 69 21                                         |Hi!|"
+        }
+      ]
+    },
+    {
+      "id": "to-kebab-case",
+      "name": "To Kebab case",
+      "category": "Text",
+      "description": "Like To Snake case, but the words are joined with hyphens.",
+      "input": "string",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "context_aware",
+          "kind": "boolean",
+          "default": false
+        }
+      ],
+      "examples": [
+        {
+          "input": "parseHTTPResponse v2",
+          "args": {},
+          "output": "parse-http-response-v-2"
         }
       ]
     },
@@ -3782,6 +4016,29 @@
       ]
     },
     {
+      "id": "to-snake-case",
+      "name": "To Snake case",
+      "category": "Text",
+      "description": "Split the text into words and join them in lower case with underscores. Words are runs of letters, marks and numbers, split where lower case meets upper case, before the last capital of an acronym and between letters and numbers; apostrophes are dropped. With `context_aware`, only identifiers outside double-quoted strings change.",
+      "input": "string",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "context_aware",
+          "kind": "boolean",
+          "default": false
+        }
+      ],
+      "examples": [
+        {
+          "input": "parseHTTPResponse v2",
+          "args": {},
+          "output": "parse_http_response_v_2"
+        }
+      ]
+    },
+    {
       "id": "trim",
       "name": "Trim",
       "category": "Text",
@@ -3811,6 +4068,23 @@
           "input": "  padded  ",
           "args": {},
           "output": "padded"
+        }
+      ]
+    },
+    {
+      "id": "unescape-string",
+      "name": "Unescape String",
+      "category": "Encoding",
+      "description": "Replace backslash escapes: \\n \\r \\t \\b \\f \\v \\a, quotes and backslash, octal \\nnn, hex \\xnn, \\unnnn (surrogate pairs combine) and \\u{n...}. Other backslashes stay as they are.",
+      "input": "string",
+      "output": "string",
+      "parity": "exact",
+      "args": [],
+      "examples": [
+        {
+          "input": "Don\\'t stop\\n",
+          "args": {},
+          "output": "Don't stop\n"
         }
       ]
     },
@@ -4045,6 +4319,33 @@
             "key": "key"
           },
           "output": "Rijvs, Uyvjn!"
+        }
+      ]
+    },
+    {
+      "id": "wrap",
+      "name": "Wrap",
+      "category": "Text",
+      "description": "Break each line into lines of at most `width` characters. Existing line breaks, blank lines and a CR before a line feed are kept.",
+      "input": "string",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "width",
+          "kind": "integer",
+          "default": 64,
+          "minimum": 1,
+          "maximum": 65536
+        }
+      ],
+      "examples": [
+        {
+          "input": "abcdefg",
+          "args": {
+            "width": 3
+          },
+          "output": "abc\ndef\ng"
         }
       ]
     },

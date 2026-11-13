@@ -129,5 +129,5 @@ Operations explained here: [CSV to JSON](../reference/ops/csv-to-json.md), [JSON
 <!-- docs:nav -->
 ---
 
-[← Unicode security](unicode-security.md) · [Contents](../README.md) · [Operation reference →](../reference/README.md)
+[← Unicode security](unicode-security.md) · [Contents](../README.md) · [Text formats: hexdumps, escapes and identifier cases →](text-formats.md)
 <!-- /docs:nav -->

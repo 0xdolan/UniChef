@@ -62,6 +62,7 @@ GUIDES = [
     "compression",
     "unicode-security",
     "data-and-text",
+    "text-formats",
 ]
 
 # Category order in the reference, and the guide that explains each category.
@@ -113,6 +114,17 @@ GUIDE_FOR_OP = {
     "to-braille": "letter-codes",
     "from-braille": "letter-codes",
     "leet-speak": "letter-codes",
+    "to-snake-case": "text-formats",
+    "to-kebab-case": "text-formats",
+    "to-camel-case": "text-formats",
+    "to-hexdump": "text-formats",
+    "from-hexdump": "text-formats",
+    "to-hex-content": "text-formats",
+    "from-hex-content": "text-formats",
+    "escape-string": "text-formats",
+    "unescape-string": "text-formats",
+    "escape-smart-characters": "text-formats",
+    "wrap": "text-formats",
 }
 
 # Other project documents listed in the table of contents.

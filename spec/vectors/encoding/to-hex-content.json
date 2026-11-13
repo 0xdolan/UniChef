@@ -1,0 +1,137 @@
+{
+  "op": "to-hex-content",
+  "cases": [
+    {
+      "name": "default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "foo=bar"
+      },
+      "expected": {
+        "type": "string",
+        "text": "foo|3d|bar"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "runs of special bytes",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a=&b c\u0000"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a|3d26|b c|00|"
+      }
+    },
+    {
+      "name": "spaces between bytes",
+      "args": {
+        "spaces": true
+      },
+      "input": {
+        "type": "string",
+        "text": "a=&b"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a|3d 26|b"
+      }
+    },
+    {
+      "name": "special and space",
+      "args": {
+        "convert": "special-and-space"
+      },
+      "input": {
+        "type": "string",
+        "text": "a b  c"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a|20|b|2020|c"
+      }
+    },
+    {
+      "name": "all",
+      "args": {
+        "convert": "all"
+      },
+      "input": {
+        "type": "string",
+        "text": "ab="
+      },
+      "expected": {
+        "type": "string",
+        "text": "|61623d|"
+      }
+    },
+    {
+      "name": "all with spaces",
+      "args": {
+        "convert": "all",
+        "spaces": true
+      },
+      "input": {
+        "type": "string",
+        "text": "ab="
+      },
+      "expected": {
+        "type": "string",
+        "text": "|61 62 3d|"
+      }
+    },
+    {
+      "name": "all, empty",
+      "args": {
+        "convert": "all"
+      },
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": "||"
+      }
+    },
+    {
+      "name": "UTF-8 bytes",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "é"
+      },
+      "expected": {
+        "type": "string",
+        "text": "|c3a9|"
+      }
+    },
+    {
+      "name": "error: an unknown convert mode",
+      "args": {
+        "convert": "none"
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

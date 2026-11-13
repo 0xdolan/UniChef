@@ -1,0 +1,111 @@
+{
+  "op": "unescape-string",
+  "cases": [
+    {
+      "name": "default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Don\\'t stop\\n"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Don't stop\n"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "simple escapes",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "\\a\\b\\t\\n\\v\\f\\r\\\"\\'\\\\"
+      },
+      "expected": {
+        "type": "string",
+        "text": "\u0007\b\t\n\u000b\f\r\"'\\"
+      }
+    },
+    {
+      "name": "octal",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "\\101\\7\\08\\400"
+      },
+      "expected": {
+        "type": "string",
+        "text": "A\u0007\u00008 0"
+      }
+    },
+    {
+      "name": "hex and Unicode",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "\\x41\\u00e9\\u{1F600}\\u{41}"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Aé😀A"
+      }
+    },
+    {
+      "name": "surrogate pair",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "\\ud83d\\ude00"
+      },
+      "expected": {
+        "type": "string",
+        "text": "😀"
+      }
+    },
+    {
+      "name": "unknown escapes are kept",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "\\q\\x4\\u12 \\8"
+      },
+      "expected": {
+        "type": "string",
+        "text": "\\q\\x4\\u12 \\8"
+      }
+    },
+    {
+      "name": "error: lone surrogate",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "\\ud800"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: past U+10FFFF",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "\\u{110000}"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    }
+  ]
+}

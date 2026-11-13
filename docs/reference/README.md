@@ -17,6 +17,7 @@ Background: [Base encodings](../learn/base-encodings.md)
 |---|---|
 | [Decode Text](ops/decode-text.md) | Decode bytes from a character encoding. |
 | [Encode Text](ops/encode-text.md) | Encode text in a character encoding. |
+| [Escape String](ops/escape-string.md) | Escape a string for a JavaScript literal the way jsesc does. |
 | [From Base](ops/from-base.md) | Read a number written in a radix from 2 to 36 and write it in decimal. |
 | [From Base32](ops/from-base32.md) | Decode Base32. |
 | [From Base45](ops/from-base45.md) | Decode Base45 (RFC 9285). |
@@ -30,6 +31,8 @@ Background: [Base encodings](../learn/base-encodings.md)
 | [From Charcode](ops/from-charcode.md) | Read code points written in `base` and separated by `delimiter`. |
 | [From Decimal](ops/from-decimal.md) | Read bytes of 1-3 decimal digits (at most 255). |
 | [From Hex](ops/from-hex.md) | Read hex digit pairs. |
+| [From Hex Content](ops/from-hex-content.md) | Read Snort content: hex between pipes becomes those bytes and the rest is UTF-8. |
+| [From Hexdump](ops/from-hexdump.md) | Read the bytes back from a hexdump in the xxd, hexdump -C, Wireshark or 010 Editor style: on each line, an optional offset and then the hex columns. |
 | [From Modhex](ops/from-modhex.md) | Read Modhex digit pairs, in either case, ignoring whitespace. |
 | [From Morse code](ops/from-morse-code.md) | Read International Morse code. |
 | [From Octal](ops/from-octal.md) | Read bytes of 1-3 octal digits (at most 377). |
@@ -54,11 +57,14 @@ Background: [Base encodings](../learn/base-encodings.md)
 | [To Charcode](ops/to-charcode.md) | Write each code point in `base`. |
 | [To Decimal](ops/to-decimal.md) | Write each byte as a decimal number without padding, separated by `delimiter`. |
 | [To Hex](ops/to-hex.md) | Write each byte as two hex digits, separated or prefixed by `delimiter`. |
+| [To Hex Content](ops/to-hex-content.md) | Write bytes as Snort content: ASCII letters, digits and spaces stay as they are and every other byte goes between pipes as hex. |
+| [To Hexdump](ops/to-hexdump.md) | Write `width` bytes per line: the offset, the bytes in hex and the bytes as Latin-1 text, with controls and the soft hyphen as dots (`ascii_only` keeps only printable ASCII). |
 | [To Modhex](ops/to-modhex.md) | Write each byte as two Modhex digits, separated by `delimiter`. |
 | [To Morse code](ops/to-morse-code.md) | Write each character as International Morse code. |
 | [To NATO alphabet](ops/to-nato-alphabet.md) | Replace each ASCII letter, digit, `,`, `/` and `.` with its NATO spelling word and a space. |
 | [To Octal](ops/to-octal.md) | Write each byte as three octal digits, separated by `delimiter`. |
 | [To Punycode](ops/to-punycode.md) | Encode the input with Punycode (RFC 3492). |
+| [Unescape String](ops/unescape-string.md) | Replace backslash escapes: \n \r \t \b \f \v \a, quotes and backslash, octal \nnn, hex \xnn, \unnnn (surrogate pairs combine) and \u{n...}. |
 | [URL Decode](ops/url-decode.md) | Decode %XX escapes; malformed escapes stay as they are. |
 | [URL Encode](ops/url-encode.md) | Percent-encode with upper-case hex over the UTF-8 bytes of the input. |
 
@@ -169,6 +175,7 @@ Background: [Data formats and text processing](../learn/data-and-text.md)
 |---|---|
 | [Add line numbers](ops/add-line-numbers.md) | Put the line number and a space before each line, counting from `offset` + 1. |
 | [Alternating caps](ops/alternating-caps.md) | Lower-case the first letter, upper-case the next, and so on. |
+| [Escape Smart Characters](ops/escape-smart-characters.md) | Replace typographic characters (curly quotes, dashes, ellipsis, ©, ®, ™, arrows and some spaces) with plain ASCII. |
 | [Find / replace](ops/find-replace.md) | Replace matches of `pattern` with `replacement`. |
 | [Get all casings](ops/get-all-casings.md) | Every combination of upper and lower case, one per line. |
 | [Head](ops/head.md) | The first `count` lines (keeping a final LF), graphemes or code points. |
@@ -185,8 +192,12 @@ Background: [Data formats and text processing](../learn/data-and-text.md)
 | [Strip HTML tags](ops/strip-html-tags.md) | Remove everything from `<` to the next `>`, repeating until none is left. |
 | [Swap case](ops/swap-case.md) | Upper-case every character that changes when upper-cased, and lower-case the rest, one code point at a time with full case mappings (`ß` becomes `SS`). |
 | [Tail](ops/tail.md) | The last `count` lines (keeping a final LF), graphemes or code points. |
+| [To Camel case](ops/to-camel-case.md) | Like To Snake case, but the first word is lower case and every later word is title case, with nothing between them. |
+| [To Kebab case](ops/to-kebab-case.md) | Like To Snake case, but the words are joined with hyphens. |
+| [To Snake case](ops/to-snake-case.md) | Split the text into words and join them in lower case with underscores. |
 | [Trim](ops/trim.md) | Remove White_Space characters from the start, end or both ends of the text, or of every line with `lines` (a final LF is kept). |
 | [Unique lines](ops/unique-lines.md) | Keep the first of each set of equal lines, in input order. |
+| [Wrap](ops/wrap.md) | Break each line into lines of at most `width` characters. |
 
 ## Flow
 
@@ -206,5 +217,5 @@ Background: [How UniChef works](../learn/how-unichef-works.md)
 <!-- docs:nav -->
 ---
 
-[← Data formats and text processing](../learn/data-and-text.md) · [Contents](../README.md) · [Decode Text →](ops/decode-text.md)
+[← Text formats: hexdumps, escapes and identifier cases](../learn/text-formats.md) · [Contents](../README.md) · [Decode Text →](ops/decode-text.md)
 <!-- /docs:nav -->
