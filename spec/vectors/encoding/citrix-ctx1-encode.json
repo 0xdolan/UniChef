@@ -1,0 +1,114 @@
+{
+  "op": "citrix-ctx1-encode",
+  "cases": [
+    {
+      "name": "default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "pass"
+      },
+      "expected": {
+        "type": "string",
+        "text": "NFHALEBBMHGCLEBB"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "one character",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "type": "string",
+        "text": "MEGB"
+      }
+    },
+    {
+      "name": "CyberChef: Password1",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Password1"
+      },
+      "expected": {
+        "type": "string",
+        "text": "PFFAJEDBOHECJEDBODEGIMCJPOFLJKDPKLAO"
+      }
+    },
+    {
+      "name": "non-ASCII",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "é"
+      },
+      "expected": {
+        "type": "string",
+        "text": "EMOJ"
+      }
+    },
+    {
+      "name": "astral character as a surrogate pair",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "😀"
+      },
+      "expected": {
+        "type": "string",
+        "text": "JIOFEADL"
+      }
+    },
+    {
+      "name": "space and punctuation",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a b!"
+      },
+      "expected": {
+        "type": "string",
+        "text": "MEGBOEEBIGCDKHAC"
+      }
+    },
+    {
+      "name": "longer password",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "correct horse battery staple"
+      },
+      "expected": {
+        "type": "string",
+        "text": "MGGDKJAMNLHOKJAMMMGJKPAKNLHOPLFOJDDGPMFJIOCLPNFIJIDNLIBNNKHPLLBOMPGKLLBONOHLKMAJNFHAPFFAIGCDPCFHJDDGODEGIPCKOKEP"
+      }
+    },
+    {
+      "name": "error: an unknown argument",
+      "args": {
+        "bogus": 1
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

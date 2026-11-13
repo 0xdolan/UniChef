@@ -81,5 +81,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← CSV to JSON](csv-to-json.md) · [Contents](../../README.md) · [JSON Beautify →](json-beautify.md)
+[← From Rison](from-rison.md) · [Contents](../../README.md) · [JSON Beautify →](json-beautify.md)
 <!-- /docs:nav -->

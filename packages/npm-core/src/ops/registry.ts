@@ -9,6 +9,7 @@ import { RADIX_OPS } from './radix.js';
 import { TEXT_TOOL_OPS } from './text-tools.js';
 import { TEXT_CODE_OPS } from './text-codes.js';
 import { NUMBER_FORMAT_OPS } from './number-formats.js';
+import { MISC_CODEC_OPS } from './misc-codecs.js';
 import { SET_OPS } from './sets.js';
 import { TEXT_FORMAT_OPS } from './text-format.js';
 import { COMPRESSION_OPS } from './compression.js';
@@ -36,6 +37,7 @@ const MODULES: readonly (readonly Operation[])[] = [
   TEXT_FORMAT_OPS,
   NUMBER_FORMAT_OPS,
   SET_OPS,
+  MISC_CODEC_OPS,
   HTML_OPS,
   HASHING_OPS,
   CRYPTO_OPS,

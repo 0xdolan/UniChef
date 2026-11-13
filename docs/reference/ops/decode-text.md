@@ -84,5 +84,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← Operation reference](../README.md) · [Contents](../../README.md) · [Encode Text →](encode-text.md)
+[← Decode NetBIOS Name](decode-netbios-name.md) · [Contents](../../README.md) · [Encode NetBIOS Name →](encode-netbios-name.md)
 <!-- /docs:nav -->

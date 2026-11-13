@@ -65,6 +65,7 @@ GUIDES = [
     "text-formats",
     "number-formats",
     "sets-and-distances",
+    "small-codecs",
 ]
 
 # Category order in the reference, and the guide that explains each category.
@@ -144,6 +145,14 @@ GUIDE_FOR_OP = {
     "power-set": "sets-and-distances",
     "hamming-distance": "sets-and-distances",
     "levenshtein-distance": "sets-and-distances",
+    "caret-m-decode": "small-codecs",
+    "to-rison": "small-codecs",
+    "from-rison": "small-codecs",
+    "encode-netbios-name": "small-codecs",
+    "decode-netbios-name": "small-codecs",
+    "citrix-ctx1-encode": "small-codecs",
+    "citrix-ctx1-decode": "small-codecs",
+    "unicode-text-format": "small-codecs",
 }
 
 # Other project documents listed in the table of contents.

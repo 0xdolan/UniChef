@@ -75,5 +75,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← Trim](trim.md) · [Contents](../../README.md) · [Wrap →](wrap.md)
+[← Unicode Text Format](unicode-text-format.md) · [Contents](../../README.md) · [Wrap →](wrap.md)
 <!-- /docs:nav -->

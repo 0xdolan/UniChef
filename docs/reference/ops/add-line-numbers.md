@@ -81,5 +81,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← Symmetric Difference](symmetric-difference.md) · [Contents](../../README.md) · [Alternating caps →](alternating-caps.md)
+[← To Rison](to-rison.md) · [Contents](../../README.md) · [Alternating caps →](alternating-caps.md)
 <!-- /docs:nav -->

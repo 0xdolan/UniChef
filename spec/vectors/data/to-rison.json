@@ -1,0 +1,182 @@
+{
+  "op": "to-rison",
+  "cases": [
+    {
+      "name": "default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "{\"b\":[1,true],\"a\":\"x y\"}"
+      },
+      "expected": {
+        "type": "string",
+        "text": "(a:'x y',b:!(1,!t))"
+      }
+    },
+    {
+      "name": "literals",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "[true,false,null]"
+      },
+      "expected": {
+        "type": "string",
+        "text": "!(!t,!f,!n)"
+      }
+    },
+    {
+      "name": "empty object, array and string",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "{\"\":[],\"x\":{},\"y\":\"\"}"
+      },
+      "expected": {
+        "type": "string",
+        "text": "('':!(),x:(),y:'')"
+      }
+    },
+    {
+      "name": "ids are bare, other strings quoted",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "[\"abc\",\"a-b.c/d~_\",\"-a\",\"1\",\"a b\",\"it's!\",\"@x\",\"日本\"]"
+      },
+      "expected": {
+        "type": "string",
+        "text": "!(abc,a-b.c/d~_,'-a','1','a b','it!'s!!','@x',日本)"
+      }
+    },
+    {
+      "name": "numbers",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "[0,-1,1.5,1e21,1e-7,12345678901234567890,-0]"
+      },
+      "expected": {
+        "type": "string",
+        "text": "!(0,-1,1.5,1e21,1e-7,12345678901234567890,0)"
+      }
+    },
+    {
+      "name": "keys sorted in UTF-16 order",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "{\"b\":1,\"a\":2,\"\\uff01\":3,\"\\ud83d\\ude00\":4,\"A\":5}"
+      },
+      "expected": {
+        "type": "string",
+        "text": "(A:5,a:2,b:1,😀:4,！:3)"
+      }
+    },
+    {
+      "name": "bare scalar",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "\"hello\""
+      },
+      "expected": {
+        "type": "string",
+        "text": "hello"
+      }
+    },
+    {
+      "name": "object mode drops the brackets",
+      "args": {
+        "mode": "object"
+      },
+      "input": {
+        "type": "string",
+        "text": "{\"a\":1,\"b\":\"c d\"}"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a:1,b:'c d'"
+      }
+    },
+    {
+      "name": "array mode drops the brackets",
+      "args": {
+        "mode": "array"
+      },
+      "input": {
+        "type": "string",
+        "text": "[1,\"x\",[2]]"
+      },
+      "expected": {
+        "type": "string",
+        "text": "1,x,!(2)"
+      }
+    },
+    {
+      "name": "uri mode escapes for a URL",
+      "args": {
+        "mode": "uri"
+      },
+      "input": {
+        "type": "string",
+        "text": "{\"q\":\"a b&c=d/e:f@g$h,i\",\"u\":\"é\"}"
+      },
+      "expected": {
+        "type": "string",
+        "text": "(q:'a+b%26c%3Dd/e:f@g$h,i',u:%C3%A9)"
+      }
+    },
+    {
+      "name": "uri mode: a lone surrogate becomes U+FFFD",
+      "args": {
+        "mode": "uri"
+      },
+      "input": {
+        "type": "string",
+        "text": "\"\\ud800\""
+      },
+      "expected": {
+        "type": "string",
+        "text": "%EF%BF%BD"
+      }
+    },
+    {
+      "name": "error: object mode needs an object",
+      "args": {
+        "mode": "object"
+      },
+      "input": {
+        "type": "string",
+        "text": "[1]"
+      },
+      "expected": {
+        "error": "E_INPUT_TYPE"
+      }
+    },
+    {
+      "name": "error: array mode needs an array",
+      "args": {
+        "mode": "array"
+      },
+      "input": {
+        "type": "string",
+        "text": "{\"a\":1}"
+      },
+      "expected": {
+        "error": "E_INPUT_TYPE"
+      }
+    },
+    {
+      "name": "error: input is not JSON",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "{a:1}"
+      },
+      "expected": {
+        "error": "E_INPUT_TYPE"
+      }
+    }
+  ]
+}

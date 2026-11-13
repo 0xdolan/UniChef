@@ -497,6 +497,23 @@
       ]
     },
     {
+      "id": "caret-m-decode",
+      "name": "Caret/M-decode",
+      "category": "Encoding",
+      "description": "Turn the caret and M- notation of `cat -v` back into bytes: `^@` to `^_` are 0x00 to 0x1F, `^?` is 0x7F, and `M-` adds 0x80 to the character or caret code after it. Other text is kept as UTF-8.",
+      "input": "string",
+      "output": "bytes",
+      "parity": "exact",
+      "args": [],
+      "examples": [
+        {
+          "input": "M-bM-^@M-^] ^I!",
+          "args": {},
+          "output": "” \t!"
+        }
+      ]
+    },
+    {
       "id": "cartesian-product",
       "name": "Cartesian Product",
       "category": "Data",
@@ -521,6 +538,40 @@
           "input": "1,2\n\na,b",
           "args": {},
           "output": "(1,a),(1,b),(2,a),(2,b)"
+        }
+      ]
+    },
+    {
+      "id": "citrix-ctx1-decode",
+      "name": "Citrix CTX1 Decode",
+      "category": "Encoding",
+      "description": "Reverse Citrix CTX1: read pairs of letters from `A` to `P` as bytes, XOR each with 0xA5 and the byte before it, and read the result as UTF-16LE. ASCII whitespace around the input is ignored.",
+      "input": "string",
+      "output": "string",
+      "parity": "exact",
+      "args": [],
+      "examples": [
+        {
+          "input": "NFHALEBBMHGCLEBB",
+          "args": {},
+          "output": "pass"
+        }
+      ]
+    },
+    {
+      "id": "citrix-ctx1-encode",
+      "name": "Citrix CTX1 Encode",
+      "category": "Encoding",
+      "description": "Obscure a password the way Citrix CTX1 does: take its UTF-16LE bytes, XOR each with 0xA5 and the previous result, and write each result as two letters from `A` to `P`. This is not encryption.",
+      "input": "string",
+      "output": "string",
+      "parity": "exact",
+      "args": [],
+      "examples": [
+        {
+          "input": "pass",
+          "args": {},
+          "output": "NFHALEBBMHGCLEBB"
         }
       ]
     },
@@ -687,6 +738,31 @@
       ]
     },
     {
+      "id": "decode-netbios-name",
+      "name": "Decode NetBIOS Name",
+      "category": "Encoding",
+      "description": "Read pairs of bytes, each `offset` plus a nibble, as one byte each, and remove the trailing spaces. The input may be at most 32 bytes, in pairs.",
+      "input": "bytes",
+      "output": "bytes",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "offset",
+          "kind": "integer",
+          "default": 65,
+          "minimum": 0,
+          "maximum": 240
+        }
+      ],
+      "examples": [
+        {
+          "input": "FFEOEJEDEIEFEGCACACACACACACACACA",
+          "args": {},
+          "output": "UNICHEF"
+        }
+      ]
+    },
+    {
       "id": "decode-text",
       "name": "Decode Text",
       "category": "Encoding",
@@ -765,6 +841,31 @@
           "input": "a​b⁠c",
           "args": {},
           "output": "index\tcp\tname\tkind\tline\tcolumn\n1\tU+200B\tZERO WIDTH SPACE\tzero-width\t1\t2\n3\tU+2060\tWORD JOINER\tzero-width\t1\t4"
+        }
+      ]
+    },
+    {
+      "id": "encode-netbios-name",
+      "name": "Encode NetBIOS Name",
+      "category": "Encoding",
+      "description": "Pad the name with spaces to 16 bytes and write each byte as two, its high and low nibble each added to `offset` (65, `A`, by RFC 1001). The name may be at most 16 bytes.",
+      "input": "bytes",
+      "output": "bytes",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "offset",
+          "kind": "integer",
+          "default": 65,
+          "minimum": 0,
+          "maximum": 240
+        }
+      ],
+      "examples": [
+        {
+          "input": "UNICHEF",
+          "args": {},
+          "output": "FFEOEJEDEIEFEGCACACACACACACACACA"
         }
       ]
     },
@@ -1834,6 +1935,34 @@
             "domain": true
           },
           "output": "bücher.example"
+        }
+      ]
+    },
+    {
+      "id": "from-rison",
+      "name": "From Rison",
+      "category": "Data",
+      "description": "Read Rison and write it as JSON. `object` and `array` read O-Rison and A-Rison, where the outer brackets are left out. Whitespace is not allowed between tokens.",
+      "input": "string",
+      "output": "json",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "mode",
+          "kind": "enum",
+          "default": "value",
+          "options": [
+            "value",
+            "object",
+            "array"
+          ]
+        }
+      ],
+      "examples": [
+        {
+          "input": "(a:'x y',b:!(1,!t))",
+          "args": {},
+          "output": "{\"a\":\"x y\",\"b\":[1,true]}"
         }
       ]
     },
@@ -4628,6 +4757,35 @@
       ]
     },
     {
+      "id": "to-rison",
+      "name": "To Rison",
+      "category": "Data",
+      "description": "Write a JSON value as Rison, a compact form for URLs: objects as `(key:value)` with keys sorted, arrays as `!(...)`, `!t`, `!f` and `!n` for true, false and null, and strings quoted with `'` only when needed. `object` and `array` drop the outer brackets (O-Rison and A-Rison), and `uri` also escapes the result for a URL.",
+      "input": "json",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "mode",
+          "kind": "enum",
+          "default": "value",
+          "options": [
+            "value",
+            "object",
+            "array",
+            "uri"
+          ]
+        }
+      ],
+      "examples": [
+        {
+          "input": "{\"b\":[1,true],\"a\":\"x y\"}",
+          "args": {},
+          "output": "(a:'x y',b:!(1,!t))"
+        }
+      ]
+    },
+    {
       "id": "to-snake-case",
       "name": "To Snake case",
       "category": "Text",
@@ -4785,6 +4943,36 @@
             "locale": "tr"
           },
           "output": "istanbul"
+        }
+      ]
+    },
+    {
+      "id": "unicode-text-format",
+      "name": "Unicode Text Format",
+      "category": "Text",
+      "description": "Draw a line through or under text by adding a combining mark after every character except line breaks: U+0336 for `strikethrough`, then U+0332 for `underline`.",
+      "input": "string",
+      "output": "string",
+      "parity": "exact",
+      "args": [
+        {
+          "name": "underline",
+          "kind": "boolean",
+          "default": false
+        },
+        {
+          "name": "strikethrough",
+          "kind": "boolean",
+          "default": false
+        }
+      ],
+      "examples": [
+        {
+          "input": "abc",
+          "args": {
+            "underline": true
+          },
+          "output": "a̲b̲c̲"
         }
       ]
     },

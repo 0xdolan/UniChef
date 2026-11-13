@@ -3,7 +3,7 @@
 > Generated from `src/core/config/Categories.json` at CyberChef commit `d4d96c6c3d2597fef836d81bfc04617d97c681a5` (v11.5.0, 2026-11-04).
 > Mapping targets are the op ids in [UniChef-PRD.md §3.8](../../UniChef-PRD.md). Seed `spec/cyberchef-map.json` from this table.
 
-**Totals:** 506 unique operations (some appear in several categories); 140 have a UniChef equivalent (79 in 1.0); 366 are not yet covered.
+**Totals:** 506 unique operations (some appear in several categories); 148 have a UniChef equivalent (79 in 1.0); 358 are not yet covered.
 
 Rules for the importer:
 
@@ -87,9 +87,9 @@ Rules for the importer:
 | CBOR Decode | not planned | — |
 | YAML to JSON | not planned | — |
 | JSON to YAML | not planned | — |
-| Caret/M-decode | not planned | — |
-| Rison Encode | not planned | — |
-| Rison Decode | not planned | — |
+| Caret/M-decode | `caret-m-decode` | 1.1 |
+| Rison Encode | `to-rison` | 1.1 |
+| Rison Decode | `from-rison` | 1.1 |
 | To Modhex | `to-modhex` | 1.1 |
 | From Modhex | `from-modhex` | 1.1 |
 | MIME Decoding | not planned | — |
@@ -179,8 +179,8 @@ Rules for the importer:
 | JWT Sign | `jwt-sign` | Beta |
 | JWT Verify | `jwt-verify` (not importable: CyberChef accepts whatever algorithm the token names, UniChef requires a fixed one) | Beta |
 | JWT Decode | `jwt-decode` | Beta |
-| Citrix CTX1 Encode | not planned | — |
-| Citrix CTX1 Decode | not planned | — |
+| Citrix CTX1 Encode | `citrix-ctx1-encode` | 1.1 |
+| Citrix CTX1 Decode | `citrix-ctx1-decode` | 1.1 |
 | AES Key Wrap | not planned | — |
 | AES Key Unwrap | not planned | — |
 | Pseudo-Random Number Generator | `generate-random-bytes` | Beta |
@@ -307,8 +307,8 @@ Rules for the importer:
 | Format MAC addresses | not planned | — |
 | Change IP format | not planned | — |
 | Group IP addresses | not planned | — |
-| Encode NetBIOS Name | not planned | — |
-| Decode NetBIOS Name | not planned | — |
+| Encode NetBIOS Name | `encode-netbios-name` | 1.1 |
+| Decode NetBIOS Name | `decode-netbios-name` | 1.1 |
 | Defang URL | not planned | — |
 | Fang URL | not planned | — |
 | Defang IP Addresses | not planned | — |
@@ -319,7 +319,7 @@ Rules for the importer:
 |---|---|---|
 | Encode text | `encode-text` | Alpha |
 | Decode text | `decode-text` | Alpha |
-| Unicode Text Format | not planned | — |
+| Unicode Text Format | `unicode-text-format` | 1.1 |
 | Remove Diacritics | `strip-diacritics` | Alpha |
 | Unescape Unicode Characters | `unescape-unicode` | Alpha |
 | Convert to NATO alphabet | `to-nato-alphabet` | 1.1 |

@@ -1,0 +1,305 @@
+{
+  "op": "from-rison",
+  "cases": [
+    {
+      "name": "default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "(a:'x y',b:!(1,!t))"
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "a": "x y",
+          "b": [
+            1,
+            true
+          ]
+        }
+      }
+    },
+    {
+      "name": "literals",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "!(!t,!f,!n)"
+      },
+      "expected": {
+        "type": "json",
+        "value": [
+          true,
+          false,
+          null
+        ]
+      }
+    },
+    {
+      "name": "empty structures and strings",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "('':!(),x:(),y:'')"
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "": [],
+          "x": {},
+          "y": ""
+        }
+      }
+    },
+    {
+      "name": "ids and quoted strings with escapes",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "!(abc,a-b.c/d~_,'-a','it!'s!!','@x',日本)"
+      },
+      "expected": {
+        "type": "json",
+        "value": [
+          "abc",
+          "a-b.c/d~_",
+          "-a",
+          "it's!",
+          "@x",
+          "日本"
+        ]
+      }
+    },
+    {
+      "name": "numbers",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "!(0,-1,1.5,1e21,1E-7,2.5e3,12345678901234567890,007)"
+      },
+      "expected": {
+        "type": "json",
+        "value": [
+          0,
+          -1,
+          1.5,
+          1e+21,
+          1e-07,
+          2500.0,
+          12345678901234567890,
+          7
+        ]
+      }
+    },
+    {
+      "name": "duplicate key: the last wins",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "(a:1,b:2,a:3)"
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "b": 2,
+          "a": 3
+        }
+      },
+      "warnings": [
+        "W_DUPLICATE_KEY"
+      ]
+    },
+    {
+      "name": "object mode",
+      "args": {
+        "mode": "object"
+      },
+      "input": {
+        "type": "string",
+        "text": "a:1,b:'c d'"
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "a": 1,
+          "b": "c d"
+        }
+      }
+    },
+    {
+      "name": "array mode",
+      "args": {
+        "mode": "array"
+      },
+      "input": {
+        "type": "string",
+        "text": "1,x,!(2)"
+      },
+      "expected": {
+        "type": "json",
+        "value": [
+          1,
+          "x",
+          [
+            2
+          ]
+        ]
+      }
+    },
+    {
+      "name": "empty object mode",
+      "args": {
+        "mode": "object"
+      },
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "json",
+        "value": {}
+      }
+    },
+    {
+      "name": "round trip of nested values",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "(a:(b:!((c:!n))))"
+      },
+      "expected": {
+        "type": "json",
+        "value": {
+          "a": {
+            "b": [
+              {
+                "c": null
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "error: empty input",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: whitespace between tokens",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "(a: 1)"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: unknown literal",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "!x"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: bad string escape",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "'a!b'"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: unclosed string",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "'abc"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: missing comma",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "!(1 2)"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: trailing comma",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "!(1,)"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: number key",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "(1:a)"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: invalid number",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "1-2"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: text after the value",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "a)"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: number too large",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "1e999"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    }
+  ]
+}

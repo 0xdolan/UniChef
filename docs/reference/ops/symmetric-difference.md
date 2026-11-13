@@ -80,5 +80,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← Set Union](set-union.md) · [Contents](../../README.md) · [Add line numbers →](add-line-numbers.md)
+[← Set Union](set-union.md) · [Contents](../../README.md) · [To Rison →](to-rison.md)
 <!-- /docs:nav -->
