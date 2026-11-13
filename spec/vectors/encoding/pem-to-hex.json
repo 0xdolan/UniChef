@@ -1,0 +1,170 @@
+{
+  "op": "pem-to-hex",
+  "cases": [
+    {
+      "name": "default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "-----BEGIN DATA-----\nSGk=\n-----END DATA-----"
+      },
+      "expected": {
+        "type": "string",
+        "text": "4869"
+      }
+    },
+    {
+      "name": "CyberChef: empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "CyberChef: two blocks",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "-----BEGIN FOO-----\nRk9P\n-----END FOO-----\n\n-----BEGIN BAR-----\nQkFS\n-----END BAR-----\n"
+      },
+      "expected": {
+        "type": "string",
+        "text": "464f4f\n424152"
+      }
+    },
+    {
+      "name": "CyberChef: on one line",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "-----BEGIN FOO-----Rk9P-----END FOO-----"
+      },
+      "expected": {
+        "type": "string",
+        "text": "464f4f"
+      }
+    },
+    {
+      "name": "no PEM block gives nothing",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "SGk="
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "CRLF, 64-character lines and text around",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Subject: x\r\n-----BEGIN CERTIFICATE-----\r\nQUJDQUJDQUJDQUJDQUJDQUJDQUJDQUJDQUJDQUJDQUJDQUJDQUJDQUJDQUJDQUJD\r\nREVG\r\n-----END CERTIFICATE-----\r\ntrailer"
+      },
+      "expected": {
+        "type": "string",
+        "text": "414243414243414243414243414243414243414243414243414243414243414243414243414243414243414243414243444546"
+      }
+    },
+    {
+      "name": "characters outside the alphabet are skipped",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "-----BEGIN A B-----\nS G*k=\n\n-----END A B-----"
+      },
+      "expected": {
+        "type": "string",
+        "text": "4869"
+      }
+    },
+    {
+      "name": "unpadded body",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "-----BEGIN XYZ-----SGk-----END XYZ-----"
+      },
+      "expected": {
+        "type": "string",
+        "text": "4869"
+      }
+    },
+    {
+      "name": "empty body",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "-----BEGIN XYZ----------END XYZ-----"
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "a lower-case label is not a PEM header",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "-----BEGIN data-----\nSGk=\n-----END data-----"
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "CyberChef error: no footer",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "-----BEGIN RSA PRIVATE KEY-----\nMIIBOgIBAAJBAPv"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: footer with another label",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "-----BEGIN FOO-----\nRk9P\n-----END BAR-----"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "a two-letter label is not a PEM header",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "-----BEGIN XY-----\nSGk=\n-----END XY-----"
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "error: one Base64 character too many",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "-----BEGIN XYZ-----\nSGkgQ\n-----END XYZ-----"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    }
+  ]
+}

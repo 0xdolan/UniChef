@@ -1,0 +1,246 @@
+{
+  "op": "to-bcd",
+  "cases": [
+    {
+      "name": "default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "1234"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0001 0010 0011 0100"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "CyberChef: zero",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "0"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0000"
+      }
+    },
+    {
+      "name": "CyberChef: unpacked nibbles",
+      "args": {
+        "packed": false
+      },
+      "input": {
+        "type": "string",
+        "text": "1234567890"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0000 0001 0000 0010 0000 0011 0000 0100 0000 0101 0000 0110 0000 0111 0000 1000 0000 1001 0000 0000"
+      }
+    },
+    {
+      "name": "CyberChef: packed, signed bytes",
+      "args": {
+        "signed": true,
+        "format": "bytes"
+      },
+      "input": {
+        "type": "string",
+        "text": "1234567890"
+      },
+      "expected": {
+        "type": "string",
+        "text": "00000001 00100011 01000101 01100111 10001001 00001100"
+      }
+    },
+    {
+      "name": "CyberChef: 84-2-1 signed nibbles",
+      "args": {
+        "scheme": "84-2-1",
+        "signed": true
+      },
+      "input": {
+        "type": "string",
+        "text": "-1234567890"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0000 0111 0110 0101 0100 1011 1010 1001 1000 1111 0000 1101"
+      }
+    },
+    {
+      "name": "odd digit count, packed bytes",
+      "args": {
+        "format": "bytes"
+      },
+      "input": {
+        "type": "string",
+        "text": "123"
+      },
+      "expected": {
+        "type": "string",
+        "text": "00010010 00110000"
+      }
+    },
+    {
+      "name": "raw",
+      "args": {
+        "format": "raw"
+      },
+      "input": {
+        "type": "string",
+        "text": "4142"
+      },
+      "expected": {
+        "type": "string",
+        "text": "AB"
+      }
+    },
+    {
+      "name": "excess-3, leading zeros and a plus sign",
+      "args": {
+        "scheme": "excess-3"
+      },
+      "input": {
+        "type": "string",
+        "text": " +0012 "
+      },
+      "expected": {
+        "type": "string",
+        "text": "0100 0101"
+      }
+    },
+    {
+      "name": "negative zero is plus zero",
+      "args": {
+        "signed": true
+      },
+      "input": {
+        "type": "string",
+        "text": "-0"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0000 1100"
+      }
+    },
+    {
+      "name": "every scheme digit: 7421",
+      "args": {
+        "scheme": "7421"
+      },
+      "input": {
+        "type": "string",
+        "text": "1234567890"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0001 0010 0011 0100 0101 0110 1000 1001 1010 0000"
+      }
+    },
+    {
+      "name": "every scheme digit: 4221",
+      "args": {
+        "scheme": "4221"
+      },
+      "input": {
+        "type": "string",
+        "text": "1234567890"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0001 0100 0101 1000 1001 1100 1101 1110 1111 0000"
+      }
+    },
+    {
+      "name": "every scheme digit: 2421",
+      "args": {
+        "scheme": "2421"
+      },
+      "input": {
+        "type": "string",
+        "text": "1234567890"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0001 0010 0011 0100 1011 1100 1101 1110 1111 0000"
+      }
+    },
+    {
+      "name": "every scheme digit: ibm-8421",
+      "args": {
+        "scheme": "ibm-8421"
+      },
+      "input": {
+        "type": "string",
+        "text": "1234567890"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0001 0010 0011 0100 0101 0110 0111 1000 1001 1010"
+      }
+    },
+    {
+      "name": "unpacked signed raw",
+      "args": {
+        "packed": false,
+        "signed": true,
+        "format": "raw"
+      },
+      "input": {
+        "type": "string",
+        "text": "-12"
+      },
+      "expected": {
+        "type": "string",
+        "text": "\u0001\u0002\r"
+      }
+    },
+    {
+      "name": "error: not an integer",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "12.5"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: non-ASCII digits",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "١٢"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: sign only",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "-"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    }
+  ]
+}

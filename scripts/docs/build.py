@@ -63,6 +63,7 @@ GUIDES = [
     "unicode-security",
     "data-and-text",
     "text-formats",
+    "number-formats",
 ]
 
 # Category order in the reference, and the guide that explains each category.
@@ -125,6 +126,15 @@ GUIDE_FOR_OP = {
     "unescape-string": "text-formats",
     "escape-smart-characters": "text-formats",
     "wrap": "text-formats",
+    "to-float": "number-formats",
+    "from-float": "number-formats",
+    "to-bech32": "number-formats",
+    "from-bech32": "number-formats",
+    "to-bcd": "number-formats",
+    "from-bcd": "number-formats",
+    "text-integer": "number-formats",
+    "pem-to-hex": "number-formats",
+    "hex-to-pem": "number-formats",
 }
 
 # Other project documents listed in the table of contents.

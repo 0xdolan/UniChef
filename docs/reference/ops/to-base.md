@@ -79,5 +79,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← Swap Endianness](swap-endianness.md) · [Contents](../../README.md) · [To Base32 →](to-base32.md)
+[← Text-Integer Conversion](text-integer.md) · [Contents](../../README.md) · [To Base32 →](to-base32.md)
 <!-- /docs:nav -->

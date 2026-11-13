@@ -1,0 +1,197 @@
+{
+  "op": "from-float",
+  "cases": [
+    {
+      "name": "default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "12.141422271728516"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "41424344"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": ""
+      }
+    },
+    {
+      "name": "CyberChef: two floats",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "0.5 0.5"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "3f0000003f000000"
+      }
+    },
+    {
+      "name": "CyberChef: little-endian floats",
+      "args": {
+        "endianness": "little"
+      },
+      "input": {
+        "type": "string",
+        "text": "0.5 0.5"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "0000003f0000003f"
+      }
+    },
+    {
+      "name": "CyberChef: doubles",
+      "args": {
+        "size": "double"
+      },
+      "input": {
+        "type": "string",
+        "text": "0.5 0.5"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "3fe00000000000003fe0000000000000"
+      }
+    },
+    {
+      "name": "CyberChef: little-endian doubles",
+      "args": {
+        "endianness": "little",
+        "size": "double"
+      },
+      "input": {
+        "type": "string",
+        "text": "0.5 0.5"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "000000000000e03f000000000000e03f"
+      }
+    },
+    {
+      "name": "signs, exponents and bare points",
+      "args": {
+        "delimiter": "comma"
+      },
+      "input": {
+        "type": "string",
+        "text": "+1,-0, 1e3 ,.5,5.,-2.5E-3,1e-46"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "3f80000080000000447a00003f00000040a00000bb23d70a00000000"
+      }
+    },
+    {
+      "name": "infinities and NaN",
+      "args": {
+        "size": "double",
+        "delimiter": "newline"
+      },
+      "input": {
+        "type": "string",
+        "text": "Infinity\n-Infinity\n+Infinity\nNaN"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "7ff0000000000000fff00000000000007ff00000000000007ff8000000000000"
+      }
+    },
+    {
+      "name": "NaN, little-endian float",
+      "args": {
+        "endianness": "little"
+      },
+      "input": {
+        "type": "string",
+        "text": "NaN"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "0000c07f"
+      }
+    },
+    {
+      "name": "overflow rounds to infinity",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "1e39 -3.5e38 3.4028235e38 3.4028236e38"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "7f800000ff8000007f7fffff7f800000"
+      }
+    },
+    {
+      "name": "double rounding and overflow",
+      "args": {
+        "size": "double"
+      },
+      "input": {
+        "type": "string",
+        "text": "0.1 1e309 4.9e-324 2e-324 9007199254740993"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "3fb999999999999a7ff0000000000000000000000000000100000000000000004340000000000000"
+      }
+    },
+    {
+      "name": "error: not a number",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "0.5 abc"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: hex is not accepted",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "0x10"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: two delimiters in a row",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "1  2"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: lower-case infinity",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "infinity"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    }
+  ]
+}

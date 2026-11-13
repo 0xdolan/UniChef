@@ -85,5 +85,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← From Decimal](from-decimal.md) · [Contents](../../README.md) · [From Hex Content →](from-hex-content.md)
+[← From Float](from-float.md) · [Contents](../../README.md) · [From Hex Content →](from-hex-content.md)
 <!-- /docs:nav -->

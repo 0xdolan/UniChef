@@ -77,5 +77,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← IDNA To Unicode](idna-to-unicode.md) · [Contents](../../README.md) · [Quoted-Printable Encode →](quoted-printable-encode.md)
+[← PEM to Hex](pem-to-hex.md) · [Contents](../../README.md) · [Quoted-Printable Encode →](quoted-printable-encode.md)
 <!-- /docs:nav -->

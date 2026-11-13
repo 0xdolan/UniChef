@@ -1,0 +1,146 @@
+{
+  "op": "hex-to-pem",
+  "cases": [
+    {
+      "name": "default header",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "4869"
+      },
+      "expected": {
+        "type": "string",
+        "text": "-----BEGIN CERTIFICATE-----\r\nSGk=\r\n-----END CERTIFICATE-----\r\n"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": "-----BEGIN CERTIFICATE-----\r\n\r\n-----END CERTIFICATE-----\r\n"
+      }
+    },
+    {
+      "name": "header",
+      "args": {
+        "header": "DATA"
+      },
+      "input": {
+        "type": "string",
+        "text": "4869"
+      },
+      "expected": {
+        "type": "string",
+        "text": "-----BEGIN DATA-----\r\nSGk=\r\n-----END DATA-----\r\n"
+      }
+    },
+    {
+      "name": "48 bytes fill one line",
+      "args": {
+        "header": "X"
+      },
+      "input": {
+        "type": "string",
+        "text": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "expected": {
+        "type": "string",
+        "text": "-----BEGIN X-----\r\nAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\r\n-----END X-----\r\n"
+      }
+    },
+    {
+      "name": "49 bytes wrap",
+      "args": {
+        "header": "X"
+      },
+      "input": {
+        "type": "string",
+        "text": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
+      },
+      "expected": {
+        "type": "string",
+        "text": "-----BEGIN X-----\r\n////////////////////////////////////////////////////////////////\r\n/w==\r\n-----END X-----\r\n"
+      }
+    },
+    {
+      "name": "spaces, line breaks and upper case",
+      "args": {
+        "header": "EC PRIVATE KEY"
+      },
+      "input": {
+        "type": "string",
+        "text": "30 77 02\n01 01 0A\r\nFF"
+      },
+      "expected": {
+        "type": "string",
+        "text": "-----BEGIN EC PRIVATE KEY-----\r\nMHcCAQEK/w==\r\n-----END EC PRIVATE KEY-----\r\n"
+      }
+    },
+    {
+      "name": "one and two padding characters",
+      "args": {
+        "header": "P"
+      },
+      "input": {
+        "type": "string",
+        "text": "00"
+      },
+      "expected": {
+        "type": "string",
+        "text": "-----BEGIN P-----\r\nAA==\r\n-----END P-----\r\n"
+      }
+    },
+    {
+      "name": "empty header",
+      "args": {
+        "header": ""
+      },
+      "input": {
+        "type": "string",
+        "text": "0001"
+      },
+      "expected": {
+        "type": "string",
+        "text": "-----BEGIN -----\r\nAAE=\r\n-----END -----\r\n"
+      }
+    },
+    {
+      "name": "error: odd digit count",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "486"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: not hex",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "48zz"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: 0x prefix",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "0x4869"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    }
+  ]
+}

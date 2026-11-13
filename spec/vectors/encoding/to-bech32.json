@@ -1,0 +1,213 @@
+{
+  "op": "to-bech32",
+  "cases": [
+    {
+      "name": "default hrp",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Hi"
+      },
+      "expected": {
+        "type": "string",
+        "text": "bc1fp5s3zrx32"
+      }
+    },
+    {
+      "name": "empty data",
+      "args": {
+        "hrp": "a"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": "a12uel5l"
+      }
+    },
+    {
+      "name": "empty data, Bech32m",
+      "args": {
+        "hrp": "a",
+        "encoding": "bech32m"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": "a1lqfn3a"
+      }
+    },
+    {
+      "name": "hrp is lower-cased",
+      "args": {
+        "hrp": "TEST"
+      },
+      "input": {
+        "type": "string",
+        "text": "Hi"
+      },
+      "expected": {
+        "type": "string",
+        "text": "test1fp5sjj6w55"
+      }
+    },
+    {
+      "name": "BIP-173: P2WPKH address",
+      "args": {
+        "mode": "segwit"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "751e76e8199196d454941c45d1b3a323f1433bd6"
+      },
+      "expected": {
+        "type": "string",
+        "text": "bc1qw508d6qejxtdg4y5r3zarvary0c5xw7kv8f3t4"
+      }
+    },
+    {
+      "name": "BIP-173: P2WSH testnet address",
+      "args": {
+        "mode": "segwit",
+        "hrp": "tb"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "1863143c14c5166804bd19203356da136c985678cd4d27a1b8c6329604903262"
+      },
+      "expected": {
+        "type": "string",
+        "text": "tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sl5k7"
+      }
+    },
+    {
+      "name": "BIP-350: taproot address",
+      "args": {
+        "mode": "segwit",
+        "encoding": "bech32m",
+        "witness_version": 1
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798"
+      },
+      "expected": {
+        "type": "string",
+        "text": "bc1p0xlxvlhemja6c4dqv22uapctqupfhlxm9h8z3k2e72q4k9hcz7vqzk5jj0"
+      }
+    },
+    {
+      "name": "BIP-350: version 16, two bytes",
+      "args": {
+        "mode": "segwit",
+        "encoding": "bech32m",
+        "witness_version": 16
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "751e"
+      },
+      "expected": {
+        "type": "string",
+        "text": "bc1sw50qgdz25j"
+      }
+    },
+    {
+      "name": "generic, all byte values in 5-bit groups",
+      "args": {
+        "hrp": "abcdef"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "00443214c74254b635cf84653a56d7c675be77df"
+      },
+      "expected": {
+        "type": "string",
+        "text": "abcdef1qpzry9x8gf2tvdw0s3jn54khce6mua7lmqqqxw"
+      }
+    },
+    {
+      "name": "error: empty hrp",
+      "args": {
+        "hrp": ""
+      },
+      "input": {
+        "type": "string",
+        "text": "Hi"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "error: hrp with a space",
+      "args": {
+        "hrp": "a b"
+      },
+      "input": {
+        "type": "string",
+        "text": "Hi"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "error: version 0 program of 21 bytes",
+      "args": {
+        "mode": "segwit"
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "000000000000000000000000000000000000000000"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: program of one byte",
+      "args": {
+        "mode": "segwit",
+        "witness_version": 1
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "00"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: longer than 90 characters",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: witness version 17",
+      "args": {
+        "mode": "segwit",
+        "witness_version": 17
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "751e"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

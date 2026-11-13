@@ -1,0 +1,392 @@
+{
+  "op": "from-bech32",
+  "cases": [
+    {
+      "name": "default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "test1fp5sjj6w55"
+      },
+      "expected": {
+        "type": "string",
+        "text": "4869"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "only white space",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": " \n"
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "BIP-173: upper case, empty data",
+      "args": {
+        "format": "hrp-hex"
+      },
+      "input": {
+        "type": "string",
+        "text": "A12UEL5L"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a: "
+      }
+    },
+    {
+      "name": "BIP-173: every data character",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "abcdef1qpzry9x8gf2tvdw0s3jn54khce6mua7lmqqqxw"
+      },
+      "expected": {
+        "type": "string",
+        "text": "00443214c74254b635cf84653a56d7c675be77df"
+      }
+    },
+    {
+      "name": "BIP-173: 83-character hrp",
+      "args": {
+        "format": "hrp-hex"
+      },
+      "input": {
+        "type": "string",
+        "text": "an83characterlonghumanreadablepartthatcontainsthenumber1andtheexcludedcharactersbio1tt5tgs"
+      },
+      "expected": {
+        "type": "string",
+        "text": "an83characterlonghumanreadablepartthatcontainsthenumber1andtheexcludedcharactersbio: "
+      }
+    },
+    {
+      "name": "BIP-173: hrp ? ",
+      "args": {
+        "format": "json"
+      },
+      "input": {
+        "type": "string",
+        "text": "?1ezyfcl"
+      },
+      "expected": {
+        "type": "string",
+        "text": "{\n  \"hrp\": \"?\",\n  \"encoding\": \"Bech32\",\n  \"data\": \"\"\n}"
+      }
+    },
+    {
+      "name": "BIP-173: split",
+      "args": {
+        "format": "raw"
+      },
+      "input": {
+        "type": "string",
+        "text": "split1checkupstagehandshakeupstreamerranterredcaperred2y9e3w"
+      },
+      "expected": {
+        "type": "string",
+        "text": "Åóp0_Qömûlð0XóÝäcì×-ÇC-"
+      }
+    },
+    {
+      "name": "BIP-173: P2WPKH address",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "BC1QW508D6QEJXTDG4Y5R3ZARVARY0C5XW7KV8F3T4"
+      },
+      "expected": {
+        "type": "string",
+        "text": "00751e76e8199196d454941c45d1b3a323f1433bd6"
+      }
+    },
+    {
+      "name": "BIP-173: P2WPKH scriptPubKey",
+      "args": {
+        "format": "script-pubkey"
+      },
+      "input": {
+        "type": "string",
+        "text": "BC1QW508D6QEJXTDG4Y5R3ZARVARY0C5XW7KV8F3T4"
+      },
+      "expected": {
+        "type": "string",
+        "text": "0014751e76e8199196d454941c45d1b3a323f1433bd6"
+      }
+    },
+    {
+      "name": "BIP-173: P2WSH testnet scriptPubKey",
+      "args": {
+        "format": "script-pubkey"
+      },
+      "input": {
+        "type": "string",
+        "text": "tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sl5k7"
+      },
+      "expected": {
+        "type": "string",
+        "text": "00201863143c14c5166804bd19203356da136c985678cd4d27a1b8c6329604903262"
+      }
+    },
+    {
+      "name": "BIP-350: taproot scriptPubKey",
+      "args": {
+        "format": "script-pubkey"
+      },
+      "input": {
+        "type": "string",
+        "text": "bc1p0xlxvlhemja6c4dqv22uapctqupfhlxm9h8z3k2e72q4k9hcz7vqzk5jj0"
+      },
+      "expected": {
+        "type": "string",
+        "text": "512079be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798"
+      }
+    },
+    {
+      "name": "BIP-350: taproot JSON",
+      "args": {
+        "format": "json"
+      },
+      "input": {
+        "type": "string",
+        "text": "bc1p0xlxvlhemja6c4dqv22uapctqupfhlxm9h8z3k2e72q4k9hcz7vqzk5jj0"
+      },
+      "expected": {
+        "type": "string",
+        "text": "{\n  \"hrp\": \"bc\",\n  \"encoding\": \"Bech32m\",\n  \"data\": \"0179be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798\"\n}"
+      }
+    },
+    {
+      "name": "BIP-350: version 16",
+      "args": {
+        "format": "script-pubkey"
+      },
+      "input": {
+        "type": "string",
+        "text": "BC1SW50QGDZ25J"
+      },
+      "expected": {
+        "type": "string",
+        "text": "6002751e"
+      }
+    },
+    {
+      "name": "BIP-350: Bech32m, empty data",
+      "args": {
+        "encoding": "bech32m",
+        "format": "hrp-hex"
+      },
+      "input": {
+        "type": "string",
+        "text": "A1LQFN3A"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a: "
+      }
+    },
+    {
+      "name": "BIP-350: Bech32m, every data character",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "abcdef1l7aum6echk45nj3s0wdvt2fg8x9yrzpqzd3ryx"
+      },
+      "expected": {
+        "type": "string",
+        "text": "ffbbcdeb38bdab49ca307b9ac5a928398a418820"
+      }
+    },
+    {
+      "name": "script-pubkey of a non-SegWit string is plain hex",
+      "args": {
+        "format": "script-pubkey"
+      },
+      "input": {
+        "type": "string",
+        "text": "test1fp5sjj6w55"
+      },
+      "expected": {
+        "type": "string",
+        "text": "4869"
+      }
+    },
+    {
+      "name": "surrounding white space",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "  test1fp5sjj6w55\n"
+      },
+      "expected": {
+        "type": "string",
+        "text": "4869"
+      }
+    },
+    {
+      "name": "error: Bech32m string read as Bech32",
+      "args": {
+        "encoding": "bech32"
+      },
+      "input": {
+        "type": "string",
+        "text": "A1LQFN3A"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: Bech32 string read as Bech32m",
+      "args": {
+        "encoding": "bech32m"
+      },
+      "input": {
+        "type": "string",
+        "text": "A12UEL5L"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: mixed case",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "tb1qrp33g0q5c5txsp9arysrx4k6zdkfs4nce4xj0gdcccefvpysxf3q0sL5k7"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: empty hrp",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "1pzry9x8gf2tvdw0s3jn54khce6mua7lmqqqxw"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: character outside the alphabet",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "x1b4n0q5v"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: checksum too short",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "li1dgmt3"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: wrong checksum",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "A1G7SGD8"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: no separator",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "pzry9x8gf2tvdw0s3jn54khce6mua7l"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "BIP-173: a bad SegWit program is read as generic data",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "bc1zw508d6qejxtdg4y5r3zarvaryvqyzf3du"
+      },
+      "expected": {
+        "type": "string",
+        "text": "13a8f3b740cc8cb6a2a4a0e22e8d9d1918"
+      }
+    },
+    {
+      "name": "error: non-zero padding bits",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "test1llp33gye"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: a whole unused character",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "test1q6j8x73"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: 91 characters",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "an84characterslonghumanreadablepartthatcontainsthenumber1andtheexcludedcharactersbio1569pvx"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: non-ASCII",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "tést1fp5sjj6w55"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    }
+  ]
+}

@@ -90,5 +90,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← From Punycode](from-punycode.md) · [Contents](../../README.md) · [HTML Entity Encode →](html-entity-encode.md)
+[← Hex to PEM](hex-to-pem.md) · [Contents](../../README.md) · [HTML Entity Encode →](html-entity-encode.md)
 <!-- /docs:nav -->

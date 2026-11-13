@@ -2613,6 +2613,357 @@
       "error": {
         "code": "E_ARG_INVALID"
       }
+    },
+    {
+      "name": "To Float, CyberChef defaults",
+      "input": "[{\"op\": \"To Float\", \"args\": [\"Big Endian\", \"Float (4 bytes)\", \"Space\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-float",
+            "args": {
+              "endianness": "big",
+              "size": "float",
+              "delimiter": "space"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Float, little-endian doubles on lines",
+      "input": "[{\"op\": \"To Float\", \"args\": [\"Little Endian\", \"Double (8 bytes)\", \"Line feed\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-float",
+            "args": {
+              "endianness": "little",
+              "size": "double",
+              "delimiter": "newline"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "From Float, semicolons",
+      "input": "[{\"op\": \"From Float\", \"args\": [\"Big Endian\", \"Double (8 bytes)\", \"Semi-colon\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "from-float",
+            "args": {
+              "endianness": "big",
+              "size": "double",
+              "delimiter": "semicolon"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "From Float, no args",
+      "input": "[{\"op\": \"From Float\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "from-float"
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Bech32, CyberChef defaults",
+      "input": "[{\"op\": \"To Bech32\", \"args\": [\"bc\", \"Bech32\", \"Raw bytes\", \"Generic\", 0]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-bech32",
+            "args": {
+              "hrp": "bc",
+              "encoding": "bech32",
+              "mode": "generic",
+              "witness_version": 0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Bech32, taproot address",
+      "input": "[{\"op\": \"To Bech32\", \"args\": [\"tb\", \"Bech32m\", \"Raw bytes\", \"Bitcoin SegWit\", 1]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-bech32",
+            "args": {
+              "hrp": "tb",
+              "encoding": "bech32m",
+              "mode": "segwit",
+              "witness_version": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "To Bech32 with hex input is not supported",
+      "input": "[{\"op\": \"To Bech32\", \"args\": [\"bc\", \"Bech32\", \"Hex\", \"Generic\", 0]}]",
+      "error": {
+        "code": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "From Bech32, no args gives raw output",
+      "input": "[{\"op\": \"From Bech32\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "from-bech32",
+            "args": {
+              "format": "raw"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "From Bech32, auto-detect to hex",
+      "input": "[{\"op\": \"From Bech32\", \"args\": [\"Auto-detect\", \"Hex\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "from-bech32",
+            "args": {
+              "encoding": "auto",
+              "format": "hex"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "From Bech32, Bech32m scriptPubKey",
+      "input": "[{\"op\": \"From Bech32\", \"args\": [\"Bech32m\", \"Bitcoin scriptPubKey\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "from-bech32",
+            "args": {
+              "encoding": "bech32m",
+              "format": "script-pubkey"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "From Bech32, HRP and hex",
+      "input": "[{\"op\": \"From Bech32\", \"args\": [\"Bech32\", \"HRP: Hex\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "from-bech32",
+            "args": {
+              "encoding": "bech32",
+              "format": "hrp-hex"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "From Bech32, JSON",
+      "input": "[{\"op\": \"From Bech32\", \"args\": [\"Auto-detect\", \"JSON\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "from-bech32",
+            "args": {
+              "encoding": "auto",
+              "format": "json"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "To BCD, CyberChef defaults",
+      "input": "[{\"op\": \"To BCD\", \"args\": [\"8 4 2 1\", true, false, \"Nibbles\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-bcd",
+            "args": {
+              "scheme": "8421",
+              "packed": true,
+              "signed": false,
+              "format": "nibbles"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "To BCD, signed 84-2-1 bytes",
+      "input": "[{\"op\": \"To BCD\", \"args\": [\"8 4 -2 -1\", false, true, \"Bytes\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-bcd",
+            "args": {
+              "scheme": "84-2-1",
+              "packed": false,
+              "signed": true,
+              "format": "bytes"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "From BCD, excess-3 raw",
+      "input": "[{\"op\": \"From BCD\", \"args\": [\"Excess-3\", true, false, \"Raw\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "from-bcd",
+            "args": {
+              "scheme": "excess-3",
+              "packed": true,
+              "signed": false,
+              "format": "raw"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "From BCD, IBM scheme",
+      "input": "[{\"op\": \"From BCD\", \"args\": [\"IBM 8 4 2 1\", true, true, \"Nibbles\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "from-bcd",
+            "args": {
+              "scheme": "ibm-8421",
+              "packed": true,
+              "signed": true,
+              "format": "nibbles"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "From BCD with an unknown scheme",
+      "input": "[{\"op\": \"From BCD\", \"args\": [\"5 4 2 1\", true, false, \"Nibbles\"]}]",
+      "error": {
+        "code": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "Text-Integer Conversion to decimal",
+      "input": "[{\"op\": \"Text-Integer Conversion\", \"args\": [\"Decimal\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "text-integer",
+            "args": {
+              "output": "decimal"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Text-Integer Conversion to hexadecimal",
+      "input": "[{\"op\": \"Text-Integer Conversion\", \"args\": [\"Hexadecimal\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "text-integer",
+            "args": {
+              "output": "hex"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Text-Integer Conversion to string",
+      "input": "[{\"op\": \"Text-Integer Conversion\", \"args\": [\"String\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "text-integer",
+            "args": {
+              "output": "string"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "PEM to Hex",
+      "input": "[{\"op\": \"PEM to Hex\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "pem-to-hex"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Hex to PEM, default header",
+      "input": "[{\"op\": \"Hex to PEM\", \"args\": [\"CERTIFICATE\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "hex-to-pem",
+            "args": {
+              "header": "CERTIFICATE"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Hex to PEM, key header",
+      "input": "[{\"op\": \"Hex to PEM\", \"args\": [\"EC PRIVATE KEY\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "hex-to-pem",
+            "args": {
+              "header": "EC PRIVATE KEY"
+            }
+          }
+        ]
+      }
     }
   ]
 }

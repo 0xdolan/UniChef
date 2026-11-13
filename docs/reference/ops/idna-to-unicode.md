@@ -82,5 +82,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← IDNA To ASCII](idna-to-ascii.md) · [Contents](../../README.md) · [Quoted-Printable Decode →](quoted-printable-decode.md)
+[← IDNA To ASCII](idna-to-ascii.md) · [Contents](../../README.md) · [PEM to Hex →](pem-to-hex.md)
 <!-- /docs:nav -->
