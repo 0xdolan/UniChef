@@ -19,6 +19,8 @@ from unichef.core.registry import ArgSpec, Operation, all_operations
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "spec" / "ops.json"
+# The TypeScript core ships the same index as its metadata catalogue (src/ops/catalogue.ts).
+COPIES = (ROOT / "packages" / "npm-core" / "src" / "ops" / "catalogue.json",)
 
 
 def arg_entry(spec: ArgSpec) -> dict[str, Any]:
@@ -80,13 +82,16 @@ def main() -> int:
     text = build()
     count = len(json.loads(text)["ops"])
     if args.check:
-        current = OUT.read_text(encoding="utf-8") if OUT.exists() else ""
-        if current != text:
-            print("ops-drift: spec/ops.json is stale; run make ops", file=sys.stderr)
-            return 1
+        for path in (OUT, *COPIES):
+            current = path.read_text(encoding="utf-8") if path.exists() else ""
+            if current != text:
+                rel = path.relative_to(ROOT)
+                print(f"ops-drift: {rel} is stale; run make ops", file=sys.stderr)
+                return 1
         print(f"ops-drift: ok ({count} ops)")
         return 0
-    OUT.write_text(text, encoding="utf-8")
+    for path in (OUT, *COPIES):
+        path.write_text(text, encoding="utf-8")
     print(f"spec/ops.json: {count} ops")
     return 0
 

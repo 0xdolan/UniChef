@@ -6,6 +6,8 @@ import { join } from 'node:path';
 
 import { describe, expect, it } from 'vitest';
 
+import { allOperationInfo, getOperationInfo, hasOperationInfo } from '../src/ops/catalogue.js';
+import CATALOGUE from '../src/ops/catalogue.json' with { type: 'json' };
 import { allOperations } from '../src/ops/registry.js';
 import type { ArgSpec } from '../src/ops/types.js';
 import { REPO } from './vectors.js';
@@ -14,6 +16,7 @@ interface IndexEntry {
   id: string;
   name: string;
   category: string;
+  description: string;
   input: string;
   output: string;
   parity: string;
@@ -72,6 +75,7 @@ describe('spec/ops.json', () => {
     expect({
       name: op.name,
       category: op.category,
+      description: op.description,
       input: op.inputType,
       output: op.outputType,
       parity: op.parity,
@@ -80,11 +84,39 @@ describe('spec/ops.json', () => {
     }).toEqual({
       name: entry.name,
       category: entry.category,
+      description: entry.description,
       input: entry.input,
       output: entry.output,
       parity: entry.parity,
       args: entry.args,
       examples: entry.examples,
     });
+  });
+});
+
+describe('the metadata catalogue', () => {
+  it('ships the same index as spec/ops.json', () => {
+    expect(CATALOGUE).toEqual(JSON.parse(readFileSync(join(REPO, 'spec', 'ops.json'), 'utf8')));
+  });
+
+  it('matches the registry except for run', () => {
+    const meta = allOperations().map((op) => ({
+      id: op.id,
+      name: op.name,
+      category: op.category,
+      description: op.description,
+      inputType: op.inputType,
+      outputType: op.outputType,
+      args: op.args,
+      parity: op.parity,
+      examples: op.examples,
+    }));
+    expect(allOperationInfo()).toEqual(meta);
+  });
+
+  it('rejects an unknown id like getOperation', () => {
+    expect(hasOperationInfo('to-base64')).toBe(true);
+    expect(hasOperationInfo('nope')).toBe(false);
+    expect(() => getOperationInfo('nope')).toThrow(/Unknown operation 'nope'/);
   });
 });

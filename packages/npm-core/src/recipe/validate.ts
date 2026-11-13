@@ -9,7 +9,7 @@
  */
 
 import { UniChefError, type PathItem } from '../errors.js';
-import { getOperation } from '../ops/registry.js';
+import { getOperationInfo, type OperationInfo } from '../ops/catalogue.js';
 import {
   BytesValue,
   JS_SAFE_INTEGER,
@@ -18,7 +18,6 @@ import {
   type ArgSpec,
   type ArgValue,
   type BytesEncoding,
-  type Operation,
   type Step,
 } from '../ops/types.js';
 
@@ -78,7 +77,7 @@ function checkStr(value: unknown, path: readonly PathItem[], what: string, max: 
 // ---------------------------------------------------------------------------
 // Arguments
 
-function argError(op: Operation, spec: ArgSpec, message: string): UniChefError {
+function argError(op: OperationInfo, spec: ArgSpec, message: string): UniChefError {
   return new UniChefError('E_ARG_INVALID', `${op.id}: argument ${pyRepr(spec.name)} ${message}`);
 }
 
@@ -104,7 +103,11 @@ function integerValue(raw: unknown): number | null {
   return null;
 }
 
-function resolveInteger(op: Operation, spec: ArgSpec & { kind: 'integer' }, raw: unknown): number {
+function resolveInteger(
+  op: OperationInfo,
+  spec: ArgSpec & { kind: 'integer' },
+  raw: unknown,
+): number {
   const value = integerValue(raw);
   if (value === null) {
     throw argError(op, spec, 'must be an integer.');
@@ -121,7 +124,11 @@ function resolveInteger(op: Operation, spec: ArgSpec & { kind: 'integer' }, raw:
   return value;
 }
 
-function resolveBytes(op: Operation, spec: ArgSpec & { kind: 'bytes' }, raw: unknown): BytesValue {
+function resolveBytes(
+  op: OperationInfo,
+  spec: ArgSpec & { kind: 'bytes' },
+  raw: unknown,
+): BytesValue {
   const obj = asObject(raw);
   const encoding = obj?.get('encoding');
   const value = obj?.get('value');
@@ -140,7 +147,7 @@ function resolveBytes(op: Operation, spec: ArgSpec & { kind: 'bytes' }, raw: unk
 
 /** Validate one raw JSON argument value against its spec. */
 export function resolveArg(
-  op: Operation,
+  op: OperationInfo,
   spec: ArgSpec,
   raw: unknown,
   path: readonly PathItem[],
@@ -188,7 +195,7 @@ export function defaultArg(spec: ArgSpec): ArgValue {
 
 /** Resolve named args: unknown names are errors, missing ones take their default. */
 export function resolveArgs(
-  op: Operation,
+  op: OperationInfo,
   raw: unknown,
   path: readonly PathItem[] = [],
   depth = 1,
@@ -254,9 +261,9 @@ function parseStep(raw: unknown, path: readonly PathItem[], depth: number): Step
   if (comment !== null) {
     checkStr(comment, path, "Step 'comment'", 2000);
   }
-  let op: Operation;
+  let op: OperationInfo;
   try {
-    op = getOperation(opId);
+    op = getOperationInfo(opId);
   } catch (exc) {
     throw exc instanceof UniChefError ? exc.withPrefix(...path) : exc;
   }

@@ -203,7 +203,7 @@ export const fromBase85 = defineOp({
   name: 'From Base85',
   category: 'Encoding',
   description:
-    'Decode Ascii85 (optionally inside `<~ ~>`) or Z85. Without `strict`, it skips' +
+    'Decode Ascii85 (optionally inside `<~ ~>`) or Z85. Without `strict`, it skips ' +
     'characters outside the alphabet.',
   inputType: 'string',
   outputType: 'bytes',
@@ -322,7 +322,7 @@ export const quotedPrintableEncode = defineOp({
   name: 'Quoted-Printable Encode',
   category: 'Encoding',
   description:
-    'Encode bytes as quoted-printable, with lines of at most 76 characters. In `text`' +
+    'Encode bytes as quoted-printable, with lines of at most 76 characters. In `text` ' +
     'mode, LF and CRLF are line breaks, written as CRLF; in `binary` mode they are escaped.',
   inputType: 'bytes',
   outputType: 'string',
@@ -368,8 +368,8 @@ export const quotedPrintableDecode = defineOp({
   name: 'Quoted-Printable Decode',
   category: 'Encoding',
   description:
-    'Decode quoted-printable. Soft line breaks and trailing spaces are removed, and' +
-    'other line breaks are kept as they are. Without `strict`, lower-case hex is accepted' +
+    'Decode quoted-printable. Soft line breaks and trailing spaces are removed, and ' +
+    'other line breaks are kept as they are. Without `strict`, lower-case hex is accepted ' +
     'and a stray `=` is kept.',
   inputType: 'string',
   outputType: 'bytes',
@@ -418,7 +418,7 @@ export const toBase45 = defineOp({
   name: 'To Base45',
   category: 'Encoding',
   description:
-    'Encode bytes as Base45 (RFC 9285), the QR-code-friendly encoding: 2 bytes become 3 characters.',
+    'Encode bytes as Base45 (RFC 9285), the QR-code encoding: 2 bytes become 3 characters.',
   inputType: 'bytes',
   outputType: 'string',
   examples: [{ input: 'AB', args: {}, output: 'BB8' }],
@@ -488,7 +488,7 @@ export const toBase62 = defineOp({
   name: 'To Base62',
   category: 'Encoding',
   description:
-    'Write the bytes, read as one big-endian number, in base 62. Leading zero bytes are not kept.',
+    'Write the bytes, read as one big-endian number, in base 62. Leading zeros are not kept.',
   inputType: 'bytes',
   outputType: 'string',
   examples: [{ input: 'Hello', args: {}, output: '5TP3P3v' }],
@@ -518,8 +518,7 @@ export const fromBase62 = defineOp({
   id: 'from-base62',
   name: 'From Base62',
   category: 'Encoding',
-  description:
-    'Decode a base-62 number to bytes. Without `strict`, it skips characters outside the alphabet.',
+  description: 'Decode a base-62 number to bytes. Without `strict`, it skips other characters.',
   inputType: 'string',
   outputType: 'bytes',
   examples: [{ input: '5TP3P3v', args: {}, output: 'Hello' }],

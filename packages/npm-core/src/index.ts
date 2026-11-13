@@ -32,6 +32,12 @@ export { formatFloat, fromPlain, jsonDumps, jsonLoads, toPlain, type WarnFn } fr
 export { decode as utf8Decode, encode as utf8Encode, scrub } from './dish/utf8.js';
 export { allOperations, getOperation, hasOperation } from './ops/registry.js';
 export {
+  allOperationInfo,
+  getOperationInfo,
+  hasOperationInfo,
+  type OperationInfo,
+} from './ops/catalogue.js';
+export {
   Args,
   BytesValue,
   DEFAULT_LIMITS,

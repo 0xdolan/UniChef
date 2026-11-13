@@ -23,7 +23,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { allOperations, getOperation } from '@unichef/core';
+import { allOperationInfo, getOperationInfo } from '@unichef/core';
 import { useId, useMemo, type ReactNode } from 'react';
 
 import { t } from '../../i18n/index.js';
@@ -46,7 +46,7 @@ function NestedAdd({ onAdd }: { readonly onAdd: (op: string) => void }): ReactNo
       }}
     >
       <option value="">{t('recipe.nestedAdd')}</option>
-      {allOperations().map((op) => (
+      {allOperationInfo().map((op) => (
         <option key={op.id} value={op.id}>
           {op.name}
         </option>
@@ -80,7 +80,7 @@ function StepCard({
   readonly path: readonly number[];
 }): ReactNode {
   const id = useId();
-  const op = getOperation(step.op);
+  const op = getOperationInfo(step.op);
   const key = pathKey(path);
   const setArg = useApp((s) => s.setArg);
   const remove = useApp((s) => s.removeStep);

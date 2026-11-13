@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 /** The editable recipe: plain JSON args plus a stable `uid` per step for React keys. */
 
-import { getOperation, hasOperation, parseRecipe, type ArgSpec } from '@unichef/core';
+import { getOperationInfo, hasOperationInfo, parseRecipe, type ArgSpec } from '@unichef/core';
 
 import type { RecipeDoc } from '../worker/protocol.js';
 
@@ -38,7 +38,7 @@ export function defaultRaw(spec: ArgSpec): RawArg {
 
 export function newStep(op: string): StepModel {
   const args: Record<string, RawArg> = {};
-  for (const spec of getOperation(op).args) args[spec.name] = defaultRaw(spec);
+  for (const spec of getOperationInfo(op).args) args[spec.name] = defaultRaw(spec);
   return { uid: newUid(), op, args, disabled: false, breakpoint: false };
 }
 
@@ -55,7 +55,7 @@ const secretText = (value: RawArg): string =>
 /** Every key and IV value in `steps`, at any depth. */
 function secretValues(steps: readonly StepModel[]): string[] {
   return steps.flatMap((step) =>
-    getOperation(step.op).args.flatMap((spec) => {
+    getOperationInfo(step.op).args.flatMap((spec) => {
       const value = step.args[spec.name];
       if (value === undefined) return [];
       if (isSteps(value)) return secretValues(value);
@@ -71,7 +71,7 @@ export const hasSecrets = (steps: readonly StepModel[]): boolean =>
 export function redactSecrets(steps: readonly StepModel[]): readonly StepModel[] {
   return steps.map((step) => {
     const args: Record<string, RawArg> = { ...step.args };
-    for (const spec of getOperation(step.op).args) {
+    for (const spec of getOperationInfo(step.op).args) {
       const value = args[spec.name];
       if (value === undefined) continue;
       if (isSteps(value)) args[spec.name] = redactSecrets(value);
@@ -172,7 +172,7 @@ function stepFromDoc(raw: Json): StepModel {
   const step = newStep(raw.op as string);
   const given = (raw.args ?? {}) as Json;
   const args: Record<string, RawArg> = { ...step.args };
-  for (const spec of getOperation(step.op).args) {
+  for (const spec of getOperationInfo(step.op).args) {
     const value = given[spec.name];
     if (value === undefined) continue;
     args[spec.name] =
@@ -210,10 +210,10 @@ export function clearRedacted(doc: unknown): { doc: unknown; redacted: boolean }
     return steps.map((raw: unknown) => {
       const step = raw as Json | null;
       if (typeof step !== 'object' || step === null) return raw;
-      if (typeof step.op !== 'string' || !hasOperation(step.op)) return raw;
+      if (typeof step.op !== 'string' || !hasOperationInfo(step.op)) return raw;
       if (typeof step.args !== 'object' || step.args === null) return raw;
       const args: Record<string, unknown> = { ...(step.args as Json) };
-      for (const spec of getOperation(step.op).args) {
+      for (const spec of getOperationInfo(step.op).args) {
         if (spec.kind === 'steps') args[spec.name] = walk(args[spec.name]);
         else if (spec.kind === 'bytes' && spec.secret === true) {
           args[spec.name] = clear(args[spec.name]);

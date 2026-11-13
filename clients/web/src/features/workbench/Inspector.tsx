@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 /** The step inspector (FR-002): the selected step's output preview as text, hex or table. */
 
-import { dishSize, getOperation, makeDish, type Dish } from '@unichef/core';
+import { dishSize, getOperationInfo, makeDish, type Dish } from '@unichef/core';
 import { useId, useState, type ReactNode } from 'react';
 
 import { t } from '../../i18n/index.js';
@@ -167,7 +167,7 @@ export function Inspector(): ReactNode {
         <h2 id={`${id}-title`} className={styles.paneTitle}>
           {step === null
             ? t('inspector.title')
-            : t('inspector.step', { step: stepLabel(path), name: getOperation(step.op).name })}
+            : t('inspector.step', { step: stepLabel(path), name: getOperationInfo(step.op).name })}
         </h2>
       </div>
       <div className={styles.scroll}>{body}</div>

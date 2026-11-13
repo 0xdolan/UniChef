@@ -7,10 +7,10 @@
 
 import {
   DEFAULT_LIMITS,
-  allOperations,
-  hasOperation,
-  getOperation,
-  type Operation,
+  allOperationInfo,
+  hasOperationInfo,
+  getOperationInfo,
+  type OperationInfo,
 } from '@unichef/core';
 import { useEffect, useId, useMemo, useState, type ReactNode } from 'react';
 
@@ -42,7 +42,7 @@ export function clip(text: string): string {
 }
 
 /** Starting input when an op has no examples. */
-export function sampleInput(op: Operation): string {
+export function sampleInput(op: OperationInfo): string {
   return op.inputType === 'json' ? '{"sub": "demo", "name": "Zoë"}' : 'Héllo, wörld! 👋';
 }
 
@@ -100,7 +100,7 @@ function Demo({
   op,
   create,
 }: {
-  readonly op: Operation;
+  readonly op: OperationInfo;
   readonly create: () => WorkerLike;
 }): ReactNode {
   const id = useId();
@@ -212,8 +212,8 @@ function Demo({
 }
 
 function Index(): ReactNode {
-  const groups = new Map<string, Operation[]>();
-  for (const op of allOperations()) {
+  const groups = new Map<string, OperationInfo[]>();
+  for (const op of allOperationInfo()) {
     const group = groups.get(op.category);
     if (group === undefined) groups.set(op.category, [op]);
     else group.push(op);
@@ -244,7 +244,7 @@ export function PlaygroundPage({
   readonly param: string;
   readonly createWorker?: () => WorkerLike;
 }): ReactNode {
-  const op = param !== '' && hasOperation(param) ? getOperation(param) : null;
+  const op = param !== '' && hasOperationInfo(param) ? getOperationInfo(param) : null;
   return (
     <main id="main" className={styles.page}>
       {op !== null && (
