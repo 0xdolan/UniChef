@@ -104,5 +104,5 @@ Operations explained here: [Cartesian Product](../reference/ops/cartesian-produc
 <!-- docs:nav -->
 ---
 
-[← Number and key formats: floats, BCD, text as a number, Bech32 and PEM](number-formats.md) · [Contents](../README.md) · [Operation reference →](../reference/README.md)
+[← Number and key formats: floats, BCD, text as a number, Bech32 and PEM](number-formats.md) · [Contents](../README.md) · [Small codecs: cat -v, Rison, NetBIOS names, CTX1 and combining marks →](small-codecs.md)
 <!-- /docs:nav -->

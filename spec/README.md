@@ -1028,6 +1028,60 @@ The input must split into exactly two samples, else `E_DECODE`. A `hex` sample m
 
 The input must split into exactly two samples, else `E_DECODE`. Characters are code points (the reference used UTF-16 code units, so a character outside the BMP counted as two). The result is the Wagner–Fischer minimum cost of turning the first sample into the second, in decimal. If the product of the two lengths exceeds 4000000 the result is `E_LIMIT` (the reference has no limit). The reference accepted fractional costs; the importer truncates them to integers.
 
+## Small codecs (encoding, data and text categories)
+
+Caret/M-decode, Rison, NetBIOS names, Citrix CTX1 and Unicode text formatting follow the reference implementation (Rison follows rison.js 0.1.1) except where noted. Malformed input is an error where the reference read as far as it could.
+
+### `caret-m-decode` (string → bytes)
+
+No arguments. `^@` to `^_` are 0x00 to 0x1F (the character's code minus 0x40), `^?` is 0x7F, `M-` followed by a printable ASCII character adds 0x80 to it, and `M-` followed by a caret code adds 0x80 to that code. Matching is leftmost-first with `M-^…` tried before `M-…`. Any other text, including a `^` or `M-` that starts no valid sequence, is encoded as UTF-8. The reference read `^` followed by any character as that character's code minus 0x40 (so `^a` became 0x21), and dropped a trailing `^` or `M-`; UniChef keeps them as text, as `cat -v` would never write them.
+
+### `to-rison` (json → string)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `mode` | `value` \| `object` \| `array` \| `uri` | `value` | Rison, O-Rison (no outer `(…)`), A-Rison (no outer `!(…)`), or Rison escaped for a URL. |
+
+- `null`, `true` and `false` are `!n`, `!t` and `!f`. A number is written as ECMAScript `Number.prototype.toString` writes it, with `+` removed from the exponent; an integer of any size is written in full.
+- A string is written bare if it matches `[^-0-9 '!:(),*@$][^ '!:(),*@$]*` in full, as `''` if empty, and otherwise inside `'…'` with `'` and `!` each preceded by `!`. The whole string must match.
+- Object keys are sorted by UTF-16 code units. Arrays keep their order.
+- `object` needs a JSON object and `array` a JSON array, else `E_INPUT_TYPE`.
+- `uri` applies `encodeURIComponent` (lone surrogates replaced with U+FFFD first), then turns `%2C`, `%3A`, `%40`, `%24` and `%2F` back into `,` `:` `@` `$` `/`, and `%20` into `+`.
+- Nesting deeper than 256 is `E_LIMIT`.
+
+### `from-rison` (string → json)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `mode` | `value` \| `object` \| `array` | `value` | Read Rison, O-Rison or A-Rison. |
+
+- `object` mode reads `(` + input + `)` and `array` mode reads `!(` + input + `)`, so an empty input is `{}` or `[]`. In `value` mode an empty input is `E_DECODE`.
+- No whitespace is allowed anywhere outside strings. A number must match `-?[0-9]+(\.[0-9]+)?([eE]-?[0-9]+)?`; without a fraction or exponent it is an integer (at most 4300 digits), otherwise a float, and a float that overflows is `E_DECODE`. The reference parsed any run of number characters with `parseFloat`, giving `NaN` or a truncated value.
+- In a quoted string `!` must be followed by `!` or `'`. An object key must be a string (bare or quoted). A repeated key keeps the last value, in the last position, with `W_DUPLICATE_KEY`.
+- Any other malformed input, or text after the value, is `E_DECODE`. Nesting deeper than 256 is `E_LIMIT`.
+
+### `encode-netbios-name`, `decode-netbios-name` (bytes → bytes)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `offset` | integer 0–240 | `65` | Added to each 4-bit half. |
+
+- Encode pads the input with 0x20 to 16 bytes and writes each byte as `offset + (b >> 4)`, `offset + (b & 0xF)`. More than 16 bytes is `E_DECODE`; the reference returned an empty result.
+- Decode needs an even number of bytes, at most 32, each between `offset` and `offset + 15`, else `E_DECODE`; the reference returned an empty result or wrong bytes. All trailing 0x20 bytes are removed from the result.
+
+### `citrix-ctx1-encode`, `citrix-ctx1-decode` (string → string)
+
+No arguments. Encode takes the UTF-16LE code units of the input, two bytes each; each byte `b` becomes `r = b ⊕ 0xA5 ⊕ previous r` (0 at the start), written as the letters `A + (r >> 4)` and `A + (r & 0xF)`. Decode removes ASCII whitespace at both ends, then needs only the letters `A` to `P`, a multiple of 4 long, else `E_DECODE`; the reference masked any character with `& 0xF`. The decoded bytes must be valid UTF-16LE (no lone surrogate), else `E_DECODE`.
+
+### `unicode-text-format` (string → string)
+
+| Arg | Type | Default | Meaning |
+|---|---|---|---|
+| `underline` | boolean | `false` | Add U+0332 COMBINING LOW LINE. |
+| `strikethrough` | boolean | `false` | Add U+0336 COMBINING LONG STROKE OVERLAY. |
+
+After every code point except U+000A and U+000D, U+0336 is added if `strikethrough` is set, then U+0332 if `underline` is set. The reference added the marks after every UTF-8 byte, so a non-ASCII character came out as mojibake, and it marked line breaks too.
+
 ## Operation arguments (compression category)
 
 `raw-deflate`, `zlib-deflate` and `gzip` take one argument, `level`: an integer from 0 to 9, default 6. Level 0 stores the input in uncompressed blocks of at most 65 535 bytes, and both cores write it the same way, byte for byte. Levels 1 to 9 use the host compressor (zlib in Python, fflate in TypeScript), so the compressed bytes can differ between cores (parity class `roundtrip`). Both cores read what either one writes, and recipe vectors check the round trip.

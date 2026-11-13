@@ -1155,6 +1155,44 @@
         { "to": "deletion", "integer": true },
         { "to": "substitution", "integer": true }
       ]
+    },
+    "Caret/M-decode": { "op": "caret-m-decode", "args": [] },
+    "Rison Encode": {
+      "op": "to-rison",
+      "args": [
+        {
+          "to": "mode",
+          "map": {
+            "Encode": "value",
+            "Encode Object": "object",
+            "Encode Array": "array",
+            "Encode URI": "uri"
+          }
+        }
+      ]
+    },
+    "Rison Decode": {
+      "op": "from-rison",
+      "args": [
+        {
+          "to": "mode",
+          "map": { "Decode": "value", "Decode Object": "object", "Decode Array": "array" }
+        }
+      ]
+    },
+    "Encode NetBIOS Name": {
+      "op": "encode-netbios-name",
+      "args": [{ "to": "offset", "integer": true }]
+    },
+    "Decode NetBIOS Name": {
+      "op": "decode-netbios-name",
+      "args": [{ "to": "offset", "integer": true }]
+    },
+    "Citrix CTX1 Encode": { "op": "citrix-ctx1-encode", "args": [] },
+    "Citrix CTX1 Decode": { "op": "citrix-ctx1-decode", "args": [] },
+    "Unicode Text Format": {
+      "op": "unicode-text-format",
+      "args": [{ "to": "underline" }, { "to": "strikethrough" }]
     }
   }
 }

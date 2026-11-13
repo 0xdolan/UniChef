@@ -1,0 +1,150 @@
+{
+  "op": "caret-m-decode",
+  "cases": [
+    {
+      "name": "default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "M-bM-^@M-^] ^I!"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "e2809d200921"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": ""
+      }
+    },
+    {
+      "name": "CyberChef: cat -v of UTF-8 quotes",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "M-bM-^@M-^\\M-bM-^@M-^]"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "e2809ce2809d"
+      }
+    },
+    {
+      "name": "all control carets",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "^@^A^Z^[^\\^]^^^_^?"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "00011a1b1c1d1e1f7f"
+      }
+    },
+    {
+      "name": "M- with printable characters",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "M- M-aM-~"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "a0e1fe"
+      }
+    },
+    {
+      "name": "M-^ with caret codes and ^?",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "M-^@M-^_M-^?"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "809fff"
+      }
+    },
+    {
+      "name": "M-^ not followed by a caret code is M- and ^",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "M-^a"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "de61"
+      }
+    },
+    {
+      "name": "lone markers stay literal",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "M^a^ ^M-M"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "4d5e615e200d2d4d"
+      }
+    },
+    {
+      "name": "trailing markers stay literal",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "x^"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "785e"
+      }
+    },
+    {
+      "name": "non-ASCII text is UTF-8",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "é^J"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "c3a90a"
+      }
+    },
+    {
+      "name": "plain text unchanged",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "Hello, world"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "48656c6c6f2c20776f726c64"
+      }
+    },
+    {
+      "name": "error: an unknown argument",
+      "args": {
+        "bogus": 1
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

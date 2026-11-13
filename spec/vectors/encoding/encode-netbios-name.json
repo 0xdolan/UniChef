@@ -1,0 +1,131 @@
+{
+  "op": "encode-netbios-name",
+  "cases": [
+    {
+      "name": "default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "UNICHEF"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "4646454f454a4544454945464547434143414341434143414341434143414341"
+      }
+    },
+    {
+      "name": "empty name is sixteen spaces",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "4341434143414341434143414341434143414341434143414341434143414341"
+      }
+    },
+    {
+      "name": "CyberChef: The NetBIOS name",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "The NetBIOS name"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "4645474947464341454f474648454543454a455046444341474f4742474e4746"
+      }
+    },
+    {
+      "name": "sixteen bytes, no padding",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "ABCDEFGHIJKLMNOP"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "45424543454445454546454745484549454a454b454c454d454e454f45504641"
+      }
+    },
+    {
+      "name": "lower-case offset",
+      "args": {
+        "offset": 97
+      },
+      "input": {
+        "type": "string",
+        "text": "WORKGROUP"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "666865706663656c656866636570666666616361636163616361636163616361"
+      }
+    },
+    {
+      "name": "zero offset",
+      "args": {
+        "offset": 0
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "00ff"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "00000f0f02000200020002000200020002000200020002000200020002000200"
+      }
+    },
+    {
+      "name": "largest offset",
+      "args": {
+        "offset": 240
+      },
+      "input": {
+        "type": "bytes",
+        "hex": "ff"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "fffff2f0f2f0f2f0f2f0f2f0f2f0f2f0f2f0f2f0f2f0f2f0f2f0f2f0f2f0f2f0"
+      }
+    },
+    {
+      "name": "binary bytes",
+      "args": {},
+      "input": {
+        "type": "bytes",
+        "hex": "00011b7f80ff"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "41414142424c4850494150504341434143414341434143414341434143414341"
+      }
+    },
+    {
+      "name": "error: seventeen bytes",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "ABCDEFGHIJKLMNOPQ"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: offset too large",
+      "args": {
+        "offset": 241
+      },
+      "input": {
+        "type": "string",
+        "text": "A"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

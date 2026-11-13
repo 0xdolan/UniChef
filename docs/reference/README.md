@@ -15,7 +15,12 @@ Background: [Base encodings](../learn/base-encodings.md)
 
 | Operation | What it does |
 |---|---|
+| [Caret/M-decode](ops/caret-m-decode.md) | Turn the caret and M- notation of `cat -v` back into bytes: `^@` to `^_` are 0x00 to 0x1F, `^?` is 0x7F, and `M-` adds 0x80 to the character or caret code after it. |
+| [Citrix CTX1 Decode](ops/citrix-ctx1-decode.md) | Reverse Citrix CTX1: read pairs of letters from `A` to `P` as bytes, XOR each with 0xA5 and the byte before it, and read the result as UTF-16LE. |
+| [Citrix CTX1 Encode](ops/citrix-ctx1-encode.md) | Obscure a password the way Citrix CTX1 does: take its UTF-16LE bytes, XOR each with 0xA5 and the previous result, and write each result as two letters from `A` to `P`. |
+| [Decode NetBIOS Name](ops/decode-netbios-name.md) | Read pairs of bytes, each `offset` plus a nibble, as one byte each, and remove the trailing spaces. |
 | [Decode Text](ops/decode-text.md) | Decode bytes from a character encoding. |
+| [Encode NetBIOS Name](ops/encode-netbios-name.md) | Pad the name with spaces to 16 bytes and write each byte as two, its high and low nibble each added to `offset` (65, `A`, by RFC 1001). |
 | [Encode Text](ops/encode-text.md) | Encode text in a character encoding. |
 | [Escape String](ops/escape-string.md) | Escape a string for a JavaScript literal the way jsesc does. |
 | [From Base](ops/from-base.md) | Read a number written in a radix from 2 to 36 and write it in decimal. |
@@ -171,6 +176,7 @@ Background: [Data formats and text processing](../learn/data-and-text.md)
 |---|---|
 | [Cartesian Product](ops/cartesian-product.md) | Split the input on `sample_delimiter` into two or more samples and each sample on `item_delimiter` into items. |
 | [CSV to JSON](ops/csv-to-json.md) | Parse RFC 4180 CSV. |
+| [From Rison](ops/from-rison.md) | Read Rison and write it as JSON. |
 | [Hamming Distance](ops/hamming-distance.md) | Split the input on `delimiter` into two samples of equal length, read as UTF-8 text or as hex (whitespace ignored). |
 | [JSON Beautify](ops/json-beautify.md) | Write JSON with one value per line, like `JSON.stringify(v, null, indent)`. |
 | [JSON Minify](ops/json-minify.md) | Write JSON with no whitespace, keeping key order. |
@@ -183,6 +189,7 @@ Background: [Data formats and text processing](../learn/data-and-text.md)
 | [Set Intersection](ops/set-intersection.md) | Split the input on `sample_delimiter` into two samples and each sample on `item_delimiter` into items. |
 | [Set Union](ops/set-union.md) | Split the input on `sample_delimiter` into two samples and each sample on `item_delimiter` into items. |
 | [Symmetric Difference](ops/symmetric-difference.md) | Split the input on `sample_delimiter` into two samples and each sample on `item_delimiter` into items. |
+| [To Rison](ops/to-rison.md) | Write a JSON value as Rison, a compact form for URLs: objects as `(key:value)` with keys sorted, arrays as `!(...)`, `!t`, `!f` and `!n` for true, false and null, and strings quoted with `'` only when needed. |
 
 ## Text
 
@@ -213,6 +220,7 @@ Background: [Data formats and text processing](../learn/data-and-text.md)
 | [To Kebab case](ops/to-kebab-case.md) | Like To Snake case, but the words are joined with hyphens. |
 | [To Snake case](ops/to-snake-case.md) | Split the text into words and join them in lower case with underscores. |
 | [Trim](ops/trim.md) | Remove White_Space characters from the start, end or both ends of the text, or of every line with `lines` (a final LF is kept). |
+| [Unicode Text Format](ops/unicode-text-format.md) | Draw a line through or under text by adding a combining mark after every character except line breaks: U+0336 for `strikethrough`, then U+0332 for `underline`. |
 | [Unique lines](ops/unique-lines.md) | Keep the first of each set of equal lines, in input order. |
 | [Wrap](ops/wrap.md) | Break each line into lines of at most `width` characters. |
 
@@ -234,5 +242,5 @@ Background: [How UniChef works](../learn/how-unichef-works.md)
 <!-- docs:nav -->
 ---
 
-[← Sets and distances: comparing lists and strings](../learn/sets-and-distances.md) · [Contents](../README.md) · [Decode Text →](ops/decode-text.md)
+[← Small codecs: cat -v, Rison, NetBIOS names, CTX1 and combining marks](../learn/small-codecs.md) · [Contents](../README.md) · [Caret/M-decode →](ops/caret-m-decode.md)
 <!-- /docs:nav -->

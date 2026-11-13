@@ -87,5 +87,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← Cartesian Product](cartesian-product.md) · [Contents](../../README.md) · [Hamming Distance →](hamming-distance.md)
+[← Cartesian Product](cartesian-product.md) · [Contents](../../README.md) · [From Rison →](from-rison.md)
 <!-- /docs:nav -->

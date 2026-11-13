@@ -1,0 +1,133 @@
+{
+  "op": "citrix-ctx1-decode",
+  "cases": [
+    {
+      "name": "default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "NFHALEBBMHGCLEBB"
+      },
+      "expected": {
+        "type": "string",
+        "text": "pass"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "surrounding whitespace ignored",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "  NFHALEBBMHGCLEBB\n"
+      },
+      "expected": {
+        "type": "string",
+        "text": "pass"
+      }
+    },
+    {
+      "name": "one character",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "MEGB"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a"
+      }
+    },
+    {
+      "name": "non-ASCII",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "EMOJ"
+      },
+      "expected": {
+        "type": "string",
+        "text": "é"
+      }
+    },
+    {
+      "name": "astral character",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "JIOFEADL"
+      },
+      "expected": {
+        "type": "string",
+        "text": "😀"
+      }
+    },
+    {
+      "name": "round trip of a phrase",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "MEGBOEEBIGCDKHAC"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a b!"
+      }
+    },
+    {
+      "name": "error: length not a multiple of 4",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "NFHALE"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: letter outside A to P",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "NFHQ"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: lower-case letters",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "nfha"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: lone surrogate",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "KFNI"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    }
+  ]
+}

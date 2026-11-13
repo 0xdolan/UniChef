@@ -1,0 +1,129 @@
+{
+  "op": "unicode-text-format",
+  "cases": [
+    {
+      "name": "default: unchanged",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "abc"
+      },
+      "expected": {
+        "type": "string",
+        "text": "abc"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {
+        "underline": true
+      },
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "string",
+        "text": ""
+      }
+    },
+    {
+      "name": "underline",
+      "args": {
+        "underline": true
+      },
+      "input": {
+        "type": "string",
+        "text": "abc"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a̲b̲c̲"
+      }
+    },
+    {
+      "name": "strikethrough",
+      "args": {
+        "strikethrough": true
+      },
+      "input": {
+        "type": "string",
+        "text": "abc"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a̶b̶c̶"
+      }
+    },
+    {
+      "name": "both: strike, then underline",
+      "args": {
+        "underline": true,
+        "strikethrough": true
+      },
+      "input": {
+        "type": "string",
+        "text": "ab"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a̶̲b̶̲"
+      }
+    },
+    {
+      "name": "line breaks are skipped",
+      "args": {
+        "underline": true
+      },
+      "input": {
+        "type": "string",
+        "text": "a\nb\r\nc"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a̲\nb̲\r\nc̲"
+      }
+    },
+    {
+      "name": "non-ASCII and astral characters",
+      "args": {
+        "strikethrough": true
+      },
+      "input": {
+        "type": "string",
+        "text": "é😀"
+      },
+      "expected": {
+        "type": "string",
+        "text": "é̶😀̶"
+      }
+    },
+    {
+      "name": "spaces get marks too",
+      "args": {
+        "underline": true
+      },
+      "input": {
+        "type": "string",
+        "text": "a b"
+      },
+      "expected": {
+        "type": "string",
+        "text": "a̲ ̲b̲"
+      }
+    },
+    {
+      "name": "error: an unknown argument",
+      "args": {
+        "bogus": 1
+      },
+      "input": {
+        "type": "string",
+        "text": "a"
+      },
+      "expected": {
+        "error": "E_ARG_INVALID"
+      }
+    }
+  ]
+}

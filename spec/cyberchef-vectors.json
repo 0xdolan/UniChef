@@ -3118,6 +3118,140 @@
           }
         ]
       }
+    },
+    {
+      "name": "Caret/M-decode",
+      "input": "[{\"op\": \"Caret/M-decode\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "caret-m-decode"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Rison Encode, URI",
+      "input": "[{\"op\": \"Rison Encode\", \"args\": [\"Encode URI\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-rison",
+            "args": {
+              "mode": "uri"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Rison Encode, object",
+      "input": "[{\"op\": \"Rison Encode\", \"args\": [\"Encode Object\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "to-rison",
+            "args": {
+              "mode": "object"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Rison Decode, array",
+      "input": "[{\"op\": \"Rison Decode\", \"args\": [\"Decode Array\"]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "from-rison",
+            "args": {
+              "mode": "array"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Rison Decode, unknown option",
+      "input": "[{\"op\": \"Rison Decode\", \"args\": [\"Decode Anything\"]}]",
+      "error": {
+        "code": "E_ARG_INVALID"
+      }
+    },
+    {
+      "name": "Encode NetBIOS Name, lower-case offset",
+      "input": "[{\"op\": \"Encode NetBIOS Name\", \"args\": [97]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "encode-netbios-name",
+            "args": {
+              "offset": 97
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Decode NetBIOS Name, default offset",
+      "input": "[{\"op\": \"Decode NetBIOS Name\", \"args\": [65]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "decode-netbios-name",
+            "args": {
+              "offset": 65
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Citrix CTX1 Encode",
+      "input": "[{\"op\": \"Citrix CTX1 Encode\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "citrix-ctx1-encode"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Citrix CTX1 Decode",
+      "input": "[{\"op\": \"Citrix CTX1 Decode\", \"args\": []}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "citrix-ctx1-decode"
+          }
+        ]
+      }
+    },
+    {
+      "name": "Unicode Text Format, strikethrough",
+      "input": "[{\"op\": \"Unicode Text Format\", \"args\": [false, true]}]",
+      "output": {
+        "version": 1,
+        "steps": [
+          {
+            "op": "unicode-text-format",
+            "args": {
+              "underline": false,
+              "strikethrough": true
+            }
+          }
+        ]
+      }
     }
   ]
 }

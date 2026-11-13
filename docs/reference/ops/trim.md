@@ -77,5 +77,5 @@ console.log(result.dish.value);
 <!-- docs:nav -->
 ---
 
-[← To Snake case](to-snake-case.md) · [Contents](../../README.md) · [Unique lines →](unique-lines.md)
+[← To Snake case](to-snake-case.md) · [Contents](../../README.md) · [Unicode Text Format →](unicode-text-format.md)
 <!-- /docs:nav -->

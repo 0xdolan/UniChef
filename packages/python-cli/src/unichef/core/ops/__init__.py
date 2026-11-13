@@ -13,6 +13,7 @@ MODULES = (
     "textformat",
     "numformats",
     "sets",
+    "misccodecs",
     "text",
     "html",
     "unicode",

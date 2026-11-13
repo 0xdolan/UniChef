@@ -1,0 +1,147 @@
+{
+  "op": "decode-netbios-name",
+  "cases": [
+    {
+      "name": "default",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "FFEOEJEDEIEFEGCACACACACACACACACA"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "554e4943484546"
+      }
+    },
+    {
+      "name": "empty",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": ""
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": ""
+      }
+    },
+    {
+      "name": "CyberChef: The NetBIOS name",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "FEGIGFCAEOGFHEECEJEPFDCAGOGBGNGF"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "546865204e657442494f53206e616d65"
+      }
+    },
+    {
+      "name": "all spaces gives nothing",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "CACACACACACACACACACACACACACACACA"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": ""
+      }
+    },
+    {
+      "name": "short names need no padding",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "EBEC"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "4142"
+      }
+    },
+    {
+      "name": "only trailing spaces removed",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "CAEBCAEBCACA"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "20412041"
+      }
+    },
+    {
+      "name": "lower-case offset",
+      "args": {
+        "offset": 97
+      },
+      "input": {
+        "type": "string",
+        "text": "hhgphcglhhgchhgphfhacaca"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "776f726b7762776f7570"
+      }
+    },
+    {
+      "name": "binary bytes",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "AAABBLHPIAPP"
+      },
+      "expected": {
+        "type": "bytes",
+        "hex": "00011b7f80ff"
+      }
+    },
+    {
+      "name": "error: odd length",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "EBE"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: longer than 32",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "EBEBEBEBEBEBEBEBEBEBEBEBEBEBEBEBEB"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: byte out of range",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "EBEQ"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    },
+    {
+      "name": "error: byte below offset",
+      "args": {},
+      "input": {
+        "type": "string",
+        "text": "E@"
+      },
+      "expected": {
+        "error": "E_DECODE"
+      }
+    }
+  ]
+}
