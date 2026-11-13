@@ -51,11 +51,28 @@ test('NFR-003: analyse-characters on 100 000 code points', async ({ page }) => {
   const input = page.getByRole('textbox', { name: 'Input', exact: true });
 
   await input.fill(sample);
-  const started = await page.evaluate(() => performance.now());
+  // Time inside the page, checking every frame, so Playwright's polling interval and
+  // round trips are not counted.
+  const baked = await page.evaluate(
+    () =>
+      new Promise<number>((resolve) => {
+        const started = performance.now();
+        const done = (): void => {
+          // The full-size output table with its first data row rendered.
+          if (document.querySelector('table[aria-rowcount="100001"] tbody tr')) {
+            resolve(performance.now() - started);
+          } else if (performance.now() - started > 10_000) {
+            resolve(Infinity);
+          } else {
+            requestAnimationFrame(done);
+          }
+        };
+        done();
+      }),
+  );
   // The header row, then the first data row (rendered by virtualisation).
-  await expect(output.getByRole('row').nth(1)).toBeVisible({ timeout: 10_000 });
+  await expect(output.getByRole('row').nth(1)).toBeVisible();
   await expect(output).toHaveAttribute('aria-rowcount', '100001');
-  const baked = (await page.evaluate(() => performance.now())) - started;
 
   await page.getByRole('button', { name: 'Inspect step 1, Analyse Characters' }).click();
   const shown = await page.evaluate(() => performance.now());
